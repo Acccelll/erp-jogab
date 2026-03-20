@@ -168,33 +168,47 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // FOPAG — lista em /fopag e detalhe verificável em /fopag/:competenciaId
+      // FOPAG
       {
         path: '/fopag',
         element: <ModuleLayout />,
         children: [
-          // /fopag
-          { index: true, element: <FopagListPage /> },
-
-          // /fopag/:competenciaId
+          {
+            index: true,
+            element: <FopagListPage />,
+          },
           {
             path: ':competenciaId',
             element: <FopagCompetenciaDetailPage />,
             children: [
-              // index route for /fopag/:competenciaId
-              { index: true, element: <FopagCompetenciaOverviewPage /> },
-              // /fopag/:competenciaId/funcionarios
-              { path: 'funcionarios', element: <FopagCompetenciaFuncionariosPage /> },
-              // /fopag/:competenciaId/obras
-              { path: 'obras', element: <FopagCompetenciaObrasPage /> },
-              // /fopag/:competenciaId/eventos
-              { path: 'eventos', element: <FopagCompetenciaEventosPage /> },
-              // /fopag/:competenciaId/rateio
-              { path: 'rateio', element: <FopagCompetenciaRateioPage /> },
-              // /fopag/:competenciaId/financeiro
-              { path: 'financeiro', element: <FopagCompetenciaFinanceiroPage /> },
-              // /fopag/:competenciaId/previsto-realizado
-              { path: 'previsto-realizado', element: <FopagCompetenciaPrevistoRealizadoPage /> },
+              {
+                index: true,
+                element: <FopagCompetenciaOverviewPage />,
+              },
+              {
+                path: 'funcionarios',
+                element: <FopagCompetenciaFuncionariosPage />,
+              },
+              {
+                path: 'obras',
+                element: <FopagCompetenciaObrasPage />,
+              },
+              {
+                path: 'eventos',
+                element: <FopagCompetenciaEventosPage />,
+              },
+              {
+                path: 'rateio',
+                element: <FopagCompetenciaRateioPage />,
+              },
+              {
+                path: 'financeiro',
+                element: <FopagCompetenciaFinanceiroPage />,
+              },
+              {
+                path: 'previsto-realizado',
+                element: <FopagCompetenciaPrevistoRealizadoPage />,
+              },
             ],
           },
         ],
