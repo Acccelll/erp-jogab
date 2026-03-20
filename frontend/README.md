@@ -98,9 +98,9 @@ O sistema mantém um contexto global ativo (persistido) com:
 
 ## Layouts
 
-- **AppLayout** — Sidebar + Topbar + SideDrawer + conteúdo
+- **AppLayout** — Sidebar + Topbar + ContextBar + SideDrawer + conteúdo
 - **AuthLayout** — Layout centralizado para login
-- **ModuleLayout** — ContextBar + conteúdo do módulo
+- **ModuleLayout** — Wrapper de conteúdo do módulo (pass-through)
 - **ObraWorkspaceLayout** — Header da obra + abas + conteúdo da aba
 
 ## Comandos
@@ -128,14 +128,14 @@ Cada tela principal segue a composição:
 **Fase 2** — Layout, navegação, contexto global e consistência visual (completa).
 
 ### Entregues na Fase 2
-- AppLayout com Sidebar + Topbar + SideDrawer
+- AppLayout com Sidebar + Topbar + ContextBar + SideDrawer
 - Sidebar dark com 14 itens em 3 grupos (Geral, Operacional, Gerencial)
 - Sidebar collapsível, auto-close em mobile, active state por rota
 - Topbar com breadcrumbs, busca (placeholder), notificações e dropdown de usuário
 - ContextBar funcional com selects de empresa/filial/obra/competência (mock data)
 - ContextBar responsiva com scroll horizontal em mobile
 - Indicador visual de contexto ativo
-- ModuleLayout com ContextBar integrada
+- ModuleLayout simplificado como wrapper pass-through
 - ObraWorkspaceLayout com header, 11 abas e sync automático do contexto
 - Página 404/NotFound com navegação de volta
 - Placeholders visuais para todos os 14 módulos
