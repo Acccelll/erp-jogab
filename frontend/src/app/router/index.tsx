@@ -158,7 +158,7 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // FOPAG
+      // FOPAG — lista em /fopag e detalhe verificável em /fopag/:competenciaId
       {
         path: '/fopag',
         element: <ModuleLayout />,
