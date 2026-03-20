@@ -45,12 +45,10 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: isDev,
 
       setAuth: (usuario, token) => {
-        localStorage.setItem('token', token);
         set({ usuario, token, isAuthenticated: true });
       },
 
       logout: () => {
-        localStorage.removeItem('token');
         set({ usuario: null, token: null, isAuthenticated: false });
       },
     }),
@@ -59,8 +57,17 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         token: state.token,
         usuario: state.usuario,
-        isAuthenticated: state.isAuthenticated,
       }),
+      // Derive isAuthenticated from rehydrated data to avoid stale flag
+      merge: (persisted, current) => {
+        const p = persisted as Partial<AuthState> | undefined;
+        const hasAuth = p?.usuario != null && p?.token != null;
+        return {
+          ...current,
+          ...p,
+          isAuthenticated: hasAuth,
+        };
+      },
     },
   ),
 );
