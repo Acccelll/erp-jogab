@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+@theme {
+  /* Brand colors — JOGAB identity */
+  --color-jogab-50: #eff6ff;
+  --color-jogab-100: #dbeafe;
+  --color-jogab-200: #bfdbfe;
+  --color-jogab-300: #93c5fd;
+  --color-jogab-400: #60a5fa;
+  --color-jogab-500: #2563eb;
+  --color-jogab-600: #1d4ed8;
+  --color-jogab-700: #1e40af;
+  --color-jogab-800: #1e3a8a;
+  --color-jogab-900: #172554;
+
+  /* Sidebar */
+  --color-sidebar-bg: #0f172a;
+  --color-sidebar-hover: #1e293b;
+  --color-sidebar-active: #1d4ed8;
+  --color-sidebar-text: #94a3b8;
+  --color-sidebar-text-active: #ffffff;
+  --color-sidebar-border: #1e293b;
+  --color-sidebar-group: #64748b;
+
+  /* Semantic surface tokens */
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f8fafc;
+  --color-surface-muted: #f1f5f9;
+  --color-border-default: #e2e8f0;
+  --color-border-light: #f1f5f9;
+
+  /* Font */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Custom scrollbar */
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+}
