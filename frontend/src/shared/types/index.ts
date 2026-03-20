@@ -92,5 +92,43 @@ export interface NavItem {
   path: string;
   icon?: string;
   children?: NavItem[];
-  requiredPermission?: string;
+  requiredPermission?: Permissao;
 }
+
+/**
+ * Permissões do sistema — granulares por módulo.
+ * Formato: módulo:ação (e.g. 'obras:read', 'fopag:write').
+ */
+export type Permissao =
+  | 'dashboard:read'
+  | 'obras:read'
+  | 'obras:write'
+  | 'rh:read'
+  | 'rh:write'
+  | 'horas-extras:read'
+  | 'horas-extras:write'
+  | 'horas-extras:approve'
+  | 'fopag:read'
+  | 'fopag:write'
+  | 'fopag:approve'
+  | 'compras:read'
+  | 'compras:write'
+  | 'compras:approve'
+  | 'fiscal:read'
+  | 'fiscal:write'
+  | 'financeiro:read'
+  | 'financeiro:write'
+  | 'financeiro:approve'
+  | 'estoque:read'
+  | 'estoque:write'
+  | 'medicoes:read'
+  | 'medicoes:write'
+  | 'medicoes:approve'
+  | 'documentos:read'
+  | 'documentos:write'
+  | 'relatorios:read'
+  | 'admin:read'
+  | 'admin:write';
+
+/** Papel do usuário no sistema */
+export type PapelUsuario = 'admin' | 'gestor' | 'operador' | 'visualizador';

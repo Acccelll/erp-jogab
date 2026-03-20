@@ -3,6 +3,7 @@ import { AppLayout } from '@/app/layouts/AppLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { ModuleLayout } from '@/app/layouts/ModuleLayout';
 import { ObraWorkspaceLayout } from '@/app/layouts/ObraWorkspaceLayout';
+import { AuthGuard } from '@/app/guards';
 import { NotFoundPage } from '@/shared/components';
 
 // Module pages (lazy loading será adicionado em fases futuras)
@@ -37,7 +38,7 @@ import {
 } from 'lucide-react';
 
 export const router = createBrowserRouter([
-  // Auth routes
+  // Auth routes (públicas)
   {
     element: <AuthLayout />,
     children: [
@@ -48,15 +49,18 @@ export const router = createBrowserRouter([
     ],
   },
 
-  // App routes (autenticadas)
+  // App routes (protegidas por AuthGuard)
   {
-    element: <AppLayout />,
+    element: <AuthGuard />,
     children: [
-      // Redirect root to dashboard
       {
-        index: true,
-        element: <Navigate to="/dashboard" replace />,
-      },
+        element: <AppLayout />,
+        children: [
+          // Redirect root to dashboard
+          {
+            index: true,
+            element: <Navigate to="/dashboard" replace />,
+          },
 
       // Dashboard
       {
@@ -206,6 +210,8 @@ export const router = createBrowserRouter([
       {
         path: '*',
         element: <NotFoundPage />,
+      },
+        ],
       },
     ],
   },
