@@ -181,7 +181,7 @@ export const router = createBrowserRouter([
             path: ':competenciaId',
             element: <FopagCompetenciaDetailPage />,
             children: [
-              // /fopag/:competenciaId
+              // index route for /fopag/:competenciaId
               { index: true, element: <FopagCompetenciaOverviewPage /> },
               // /fopag/:competenciaId/funcionarios
               { path: 'funcionarios', element: <FopagCompetenciaFuncionariosPage /> },
