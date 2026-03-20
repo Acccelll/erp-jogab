@@ -1,0 +1,8 @@
+{
+  "name": "@tailwindcss/vite",
+  "version": "4.2.2",
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  }
+}
