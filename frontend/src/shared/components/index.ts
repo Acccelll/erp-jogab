@@ -6,3 +6,4 @@ export { MainContent } from './MainContent';
 export { SideDrawer } from './SideDrawer';
 export { EmptyState } from './EmptyState';
 export { StatusBadge } from './StatusBadge';
+export { ModulePlaceholder } from './ModulePlaceholder';

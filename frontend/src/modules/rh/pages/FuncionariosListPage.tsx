@@ -1,4 +1,5 @@
-import { PageHeader } from '@/shared/components';
+import { Users } from 'lucide-react';
+import { PageHeader, ModulePlaceholder } from '@/shared/components';
 
 export function FuncionariosListPage() {
   return (
@@ -7,9 +8,19 @@ export function FuncionariosListPage() {
         title="Funcionários"
         subtitle="Cadastro e gestão de funcionários"
       />
-      <div className="flex flex-1 items-center justify-center text-gray-400">
-        Lista de Funcionários — em desenvolvimento
-      </div>
+      <ModulePlaceholder
+        icon={Users}
+        title="Recursos Humanos"
+        description="Módulo de RH para gestão de funcionários, alocações por obra, histórico salarial, provisões trabalhistas e integração com FOPAG."
+        phase="Fase 3"
+        features={[
+          'Listagem e cadastro de funcionários',
+          'Detalhe do funcionário com abas',
+          'Alocações por obra e centro de custo',
+          'Histórico salarial e provisões',
+          'Integração com Horas Extras e FOPAG',
+        ]}
+      />
     </div>
   );
 }

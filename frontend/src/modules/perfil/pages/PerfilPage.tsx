@@ -1,4 +1,5 @@
-import { PageHeader } from '@/shared/components';
+import { User } from 'lucide-react';
+import { PageHeader, ModulePlaceholder } from '@/shared/components';
 
 export function PerfilPage() {
   return (
@@ -7,9 +8,19 @@ export function PerfilPage() {
         title="Perfil"
         subtitle="Dados do usuário e preferências"
       />
-      <div className="flex flex-1 items-center justify-center text-gray-400">
-        Perfil — em desenvolvimento
-      </div>
+      <ModulePlaceholder
+        icon={User}
+        title="Meu Perfil"
+        description="Dados pessoais do usuário, preferências do sistema, alteração de senha e configurações de notificação."
+        phase="Fase 8"
+        features={[
+          'Dados pessoais',
+          'Alteração de senha',
+          'Preferências de exibição',
+          'Configurações de notificação',
+          'Histórico de acessos',
+        ]}
+      />
     </div>
   );
 }

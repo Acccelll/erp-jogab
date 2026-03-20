@@ -1,4 +1,5 @@
-import { PageHeader } from '@/shared/components';
+import { FileText } from 'lucide-react';
+import { PageHeader, ModulePlaceholder } from '@/shared/components';
 
 export function FiscalListPage() {
   return (
@@ -7,9 +8,19 @@ export function FiscalListPage() {
         title="Fiscal"
         subtitle="Documentos fiscais e obrigações"
       />
-      <div className="flex flex-1 items-center justify-center text-gray-400">
-        Fiscal — em desenvolvimento
-      </div>
+      <ModulePlaceholder
+        icon={FileText}
+        title="Fiscal"
+        description="Gestão de documentos fiscais: notas de entrada e saída vinculadas a compras, obras e financeiro."
+        phase="Fase 6"
+        features={[
+          'Documentos fiscais de entrada',
+          'Documentos fiscais de saída',
+          'Vinculação a pedidos de compra',
+          'Integração com estoque e financeiro',
+          'Rastreabilidade por obra',
+        ]}
+      />
     </div>
   );
 }

@@ -20,6 +20,21 @@ import { RelatoriosListPage } from '@/modules/relatorios';
 import { AdminPage } from '@/modules/admin';
 import { PerfilPage } from '@/modules/perfil';
 
+// Obra workspace sub-tab placeholder
+import { ObraTabPlaceholder } from '@/modules/obras/components/ObraTabPlaceholder';
+import {
+  CalendarDays,
+  FileSignature,
+  UsersRound,
+  Users,
+  ShoppingCart,
+  DollarSign,
+  Package,
+  Ruler,
+  FolderOpen,
+  AlertTriangle,
+} from 'lucide-react';
+
 export const router = createBrowserRouter([
   // Auth routes
   {
@@ -27,7 +42,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/login',
-        element: <div>Login — em desenvolvimento</div>,
+        element: <div className="text-center text-sm text-gray-500">Tela de login — em desenvolvimento</div>,
       },
     ],
   },
@@ -62,16 +77,16 @@ export const router = createBrowserRouter([
             element: <ObraWorkspaceLayout />,
             children: [
               { index: true, element: <ObraVisaoGeralPage /> },
-              { path: 'cronograma', element: <div>Cronograma — em desenvolvimento</div> },
-              { path: 'contratos', element: <div>Contratos — em desenvolvimento</div> },
-              { path: 'equipe', element: <div>Equipe — em desenvolvimento</div> },
-              { path: 'rh', element: <div>RH da Obra — em desenvolvimento</div> },
-              { path: 'compras', element: <div>Compras da Obra — em desenvolvimento</div> },
-              { path: 'financeiro', element: <div>Financeiro da Obra — em desenvolvimento</div> },
-              { path: 'estoque', element: <div>Estoque da Obra — em desenvolvimento</div> },
-              { path: 'medicoes', element: <div>Medições da Obra — em desenvolvimento</div> },
-              { path: 'documentos', element: <div>Documentos da Obra — em desenvolvimento</div> },
-              { path: 'riscos', element: <div>Riscos da Obra — em desenvolvimento</div> },
+              { path: 'cronograma', element: <ObraTabPlaceholder icon={CalendarDays} title="Cronograma" description="Cronograma físico-financeiro da obra com etapas, marcos e % de avanço." /> },
+              { path: 'contratos', element: <ObraTabPlaceholder icon={FileSignature} title="Contratos" description="Contratos da obra com clientes e fornecedores, aditivos e medições." /> },
+              { path: 'equipe', element: <ObraTabPlaceholder icon={UsersRound} title="Equipe" description="Equipe alocada na obra com cargos, funções e período de atuação." /> },
+              { path: 'rh', element: <ObraTabPlaceholder icon={Users} title="RH da Obra" description="Dados de RH dos funcionários alocados nesta obra." /> },
+              { path: 'compras', element: <ObraTabPlaceholder icon={ShoppingCart} title="Compras da Obra" description="Solicitações e pedidos de compra vinculados a esta obra." /> },
+              { path: 'financeiro', element: <ObraTabPlaceholder icon={DollarSign} title="Financeiro da Obra" description="Visão financeira da obra: títulos, previsão de desembolso e custos." /> },
+              { path: 'estoque', element: <ObraTabPlaceholder icon={Package} title="Estoque da Obra" description="Movimentações de estoque e saldos de materiais desta obra." /> },
+              { path: 'medicoes', element: <ObraTabPlaceholder icon={Ruler} title="Medições da Obra" description="Medições contratuais e faturamento vinculado à obra." /> },
+              { path: 'documentos', element: <ObraTabPlaceholder icon={FolderOpen} title="Documentos da Obra" description="Documentos vinculados à obra com controle de vencimentos." /> },
+              { path: 'riscos', element: <ObraTabPlaceholder icon={AlertTriangle} title="Riscos da Obra" description="Matriz de riscos e oportunidades identificados para a obra." /> },
             ],
           },
         ],

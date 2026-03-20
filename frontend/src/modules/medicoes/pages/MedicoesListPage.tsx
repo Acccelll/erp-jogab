@@ -1,4 +1,5 @@
-import { PageHeader } from '@/shared/components';
+import { Ruler } from 'lucide-react';
+import { PageHeader, ModulePlaceholder } from '@/shared/components';
 
 export function MedicoesListPage() {
   return (
@@ -7,9 +8,19 @@ export function MedicoesListPage() {
         title="Medições e Faturamento"
         subtitle="Controle de medições e faturamento"
       />
-      <div className="flex flex-1 items-center justify-center text-gray-400">
-        Medições e Faturamento — em desenvolvimento
-      </div>
+      <ModulePlaceholder
+        icon={Ruler}
+        title="Medições e Faturamento"
+        description="Controle de medições de obras e faturamento, com integração financeira e rastreabilidade por contrato."
+        phase="Fase 7"
+        features={[
+          'Medições por obra e contrato',
+          'Faturamento vinculado',
+          'Integração com financeiro',
+          'Histórico de medições',
+          'Comparativo medido × contratado',
+        ]}
+      />
     </div>
   );
 }

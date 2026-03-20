@@ -1,4 +1,5 @@
-import { PageHeader } from '@/shared/components';
+import { FolderOpen } from 'lucide-react';
+import { PageHeader, ModulePlaceholder } from '@/shared/components';
 
 export function DocumentosListPage() {
   return (
@@ -7,9 +8,19 @@ export function DocumentosListPage() {
         title="Documentos"
         subtitle="Gestão documental"
       />
-      <div className="flex flex-1 items-center justify-center text-gray-400">
-        Documentos — em desenvolvimento
-      </div>
+      <ModulePlaceholder
+        icon={FolderOpen}
+        title="Gestão Documental"
+        description="Controle de documentos vinculados a obras, funcionários e entidades, com vencimentos e alertas."
+        phase="Fase 8"
+        features={[
+          'Upload e vinculação de documentos',
+          'Controle de vencimentos',
+          'Categorização por tipo',
+          'Vinculação a obra, funcionário e entidade',
+          'Alertas de documentos a vencer',
+        ]}
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { PageHeader } from '@/shared/components';
+import { BarChart3 } from 'lucide-react';
+import { PageHeader, ModulePlaceholder } from '@/shared/components';
 
 export function RelatoriosListPage() {
   return (
@@ -7,9 +8,19 @@ export function RelatoriosListPage() {
         title="Relatórios"
         subtitle="Relatórios gerenciais e operacionais"
       />
-      <div className="flex flex-1 items-center justify-center text-gray-400">
-        Relatórios — em desenvolvimento
-      </div>
+      <ModulePlaceholder
+        icon={BarChart3}
+        title="Relatórios"
+        description="Relatórios gerenciais e operacionais com visão por obra, módulo e período. Exportação em PDF e Excel."
+        phase="Fase 8"
+        features={[
+          'Relatórios por obra',
+          'Relatórios financeiros consolidados',
+          'Relatórios de RH e folha',
+          'Exportação PDF e Excel',
+          'Filtros por período e competência',
+        ]}
+      />
     </div>
   );
 }
