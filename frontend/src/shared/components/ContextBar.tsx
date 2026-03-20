@@ -71,7 +71,7 @@ export function ContextBar() {
     setCompetencia,
   } = useContextStore();
 
-  const competenciaLabel = competencia ? formatCompetencia(competencia) : null;
+  const formattedCompetencia = competencia ? formatCompetencia(competencia) : null;
 
   // Count active context selections for the indicator
   const activeCount = [empresaId, filialId, obraId, competencia].filter(Boolean).length;
@@ -128,12 +128,12 @@ export function ContextBar() {
       )}
 
       {/* Active context summary for screen readers */}
-      {(empresaId ?? filialId ?? obraId ?? competenciaLabel) && (
+      {(empresaId ?? filialId ?? obraId ?? formattedCompetencia) && (
         <span className="sr-only">
           Contexto ativo: {empresaId ? `Empresa ${empresaId}` : ''}
           {filialId ? `, Filial ${filialId}` : ''}
           {obraId ? `, Obra ${obraId}` : ''}
-          {competenciaLabel ? `, Competência ${competenciaLabel}` : ''}
+          {formattedCompetencia ? `, Competência ${formattedCompetencia}` : ''}
         </span>
       )}
     </div>
