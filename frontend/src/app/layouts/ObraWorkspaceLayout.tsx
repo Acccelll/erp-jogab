@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Outlet, NavLink, useParams } from 'react-router-dom';
-import { HardHat } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { StatusBadge } from '@/shared/components';
 import { useContextStore } from '@/shared/stores';
+import { ObraHeader } from '@/modules/obras/components/ObraHeader';
+import { useObraDetails } from '@/modules/obras/hooks/useObraDetails';
 
 const obraTabs = [
   { label: 'Visão Geral', path: '' },
@@ -22,6 +22,7 @@ const obraTabs = [
 export function ObraWorkspaceLayout() {
   const { obraId } = useParams<{ obraId: string }>();
   const { setObra, obraId: contextObraId } = useContextStore();
+  const { obra, isLoading } = useObraDetails(obraId);
 
   // Sync obra context when entering the workspace
   useEffect(() => {
@@ -34,20 +35,28 @@ export function ObraWorkspaceLayout() {
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Obra header */}
       <div className="border-b border-border-default bg-surface px-6 pt-4 pb-0">
-        <div className="mb-3 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-jogab-50 text-jogab-600">
-            <HardHat size={22} />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Obra {obraId}
-              </h2>
-              <StatusBadge label="Ativa" variant="success" />
+        {/* Dynamic header from obra data */}
+        {isLoading && (
+          <div className="mb-3 flex items-center gap-3">
+            <div className="h-10 w-10 animate-pulse rounded-lg bg-gray-200" />
+            <div className="space-y-2">
+              <div className="h-5 w-48 animate-pulse rounded bg-gray-200" />
+              <div className="h-3 w-32 animate-pulse rounded bg-gray-200" />
             </div>
-            <p className="text-xs text-gray-500">Workspace da obra — dados simulados</p>
           </div>
-        </div>
+        )}
+
+        {!isLoading && obra && (
+          <div className="mb-3">
+            <ObraHeader obra={obra} />
+          </div>
+        )}
+
+        {!isLoading && !obra && (
+          <div className="mb-3">
+            <p className="text-sm text-gray-500">Obra não encontrada (ID: {obraId})</p>
+          </div>
+        )}
 
         {/* Obra tabs */}
         <nav className="-mb-px flex gap-1 overflow-x-auto" aria-label="Abas da obra">
