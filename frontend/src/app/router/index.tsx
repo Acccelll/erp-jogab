@@ -9,7 +9,7 @@ import { NotFoundPage } from '@/shared/components';
 // Module pages (lazy loading será adicionado em fases futuras)
 import { DashboardPage } from '@/modules/dashboard';
 import { ObrasListPage, ObraVisaoGeralPage } from '@/modules/obras';
-import { FuncionariosListPage } from '@/modules/rh';
+import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
 import { HorasExtrasDashboardPage } from '@/modules/horas-extras';
 import { FopagListPage } from '@/modules/fopag';
 import { ComprasListPage } from '@/modules/compras';
@@ -24,6 +24,8 @@ import { PerfilPage } from '@/modules/perfil';
 
 // Obra workspace sub-tab placeholder
 import { ObraTabPlaceholder } from '@/modules/obras/components/ObraTabPlaceholder';
+// Funcionário detail sub-tab placeholder
+import { FuncionarioTabPlaceholder } from '@/modules/rh/components/FuncionarioTabPlaceholder';
 import {
   CalendarDays,
   FileSignature,
@@ -35,6 +37,12 @@ import {
   Ruler,
   FolderOpen,
   AlertTriangle,
+  Palmtree,
+  Gift,
+  Wallet,
+  Clock,
+  Receipt,
+  Building2,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -50,6 +58,19 @@ const obraTabPlaceholders: { path: string; icon: LucideIcon; title: string; desc
   { path: 'medicoes', icon: Ruler, title: 'Medições da Obra', description: 'Medições contratuais e faturamento vinculado à obra.' },
   { path: 'documentos', icon: FolderOpen, title: 'Documentos da Obra', description: 'Documentos vinculados à obra com controle de vencimentos.' },
   { path: 'riscos', icon: AlertTriangle, title: 'Riscos da Obra', description: 'Matriz de riscos e oportunidades identificados para a obra.' },
+];
+
+/** Configuração das abas do detalhe do funcionário (9 abas placeholder + visão geral) */
+const funcionarioTabPlaceholders: { path: string; icon: LucideIcon; title: string; description: string }[] = [
+  { path: 'contrato', icon: FileSignature, title: 'Contrato', description: 'Dados contratuais do funcionário: tipo, vigência, cláusulas e aditivos.' },
+  { path: 'historico-salarial', icon: DollarSign, title: 'Histórico Salarial', description: 'Histórico de reajustes, promoções e alterações salariais.' },
+  { path: 'documentos', icon: FolderOpen, title: 'Documentos', description: 'Documentos do funcionário: ASOs, certificados, contratos e comprovantes.' },
+  { path: 'alocacoes', icon: Building2, title: 'Alocações', description: 'Histórico de alocações por obra e centro de custo.' },
+  { path: 'ferias', icon: Palmtree, title: 'Férias', description: 'Períodos aquisitivos, programação e histórico de férias.' },
+  { path: 'decimo-terceiro', icon: Gift, title: '13º Salário', description: 'Cálculo e histórico de pagamentos do 13º salário.' },
+  { path: 'provisoes', icon: Wallet, title: 'Provisões', description: 'Provisões trabalhistas: férias, 13º, FGTS, rescisão.' },
+  { path: 'horas-extras', icon: Clock, title: 'Horas Extras', description: 'Lançamentos de horas extras e banco de horas do funcionário.' },
+  { path: 'fopag', icon: Receipt, title: 'FOPAG', description: 'Participação do funcionário na folha de pagamento por competência.' },
 ];
 
 export const router = createBrowserRouter([
@@ -112,6 +133,16 @@ export const router = createBrowserRouter([
         element: <ModuleLayout />,
         children: [
           { path: 'funcionarios', element: <FuncionariosListPage /> },
+          {
+            path: 'funcionarios/:funcId',
+            element: <FuncionarioDetailPage />,
+            children: [
+              ...funcionarioTabPlaceholders.map((tab) => ({
+                path: tab.path,
+                element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+              })),
+            ],
+          },
           { index: true, element: <Navigate to="/rh/funcionarios" replace /> },
         ],
       },
