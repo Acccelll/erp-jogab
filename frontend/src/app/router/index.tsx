@@ -11,7 +11,7 @@ import { DashboardPage } from '@/modules/dashboard';
 import { ObrasListPage, ObraVisaoGeralPage } from '@/modules/obras';
 import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
 import { HorasExtrasDashboardPage, HorasExtrasFechamentoPage, HorasExtrasAprovacaoPage } from '@/modules/horas-extras';
-import { FopagListPage } from '@/modules/fopag';
+import { FopagListPage, FopagCompetenciaDetailPage, FopagCompetenciaOverviewPage, FopagCompetenciaFuncionariosPage, FopagCompetenciaObrasPage, FopagCompetenciaEventosPage, FopagCompetenciaRateioPage, FopagCompetenciaFinanceiroPage, FopagCompetenciaPrevistoRealizadoPage } from '@/modules/fopag';
 import { ComprasListPage } from '@/modules/compras';
 import { FiscalListPage } from '@/modules/fiscal';
 import { FinanceiroListPage } from '@/modules/financeiro';
@@ -164,6 +164,19 @@ export const router = createBrowserRouter([
         element: <ModuleLayout />,
         children: [
           { index: true, element: <FopagListPage /> },
+          {
+            path: ':competenciaId',
+            element: <FopagCompetenciaDetailPage />,
+            children: [
+              { index: true, element: <FopagCompetenciaOverviewPage /> },
+              { path: 'funcionarios', element: <FopagCompetenciaFuncionariosPage /> },
+              { path: 'obras', element: <FopagCompetenciaObrasPage /> },
+              { path: 'eventos', element: <FopagCompetenciaEventosPage /> },
+              { path: 'rateio', element: <FopagCompetenciaRateioPage /> },
+              { path: 'financeiro', element: <FopagCompetenciaFinanceiroPage /> },
+              { path: 'previsto-realizado', element: <FopagCompetenciaPrevistoRealizadoPage /> },
+            ],
+          },
         ],
       },
 
