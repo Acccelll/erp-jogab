@@ -33,8 +33,19 @@ import {
   ComprasPedidosPage,
   PedidoCompraDetailPage,
 } from '@/modules/compras';
-import { FiscalListPage } from '@/modules/fiscal';
-import { FinanceiroListPage } from '@/modules/financeiro';
+import {
+  DocumentoFiscalDetailPage,
+  FiscalEntradasPage,
+  FiscalListPage,
+  FiscalSaidasPage,
+} from '@/modules/fiscal';
+import {
+  ContasPagarPage,
+  ContasReceberPage,
+  FinanceiroListPage,
+  FluxoCaixaPage,
+  TituloFinanceiroDetailPage,
+} from '@/modules/financeiro';
 import { EstoqueListPage } from '@/modules/estoque';
 import { MedicoesListPage } from '@/modules/medicoes';
 import { DocumentosListPage } from '@/modules/documentos';
@@ -262,7 +273,22 @@ export const router = createBrowserRouter([
             path: '/fiscal',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <FiscalListPage /> },
+              {
+                index: true,
+                element: <FiscalListPage />,
+              },
+              {
+                path: 'entradas',
+                element: <FiscalEntradasPage />,
+              },
+              {
+                path: 'saidas',
+                element: <FiscalSaidasPage />,
+              },
+              {
+                path: 'documentos/:documentoId',
+                element: <DocumentoFiscalDetailPage />,
+              },
             ],
           },
 
@@ -271,7 +297,31 @@ export const router = createBrowserRouter([
             path: '/financeiro',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <FinanceiroListPage /> },
+              // /financeiro
+              {
+                index: true,
+                element: <FinanceiroListPage />,
+              },
+              // /financeiro/fluxo
+              {
+                path: 'fluxo',
+                element: <FluxoCaixaPage />,
+              },
+              // /financeiro/contas-pagar
+              {
+                path: 'contas-pagar',
+                element: <ContasPagarPage />,
+              },
+              // /financeiro/contas-receber
+              {
+                path: 'contas-receber',
+                element: <ContasReceberPage />,
+              },
+              // /financeiro/titulos/:tituloId
+              {
+                path: 'titulos/:tituloId',
+                element: <TituloFinanceiroDetailPage />,
+              },
             ],
           },
 
