@@ -45,14 +45,14 @@ export function FuncionarioDetailPage() {
   const { funcId } = useParams<{ funcId: string }>();
   const location = useLocation();
   const { funcionario, isLoading } = useFuncionarioDetails(funcId);
-  const { setObra } = useContextStore();
+  const { setObra, obraId: contextObraId } = useContextStore();
 
   // Sync obra context when funcionario is allocated to an obra
   useEffect(() => {
-    if (funcionario?.obraAlocadoId) {
+    if (funcionario?.obraAlocadoId && funcionario.obraAlocadoId !== contextObraId) {
       setObra(funcionario.obraAlocadoId);
     }
-  }, [funcionario?.obraAlocadoId, setObra]);
+  }, [funcionario?.obraAlocadoId, contextObraId, setObra]);
 
   // Check if we're on the base route (visão geral) — Outlet will be empty
   const isBaseRoute = location.pathname === `/rh/funcionarios/${funcId}`;
