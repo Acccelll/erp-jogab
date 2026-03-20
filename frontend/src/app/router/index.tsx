@@ -10,7 +10,7 @@ import { NotFoundPage } from '@/shared/components';
 import { DashboardPage } from '@/modules/dashboard';
 import { ObrasListPage, ObraVisaoGeralPage } from '@/modules/obras';
 import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
-import { HorasExtrasDashboardPage } from '@/modules/horas-extras';
+import { HorasExtrasDashboardPage, HorasExtrasFechamentoPage, HorasExtrasAprovacaoPage } from '@/modules/horas-extras';
 import { FopagListPage } from '@/modules/fopag';
 import { ComprasListPage } from '@/modules/compras';
 import { FiscalListPage } from '@/modules/fiscal';
@@ -153,6 +153,8 @@ export const router = createBrowserRouter([
         element: <ModuleLayout />,
         children: [
           { index: true, element: <HorasExtrasDashboardPage /> },
+          { path: 'fechamento', element: <HorasExtrasFechamentoPage /> },
+          { path: 'aprovacao', element: <HorasExtrasAprovacaoPage /> },
         ],
       },
 
