@@ -40,7 +40,7 @@ interface ContextSelectProps {
 
 function ContextSelect({ icon, label, value, options, onChange, placeholder }: ContextSelectProps) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex shrink-0 items-center gap-1.5">
       <span className="text-gray-400">{icon}</span>
       <label className="sr-only">{label}</label>
       <select
@@ -73,8 +73,11 @@ export function ContextBar() {
 
   const competenciaLabel = competencia ? formatCompetencia(competencia) : null;
 
+  // Count active context selections for the indicator
+  const activeCount = [empresaId, filialId, obraId, competencia].filter(Boolean).length;
+
   return (
-    <div className="flex items-center gap-3 border-b border-border-light bg-surface-secondary px-4 py-1.5">
+    <div className="flex items-center gap-3 overflow-x-auto border-b border-border-light bg-surface-secondary px-4 py-1.5">
       <ContextSelect
         icon={<Building2 size={14} />}
         label="Empresa"
@@ -84,7 +87,7 @@ export function ContextBar() {
         placeholder="Empresa"
       />
 
-      <div className="h-4 w-px bg-gray-200" />
+      <div className="h-4 w-px shrink-0 bg-gray-200" />
 
       <ContextSelect
         icon={<MapPin size={14} />}
@@ -95,7 +98,7 @@ export function ContextBar() {
         placeholder="Filial"
       />
 
-      <div className="h-4 w-px bg-gray-200" />
+      <div className="h-4 w-px shrink-0 bg-gray-200" />
 
       <ContextSelect
         icon={<HardHat size={14} />}
@@ -106,7 +109,7 @@ export function ContextBar() {
         placeholder="Todas as obras"
       />
 
-      <div className="h-4 w-px bg-gray-200" />
+      <div className="h-4 w-px shrink-0 bg-gray-200" />
 
       <ContextSelect
         icon={<Calendar size={14} />}
@@ -116,6 +119,13 @@ export function ContextBar() {
         onChange={setCompetencia}
         placeholder="Competência"
       />
+
+      {/* Active context indicator */}
+      {activeCount > 0 && (
+        <span className="ml-auto shrink-0 rounded-full bg-jogab-50 px-2 py-0.5 text-[10px] font-medium text-jogab-600">
+          {activeCount} {activeCount === 1 ? 'filtro' : 'filtros'}
+        </span>
+      )}
 
       {/* Active context summary for screen readers */}
       {(empresaId ?? filialId ?? obraId ?? competenciaLabel) && (

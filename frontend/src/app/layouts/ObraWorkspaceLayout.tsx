@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { Outlet, NavLink, useParams } from 'react-router-dom';
 import { HardHat } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { StatusBadge } from '@/shared/components';
+import { useContextStore } from '@/shared/stores';
 
 const obraTabs = [
   { label: 'Visão Geral', path: '' },
@@ -19,6 +21,14 @@ const obraTabs = [
 
 export function ObraWorkspaceLayout() {
   const { obraId } = useParams<{ obraId: string }>();
+  const { setObra, obraId: contextObraId } = useContextStore();
+
+  // Sync obra context when entering the workspace
+  useEffect(() => {
+    if (obraId && obraId !== contextObraId) {
+      setObra(obraId);
+    }
+  }, [obraId, contextObraId, setObra]);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">

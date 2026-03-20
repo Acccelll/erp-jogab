@@ -127,4 +127,21 @@ Cada tela principal segue a composição:
 
 **Fase 2** — Layout, navegação, contexto global e consistência visual (completa).
 
+### Entregues na Fase 2
+- AppLayout com Sidebar + Topbar + SideDrawer
+- Sidebar dark com 14 itens em 3 grupos (Geral, Operacional, Gerencial)
+- Sidebar collapsível, auto-close em mobile, active state por rota
+- Topbar com breadcrumbs, busca (placeholder), notificações e dropdown de usuário
+- ContextBar funcional com selects de empresa/filial/obra/competência (mock data)
+- ContextBar responsiva com scroll horizontal em mobile
+- Indicador visual de contexto ativo
+- ModuleLayout com ContextBar integrada
+- ObraWorkspaceLayout com header, 11 abas e sync automático do contexto
+- Página 404/NotFound com navegação de volta
+- Placeholders visuais para todos os 14 módulos
+- Placeholders para todas as 11 abas da obra
+- 6 Zustand stores globais (auth, context, UI, filters, notification, drawer)
+- Tema JOGAB com cores brand, sidebar dark, tokens semânticos
+- README do frontend substituído
+
 Próxima: **Fase 3** — Dashboard, Obras e RH.

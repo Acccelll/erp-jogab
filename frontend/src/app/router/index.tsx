@@ -3,6 +3,7 @@ import { AppLayout } from '@/app/layouts/AppLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { ModuleLayout } from '@/app/layouts/ModuleLayout';
 import { ObraWorkspaceLayout } from '@/app/layouts/ObraWorkspaceLayout';
+import { NotFoundPage } from '@/shared/components';
 
 // Module pages (lazy loading será adicionado em fases futuras)
 import { DashboardPage } from '@/modules/dashboard';
@@ -199,6 +200,12 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <PerfilPage /> },
         ],
+      },
+
+      // 404 — Catch-all
+      {
+        path: '*',
+        element: <NotFoundPage />,
       },
     ],
   },

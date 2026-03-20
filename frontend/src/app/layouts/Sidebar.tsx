@@ -68,6 +68,13 @@ export function Sidebar() {
   const { sidebarCollapsed, setSidebarCollapsed } = useUIStore();
   const location = useLocation();
 
+  /** On mobile (< lg), close the sidebar after navigation */
+  function handleNavClick() {
+    if (window.innerWidth < 1024) {
+      setSidebarCollapsed(true);
+    }
+  }
+
   return (
     <aside
       className={cn(
@@ -115,6 +122,7 @@ export function Sidebar() {
                   <li key={path}>
                     <NavLink
                       to={path}
+                      onClick={handleNavClick}
                       className={cn(
                         'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                         isActive
