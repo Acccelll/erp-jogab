@@ -291,7 +291,31 @@ export const router = createBrowserRouter([
             path: '/financeiro',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <FinanceiroListPage /> },
+              // /financeiro
+              {
+                index: true,
+                element: <FinanceiroListPage />,
+              },
+              // /financeiro/fluxo
+              {
+                path: 'fluxo',
+                element: <FluxoCaixaPage />,
+              },
+              // /financeiro/contas-pagar
+              {
+                path: 'contas-pagar',
+                element: <ContasPagarPage />,
+              },
+              // /financeiro/contas-receber
+              {
+                path: 'contas-receber',
+                element: <ContasReceberPage />,
+              },
+              // /financeiro/titulos/:tituloId
+              {
+                path: 'titulos/:tituloId',
+                element: <TituloFinanceiroDetailPage />,
+              },
             ],
           },
 
