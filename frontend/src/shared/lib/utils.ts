@@ -8,8 +8,11 @@ export function cn(...inputs: ClassValue[]) {
 
 /** Formata competência YYYY-MM para exibição MM/YYYY */
 export function formatCompetencia(competencia: string): string {
-  const [year, month] = competencia.split('-');
-  return `${month}/${year}`;
+  const match = /^(\d{4})-(\d{2})$/.exec(competencia);
+  if (!match) {
+    return competencia;
+  }
+  return `${match[2]}/${match[1]}`;
 }
 
 /** Formata valor monetário em BRL */

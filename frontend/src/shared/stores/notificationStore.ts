@@ -15,13 +15,11 @@ interface NotificationState {
   clearAll: () => void;
 }
 
-let notificationCounter = 0;
-
 export const useNotificationStore = create<NotificationState>()((set) => ({
   notifications: [],
 
   addNotification: (notification) => {
-    const id = `notification-${++notificationCounter}`;
+    const id = crypto.randomUUID();
     set((state) => ({
       notifications: [...state.notifications, { ...notification, id }],
     }));

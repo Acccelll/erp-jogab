@@ -24,8 +24,8 @@ export const useFiltersStore = create<FiltersState>()((set, get) => ({
 
   clearModuleFilters: (module) =>
     set((state) => {
-      const { [module]: _, ...rest } = state.filters;
-      void _;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [module]: _removed, ...rest } = state.filters;
       return { filters: rest };
     }),
 
