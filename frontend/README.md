@@ -1,73 +1,130 @@
-# React + TypeScript + Vite
+# ERP JOGAB — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend do ERP JOGAB para gestão integrada de construção civil.
 
-Currently, two official plugins are available:
+## Stack Tecnológica
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Tecnologia | Uso |
+|---|---|
+| React 19 | Biblioteca de UI |
+| Vite | Build tool e dev server |
+| TypeScript (strict) | Tipagem estática |
+| React Router v7 | Roteamento SPA |
+| TanStack Query v5 | Cache e gerenciamento de dados da API |
+| Zustand v5 | Estado global (auth, contexto, UI) |
+| Tailwind CSS v4 | Estilização utilitária |
+| shadcn/ui | Componentes base (previsto) |
+| React Hook Form + Zod | Formulários com validação |
+| TanStack Table | Tabelas avançadas |
+| Recharts | Gráficos e KPIs |
+| Axios | Cliente HTTP |
+| Lucide React | Ícones |
 
-## React Compiler
+## Estrutura do Projeto
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── app/                    # Aplicação (layouts, router, providers)
+│   ├── layouts/            # AppLayout, AuthLayout, ModuleLayout, ObraWorkspaceLayout
+│   ├── providers/          # QueryProvider (TanStack Query)
+│   ├── router/             # Definição de rotas
+│   └── App.tsx             # Entry component
+├── modules/                # Módulos por domínio
+│   ├── dashboard/          # Dashboard Executivo
+│   ├── obras/              # Obras (núcleo central)
+│   ├── rh/                 # Recursos Humanos
+│   ├── horas-extras/       # Horas Extras
+│   ├── fopag/              # Folha de Pagamento
+│   ├── compras/            # Compras
+│   ├── fiscal/             # Fiscal
+│   ├── financeiro/         # Financeiro
+│   ├── estoque/            # Estoque
+│   ├── medicoes/           # Medições e Faturamento
+│   ├── documentos/         # Gestão Documental
+│   ├── relatorios/         # Relatórios
+│   ├── admin/              # Administração
+│   └── perfil/             # Perfil do Usuário
+├── shared/                 # Código compartilhado
+│   ├── components/         # Componentes reutilizáveis (PageHeader, ContextBar, etc.)
+│   ├── hooks/              # Hooks compartilhados
+│   ├── lib/                # Utilitários (cn, formatCurrency, api)
+│   ├── stores/             # Zustand stores globais
+│   └── types/              # Tipos TypeScript compartilhados
+└── assets/                 # Imagens e ícones estáticos
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Módulos do ERP
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Módulo | Rota | Fase |
+|---|---|---|
+| Dashboard | `/dashboard` | 3 |
+| Obras | `/obras`, `/obras/:obraId/*` | 3 |
+| RH | `/rh/funcionarios` | 3 |
+| Horas Extras | `/horas-extras` | 4 |
+| FOPAG | `/fopag` | 5 |
+| Compras | `/compras` | 6 |
+| Fiscal | `/fiscal` | 6 |
+| Financeiro | `/financeiro` | 7 |
+| Estoque | `/estoque` | 7 |
+| Medições | `/medicoes` | 7 |
+| Documentos | `/documentos` | 8 |
+| Relatórios | `/relatorios` | 8 |
+| Administração | `/admin` | 8 |
+| Perfil | `/perfil` | 8 |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Conceito Central
+
+A **Obra** é o núcleo do sistema. Cada obra funciona como um workspace com 11 abas:
+Visão Geral, Cronograma, Contratos, Equipe, RH, Compras, Financeiro, Estoque, Medições, Documentos e Riscos.
+
+## Contexto Global
+
+O sistema mantém um contexto global ativo (persistido) com:
+- **Empresa** — empresa selecionada
+- **Filial** — filial da empresa
+- **Obra** — obra ativa (central no ERP)
+- **Competência** — mês/ano de referência (formato YYYY-MM)
+
+## Stores Globais (Zustand)
+
+| Store | Responsabilidade |
+|---|---|
+| `authStore` | Autenticação, usuário e token (persistido) |
+| `contextStore` | Empresa, filial, obra, competência, período, centro de custo (persistido) |
+| `uiStore` | Estado da sidebar (open/collapsed) |
+| `filtersStore` | Filtros por módulo |
+| `notificationStore` | Fila de notificações/toasts |
+| `drawerStore` | Estado do SideDrawer global |
+
+## Layouts
+
+- **AppLayout** — Sidebar + Topbar + SideDrawer + conteúdo
+- **AuthLayout** — Layout centralizado para login
+- **ModuleLayout** — ContextBar + conteúdo do módulo
+- **ObraWorkspaceLayout** — Header da obra + abas + conteúdo da aba
+
+## Comandos
+
+```bash
+npm install          # Instalar dependências
+npm run dev          # Servidor de desenvolvimento
+npm run build        # Build de produção (tsc + vite)
+npm run lint         # Linting com ESLint
+npm run preview      # Preview do build
 ```
+
+## Padrão de Tela
+
+Cada tela principal segue a composição:
+1. `PageHeader` — título, subtítulo, ações
+2. `ContextBar` — selects de empresa/filial/obra/competência
+3. `FilterBar` — filtros específicos do módulo
+4. `KPISection` — cards de indicadores
+5. `MainContent` — conteúdo principal (tabelas, formulários)
+6. `SideDrawer` — painel lateral contextual
+
+## Fase Atual
+
+**Fase 2** — Layout, navegação, contexto global e consistência visual (completa).
+
+Próxima: **Fase 3** — Dashboard, Obras e RH.
