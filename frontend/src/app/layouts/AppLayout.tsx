@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
+import { ContextBar } from '@/shared/components/ContextBar';
 import { SideDrawer } from '@/shared/components/SideDrawer';
 import { useUIStore } from '@/shared/stores';
 import { cn } from '@/shared/lib/utils';
@@ -37,6 +38,7 @@ export function AppLayout() {
       {/* Main area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         <Topbar />
+        <ContextBar />
         <main className="flex flex-1 flex-col overflow-hidden">
           <Outlet />
         </main>
