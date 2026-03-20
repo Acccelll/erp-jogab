@@ -22,7 +22,7 @@ import {
   FopagCompetenciaFinanceiroPage,
   FopagCompetenciaPrevistoRealizadoPage,
 } from '@/modules/fopag';
-import { ComprasListPage } from '@/modules/compras';
+import { ComprasListPage, ComprasSolicitacoesPage, ComprasCotacoesPage, ComprasPedidosPage, PedidoCompraDetailPage } from '@/modules/compras';
 import { FiscalListPage } from '@/modules/fiscal';
 import { FinanceiroListPage } from '@/modules/financeiro';
 import { EstoqueListPage } from '@/modules/estoque';
@@ -220,6 +220,10 @@ export const router = createBrowserRouter([
         element: <ModuleLayout />,
         children: [
           { index: true, element: <ComprasListPage /> },
+          { path: 'solicitacoes', element: <ComprasSolicitacoesPage /> },
+          { path: 'cotacoes', element: <ComprasCotacoesPage /> },
+          { path: 'pedidos', element: <ComprasPedidosPage /> },
+          { path: 'pedidos/:pedidoId', element: <PedidoCompraDetailPage /> },
         ],
       },
 
