@@ -36,6 +36,21 @@ import {
   FolderOpen,
   AlertTriangle,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+
+/** Configuração das abas do workspace da obra (11 abas conforme docs/06) */
+const obraTabPlaceholders: { path: string; icon: LucideIcon; title: string; description: string }[] = [
+  { path: 'cronograma', icon: CalendarDays, title: 'Cronograma', description: 'Cronograma físico-financeiro da obra com etapas, marcos e % de avanço.' },
+  { path: 'contratos', icon: FileSignature, title: 'Contratos', description: 'Contratos da obra com clientes e fornecedores, aditivos e medições.' },
+  { path: 'equipe', icon: UsersRound, title: 'Equipe', description: 'Equipe alocada na obra com cargos, funções e período de atuação.' },
+  { path: 'rh', icon: Users, title: 'RH da Obra', description: 'Dados de RH dos funcionários alocados nesta obra.' },
+  { path: 'compras', icon: ShoppingCart, title: 'Compras da Obra', description: 'Solicitações e pedidos de compra vinculados a esta obra.' },
+  { path: 'financeiro', icon: DollarSign, title: 'Financeiro da Obra', description: 'Visão financeira da obra: títulos, previsão de desembolso e custos.' },
+  { path: 'estoque', icon: Package, title: 'Estoque da Obra', description: 'Movimentações de estoque e saldos de materiais desta obra.' },
+  { path: 'medicoes', icon: Ruler, title: 'Medições da Obra', description: 'Medições contratuais e faturamento vinculado à obra.' },
+  { path: 'documentos', icon: FolderOpen, title: 'Documentos da Obra', description: 'Documentos vinculados à obra com controle de vencimentos.' },
+  { path: 'riscos', icon: AlertTriangle, title: 'Riscos da Obra', description: 'Matriz de riscos e oportunidades identificados para a obra.' },
+];
 
 export const router = createBrowserRouter([
   // Auth routes (públicas)
@@ -82,16 +97,10 @@ export const router = createBrowserRouter([
             element: <ObraWorkspaceLayout />,
             children: [
               { index: true, element: <ObraVisaoGeralPage /> },
-              { path: 'cronograma', element: <ObraTabPlaceholder icon={CalendarDays} title="Cronograma" description="Cronograma físico-financeiro da obra com etapas, marcos e % de avanço." /> },
-              { path: 'contratos', element: <ObraTabPlaceholder icon={FileSignature} title="Contratos" description="Contratos da obra com clientes e fornecedores, aditivos e medições." /> },
-              { path: 'equipe', element: <ObraTabPlaceholder icon={UsersRound} title="Equipe" description="Equipe alocada na obra com cargos, funções e período de atuação." /> },
-              { path: 'rh', element: <ObraTabPlaceholder icon={Users} title="RH da Obra" description="Dados de RH dos funcionários alocados nesta obra." /> },
-              { path: 'compras', element: <ObraTabPlaceholder icon={ShoppingCart} title="Compras da Obra" description="Solicitações e pedidos de compra vinculados a esta obra." /> },
-              { path: 'financeiro', element: <ObraTabPlaceholder icon={DollarSign} title="Financeiro da Obra" description="Visão financeira da obra: títulos, previsão de desembolso e custos." /> },
-              { path: 'estoque', element: <ObraTabPlaceholder icon={Package} title="Estoque da Obra" description="Movimentações de estoque e saldos de materiais desta obra." /> },
-              { path: 'medicoes', element: <ObraTabPlaceholder icon={Ruler} title="Medições da Obra" description="Medições contratuais e faturamento vinculado à obra." /> },
-              { path: 'documentos', element: <ObraTabPlaceholder icon={FolderOpen} title="Documentos da Obra" description="Documentos vinculados à obra com controle de vencimentos." /> },
-              { path: 'riscos', element: <ObraTabPlaceholder icon={AlertTriangle} title="Riscos da Obra" description="Matriz de riscos e oportunidades identificados para a obra." /> },
+              ...obraTabPlaceholders.map((tab) => ({
+                path: tab.path,
+                element: <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+              })),
             ],
           },
         ],
