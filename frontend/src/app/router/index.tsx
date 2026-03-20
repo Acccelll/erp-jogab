@@ -10,10 +10,30 @@ import { NotFoundPage } from '@/shared/components';
 import { DashboardPage } from '@/modules/dashboard';
 import { ObrasListPage, ObraVisaoGeralPage } from '@/modules/obras';
 import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
-import { HorasExtrasDashboardPage } from '@/modules/horas-extras';
-import { FopagListPage } from '@/modules/fopag';
-import { ComprasListPage } from '@/modules/compras';
-import { FiscalListPage } from '@/modules/fiscal';
+import {
+  HorasExtrasDashboardPage,
+  HorasExtrasFechamentoPage,
+  HorasExtrasAprovacaoPage,
+} from '@/modules/horas-extras';
+import {
+  FopagListPage,
+  FopagCompetenciaDetailPage,
+  FopagCompetenciaOverviewPage,
+  FopagCompetenciaFuncionariosPage,
+  FopagCompetenciaObrasPage,
+  FopagCompetenciaEventosPage,
+  FopagCompetenciaRateioPage,
+  FopagCompetenciaFinanceiroPage,
+  FopagCompetenciaPrevistoRealizadoPage,
+} from '@/modules/fopag';
+import {
+  ComprasListPage,
+  ComprasSolicitacoesPage,
+  ComprasCotacoesPage,
+  ComprasPedidosPage,
+  PedidoCompraDetailPage,
+} from '@/modules/compras';
+import { FiscalListPage, FiscalEntradasPage, FiscalSaidasPage, DocumentoFiscalDetailPage } from '@/modules/fiscal';
 import { FinanceiroListPage } from '@/modules/financeiro';
 import { EstoqueListPage } from '@/modules/estoque';
 import { MedicoesListPage } from '@/modules/medicoes';
@@ -98,159 +118,225 @@ export const router = createBrowserRouter([
             element: <Navigate to="/dashboard" replace />,
           },
 
-      // Dashboard
-      {
-        path: '/dashboard',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <DashboardPage /> },
-        ],
-      },
-
-      // Obras
-      {
-        path: '/obras',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <ObrasListPage /> },
+          // Dashboard
           {
-            path: ':obraId',
-            element: <ObraWorkspaceLayout />,
+            path: '/dashboard',
+            element: <ModuleLayout />,
             children: [
-              { index: true, element: <ObraVisaoGeralPage /> },
-              ...obraTabPlaceholders.map((tab) => ({
-                path: tab.path,
-                element: <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
-              })),
+              { index: true, element: <DashboardPage /> },
             ],
           },
-        ],
-      },
 
-      // RH
-      {
-        path: '/rh',
-        element: <ModuleLayout />,
-        children: [
-          { path: 'funcionarios', element: <FuncionariosListPage /> },
+          // Obras
           {
-            path: 'funcionarios/:funcId',
-            element: <FuncionarioDetailPage />,
+            path: '/obras',
+            element: <ModuleLayout />,
             children: [
-              ...funcionarioTabPlaceholders.map((tab) => ({
-                path: tab.path,
-                element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
-              })),
+              { index: true, element: <ObrasListPage /> },
+              {
+                path: ':obraId',
+                element: <ObraWorkspaceLayout />,
+                children: [
+                  { index: true, element: <ObraVisaoGeralPage /> },
+                  ...obraTabPlaceholders.map((tab) => ({
+                    path: tab.path,
+                    element: <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                  })),
+                ],
+              },
             ],
           },
-          { index: true, element: <Navigate to="/rh/funcionarios" replace /> },
-        ],
-      },
 
-      // Horas Extras
-      {
-        path: '/horas-extras',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <HorasExtrasDashboardPage /> },
-        ],
-      },
+          // RH
+          {
+            path: '/rh',
+            element: <ModuleLayout />,
+            children: [
+              { path: 'funcionarios', element: <FuncionariosListPage /> },
+              {
+                path: 'funcionarios/:funcId',
+                element: <FuncionarioDetailPage />,
+                children: [
+                  ...funcionarioTabPlaceholders.map((tab) => ({
+                    path: tab.path,
+                    element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                  })),
+                ],
+              },
+              { index: true, element: <Navigate to="/rh/funcionarios" replace /> },
+            ],
+          },
 
-      // FOPAG
-      {
-        path: '/fopag',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <FopagListPage /> },
-        ],
-      },
+          // Horas Extras
+          {
+            path: '/horas-extras',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <HorasExtrasDashboardPage /> },
+              { path: 'fechamento', element: <HorasExtrasFechamentoPage /> },
+              { path: 'aprovacao', element: <HorasExtrasAprovacaoPage /> },
+            ],
+          },
 
-      // Compras
-      {
-        path: '/compras',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <ComprasListPage /> },
-        ],
-      },
+          // FOPAG
+          {
+            path: '/fopag',
+            element: <ModuleLayout />,
+            children: [
+              {
+                index: true,
+                element: <FopagListPage />,
+              },
+              {
+                path: ':competenciaId',
+                element: <FopagCompetenciaDetailPage />,
+                children: [
+                  {
+                    index: true,
+                    element: <FopagCompetenciaOverviewPage />,
+                  },
+                  {
+                    path: 'funcionarios',
+                    element: <FopagCompetenciaFuncionariosPage />,
+                  },
+                  {
+                    path: 'obras',
+                    element: <FopagCompetenciaObrasPage />,
+                  },
+                  {
+                    path: 'eventos',
+                    element: <FopagCompetenciaEventosPage />,
+                  },
+                  {
+                    path: 'rateio',
+                    element: <FopagCompetenciaRateioPage />,
+                  },
+                  {
+                    path: 'financeiro',
+                    element: <FopagCompetenciaFinanceiroPage />,
+                  },
+                  {
+                    path: 'previsto-realizado',
+                    element: <FopagCompetenciaPrevistoRealizadoPage />,
+                  },
+                ],
+              },
+            ],
+          },
 
-      // Fiscal
-      {
-        path: '/fiscal',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <FiscalListPage /> },
-        ],
-      },
+          // Compras
+          {
+            path: '/compras',
+            element: <ModuleLayout />,
+            children: [
+              // /compras
+              {
+                index: true,
+                element: <ComprasListPage />,
+              },
+              // /compras/solicitacoes
+              {
+                path: 'solicitacoes',
+                element: <ComprasSolicitacoesPage />,
+              },
+              // /compras/cotacoes
+              {
+                path: 'cotacoes',
+                element: <ComprasCotacoesPage />,
+              },
+              // /compras/pedidos
+              {
+                path: 'pedidos',
+                element: <ComprasPedidosPage />,
+              },
+              // /compras/pedidos/:pedidoId
+              {
+                path: 'pedidos/:pedidoId',
+                element: <PedidoCompraDetailPage />,
+              },
+            ],
+          },
 
-      // Financeiro
-      {
-        path: '/financeiro',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <FinanceiroListPage /> },
-        ],
-      },
+          // Fiscal
+          {
+            path: '/fiscal',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <FiscalListPage /> },
+              { path: 'entradas', element: <FiscalEntradasPage /> },
+              { path: 'saidas', element: <FiscalSaidasPage /> },
+              { path: 'documentos/:documentoId', element: <DocumentoFiscalDetailPage /> },
+            ],
+          },
 
-      // Estoque
-      {
-        path: '/estoque',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <EstoqueListPage /> },
-        ],
-      },
+          // Financeiro
+          {
+            path: '/financeiro',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <FinanceiroListPage /> },
+            ],
+          },
 
-      // Medições e Faturamento
-      {
-        path: '/medicoes',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <MedicoesListPage /> },
-        ],
-      },
+          // Estoque
+          {
+            path: '/estoque',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <EstoqueListPage /> },
+            ],
+          },
 
-      // Documentos
-      {
-        path: '/documentos',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <DocumentosListPage /> },
-        ],
-      },
+          // Medições e Faturamento
+          {
+            path: '/medicoes',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <MedicoesListPage /> },
+            ],
+          },
 
-      // Relatórios
-      {
-        path: '/relatorios',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <RelatoriosListPage /> },
-        ],
-      },
+          // Documentos
+          {
+            path: '/documentos',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <DocumentosListPage /> },
+            ],
+          },
 
-      // Administração
-      {
-        path: '/admin',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <AdminPage /> },
-        ],
-      },
+          // Relatórios
+          {
+            path: '/relatorios',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <RelatoriosListPage /> },
+            ],
+          },
 
-      // Perfil
-      {
-        path: '/perfil',
-        element: <ModuleLayout />,
-        children: [
-          { index: true, element: <PerfilPage /> },
-        ],
-      },
+          // Administração
+          {
+            path: '/admin',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <AdminPage /> },
+            ],
+          },
 
-      // 404 — Catch-all
-      {
-        path: '*',
-        element: <NotFoundPage />,
-      },
+          // Perfil
+          {
+            path: '/perfil',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <PerfilPage /> },
+            ],
+          },
+
+          // 404 — Catch-all
+          {
+            path: '*',
+            element: <NotFoundPage />,
+          },
         ],
       },
     ],
