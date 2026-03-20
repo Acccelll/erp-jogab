@@ -39,13 +39,7 @@ import {
   FiscalListPage,
   FiscalSaidasPage,
 } from '@/modules/fiscal';
-import {
-  ContasPagarPage,
-  ContasReceberPage,
-  FinanceiroListPage,
-  FluxoCaixaPage,
-  TituloFinanceiroDetailPage,
-} from '@/modules/financeiro';
+import { FinanceiroListPage } from '@/modules/financeiro';
 import { EstoqueListPage } from '@/modules/estoque';
 import { MedicoesListPage } from '@/modules/medicoes';
 import { DocumentosListPage } from '@/modules/documentos';
