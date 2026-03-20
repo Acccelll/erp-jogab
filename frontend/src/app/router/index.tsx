@@ -11,7 +11,17 @@ import { DashboardPage } from '@/modules/dashboard';
 import { ObrasListPage, ObraVisaoGeralPage } from '@/modules/obras';
 import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
 import { HorasExtrasDashboardPage, HorasExtrasFechamentoPage, HorasExtrasAprovacaoPage } from '@/modules/horas-extras';
-import { FopagListPage, FopagCompetenciaDetailPage, FopagCompetenciaOverviewPage, FopagCompetenciaFuncionariosPage, FopagCompetenciaObrasPage, FopagCompetenciaEventosPage, FopagCompetenciaRateioPage, FopagCompetenciaFinanceiroPage, FopagCompetenciaPrevistoRealizadoPage } from '@/modules/fopag';
+import {
+  FopagListPage,
+  FopagCompetenciaDetailPage,
+  FopagCompetenciaOverviewPage,
+  FopagCompetenciaFuncionariosPage,
+  FopagCompetenciaObrasPage,
+  FopagCompetenciaEventosPage,
+  FopagCompetenciaRateioPage,
+  FopagCompetenciaFinanceiroPage,
+  FopagCompetenciaPrevistoRealizadoPage,
+} from '@/modules/fopag';
 import { ComprasListPage } from '@/modules/compras';
 import { FiscalListPage } from '@/modules/fiscal';
 import { FinanceiroListPage } from '@/modules/financeiro';
@@ -163,17 +173,27 @@ export const router = createBrowserRouter([
         path: '/fopag',
         element: <ModuleLayout />,
         children: [
+          // /fopag
           { index: true, element: <FopagListPage /> },
+
+          // /fopag/:competenciaId
           {
             path: ':competenciaId',
             element: <FopagCompetenciaDetailPage />,
             children: [
+              // /fopag/:competenciaId
               { index: true, element: <FopagCompetenciaOverviewPage /> },
+              // /fopag/:competenciaId/funcionarios
               { path: 'funcionarios', element: <FopagCompetenciaFuncionariosPage /> },
+              // /fopag/:competenciaId/obras
               { path: 'obras', element: <FopagCompetenciaObrasPage /> },
+              // /fopag/:competenciaId/eventos
               { path: 'eventos', element: <FopagCompetenciaEventosPage /> },
+              // /fopag/:competenciaId/rateio
               { path: 'rateio', element: <FopagCompetenciaRateioPage /> },
+              // /fopag/:competenciaId/financeiro
               { path: 'financeiro', element: <FopagCompetenciaFinanceiroPage /> },
+              // /fopag/:competenciaId/previsto-realizado
               { path: 'previsto-realizado', element: <FopagCompetenciaPrevistoRealizadoPage /> },
             ],
           },
