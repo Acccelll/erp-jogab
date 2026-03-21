@@ -1,3 +1,8 @@
 export { useFuncionarios } from './useFuncionarios';
 export { useFuncionarioDetails } from './useFuncionarioDetails';
 export { useFuncionarioFilters } from './useFuncionarioFilters';
+export { useFuncionarioContrato } from './useFuncionarioContrato';
+export { useFuncionarioAlocacoes } from './useFuncionarioAlocacoes';
+export { useFuncionarioProvisoes } from './useFuncionarioProvisoes';
+export { useFuncionarioHorasExtras } from './useFuncionarioHorasExtras';
+export { useFuncionarioFopag } from './useFuncionarioFopag';

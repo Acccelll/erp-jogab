@@ -8,8 +8,24 @@ import { NotFoundPage } from '@/shared/components';
 
 // Module pages (lazy loading será adicionado em fases futuras)
 import { DashboardPage } from '@/modules/dashboard';
-import { ObrasListPage, ObraVisaoGeralPage } from '@/modules/obras';
-import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
+import {
+  ObraComprasPage,
+  ObraCronogramaPage,
+  ObraDocumentosPage,
+  ObraEquipePage,
+  ObraFinanceiroPage,
+  ObrasListPage,
+  ObraVisaoGeralPage,
+} from '@/modules/obras';
+import {
+  FuncionariosListPage,
+  FuncionarioAlocacoesPage,
+  FuncionarioContratoPage,
+  FuncionarioDetailPage,
+  FuncionarioFopagPage,
+  FuncionarioHorasExtrasPage,
+  FuncionarioProvisoesPage,
+} from '@/modules/rh';
 import {
   HorasExtrasDashboardPage,
   HorasExtrasFechamentoPage,
@@ -39,12 +55,26 @@ import {
   FiscalListPage,
   FiscalSaidasPage,
 } from '@/modules/fiscal';
-import { FinanceiroListPage } from '@/modules/financeiro';
-import { EstoqueListPage } from '@/modules/estoque';
-import { MedicoesListPage } from '@/modules/medicoes';
-import { DocumentosListPage } from '@/modules/documentos';
-import { RelatoriosListPage } from '@/modules/relatorios';
-import { AdminPage } from '@/modules/admin';
+import {
+  ContasPagarPage,
+  ContasReceberPage,
+  FinanceiroListPage,
+  FluxoCaixaPage,
+  TituloFinanceiroDetailPage,
+} from '@/modules/financeiro';
+import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
+import { MedicaoDetailPage, MedicoesListPage } from '@/modules/medicoes';
+import { DocumentoDetailPage, DocumentosListPage } from '@/modules/documentos';
+import { RelatorioCategoriaPage, RelatoriosListPage } from '@/modules/relatorios';
+import {
+  AdminIntegracoesPage,
+  AdminLogsPage,
+  AdminPage,
+  AdminParametrosPage,
+  AdminPerfisPage,
+  AdminPermissoesPage,
+  AdminUsuariosPage,
+} from '@/modules/admin';
 import { PerfilPage } from '@/modules/perfil';
 
 // Obra workspace sub-tab placeholder
@@ -143,10 +173,17 @@ export const router = createBrowserRouter([
                 element: <ObraWorkspaceLayout />,
                 children: [
                   { index: true, element: <ObraVisaoGeralPage /> },
-                  ...obraTabPlaceholders.map((tab) => ({
-                    path: tab.path,
-                    element: <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
-                  })),
+                  { path: 'cronograma', element: <ObraCronogramaPage /> },
+                  { path: 'equipe', element: <ObraEquipePage /> },
+                  { path: 'compras', element: <ObraComprasPage /> },
+                  { path: 'financeiro', element: <ObraFinanceiroPage /> },
+                  { path: 'documentos', element: <ObraDocumentosPage /> },
+                  ...obraTabPlaceholders
+                    .filter((tab) => !['cronograma', 'equipe', 'compras', 'financeiro', 'documentos'].includes(tab.path))
+                    .map((tab) => ({
+                      path: tab.path,
+                      element: <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                    })),
                 ],
               },
             ],
@@ -162,10 +199,17 @@ export const router = createBrowserRouter([
                 path: 'funcionarios/:funcId',
                 element: <FuncionarioDetailPage />,
                 children: [
-                  ...funcionarioTabPlaceholders.map((tab) => ({
-                    path: tab.path,
-                    element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
-                  })),
+                  { path: 'contrato', element: <FuncionarioContratoPage /> },
+                  { path: 'alocacoes', element: <FuncionarioAlocacoesPage /> },
+                  { path: 'provisoes', element: <FuncionarioProvisoesPage /> },
+                  { path: 'horas-extras', element: <FuncionarioHorasExtrasPage /> },
+                  { path: 'fopag', element: <FuncionarioFopagPage /> },
+                  ...funcionarioTabPlaceholders
+                    .filter((tab) => !['contrato', 'alocacoes', 'provisoes', 'horas-extras', 'fopag'].includes(tab.path))
+                    .map((tab) => ({
+                      path: tab.path,
+                      element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                    })),
                 ],
               },
               { index: true, element: <Navigate to="/rh/funcionarios" replace /> },
@@ -325,6 +369,8 @@ export const router = createBrowserRouter([
             element: <ModuleLayout />,
             children: [
               { index: true, element: <EstoqueListPage /> },
+              { path: 'movimentacoes', element: <EstoqueMovimentacoesPage /> },
+              { path: 'itens/:itemId', element: <EstoqueItemDetailPage /> },
             ],
           },
 
@@ -333,7 +379,16 @@ export const router = createBrowserRouter([
             path: '/medicoes',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <MedicoesListPage /> },
+              // /medicoes
+              {
+                index: true,
+                element: <MedicoesListPage />,
+              },
+              // /medicoes/:medicaoId
+              {
+                path: ':medicaoId',
+                element: <MedicaoDetailPage />,
+              },
             ],
           },
 
@@ -342,7 +397,16 @@ export const router = createBrowserRouter([
             path: '/documentos',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <DocumentosListPage /> },
+              // /documentos
+              {
+                index: true,
+                element: <DocumentosListPage />,
+              },
+              // /documentos/:documentoId
+              {
+                path: ':documentoId',
+                element: <DocumentoDetailPage />,
+              },
             ],
           },
 
@@ -351,16 +415,67 @@ export const router = createBrowserRouter([
             path: '/relatorios',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <RelatoriosListPage /> },
+              // /relatorios
+              {
+                index: true,
+                element: <RelatoriosListPage />,
+              },
+              // /relatorios/:categoria
+              {
+                path: ':categoria',
+                element: <RelatorioCategoriaPage />,
+              },
             ],
           },
 
           // Administração
+          // /admin
+          //   index -> AdminPage
+          //   usuarios -> AdminUsuariosPage
+          //   perfis -> AdminPerfisPage
+          //   permissoes -> AdminPermissoesPage
+          //   parametros -> AdminParametrosPage
+          //   logs -> AdminLogsPage
+          //   integracoes -> AdminIntegracoesPage
           {
             path: '/admin',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <AdminPage /> },
+              // /admin
+              {
+                index: true,
+                element: <AdminPage />,
+              },
+              // /admin/usuarios
+              {
+                path: 'usuarios',
+                element: <AdminUsuariosPage />,
+              },
+              // /admin/perfis
+              {
+                path: 'perfis',
+                element: <AdminPerfisPage />,
+              },
+              // /admin/permissoes
+              {
+                path: 'permissoes',
+                element: <AdminPermissoesPage />,
+              },
+              // /admin/parametros
+              {
+                path: 'parametros',
+                element: <AdminParametrosPage />,
+              },
+              // /admin/logs
+              {
+                path: 'logs',
+                element: <AdminLogsPage />,
+              },
+              // /admin/integracoes
+              {
+                path: 'integracoes',
+                element: <AdminIntegracoesPage />,
+              },
             ],
           },
 
