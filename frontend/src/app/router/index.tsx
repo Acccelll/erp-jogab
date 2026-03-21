@@ -43,7 +43,11 @@ import {
 } from '@/modules/compras';
 import { DashboardPage } from '@/modules/dashboard';
 import { DocumentoDetailPage, DocumentosListPage } from '@/modules/documentos';
-import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
+import {
+  EstoqueItemDetailPage,
+  EstoqueListPage,
+  EstoqueMovimentacoesPage,
+} from '@/modules/estoque';
 import {
   ContasPagarPage,
   ContasReceberPage,
@@ -345,6 +349,7 @@ const appRoutes: RouteObject[] = [
         path: 'funcionarios/:funcId',
         element: <FuncionarioDetailPage />,
         children: [
+          { index: true, element: <Navigate to="contrato" replace /> },
           { path: 'contrato', element: <FuncionarioContratoPage /> },
           {
             path: 'historico-salarial',
