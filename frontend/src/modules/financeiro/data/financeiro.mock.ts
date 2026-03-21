@@ -316,11 +316,13 @@ export function getMockFinanceiroDashboard(filters?: FinanceiroFiltersData): Fin
 }
 
 export function getMockFluxoCaixa(filters?: FinanceiroFiltersData): FluxoCaixaItem[] {
-  const filtered = filters?.competencia
-    ? fluxoCaixa.filter((item) => item.periodo.startsWith(filters.competencia))
-    : fluxoCaixa;
+  const competencia = filters?.competencia;
 
-  return filtered;
+  if (!competencia) {
+    return fluxoCaixa;
+  }
+
+  return fluxoCaixa.filter((item) => item.periodo.startsWith(competencia));
 }
 
 export function getMockTituloFinanceiroById(tituloId: string): TituloFinanceiroDetalhe | undefined {
