@@ -342,6 +342,7 @@ export const router = createBrowserRouter([
             element: <ModuleLayout />,
             children: [
               { index: true, element: <MedicoesListPage /> },
+              { path: ':medicaoId', element: <MedicaoDetailPage /> },
             ],
           },
 
