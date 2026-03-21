@@ -47,7 +47,7 @@ import {
   TituloFinanceiroDetailPage,
 } from '@/modules/financeiro';
 import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
-import { MedicaoDetailPage, MedicoesListPage } from '@/modules/medicoes';
+import { MedicoesListPage } from '@/modules/medicoes';
 import { DocumentosListPage } from '@/modules/documentos';
 import { RelatoriosListPage } from '@/modules/relatorios';
 import { AdminPage } from '@/modules/admin';
@@ -341,16 +341,8 @@ export const router = createBrowserRouter([
             path: '/medicoes',
             element: <ModuleLayout />,
             children: [
-              // /medicoes
-              {
-                index: true,
-                element: <MedicoesListPage />,
-              },
-              // /medicoes/:medicaoId
-              {
-                path: ':medicaoId',
-                element: <MedicaoDetailPage />,
-              },
+              { index: true, element: <MedicoesListPage /> },
+              { path: ':medicaoId', element: <MedicaoDetailPage /> },
             ],
           },
 
