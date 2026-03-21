@@ -47,18 +47,10 @@ import {
   TituloFinanceiroDetailPage,
 } from '@/modules/financeiro';
 import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
-import { MedicaoDetailPage, MedicoesListPage } from '@/modules/medicoes';
-import { DocumentoDetailPage, DocumentosListPage } from '@/modules/documentos';
-import { RelatorioCategoriaPage, RelatoriosListPage } from '@/modules/relatorios';
-import {
-  AdminIntegracoesPage,
-  AdminLogsPage,
-  AdminPage,
-  AdminParametrosPage,
-  AdminPerfisPage,
-  AdminPermissoesPage,
-  AdminUsuariosPage,
-} from '@/modules/admin';
+import { MedicoesListPage } from '@/modules/medicoes';
+import { DocumentosListPage } from '@/modules/documentos';
+import { RelatoriosListPage } from '@/modules/relatorios';
+import { AdminPage } from '@/modules/admin';
 import { PerfilPage } from '@/modules/perfil';
 
 // Obra workspace sub-tab placeholder
@@ -349,16 +341,8 @@ export const router = createBrowserRouter([
             path: '/medicoes',
             element: <ModuleLayout />,
             children: [
-              // /medicoes
-              {
-                index: true,
-                element: <MedicoesListPage />,
-              },
-              // /medicoes/:medicaoId
-              {
-                path: ':medicaoId',
-                element: <MedicaoDetailPage />,
-              },
+              { index: true, element: <MedicoesListPage /> },
+              { path: ':medicaoId', element: <MedicaoDetailPage /> },
             ],
           },
 
