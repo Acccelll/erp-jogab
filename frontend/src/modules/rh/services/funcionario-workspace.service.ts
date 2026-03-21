@@ -1,11 +1,7 @@
 import {
   getFuncionarioAlocacoesWorkspace,
   getFuncionarioContratoWorkspace,
-  getFuncionarioDecimoTerceiroWorkspace,
-  getFuncionarioDocumentosWorkspace,
-  getFuncionarioFeriasWorkspace,
   getFuncionarioFopagWorkspace,
-  getFuncionarioHistoricoSalarialWorkspace,
   getFuncionarioHorasExtrasWorkspace,
   getFuncionarioProvisoesWorkspace,
 } from '../data/funcionario-workspace.mock';
@@ -37,24 +33,4 @@ export async function fetchFuncionarioHorasExtras(funcId: string) {
 export async function fetchFuncionarioFopag(funcId: string) {
   await delay();
   return getFuncionarioFopagWorkspace(funcId);
-}
-
-export async function fetchFuncionarioHistoricoSalarial(funcId: string) {
-  await delay();
-  return getFuncionarioHistoricoSalarialWorkspace(funcId);
-}
-
-export async function fetchFuncionarioDocumentos(funcId: string) {
-  await delay();
-  return getFuncionarioDocumentosWorkspace(funcId);
-}
-
-export async function fetchFuncionarioFerias(funcId: string) {
-  await delay();
-  return getFuncionarioFeriasWorkspace(funcId);
-}
-
-export async function fetchFuncionarioDecimoTerceiro(funcId: string) {
-  await delay();
-  return getFuncionarioDecimoTerceiroWorkspace(funcId);
 }

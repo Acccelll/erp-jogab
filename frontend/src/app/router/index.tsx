@@ -17,19 +17,7 @@ import {
   ObrasListPage,
   ObraVisaoGeralPage,
 } from '@/modules/obras';
-import {
-  FuncionariosListPage,
-  FuncionarioAlocacoesPage,
-  FuncionarioContratoPage,
-  FuncionarioDecimoTerceiroPage,
-  FuncionarioDetailPage,
-  FuncionarioDocumentosPage,
-  FuncionarioFeriasPage,
-  FuncionarioFopagPage,
-  FuncionarioHistoricoSalarialPage,
-  FuncionarioHorasExtrasPage,
-  FuncionarioProvisoesPage,
-} from '@/modules/rh';
+import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
 import {
   HorasExtrasDashboardPage,
   HorasExtrasFechamentoPage,
@@ -67,18 +55,10 @@ import {
   TituloFinanceiroDetailPage,
 } from '@/modules/financeiro';
 import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
-import { MedicaoDetailPage, MedicoesListPage } from '@/modules/medicoes';
-import { DocumentoDetailPage, DocumentosListPage } from '@/modules/documentos';
-import { RelatorioCategoriaPage, RelatoriosListPage } from '@/modules/relatorios';
-import {
-  AdminIntegracoesPage,
-  AdminLogsPage,
-  AdminPage,
-  AdminParametrosPage,
-  AdminPerfisPage,
-  AdminPermissoesPage,
-  AdminUsuariosPage,
-} from '@/modules/admin';
+import { MedicoesListPage } from '@/modules/medicoes';
+import { DocumentosListPage } from '@/modules/documentos';
+import { RelatoriosListPage } from '@/modules/relatorios';
+import { AdminPage } from '@/modules/admin';
 import { PerfilPage } from '@/modules/perfil';
 
 // Obra workspace sub-tab placeholder
@@ -204,28 +184,12 @@ export const router = createBrowserRouter([
                 element: <FuncionarioDetailPage />,
                 children: [
                   { path: 'contrato', element: <FuncionarioContratoPage /> },
-                  { path: 'historico-salarial', element: <FuncionarioHistoricoSalarialPage /> },
-                  { path: 'documentos', element: <FuncionarioDocumentosPage /> },
                   { path: 'alocacoes', element: <FuncionarioAlocacoesPage /> },
-                  { path: 'ferias', element: <FuncionarioFeriasPage /> },
-                  { path: 'decimo-terceiro', element: <FuncionarioDecimoTerceiroPage /> },
                   { path: 'provisoes', element: <FuncionarioProvisoesPage /> },
                   { path: 'horas-extras', element: <FuncionarioHorasExtrasPage /> },
                   { path: 'fopag', element: <FuncionarioFopagPage /> },
                   ...funcionarioTabPlaceholders
-                    .filter(
-                      (tab) => ![
-                        'contrato',
-                        'historico-salarial',
-                        'documentos',
-                        'alocacoes',
-                        'ferias',
-                        'decimo-terceiro',
-                        'provisoes',
-                        'horas-extras',
-                        'fopag',
-                      ].includes(tab.path),
-                    )
+                    .filter((tab) => !['contrato', 'alocacoes', 'provisoes', 'horas-extras', 'fopag'].includes(tab.path))
                     .map((tab) => ({
                       path: tab.path,
                       element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
@@ -399,16 +363,8 @@ export const router = createBrowserRouter([
             path: '/medicoes',
             element: <ModuleLayout />,
             children: [
-              // /medicoes
-              {
-                index: true,
-                element: <MedicoesListPage />,
-              },
-              // /medicoes/:medicaoId
-              {
-                path: ':medicaoId',
-                element: <MedicaoDetailPage />,
-              },
+              { index: true, element: <MedicoesListPage /> },
+              { path: ':medicaoId', element: <MedicaoDetailPage /> },
             ],
           },
 
@@ -461,41 +417,13 @@ export const router = createBrowserRouter([
             path: '/admin',
             element: <ModuleLayout />,
             children: [
-              // /admin
-              {
-                index: true,
-                element: <AdminPage />,
-              },
-              // /admin/usuarios
-              {
-                path: 'usuarios',
-                element: <AdminUsuariosPage />,
-              },
-              // /admin/perfis
-              {
-                path: 'perfis',
-                element: <AdminPerfisPage />,
-              },
-              // /admin/permissoes
-              {
-                path: 'permissoes',
-                element: <AdminPermissoesPage />,
-              },
-              // /admin/parametros
-              {
-                path: 'parametros',
-                element: <AdminParametrosPage />,
-              },
-              // /admin/logs
-              {
-                path: 'logs',
-                element: <AdminLogsPage />,
-              },
-              // /admin/integracoes
-              {
-                path: 'integracoes',
-                element: <AdminIntegracoesPage />,
-              },
+              { index: true, element: <AdminPage /> },
+              { path: 'usuarios', element: <AdminUsuariosPage /> },
+              { path: 'perfis', element: <AdminPerfisPage /> },
+              { path: 'permissoes', element: <AdminPermissoesPage /> },
+              { path: 'parametros', element: <AdminParametrosPage /> },
+              { path: 'logs', element: <AdminLogsPage /> },
+              { path: 'integracoes', element: <AdminIntegracoesPage /> },
             ],
           },
 
