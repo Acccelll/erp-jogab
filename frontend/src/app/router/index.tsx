@@ -183,10 +183,17 @@ export const router = createBrowserRouter([
                 path: 'funcionarios/:funcId',
                 element: <FuncionarioDetailPage />,
                 children: [
-                  ...funcionarioTabPlaceholders.map((tab) => ({
-                    path: tab.path,
-                    element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
-                  })),
+                  { path: 'contrato', element: <FuncionarioContratoPage /> },
+                  { path: 'alocacoes', element: <FuncionarioAlocacoesPage /> },
+                  { path: 'provisoes', element: <FuncionarioProvisoesPage /> },
+                  { path: 'horas-extras', element: <FuncionarioHorasExtrasPage /> },
+                  { path: 'fopag', element: <FuncionarioFopagPage /> },
+                  ...funcionarioTabPlaceholders
+                    .filter((tab) => !['contrato', 'alocacoes', 'provisoes', 'horas-extras', 'fopag'].includes(tab.path))
+                    .map((tab) => ({
+                      path: tab.path,
+                      element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                    })),
                 ],
               },
               { index: true, element: <Navigate to="/rh/funcionarios" replace /> },
