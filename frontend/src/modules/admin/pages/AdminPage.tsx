@@ -1,26 +1,12 @@
-import { Settings } from 'lucide-react';
-import { PageHeader, ModulePlaceholder } from '@/shared/components';
+import { Link } from 'react-router-dom';
+import { KeyRound, Users } from 'lucide-react';
+import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { useAdmin, useAdminFilters } from '../hooks';
+import { AdminCategoriaCard, AdminFilters, AdminResumoBar } from '../components';
 
 export function AdminPage() {
-  return (
-    <div className="flex flex-1 flex-col">
-      <PageHeader
-        title="Administração"
-        subtitle="Configurações e parâmetros do sistema"
-      />
-      <ModulePlaceholder
-        icon={Settings}
-        title="Administração"
-        description="Configurações do sistema: usuários, permissões, parâmetros gerais, empresas, filiais e auditoria."
-        phase="Fase 8"
-        features={[
-          'Gestão de usuários e permissões',
-          'Parâmetros do sistema',
-          'Cadastro de empresas e filiais',
-          'Log de auditoria',
-          'Configurações por módulo',
-        ]}
-      />
-    </div>
-  );
+  const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } = useAdminFilters();
+  const { data, isLoading, isError, refetch } = useAdmin(filters);
+
+  return <div className="flex flex-1 flex-col"><PageHeader title="Administração" subtitle="Governança do ERP com usuários, perfis, permissões, parâmetros, logs e integrações." actions={<div className="flex items-center gap-2"><Link to="/admin/usuarios" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"><Users size={16}/>Usuários</Link><Link to="/admin/permissoes" className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"><KeyRound size={16}/>Permissões</Link></div>} /><ContextBar /><AdminFilters search={filters.search ?? ''} categoria={filters.categoria} status={filters.status} competencia={filters.competencia} hasActiveFilters={hasActiveFilters} onSearchChange={setSearch} onCategoriaChange={setCategoria} onStatusChange={setStatus} onCompetenciaChange={setCompetencia} onClear={clearFilters} />{data?.resumo && <AdminResumoBar resumo={data.resumo} />}<MainContent className="space-y-6">{isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando administração...</div>}{isError && <EmptyState title="Erro ao carregar administração" description="Não foi possível carregar a visão principal de governança." action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600">Tentar novamente</button>} />}{!isLoading && !isError && data && (data.categorias.length ? <section className="grid gap-4 xl:grid-cols-3">{data.categorias.map((item) => <AdminCategoriaCard key={item.categoria} item={item} />)}</section> : <EmptyState title="Nenhuma categoria encontrada" description="Não há categorias de administração disponíveis para os filtros atuais." />)}</MainContent></div>;
 }

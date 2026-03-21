@@ -39,12 +39,26 @@ import {
   FiscalListPage,
   FiscalSaidasPage,
 } from '@/modules/fiscal';
-import { FinanceiroListPage } from '@/modules/financeiro';
-import { EstoqueListPage } from '@/modules/estoque';
-import { MedicoesListPage } from '@/modules/medicoes';
-import { DocumentosListPage } from '@/modules/documentos';
-import { RelatoriosListPage } from '@/modules/relatorios';
-import { AdminPage } from '@/modules/admin';
+import {
+  ContasPagarPage,
+  ContasReceberPage,
+  FinanceiroListPage,
+  FluxoCaixaPage,
+  TituloFinanceiroDetailPage,
+} from '@/modules/financeiro';
+import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
+import { MedicaoDetailPage, MedicoesListPage } from '@/modules/medicoes';
+import { DocumentoDetailPage, DocumentosListPage } from '@/modules/documentos';
+import { RelatorioCategoriaPage, RelatoriosListPage } from '@/modules/relatorios';
+import {
+  AdminIntegracoesPage,
+  AdminLogsPage,
+  AdminPage,
+  AdminParametrosPage,
+  AdminPerfisPage,
+  AdminPermissoesPage,
+  AdminUsuariosPage,
+} from '@/modules/admin';
 import { PerfilPage } from '@/modules/perfil';
 
 // Obra workspace sub-tab placeholder
@@ -325,6 +339,8 @@ export const router = createBrowserRouter([
             element: <ModuleLayout />,
             children: [
               { index: true, element: <EstoqueListPage /> },
+              { path: 'movimentacoes', element: <EstoqueMovimentacoesPage /> },
+              { path: 'itens/:itemId', element: <EstoqueItemDetailPage /> },
             ],
           },
 
@@ -333,7 +349,16 @@ export const router = createBrowserRouter([
             path: '/medicoes',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <MedicoesListPage /> },
+              // /medicoes
+              {
+                index: true,
+                element: <MedicoesListPage />,
+              },
+              // /medicoes/:medicaoId
+              {
+                path: ':medicaoId',
+                element: <MedicaoDetailPage />,
+              },
             ],
           },
 
@@ -342,7 +367,16 @@ export const router = createBrowserRouter([
             path: '/documentos',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <DocumentosListPage /> },
+              // /documentos
+              {
+                index: true,
+                element: <DocumentosListPage />,
+              },
+              // /documentos/:documentoId
+              {
+                path: ':documentoId',
+                element: <DocumentoDetailPage />,
+              },
             ],
           },
 
@@ -351,7 +385,16 @@ export const router = createBrowserRouter([
             path: '/relatorios',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <RelatoriosListPage /> },
+              // /relatorios
+              {
+                index: true,
+                element: <RelatoriosListPage />,
+              },
+              // /relatorios/:categoria
+              {
+                path: ':categoria',
+                element: <RelatorioCategoriaPage />,
+              },
             ],
           },
 
@@ -361,6 +404,12 @@ export const router = createBrowserRouter([
             element: <ModuleLayout />,
             children: [
               { index: true, element: <AdminPage /> },
+              { path: 'usuarios', element: <AdminUsuariosPage /> },
+              { path: 'perfis', element: <AdminPerfisPage /> },
+              { path: 'permissoes', element: <AdminPermissoesPage /> },
+              { path: 'parametros', element: <AdminParametrosPage /> },
+              { path: 'logs', element: <AdminLogsPage /> },
+              { path: 'integracoes', element: <AdminIntegracoesPage /> },
             ],
           },
 
