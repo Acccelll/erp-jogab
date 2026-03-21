@@ -8,7 +8,15 @@ import { NotFoundPage } from '@/shared/components';
 
 // Module pages (lazy loading será adicionado em fases futuras)
 import { DashboardPage } from '@/modules/dashboard';
-import { ObrasListPage, ObraVisaoGeralPage } from '@/modules/obras';
+import {
+  ObraComprasPage,
+  ObraCronogramaPage,
+  ObraDocumentosPage,
+  ObraEquipePage,
+  ObraFinanceiroPage,
+  ObrasListPage,
+  ObraVisaoGeralPage,
+} from '@/modules/obras';
 import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
 import {
   HorasExtrasDashboardPage,
@@ -149,10 +157,17 @@ export const router = createBrowserRouter([
                 element: <ObraWorkspaceLayout />,
                 children: [
                   { index: true, element: <ObraVisaoGeralPage /> },
-                  ...obraTabPlaceholders.map((tab) => ({
-                    path: tab.path,
-                    element: <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
-                  })),
+                  { path: 'cronograma', element: <ObraCronogramaPage /> },
+                  { path: 'equipe', element: <ObraEquipePage /> },
+                  { path: 'compras', element: <ObraComprasPage /> },
+                  { path: 'financeiro', element: <ObraFinanceiroPage /> },
+                  { path: 'documentos', element: <ObraDocumentosPage /> },
+                  ...obraTabPlaceholders
+                    .filter((tab) => !['cronograma', 'equipe', 'compras', 'financeiro', 'documentos'].includes(tab.path))
+                    .map((tab) => ({
+                      path: tab.path,
+                      element: <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                    })),
                 ],
               },
             ],
