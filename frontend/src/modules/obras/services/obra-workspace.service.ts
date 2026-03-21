@@ -1,11 +1,3 @@
-import type {
-  ObraComprasItem,
-  ObraCronogramaItem,
-  ObraDocumentoItem,
-  ObraEquipeItem,
-  ObraFinanceiroItem,
-  ObraWorkspaceTabData,
-} from '../types';
 import {
   getComprasWorkspace,
   getCronogramaWorkspace,
@@ -14,46 +6,31 @@ import {
   getFinanceiroWorkspace,
 } from '../data/obra-workspace.mock';
 
-const MOCK_DELAY_MS = 180;
-
-function delay(ms = MOCK_DELAY_MS): Promise<void> {
+function delay(ms = 180): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function resolveObraWorkspace<T>(
-  obraId: string,
-  resolver: (currentObraId: string) => ObraWorkspaceTabData<T>,
-): Promise<ObraWorkspaceTabData<T>> {
+export async function fetchObraCronograma(obraId: string) {
   await delay();
-  return resolver(obraId);
+  return getCronogramaWorkspace(obraId);
 }
 
-export function fetchObraCronograma(
-  obraId: string,
-): Promise<ObraWorkspaceTabData<ObraCronogramaItem>> {
-  return resolveObraWorkspace(obraId, getCronogramaWorkspace);
+export async function fetchObraEquipe(obraId: string) {
+  await delay();
+  return getEquipeWorkspace(obraId);
 }
 
-export function fetchObraEquipe(
-  obraId: string,
-): Promise<ObraWorkspaceTabData<ObraEquipeItem>> {
-  return resolveObraWorkspace(obraId, getEquipeWorkspace);
+export async function fetchObraCompras(obraId: string) {
+  await delay();
+  return getComprasWorkspace(obraId);
 }
 
-export function fetchObraCompras(
-  obraId: string,
-): Promise<ObraWorkspaceTabData<ObraComprasItem>> {
-  return resolveObraWorkspace(obraId, getComprasWorkspace);
+export async function fetchObraFinanceiro(obraId: string) {
+  await delay();
+  return getFinanceiroWorkspace(obraId);
 }
 
-export function fetchObraFinanceiro(
-  obraId: string,
-): Promise<ObraWorkspaceTabData<ObraFinanceiroItem>> {
-  return resolveObraWorkspace(obraId, getFinanceiroWorkspace);
-}
-
-export function fetchObraDocumentos(
-  obraId: string,
-): Promise<ObraWorkspaceTabData<ObraDocumentoItem>> {
-  return resolveObraWorkspace(obraId, getDocumentosWorkspace);
+export async function fetchObraDocumentos(obraId: string) {
+  await delay();
+  return getDocumentosWorkspace(obraId);
 }

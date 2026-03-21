@@ -1,4 +1,4 @@
-export { useHoraExtraDetails } from './useHoraExtraDetails';
-export { useHorasExtras } from './useHorasExtras';
-export { useHorasExtrasAprovacao } from './useHorasExtrasAprovacao';
-export { useHorasExtrasFilters } from './useHorasExtrasFilters';
+export * from './useHoraExtraDetails';
+export * from './useHorasExtras';
+export * from './useHorasExtrasAprovacao';
+export * from './useHorasExtrasFilters';

@@ -61,44 +61,6 @@ export interface FuncionarioFopagItem {
   valor: number;
 }
 
-export interface FuncionarioHistoricoSalarialItem {
-  id: string;
-  vigencia: string;
-  salario: number;
-  motivo: 'admissao' | 'reajuste' | 'promocao' | 'reenquadramento';
-  cargo: string;
-  responsavel: string;
-}
-
-export interface FuncionarioDocumentoItem {
-  id: string;
-  codigo: string;
-  titulo: string;
-  categoria: 'aso' | 'contrato' | 'certificado' | 'identificacao';
-  status: 'vigente' | 'a_vencer' | 'vencido' | 'em_analise';
-  responsavel: string;
-  vencimento?: string;
-}
-
-export interface FuncionarioFeriasItem {
-  id: string;
-  periodoAquisitivo: string;
-  saldoDias: number;
-  inicioGozo?: string;
-  fimGozo?: string;
-  status: 'planejada' | 'em_gozo' | 'concluida';
-  abono: boolean;
-}
-
-export interface FuncionarioDecimoTerceiroItem {
-  id: string;
-  competencia: string;
-  etapa: 'adiantamento' | 'parcela_final' | 'encargos';
-  status: 'previsto' | 'provisionado' | 'pago';
-  valor: number;
-  origem: 'folha' | 'provisao' | 'financeiro';
-}
-
 export interface FuncionarioWorkspaceResumoCard {
   id: string;
   titulo: string;

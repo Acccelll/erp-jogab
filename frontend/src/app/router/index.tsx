@@ -25,6 +25,21 @@ import { AppLayout } from '@/app/layouts/AppLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { ModuleLayout } from '@/app/layouts/ModuleLayout';
 import { ObraWorkspaceLayout } from '@/app/layouts/ObraWorkspaceLayout';
+import { AuthGuard } from '@/app/guards';
+import { NotFoundPage } from '@/shared/components';
+
+// Module pages (lazy loading será adicionado em fases futuras)
+import { DashboardPage } from '@/modules/dashboard';
+import {
+  ObraComprasPage,
+  ObraCronogramaPage,
+  ObraDocumentosPage,
+  ObraEquipePage,
+  ObraFinanceiroPage,
+  ObrasListPage,
+  ObraVisaoGeralPage,
+} from '@/modules/obras';
+import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
 import {
   AdminIntegracoesPage,
   AdminLogsPage,
@@ -58,32 +73,17 @@ import {
   FiscalSaidasPage,
 } from '@/modules/fiscal';
 import {
-  FopagCompetenciaDetailPage,
-  FopagCompetenciaEventosPage,
-  FopagCompetenciaFinanceiroPage,
-  FopagCompetenciaFuncionariosPage,
-  FopagCompetenciaObrasPage,
-  FopagCompetenciaOverviewPage,
-  FopagCompetenciaPrevistoRealizadoPage,
-  FopagCompetenciaRateioPage,
-  FopagListPage,
-} from '@/modules/fopag';
-import {
-  HorasExtrasAprovacaoPage,
-  HorasExtrasDashboardPage,
-  HorasExtrasFechamentoPage,
-} from '@/modules/horas-extras';
-import { MedicaoDetailPage, MedicoesListPage } from '@/modules/medicoes';
-import {
-  ObraComprasPage,
-  ObraCronogramaPage,
-  ObraDocumentosPage,
-  ObraEquipePage,
-  ObraFinanceiroPage,
-  ObrasListPage,
-  ObraVisaoGeralPage,
-} from '@/modules/obras';
-import { ObraTabPlaceholder } from '@/modules/obras/components';
+  ContasPagarPage,
+  ContasReceberPage,
+  FinanceiroListPage,
+  FluxoCaixaPage,
+  TituloFinanceiroDetailPage,
+} from '@/modules/financeiro';
+import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
+import { MedicoesListPage } from '@/modules/medicoes';
+import { DocumentosListPage } from '@/modules/documentos';
+import { RelatoriosListPage } from '@/modules/relatorios';
+import { AdminPage } from '@/modules/admin';
 import { PerfilPage } from '@/modules/perfil';
 import { RelatorioCategoriaPage, RelatoriosListPage } from '@/modules/relatorios';
 import {
@@ -345,50 +345,272 @@ const appRoutes: RouteObject[] = [
         path: 'funcionarios/:funcId',
         element: <FuncionarioDetailPage />,
         children: [
-          { path: 'contrato', element: <FuncionarioContratoPage /> },
+          // Redirect root to dashboard
+          {
+            index: true,
+            element: <Navigate to="/dashboard" replace />,
+          },
+
+          // Dashboard
+          {
+            path: '/dashboard',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <DashboardPage /> },
+            ],
+          },
+
+          // Obras
+          {
+            path: '/obras',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <ObrasListPage /> },
+              {
+                path: ':obraId',
+                element: <ObraWorkspaceLayout />,
+                children: [
+                  { index: true, element: <ObraVisaoGeralPage /> },
+                  { path: 'cronograma', element: <ObraCronogramaPage /> },
+                  { path: 'equipe', element: <ObraEquipePage /> },
+                  { path: 'compras', element: <ObraComprasPage /> },
+                  { path: 'financeiro', element: <ObraFinanceiroPage /> },
+                  { path: 'documentos', element: <ObraDocumentosPage /> },
+                  ...obraTabPlaceholders
+                    .filter((tab) => !['cronograma', 'equipe', 'compras', 'financeiro', 'documentos'].includes(tab.path))
+                    .map((tab) => ({
+                      path: tab.path,
+                      element: <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                    })),
+                ],
+              },
+            ],
+          },
+
+          // RH
+          {
+            path: '/rh',
+            element: <ModuleLayout />,
+            children: [
+              { path: 'funcionarios', element: <FuncionariosListPage /> },
+              {
+                path: 'funcionarios/:funcId',
+                element: <FuncionarioDetailPage />,
+                children: [
+                  { path: 'contrato', element: <FuncionarioContratoPage /> },
+                  { path: 'alocacoes', element: <FuncionarioAlocacoesPage /> },
+                  { path: 'provisoes', element: <FuncionarioProvisoesPage /> },
+                  { path: 'horas-extras', element: <FuncionarioHorasExtrasPage /> },
+                  { path: 'fopag', element: <FuncionarioFopagPage /> },
+                  ...funcionarioTabPlaceholders
+                    .filter((tab) => !['contrato', 'alocacoes', 'provisoes', 'horas-extras', 'fopag'].includes(tab.path))
+                    .map((tab) => ({
+                      path: tab.path,
+                      element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                    })),
+                ],
+              },
+              { index: true, element: <Navigate to="/rh/funcionarios" replace /> },
+            ],
+          },
+
+          // Horas Extras
+          {
+            path: '/horas-extras',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <HorasExtrasDashboardPage /> },
+              { path: 'fechamento', element: <HorasExtrasFechamentoPage /> },
+              { path: 'aprovacao', element: <HorasExtrasAprovacaoPage /> },
+            ],
+          },
+
+          // FOPAG
           {
             path: 'historico-salarial',
             element: <FuncionarioHistoricoSalarialPage />,
           },
-          { path: 'documentos', element: <FuncionarioDocumentosPage /> },
-          { path: 'alocacoes', element: <FuncionarioAlocacoesPage /> },
-          { path: 'ferias', element: <FuncionarioFeriasPage /> },
+
+          // Compras
           {
-            path: 'decimo-terceiro',
-            element: <FuncionarioDecimoTerceiroPage />,
+            path: '/compras',
+            element: <ModuleLayout />,
+            children: [
+              // /compras
+              {
+                index: true,
+                element: <ComprasListPage />,
+              },
+              // /compras/solicitacoes
+              {
+                path: 'solicitacoes',
+                element: <ComprasSolicitacoesPage />,
+              },
+              // /compras/cotacoes
+              {
+                path: 'cotacoes',
+                element: <ComprasCotacoesPage />,
+              },
+              // /compras/pedidos
+              {
+                path: 'pedidos',
+                element: <ComprasPedidosPage />,
+              },
+              // /compras/pedidos/:pedidoId
+              {
+                path: 'pedidos/:pedidoId',
+                element: <PedidoCompraDetailPage />,
+              },
+            ],
           },
-          { path: 'provisoes', element: <FuncionarioProvisoesPage /> },
-          { path: 'horas-extras', element: <FuncionarioHorasExtrasPage /> },
-          { path: 'fopag', element: <FuncionarioFopagPage /> },
-          ...funcionarioPlaceholderRoutes,
-        ],
-      },
-    ],
-  },
-  {
-    path: '/horas-extras',
-    element: <ModuleLayout />,
-    children: [
-      { index: true, element: <HorasExtrasDashboardPage /> },
-      { path: 'fechamento', element: <HorasExtrasFechamentoPage /> },
-      { path: 'aprovacao', element: <HorasExtrasAprovacaoPage /> },
-    ],
-  },
-  {
-    path: '/fopag',
-    element: <ModuleLayout />,
-    children: [
-      { index: true, element: <FopagListPage /> },
-      {
-        path: ':competenciaId',
-        element: <FopagCompetenciaDetailPage />,
-        children: [
-          { index: true, element: <FopagCompetenciaOverviewPage /> },
-          { path: 'funcionarios', element: <FopagCompetenciaFuncionariosPage /> },
-          { path: 'obras', element: <FopagCompetenciaObrasPage /> },
-          { path: 'eventos', element: <FopagCompetenciaEventosPage /> },
-          { path: 'rateio', element: <FopagCompetenciaRateioPage /> },
-          { path: 'financeiro', element: <FopagCompetenciaFinanceiroPage /> },
+
+          // Fiscal
+          {
+            path: '/fiscal',
+            element: <ModuleLayout />,
+            children: [
+              {
+                index: true,
+                element: <FiscalListPage />,
+              },
+              {
+                path: 'entradas',
+                element: <FiscalEntradasPage />,
+              },
+              {
+                path: 'saidas',
+                element: <FiscalSaidasPage />,
+              },
+              {
+                path: 'documentos/:documentoId',
+                element: <DocumentoFiscalDetailPage />,
+              },
+            ],
+          },
+
+          // Financeiro
+          {
+            path: '/financeiro',
+            element: <ModuleLayout />,
+            children: [
+              // /financeiro
+              {
+                index: true,
+                element: <FinanceiroListPage />,
+              },
+              // /financeiro/fluxo
+              {
+                path: 'fluxo',
+                element: <FluxoCaixaPage />,
+              },
+              // /financeiro/contas-pagar
+              {
+                path: 'contas-pagar',
+                element: <ContasPagarPage />,
+              },
+              // /financeiro/contas-receber
+              {
+                path: 'contas-receber',
+                element: <ContasReceberPage />,
+              },
+              // /financeiro/titulos/:tituloId
+              {
+                path: 'titulos/:tituloId',
+                element: <TituloFinanceiroDetailPage />,
+              },
+            ],
+          },
+
+          // Estoque
+          {
+            path: '/estoque',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <EstoqueListPage /> },
+              { path: 'movimentacoes', element: <EstoqueMovimentacoesPage /> },
+              { path: 'itens/:itemId', element: <EstoqueItemDetailPage /> },
+            ],
+          },
+
+          // Medições e Faturamento
+          {
+            path: '/medicoes',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <MedicoesListPage /> },
+              { path: ':medicaoId', element: <MedicaoDetailPage /> },
+            ],
+          },
+
+          // Documentos
+          {
+            path: '/documentos',
+            element: <ModuleLayout />,
+            children: [
+              // /documentos
+              {
+                index: true,
+                element: <DocumentosListPage />,
+              },
+              // /documentos/:documentoId
+              {
+                path: ':documentoId',
+                element: <DocumentoDetailPage />,
+              },
+            ],
+          },
+
+          // Relatórios
+          {
+            path: '/relatorios',
+            element: <ModuleLayout />,
+            children: [
+              // /relatorios
+              {
+                index: true,
+                element: <RelatoriosListPage />,
+              },
+              // /relatorios/:categoria
+              {
+                path: ':categoria',
+                element: <RelatorioCategoriaPage />,
+              },
+            ],
+          },
+
+          // Administração
+          // /admin
+          //   index -> AdminPage
+          //   usuarios -> AdminUsuariosPage
+          //   perfis -> AdminPerfisPage
+          //   permissoes -> AdminPermissoesPage
+          //   parametros -> AdminParametrosPage
+          //   logs -> AdminLogsPage
+          //   integracoes -> AdminIntegracoesPage
+          {
+            path: '/admin',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <AdminPage /> },
+              { path: 'usuarios', element: <AdminUsuariosPage /> },
+              { path: 'perfis', element: <AdminPerfisPage /> },
+              { path: 'permissoes', element: <AdminPermissoesPage /> },
+              { path: 'parametros', element: <AdminParametrosPage /> },
+              { path: 'logs', element: <AdminLogsPage /> },
+              { path: 'integracoes', element: <AdminIntegracoesPage /> },
+            ],
+          },
+
+          // Perfil
+          {
+            path: '/perfil',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <PerfilPage /> },
+            ],
+          },
+
+          // 404 — Catch-all
           {
             path: 'previsto-realizado',
             element: <FopagCompetenciaPrevistoRealizadoPage />,
