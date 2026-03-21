@@ -388,6 +388,12 @@ export const router = createBrowserRouter([
             element: <ModuleLayout />,
             children: [
               { index: true, element: <AdminPage /> },
+              { path: 'usuarios', element: <AdminUsuariosPage /> },
+              { path: 'perfis', element: <AdminPerfisPage /> },
+              { path: 'permissoes', element: <AdminPermissoesPage /> },
+              { path: 'parametros', element: <AdminParametrosPage /> },
+              { path: 'logs', element: <AdminLogsPage /> },
+              { path: 'integracoes', element: <AdminIntegracoesPage /> },
             ],
           },
 
