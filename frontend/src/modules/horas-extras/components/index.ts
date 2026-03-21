@@ -1,7 +1,11 @@
-export * from './HoraExtraStatusBadge';
-export * from './HorasExtrasFilters';
-export * from './HorasExtrasKpiBar';
-export * from './HorasExtrasResumoCard';
-export * from './HorasExtrasTable';
-export * from './HorasExtrasFechamentoCard';
-export * from './HorasExtrasAprovacaoPlaceholder';
+export { HoraExtraStatusBadge } from './HoraExtraStatusBadge';
+export { HorasExtrasAprovacaoPlaceholder } from './HorasExtrasAprovacaoPlaceholder';
+export { HorasExtrasAprovacaoResumoCard } from './HorasExtrasAprovacaoResumoCard';
+export { HorasExtrasAprovacaoTable } from './HorasExtrasAprovacaoTable';
+export { HorasExtrasFechamentoCard } from './HorasExtrasFechamentoCard';
+export { HorasExtrasFilters } from './HorasExtrasFilters';
+export { HorasExtrasHistoricoTable } from './HorasExtrasHistoricoTable';
+export { HorasExtrasKpiBar } from './HorasExtrasKpiBar';
+export { HorasExtrasResumoCard } from './HorasExtrasResumoCard';
+export { HorasExtrasSectionHeader } from './HorasExtrasSectionHeader';
+export { HorasExtrasTable } from './HorasExtrasTable';
