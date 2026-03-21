@@ -369,7 +369,16 @@ export const router = createBrowserRouter([
             path: '/relatorios',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <RelatoriosListPage /> },
+              // /relatorios
+              {
+                index: true,
+                element: <RelatoriosListPage />,
+              },
+              // /relatorios/:categoria
+              {
+                path: ':categoria',
+                element: <RelatorioCategoriaPage />,
+              },
             ],
           },
 
