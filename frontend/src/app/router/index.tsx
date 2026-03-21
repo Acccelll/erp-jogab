@@ -351,7 +351,16 @@ export const router = createBrowserRouter([
             path: '/documentos',
             element: <ModuleLayout />,
             children: [
-              { index: true, element: <DocumentosListPage /> },
+              // /documentos
+              {
+                index: true,
+                element: <DocumentosListPage />,
+              },
+              // /documentos/:documentoId
+              {
+                path: ':documentoId',
+                element: <DocumentoDetailPage />,
+              },
             ],
           },
 
