@@ -39,8 +39,14 @@ import {
   FiscalListPage,
   FiscalSaidasPage,
 } from '@/modules/fiscal';
-import { FinanceiroListPage } from '@/modules/financeiro';
-import { EstoqueListPage } from '@/modules/estoque';
+import {
+  ContasPagarPage,
+  ContasReceberPage,
+  FinanceiroListPage,
+  FluxoCaixaPage,
+  TituloFinanceiroDetailPage,
+} from '@/modules/financeiro';
+import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
 import { MedicoesListPage } from '@/modules/medicoes';
 import { DocumentosListPage } from '@/modules/documentos';
 import { RelatoriosListPage } from '@/modules/relatorios';
@@ -325,6 +331,8 @@ export const router = createBrowserRouter([
             element: <ModuleLayout />,
             children: [
               { index: true, element: <EstoqueListPage /> },
+              { path: 'movimentacoes', element: <EstoqueMovimentacoesPage /> },
+              { path: 'itens/:itemId', element: <EstoqueItemDetailPage /> },
             ],
           },
 
