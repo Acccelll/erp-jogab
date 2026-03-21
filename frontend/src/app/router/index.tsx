@@ -383,6 +383,14 @@ export const router = createBrowserRouter([
           },
 
           // Administração
+          // /admin
+          //   index -> AdminPage
+          //   usuarios -> AdminUsuariosPage
+          //   perfis -> AdminPerfisPage
+          //   permissoes -> AdminPermissoesPage
+          //   parametros -> AdminParametrosPage
+          //   logs -> AdminLogsPage
+          //   integracoes -> AdminIntegracoesPage
           {
             path: '/admin',
             element: <ModuleLayout />,
