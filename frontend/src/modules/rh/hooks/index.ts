@@ -6,3 +6,7 @@ export { useFuncionarioAlocacoes } from './useFuncionarioAlocacoes';
 export { useFuncionarioProvisoes } from './useFuncionarioProvisoes';
 export { useFuncionarioHorasExtras } from './useFuncionarioHorasExtras';
 export { useFuncionarioFopag } from './useFuncionarioFopag';
+export { useFuncionarioHistoricoSalarial } from './useFuncionarioHistoricoSalarial';
+export { useFuncionarioDocumentos } from './useFuncionarioDocumentos';
+export { useFuncionarioFerias } from './useFuncionarioFerias';
+export { useFuncionarioDecimoTerceiro } from './useFuncionarioDecimoTerceiro';

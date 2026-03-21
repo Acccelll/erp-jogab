@@ -72,3 +72,41 @@ export interface FuncionarioWorkspaceTabData<T> {
   resumoCards: FuncionarioWorkspaceResumoCard[];
   items: T[];
 }
+
+export interface FuncionarioHistoricoSalarialItem {
+  id: string;
+  vigencia: string;
+  motivo: 'admissao' | 'reajuste' | 'promocao' | 'reenquadramento';
+  cargo: string;
+  salario: number;
+  responsavel: string;
+}
+
+export interface FuncionarioDocumentoItem {
+  id: string;
+  codigo: string;
+  titulo: string;
+  categoria: 'aso' | 'contrato' | 'certificado' | 'identificacao';
+  status: 'vigente' | 'a_vencer' | 'vencido' | 'em_analise';
+  responsavel: string;
+  vencimento?: string;
+}
+
+export interface FuncionarioFeriasItem {
+  id: string;
+  periodoAquisitivo: string;
+  status: 'planejada' | 'em_gozo' | 'concluida';
+  inicioGozo?: string;
+  fimGozo?: string;
+  saldoDias: number;
+  abono: boolean;
+}
+
+export interface FuncionarioDecimoTerceiroItem {
+  id: string;
+  competencia: string;
+  etapa: 'adiantamento' | 'parcela_final' | 'encargos';
+  status: 'previsto' | 'provisionado' | 'pago';
+  origem: 'folha' | 'provisao' | 'financeiro';
+  valor: number;
+}
