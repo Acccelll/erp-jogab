@@ -316,8 +316,9 @@ export function getMockFinanceiroDashboard(filters?: FinanceiroFiltersData): Fin
 }
 
 export function getMockFluxoCaixa(filters?: FinanceiroFiltersData): FluxoCaixaItem[] {
-  const filtered = filters?.competencia
-    ? fluxoCaixa.filter((item) => item.periodo.startsWith(filters.competencia))
+  const competencia = filters?.competencia;
+  const filtered = competencia
+    ? fluxoCaixa.filter((item) => item.periodo.startsWith(competencia))
     : fluxoCaixa;
 
   return filtered;
