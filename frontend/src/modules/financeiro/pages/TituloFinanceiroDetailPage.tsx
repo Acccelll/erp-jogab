@@ -1,11 +1,11 @@
-import { Link, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { ArrowLeftRight, ExternalLink, ReceiptText } from 'lucide-react';
+import { Link, useParams } from 'react-router-dom';
 import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { FinanceiroStatusBadge } from '../components';
-import { FINANCEIRO_ORIGEM_LABELS, FINANCEIRO_TIPO_LABELS } from '../types';
 import { fetchTituloFinanceiroById } from '../services/financeiro.service';
-import { useQuery } from '@tanstack/react-query';
+import { FINANCEIRO_ORIGEM_LABELS, FINANCEIRO_TIPO_LABELS } from '../types';
 
 export function TituloFinanceiroDetailPage() {
   const { tituloId } = useParams<{ tituloId: string }>();
@@ -22,22 +22,39 @@ export function TituloFinanceiroDetailPage() {
         title="Financeiro · Detalhe do título"
         subtitle="Rastreabilidade completa do título financeiro com vínculos de obra, competência, origem e módulos relacionados."
         actions={
-          <Link to="/financeiro" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Link
+            to="/financeiro"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
             <ArrowLeftRight size={16} />
             Voltar ao Financeiro
           </Link>
         }
       />
+
       <ContextBar />
+
       <MainContent className="space-y-6">
-        {isLoading && <p className="text-sm text-gray-500">Carregando detalhe do título...</p>}
+        {isLoading && (
+          <div className="py-12 text-center text-sm text-gray-500">
+            Carregando detalhe do título...
+          </div>
+        )}
 
         {isError && (
           <EmptyState
             icon={<ReceiptText size={28} />}
             title="Erro ao carregar título financeiro"
             description="Não foi possível buscar o detalhe completo do título solicitado."
-            action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white">Tentar novamente</button>}
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+              >
+                Tentar novamente
+              </button>
+            }
           />
         )}
 
@@ -54,9 +71,15 @@ export function TituloFinanceiroDetailPage() {
               <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-sm font-medium text-jogab-600">{data.titulo.codigo}</p>
-                    <h2 className="mt-1 text-xl font-semibold text-gray-900">{data.titulo.descricao}</h2>
-                    <p className="mt-1 text-sm text-gray-500">{data.titulo.fornecedorCliente}</p>
+                    <p className="text-sm font-medium text-jogab-600">
+                      {data.titulo.codigo}
+                    </p>
+                    <h2 className="mt-1 text-xl font-semibold text-gray-900">
+                      {data.titulo.descricao}
+                    </h2>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {data.titulo.fornecedorCliente}
+                    </p>
                   </div>
                   <FinanceiroStatusBadge status={data.titulo.status} />
                 </div>
@@ -64,49 +87,82 @@ export function TituloFinanceiroDetailPage() {
                 <dl className="mt-6 grid gap-4 md:grid-cols-2">
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Obra</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.titulo.obraNome}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {data.titulo.obraNome}
+                    </dd>
                   </div>
                   <div>
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Centro de custo</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.titulo.centroCusto}</dd>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">
+                      Centro de custo
+                    </dt>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {data.titulo.centroCusto}
+                    </dd>
                   </div>
                   <div>
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Competência</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{formatCompetencia(data.titulo.competencia)}</dd>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">
+                      Competência
+                    </dt>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {formatCompetencia(data.titulo.competencia)}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Tipo</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{FINANCEIRO_TIPO_LABELS[data.titulo.tipo]}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {FINANCEIRO_TIPO_LABELS[data.titulo.tipo]}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Origem</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{FINANCEIRO_ORIGEM_LABELS[data.titulo.origem]}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {FINANCEIRO_ORIGEM_LABELS[data.titulo.origem]}
+                    </dd>
                   </div>
                   <div>
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Documento</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.titulo.documentoNumero ?? 'Sem documento fiscal vinculado'}</dd>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">
+                      Documento
+                    </dt>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {data.titulo.documentoNumero ?? 'Sem documento fiscal vinculado'}
+                    </dd>
                   </div>
                   <div>
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Vencimento</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{new Date(data.titulo.vencimento).toLocaleDateString('pt-BR')}</dd>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">
+                      Vencimento
+                    </dt>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {new Date(data.titulo.vencimento).toLocaleDateString('pt-BR')}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Valor</dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(data.titulo.valor)}</dd>
+                    <dd className="mt-1 text-sm font-semibold text-gray-900">
+                      {formatCurrency(data.titulo.valor)}
+                    </dd>
                   </div>
                 </dl>
               </article>
 
               <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
-                <h2 className="text-base font-semibold text-gray-900">Integrações conceituais</h2>
-                <p className="mt-1 text-sm text-gray-500">Relações preservadas entre Financeiro, Obra, FOPAG, Compras, Fiscal e demais módulos alimentadores.</p>
+                <h2 className="text-base font-semibold text-gray-900">
+                  Integrações conceituais
+                </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Relações preservadas entre Financeiro, Obra, FOPAG, Compras, Fiscal e
+                  demais módulos alimentadores.
+                </p>
+
                 <div className="mt-4 space-y-3">
                   {data.integracoes.map((item) => (
                     <div key={item.modulo} className="rounded-lg bg-gray-50 p-3">
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-sm font-semibold text-gray-900">{item.modulo}</p>
                         {item.href ? (
-                          <Link to={item.href} className="inline-flex items-center gap-1 text-xs font-medium text-jogab-600 hover:text-jogab-700">
+                          <Link
+                            to={item.href}
+                            className="inline-flex items-center gap-1 text-xs font-medium text-jogab-600 hover:text-jogab-700"
+                          >
                             Acessar
                             <ExternalLink size={12} />
                           </Link>
@@ -119,31 +175,43 @@ export function TituloFinanceiroDetailPage() {
               </article>
             </section>
 
-            <section className="grid gap-6 xl:grid-cols-[0.9fr,1.1fr]">
-              <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
-                <h2 className="text-base font-semibold text-gray-900">Linha do tempo</h2>
-                <div className="mt-4 space-y-4">
-                  {data.timeline.map((item) => (
-                    <div key={item.id} className="flex gap-3">
-                      <div className="mt-1 h-2.5 w-2.5 rounded-full bg-jogab-500" />
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">{item.label}</p>
-                        <p className="text-xs text-gray-400">{new Date(item.data).toLocaleDateString('pt-BR')}</p>
-                        <p className="mt-1 text-sm text-gray-500">{item.descricao}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </article>
+            <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm shadow-gray-100/60">
+              <div className="border-b border-gray-200 px-5 py-4">
+                <h2 className="text-base font-semibold text-gray-900">
+                  Timeline financeira
+                </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Eventos do ciclo do título para apoiar rastreabilidade de previsão,
+                  baixa, conciliação e integração entre módulos.
+                </p>
+              </div>
 
-              <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
-                <h2 className="text-base font-semibold text-gray-900">Observações operacionais</h2>
-                <div className="mt-4 space-y-3 rounded-lg bg-gray-50 p-4 text-sm text-gray-600">
-                  <p><strong className="font-semibold text-gray-900">Previsão/realização:</strong> o título preserva a diferença entre valor original e valor já liquidado/recebido para leitura do caixa.</p>
-                  <p><strong className="font-semibold text-gray-900">Rastreabilidade:</strong> obra, centro de custo, competência e origem permanecem explícitos para auditoria e custo da obra.</p>
-                  <p><strong className="font-semibold text-gray-900">Nota desta fase:</strong> {data.titulo.observacao ?? 'Sem observações adicionais.'}</p>
-                </div>
-              </article>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 text-sm">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-semibold text-gray-600">
+                        Data
+                      </th>
+                      <th className="px-4 py-3 text-left font-semibold text-gray-600">
+                        Evento
+                      </th>
+                                          </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 bg-white">
+                    {data.timeline.map((item) => (
+                      <tr key={item.id} className="hover:bg-gray-50/70">
+                        <td className="px-4 py-3 text-gray-700">
+                          {new Date(item.data).toLocaleDateString('pt-BR')}
+                        </td>
+                        <td className="px-4 py-3 font-medium text-gray-900">
+                          {item.label}
+                        </td>
+                                              </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </section>
           </>
         )}
