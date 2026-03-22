@@ -26,6 +26,7 @@ import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { ModuleLayout } from '@/app/layouts/ModuleLayout';
 import { ObraWorkspaceLayout } from '@/app/layouts/ObraWorkspaceLayout';
 import { DashboardPage } from '@/modules/dashboard';
+import { NotFoundPage } from '@/shared/components/NotFoundPage';
 import {
   ObraComprasPage,
   ObraCronogramaPage,

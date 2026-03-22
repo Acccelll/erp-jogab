@@ -4,6 +4,7 @@
  * Atualmente usa dados mock. Quando a API estiver disponível,
  * basta trocar as implementações para chamadas reais via api.ts.
  */
+import { getAlocacoesByFuncionarioId } from '@/shared/lib/erpRelations';
 import type {
   Funcionario,
   FuncionarioCreatePayload,
@@ -84,7 +85,7 @@ export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promi
   }
 
   if (filters?.obraId) {
-    resultado = resultado.filter((f) => f.obraAlocadoId === filters.obraId);
+    resultado = resultado.filter((f) => getAlocacoesByFuncionarioId(f.id).some((alocacao) => alocacao.obraId === filters.obraId));
   }
 
   if (filters?.departamento) {

@@ -84,6 +84,10 @@ export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListRe
     resultado = resultado.filter((o) => o.filialId === filters.filialId);
   }
 
+  if (filters?.responsavelId) {
+    resultado = resultado.filter((o) => o.responsavelId === filters.responsavelId);
+  }
+
   const kpis = calcularObrasKpis(resultado);
   const data = resultado.map(toObraListItem);
 
