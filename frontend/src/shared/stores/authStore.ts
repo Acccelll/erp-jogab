@@ -1,55 +1,94 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Usuario } from '@/shared/types';
-
-/** Usuário mock para desenvolvimento — removido quando a API de login estiver pronta */
-const DEV_USUARIO: Usuario = {
-  id: 'dev-1',
-  nome: 'Admin Dev',
-  email: 'admin@jogab.com.br',
-  papel: 'admin',
-  permissoes: [
-    'dashboard:read',
-    'obras:read', 'obras:write',
-    'rh:read', 'rh:write',
-    'horas-extras:read', 'horas-extras:write', 'horas-extras:approve',
-    'fopag:read', 'fopag:write', 'fopag:approve',
-    'compras:read', 'compras:write', 'compras:approve',
-    'fiscal:read', 'fiscal:write',
-    'financeiro:read', 'financeiro:write', 'financeiro:approve',
-    'estoque:read', 'estoque:write',
-    'medicoes:read', 'medicoes:write', 'medicoes:approve',
-    'documentos:read', 'documentos:write',
-    'relatorios:read',
-    'admin:read', 'admin:write',
-  ],
-  empresaId: 'emp-1',
-  filialId: 'fil-1',
-};
-
-const isDev = import.meta.env.DEV;
+import { fetchMockSession, loginWithMock, logoutWithMock } from '@/shared/lib/auth.service';
+import { useContextStore } from '@/shared/stores/contextStore';
+import type { AuthCredentials, Usuario } from '@/shared/types';
 
 interface AuthState {
   usuario: Usuario | null;
   token: string | null;
   isAuthenticated: boolean;
+  isHydrated: boolean;
+  isLoading: boolean;
+  error: string | null;
   setAuth: (usuario: Usuario, token: string) => void;
-  logout: () => void;
+  login: (credentials: AuthCredentials) => Promise<void>;
+  restoreSession: () => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      usuario: isDev ? DEV_USUARIO : null,
-      token: isDev ? 'dev-token' : null,
-      isAuthenticated: isDev,
+      usuario: null,
+      token: null,
+      isAuthenticated: false,
+      isHydrated: false,
+      isLoading: false,
+      error: null,
 
       setAuth: (usuario, token) => {
-        set({ usuario, token, isAuthenticated: true });
+        set({ usuario, token, isAuthenticated: true, error: null });
       },
 
-      logout: () => {
-        set({ usuario: null, token: null, isAuthenticated: false });
+      login: async (credentials) => {
+        set({ isLoading: true, error: null });
+        try {
+          const session = await loginWithMock(credentials);
+          set({
+            usuario: session.usuario,
+            token: session.token,
+            isAuthenticated: true,
+            isLoading: false,
+            error: null,
+          });
+        } catch (error) {
+          set({
+            usuario: null,
+            token: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: error instanceof Error ? error.message : 'Não foi possível autenticar.',
+          });
+          throw error;
+        }
+      },
+
+      restoreSession: async () => {
+        set({ isLoading: true });
+        try {
+          const token = useAuthStore.getState().token;
+          const session = await fetchMockSession(token);
+          set({
+            usuario: session?.usuario ?? null,
+            token: session?.token ?? null,
+            isAuthenticated: !!session,
+            isLoading: false,
+            isHydrated: true,
+            error: null,
+          });
+        } catch {
+          set({
+            usuario: null,
+            token: null,
+            isAuthenticated: false,
+            isLoading: false,
+            isHydrated: true,
+            error: 'Falha ao restaurar a sessão.',
+          });
+        }
+      },
+
+      logout: async () => {
+        await logoutWithMock();
+        useContextStore.getState().resetContext();
+        set({
+          usuario: null,
+          token: null,
+          isAuthenticated: false,
+          isHydrated: true,
+          error: null,
+        });
       },
     }),
     {
@@ -66,6 +105,9 @@ export const useAuthStore = create<AuthState>()(
           ...current,
           ...p,
           isAuthenticated: hasAuth,
+          isHydrated: false,
+          isLoading: false,
+          error: null,
         };
       },
     },

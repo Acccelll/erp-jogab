@@ -12,7 +12,18 @@ import { useAuthStore } from '@/shared/stores';
  */
 export function AuthGuard() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isHydrated = useAuthStore((s) => s.isHydrated);
   const location = useLocation();
+
+  if (!isHydrated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-sidebar-bg">
+        <div className="rounded-lg border border-gray-700 bg-white px-6 py-5 text-sm text-gray-600 shadow-xl">
+          Restaurando sessão...
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;

@@ -1,3 +1,5 @@
+import type { ObraFormData } from './obra.schema';
+
 /**
  * Tipos do módulo Obras — entidade central do ERP JOGAB.
  *
@@ -104,6 +106,28 @@ export interface ObraResumoItem {
   label: string;
   valor: string;
   destaque?: boolean;
+}
+
+/** Contrato de resposta para listagem de obras. */
+export interface ObrasListResponse {
+  data: ObraListItem[];
+  kpis: ObrasKpis;
+  total: number;
+}
+
+/** Contrato de resposta para detalhe de obra/workspace. */
+export interface ObraDetailResponse {
+  obra: Obra | null;
+  kpis: ObraVisaoGeralKpis | null;
+  resumoBlocos: ObraResumoBloco[];
+}
+
+/** Payload esperado para criação de obra. */
+export type ObraCreatePayload = ObraFormData;
+
+/** Payload esperado para edição parcial de obra. */
+export interface ObraUpdatePayload extends Partial<ObraFormData> {
+  id: string;
 }
 
 /** Labels para status de obra */
