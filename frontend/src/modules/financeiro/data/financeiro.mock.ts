@@ -321,7 +321,11 @@ export function getMockFluxoCaixa(filters?: FinanceiroFiltersData): FluxoCaixaIt
     ? fluxoCaixa.filter((item) => item.periodo.startsWith(competencia))
     : fluxoCaixa;
 
-  return filtered;
+  if (!competencia) {
+    return fluxoCaixa;
+  }
+
+  return fluxoCaixa.filter((item) => item.periodo.startsWith(competencia));
 }
 
 export function getMockTituloFinanceiroById(tituloId: string): TituloFinanceiroDetalhe | undefined {
