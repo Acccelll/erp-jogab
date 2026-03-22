@@ -31,6 +31,7 @@ export interface SelectOption {
 export interface ContextOption extends SelectOption {
   empresaId?: string;
   filialId?: string;
+  obraId?: string;
 }
 
 /** Empresa */
@@ -105,6 +106,7 @@ export interface ContextOptionsResponse {
   empresas: ContextOption[];
   filiais: ContextOption[];
   obras: ContextOption[];
+  centrosCusto: ContextOption[];
   competencias: SelectOption[];
 }
 

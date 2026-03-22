@@ -1,3 +1,4 @@
+import { getCentrosCustoByObraId } from '@/shared/lib/erpRelations';
 import type {
   ContextBootstrapData,
   ContextOption,
@@ -53,7 +54,15 @@ export async function fetchContextOptions(): Promise<ContextOptionsResponse> {
       label: obra.label,
       empresaId: filiais.find((filial) => filial.value === obra.filialId)?.empresaId,
       filialId: obra.filialId,
+      obraId: obra.id,
     })),
+    centrosCusto: obras.flatMap((obra) => getCentrosCustoByObraId(obra.id).map((centro) => ({
+      value: centro.id,
+      label: `${centro.codigo} — ${centro.nome}`,
+      filialId: obra.filialId,
+      obraId: obra.id,
+      empresaId: filiais.find((filial) => filial.value === obra.filialId)?.empresaId,
+    }))),
     competencias,
   };
 }
@@ -64,6 +73,9 @@ export async function fetchContextBootstrap(usuario: Usuario): Promise<ContextBo
     ? usuario.filialId
     : options.filiais.find((filial) => filial.empresaId === usuario.empresaId)?.value ?? null;
   const obraId = options.obras.find((obra) => obra.filialId === filialId)?.value ?? null;
+  const centroCustoId = obraId
+    ? options.centrosCusto.find((centro) => centro.obraId === obraId)?.value ?? null
+    : null;
 
   return {
     options,
@@ -74,7 +86,7 @@ export async function fetchContextBootstrap(usuario: Usuario): Promise<ContextBo
       competencia: competencias[0]?.value ?? null,
       periodoInicio: null,
       periodoFim: null,
-      centroCustoId: null,
+      centroCustoId,
     },
   };
 }
