@@ -1,33 +1,9 @@
 import { Building2, MapPin, HardHat, Calendar } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchContextOptions } from '@/shared/lib/context.service';
 import { useContextStore } from '@/shared/stores';
 import { formatCompetencia } from '@/shared/lib/utils';
 import type { SelectOption } from '@/shared/types';
-
-// Mock data — will be replaced by API calls in future phases
-const mockEmpresas: SelectOption[] = [
-  { value: 'emp-1', label: 'JOGAB Engenharia Ltda' },
-  { value: 'emp-2', label: 'JOGAB Construções S.A.' },
-];
-
-const mockFiliais: SelectOption[] = [
-  { value: 'fil-1', label: 'Matriz — São Paulo' },
-  { value: 'fil-2', label: 'Filial — Rio de Janeiro' },
-  { value: 'fil-3', label: 'Filial — Belo Horizonte' },
-];
-
-const mockObras: SelectOption[] = [
-  { value: 'obra-1', label: 'OBR-001 — Edifício Aurora' },
-  { value: 'obra-2', label: 'OBR-002 — Residencial Parque' },
-  { value: 'obra-3', label: 'OBR-003 — Torre Empresarial' },
-  { value: 'obra-4', label: 'OBR-004 — Ponte BR-101' },
-];
-
-const mockCompetencias: SelectOption[] = [
-  { value: '2026-03', label: '03/2026' },
-  { value: '2026-02', label: '02/2026' },
-  { value: '2026-01', label: '01/2026' },
-  { value: '2025-12', label: '12/2025' },
-];
 
 interface ContextSelectProps {
   icon: React.ReactNode;
@@ -65,11 +41,23 @@ export function ContextBar() {
     filialId,
     obraId,
     competencia,
+    options,
     setEmpresa,
     setFilial,
     setObra,
     setCompetencia,
   } = useContextStore();
+  const { data } = useQuery({
+    queryKey: ['context-options'],
+    queryFn: fetchContextOptions,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const mergedOptions = data ?? options;
+  const empresas = mergedOptions?.empresas ?? [];
+  const filiais = (mergedOptions?.filiais ?? []).filter((item) => !empresaId || item.empresaId === empresaId);
+  const obras = (mergedOptions?.obras ?? []).filter((item) => !filialId || item.filialId === filialId);
+  const competencias = mergedOptions?.competencias ?? [];
 
   const formattedCompetencia = competencia ? formatCompetencia(competencia) : null;
 
@@ -82,7 +70,7 @@ export function ContextBar() {
         icon={<Building2 size={14} />}
         label="Empresa"
         value={empresaId}
-        options={mockEmpresas}
+        options={empresas}
         onChange={setEmpresa}
         placeholder="Empresa"
       />
@@ -93,7 +81,7 @@ export function ContextBar() {
         icon={<MapPin size={14} />}
         label="Filial"
         value={filialId}
-        options={mockFiliais}
+        options={filiais}
         onChange={setFilial}
         placeholder="Filial"
       />
@@ -104,7 +92,7 @@ export function ContextBar() {
         icon={<HardHat size={14} />}
         label="Obra"
         value={obraId}
-        options={mockObras}
+        options={obras}
         onChange={setObra}
         placeholder="Todas as obras"
       />
@@ -115,7 +103,7 @@ export function ContextBar() {
         icon={<Calendar size={14} />}
         label="Competência"
         value={competencia}
-        options={mockCompetencias}
+        options={competencias}
         onChange={setCompetencia}
         placeholder="Competência"
       />
