@@ -6,11 +6,13 @@
  */
 import type {
   Funcionario,
-  FuncionarioListItem,
-  FuncionariosKpis,
+  FuncionarioCreatePayload,
+  FuncionarioDetailResponse,
+  FuncionarioFiltersData,
+  FuncionariosListResponse,
   FuncionarioResumoBloco,
+  FuncionarioUpdatePayload,
 } from '../types';
-import type { FuncionarioFiltersData } from '../types';
 import {
   mockFuncionarios,
   toFuncionarioListItem,
@@ -18,16 +20,42 @@ import {
   gerarFuncionarioResumoBlocos,
 } from '../data/funcionarios.mock';
 
+/**
+ * Contratos esperados para futura API real de RH.
+ * Mantidos próximos ao service mock para facilitar a troca por integração HTTP.
+ */
+export const RH_API_ENDPOINTS = {
+  list: '/rh/funcionarios',
+  detail: (funcionarioId: string) => `/rh/funcionarios/${funcionarioId}`,
+  create: '/rh/funcionarios',
+  update: (funcionarioId: string) => `/rh/funcionarios/${funcionarioId}`,
+} as const;
+
+export interface RhApiContract {
+  list: {
+    filters?: FuncionarioFiltersData;
+    response: FuncionariosListResponse;
+  };
+  detail: {
+    funcionarioId: string;
+    response: FuncionarioDetailResponse;
+  };
+  create: {
+    payload: FuncionarioCreatePayload;
+  };
+  update: {
+    funcionarioId: string;
+    payload: FuncionarioUpdatePayload;
+  };
+}
+
 /** Simula latência de rede */
 function delay(ms = 300): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /** Lista funcionários com filtros */
-export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promise<{
-  data: FuncionarioListItem[];
-  kpis: FuncionariosKpis;
-}> {
+export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
   await delay();
 
   let resultado = [...mockFuncionarios];
@@ -66,7 +94,7 @@ export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promi
   const kpis = calcularFuncionariosKpis(resultado);
   const data = resultado.map(toFuncionarioListItem);
 
-  return { data, kpis };
+  return { data, kpis, total: data.length };
 }
 
 /** Busca um funcionário pelo ID */
@@ -81,4 +109,17 @@ export async function fetchFuncionarioResumoBlocos(funcId: string): Promise<Func
   const func = mockFuncionarios.find((f) => f.id === funcId);
   if (!func) return [];
   return gerarFuncionarioResumoBlocos(func);
+}
+
+/** Agregador de detalhe preparado para futura API real única do workspace do funcionário. */
+export async function fetchFuncionarioDetail(funcId: string): Promise<FuncionarioDetailResponse> {
+  const [funcionario, resumoBlocos] = await Promise.all([
+    fetchFuncionarioById(funcId),
+    fetchFuncionarioResumoBlocos(funcId),
+  ]);
+
+  return {
+    funcionario,
+    resumoBlocos,
+  };
 }
