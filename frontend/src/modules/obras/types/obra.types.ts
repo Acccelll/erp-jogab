@@ -1,3 +1,4 @@
+import type { ApiListResponse } from '@/shared/types';
 import type { ObraFormData } from './obra.schema';
 
 /**
@@ -109,11 +110,7 @@ export interface ObraResumoItem {
 }
 
 /** Contrato de resposta para listagem de obras. */
-export interface ObrasListResponse {
-  data: ObraListItem[];
-  kpis: ObrasKpis;
-  total: number;
-}
+export type ObrasListResponse = ApiListResponse<ObraListItem, ObrasKpis>;
 
 /** Contrato de resposta para detalhe de obra/workspace. */
 export interface ObraDetailResponse {

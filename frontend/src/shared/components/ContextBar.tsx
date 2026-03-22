@@ -1,4 +1,4 @@
-import { Building2, MapPin, HardHat, Calendar } from 'lucide-react';
+import { Building2, MapPin, HardHat, Calendar, BriefcaseBusiness } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchContextOptions } from '@/shared/lib/context.service';
 import { useContextStore } from '@/shared/stores';
@@ -40,11 +40,13 @@ export function ContextBar() {
     empresaId,
     filialId,
     obraId,
+    centroCustoId,
     competencia,
     options,
     setEmpresa,
     setFilial,
     setObra,
+    setCentroCusto,
     setCompetencia,
   } = useContextStore();
   const { data } = useQuery({
@@ -57,70 +59,36 @@ export function ContextBar() {
   const empresas = mergedOptions?.empresas ?? [];
   const filiais = (mergedOptions?.filiais ?? []).filter((item) => !empresaId || item.empresaId === empresaId);
   const obras = (mergedOptions?.obras ?? []).filter((item) => !filialId || item.filialId === filialId);
+  const centrosCusto = (mergedOptions?.centrosCusto ?? []).filter((item) => !obraId || item.obraId === obraId);
   const competencias = mergedOptions?.competencias ?? [];
 
   const formattedCompetencia = competencia ? formatCompetencia(competencia) : null;
-
-  // Count active context selections for the indicator
-  const activeCount = [empresaId, filialId, obraId, competencia].filter(Boolean).length;
+  const activeCount = [empresaId, filialId, obraId, centroCustoId, competencia].filter(Boolean).length;
 
   return (
     <div className="flex items-center gap-3 overflow-x-auto border-b border-border-light bg-surface-secondary px-4 py-1.5">
-      <ContextSelect
-        icon={<Building2 size={14} />}
-        label="Empresa"
-        value={empresaId}
-        options={empresas}
-        onChange={setEmpresa}
-        placeholder="Empresa"
-      />
-
+      <ContextSelect icon={<Building2 size={14} />} label="Empresa" value={empresaId} options={empresas} onChange={setEmpresa} placeholder="Empresa" />
       <div className="h-4 w-px shrink-0 bg-gray-200" />
-
-      <ContextSelect
-        icon={<MapPin size={14} />}
-        label="Filial"
-        value={filialId}
-        options={filiais}
-        onChange={setFilial}
-        placeholder="Filial"
-      />
-
+      <ContextSelect icon={<MapPin size={14} />} label="Filial" value={filialId} options={filiais} onChange={setFilial} placeholder="Filial" />
       <div className="h-4 w-px shrink-0 bg-gray-200" />
-
-      <ContextSelect
-        icon={<HardHat size={14} />}
-        label="Obra"
-        value={obraId}
-        options={obras}
-        onChange={setObra}
-        placeholder="Todas as obras"
-      />
-
+      <ContextSelect icon={<HardHat size={14} />} label="Obra" value={obraId} options={obras} onChange={setObra} placeholder="Todas as obras" />
       <div className="h-4 w-px shrink-0 bg-gray-200" />
+      <ContextSelect icon={<BriefcaseBusiness size={14} />} label="Centro de custo" value={centroCustoId} options={centrosCusto} onChange={setCentroCusto} placeholder="Centro de custo" />
+      <div className="h-4 w-px shrink-0 bg-gray-200" />
+      <ContextSelect icon={<Calendar size={14} />} label="Competência" value={competencia} options={competencias} onChange={setCompetencia} placeholder="Competência" />
 
-      <ContextSelect
-        icon={<Calendar size={14} />}
-        label="Competência"
-        value={competencia}
-        options={competencias}
-        onChange={setCompetencia}
-        placeholder="Competência"
-      />
-
-      {/* Active context indicator */}
       {activeCount > 0 && (
         <span className="ml-auto shrink-0 rounded-full bg-jogab-50 px-2 py-0.5 text-[10px] font-medium text-jogab-600">
           {activeCount} {activeCount === 1 ? 'filtro' : 'filtros'}
         </span>
       )}
 
-      {/* Active context summary for screen readers */}
-      {(empresaId ?? filialId ?? obraId ?? formattedCompetencia) && (
+      {(empresaId ?? filialId ?? obraId ?? centroCustoId ?? formattedCompetencia) && (
         <span className="sr-only">
           Contexto ativo: {empresaId ? `Empresa ${empresaId}` : ''}
           {filialId ? `, Filial ${filialId}` : ''}
           {obraId ? `, Obra ${obraId}` : ''}
+          {centroCustoId ? `, Centro de custo ${centroCustoId}` : ''}
           {formattedCompetencia ? `, Competência ${formattedCompetencia}` : ''}
         </span>
       )}
