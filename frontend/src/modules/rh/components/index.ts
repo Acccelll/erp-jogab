@@ -4,3 +4,7 @@ export { FuncionarioFilters } from './FuncionarioFilters';
 export { FuncionarioKpiBar } from './FuncionarioKpiBar';
 export { FuncionarioHeader } from './FuncionarioHeader';
 export { FuncionarioTabPlaceholder } from './FuncionarioTabPlaceholder';
+export { FuncionarioWorkspaceSectionHeader } from './FuncionarioWorkspaceSectionHeader';
+export { FuncionarioWorkspaceResumoCard } from './FuncionarioWorkspaceResumoCard';
+export { FuncionarioWorkspaceFilters } from './FuncionarioWorkspaceFilters';
+export { FuncionarioWorkspaceTable } from './FuncionarioWorkspaceTable';
