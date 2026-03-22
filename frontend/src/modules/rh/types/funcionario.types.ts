@@ -1,3 +1,4 @@
+import type { ApiListResponse } from '@/shared/types';
 import type { FuncionarioFormData } from './funcionario.schema';
 
 /**
@@ -88,11 +89,7 @@ export interface FuncionarioResumoItem {
 }
 
 /** Contrato de resposta para listagem de funcionários. */
-export interface FuncionariosListResponse {
-  data: FuncionarioListItem[];
-  kpis: FuncionariosKpis;
-  total: number;
-}
+export type FuncionariosListResponse = ApiListResponse<FuncionarioListItem, FuncionariosKpis>;
 
 /** Contrato de resposta para detalhe do funcionário. */
 export interface FuncionarioDetailResponse {

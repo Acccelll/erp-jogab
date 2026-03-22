@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
 import { useFuncionarioAlocacoes } from '../hooks';
 import { FuncionarioWorkspaceFilters, FuncionarioWorkspaceResumoCard, FuncionarioWorkspaceSectionHeader, FuncionarioWorkspaceTable } from '../components';
@@ -19,7 +19,7 @@ export function FuncionarioAlocacoesPage() {
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
     return items.filter((item) => {
-      const matchesSearch = !search.trim() || `${item.obraNome} ${item.funcao} ${item.centroCusto}`.toLowerCase().includes(search.trim().toLowerCase());
+      const matchesSearch = !search.trim() || `${item.obraNome} ${item.funcao} ${item.centroCustoNome}`.toLowerCase().includes(search.trim().toLowerCase());
       const matchesStatus = !status || item.status === status;
       return matchesSearch && matchesStatus;
     });
@@ -49,8 +49,16 @@ export function FuncionarioAlocacoesPage() {
               <EmptyState title="Nenhuma alocação encontrada" description="Não há alocações deste funcionário para o filtro atual." />
             ) : (
               <FuncionarioWorkspaceTable
-                columns={['Obra', 'Função', 'Início', 'Fim', 'Rateio', 'Status']}
-                rows={filtered.map((item) => [item.obraNome, item.funcao, item.periodoInicio, item.periodoFim ?? 'Atual', `${item.percentual}%`, STATUS_OPTIONS.find((option) => option.value === item.status)?.label ?? item.status])}
+                columns={['Obra', 'Função', 'Centro de custo', 'Início', 'Fim', 'Rateio', 'Status']}
+                rows={filtered.map((item) => [
+                  <Link key={`${item.id}-obra`} to={`/obras/${item.obraId}`} className="font-medium text-jogab-700 hover:underline">{item.obraNome}</Link>,
+                  item.funcao,
+                  item.centroCustoNome,
+                  item.periodoInicio,
+                  item.periodoFim ?? 'Atual',
+                  `${item.percentual}%`,
+                  STATUS_OPTIONS.find((option) => option.value === item.status)?.label ?? item.status,
+                ])}
               />
             )}
           </>
