@@ -37,7 +37,3 @@ export function getAlocacoesByFuncionarioId(funcionarioId: string) {
 export function getCentroCustoById(centroCustoId: string | null | undefined) {
   return centroCustoId ? mockCentrosCusto.find((centro) => centro.id === centroCustoId) ?? null : null;
 }
-
-export function getCentrosCustoByObraId(obraId: string) {
-  return mockCentrosCusto.filter((centro) => centro.obraId === obraId);
-}
