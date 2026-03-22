@@ -7,7 +7,7 @@
  * Referência: docs/06-arquitetura-de-telas.md (RH — detalhe do funcionário com abas)
  */
 import { useEffect } from 'react';
-import { useParams, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useParams, NavLink, Outlet, useLocation, Link } from 'react-router-dom';
 import {
   FileSignature,
   DollarSign,
@@ -19,6 +19,7 @@ import {
   Clock,
   Receipt,
   ArrowLeft,
+  MapPinned,
 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { MainContent } from '@/shared/components';
@@ -27,7 +28,6 @@ import { useFuncionarioDetails } from '../hooks/useFuncionarioDetails';
 import { useContextStore } from '@/shared/stores';
 import type { FuncionarioResumoBloco } from '../types';
 
-/** Abas do detalhe do funcionário */
 const funcionarioTabs = [
   { label: 'Visão Geral', path: '' },
   { label: 'Contrato', path: 'contrato' },
@@ -45,23 +45,22 @@ export function FuncionarioDetailPage() {
   const { funcId } = useParams<{ funcId: string }>();
   const location = useLocation();
   const { funcionario, isLoading } = useFuncionarioDetails(funcId);
-  const { setObra, obraId: contextObraId } = useContextStore();
+  const { setObra, setCentroCusto, obraId: contextObraId } = useContextStore();
 
-  // Sync obra context when funcionario is allocated to an obra
   useEffect(() => {
     if (funcionario?.obraAlocadoId && funcionario.obraAlocadoId !== contextObraId) {
       setObra(funcionario.obraAlocadoId);
     }
-  }, [funcionario?.obraAlocadoId, contextObraId, setObra]);
+    if (funcionario?.centroCustoId) {
+      setCentroCusto(funcionario.centroCustoId);
+    }
+  }, [funcionario?.obraAlocadoId, funcionario?.centroCustoId, contextObraId, setCentroCusto, setObra]);
 
-  // Check if we're on the base route (visão geral) — Outlet will be empty
   const isBaseRoute = location.pathname === `/rh/funcionarios/${funcId}`;
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {/* Header */}
-      <div className="border-b border-border-default bg-surface px-6 pt-4 pb-0">
-        {/* Back link */}
+      <div className="border-b border-border-default bg-surface px-6 pb-0 pt-4">
         <div className="mb-2">
           <NavLink
             to="/rh/funcionarios"
@@ -72,7 +71,6 @@ export function FuncionarioDetailPage() {
           </NavLink>
         </div>
 
-        {/* Dynamic header from funcionario data */}
         {isLoading && (
           <div className="mb-3 flex items-center gap-3">
             <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200" />
@@ -95,7 +93,6 @@ export function FuncionarioDetailPage() {
           </div>
         )}
 
-        {/* Tabs */}
         <nav className="-mb-px flex gap-1 overflow-x-auto" aria-label="Abas do funcionário">
           {funcionarioTabs.map((tab) => (
             <NavLink
@@ -117,24 +114,13 @@ export function FuncionarioDetailPage() {
         </nav>
       </div>
 
-      {/* Tab content */}
-      <div className="flex-1 overflow-auto">
-        {isBaseRoute ? (
-          <FuncionarioVisaoGeral funcId={funcId} />
-        ) : (
-          <Outlet />
-        )}
-      </div>
+      <div className="flex-1 overflow-auto">{isBaseRoute ? <FuncionarioVisaoGeral funcId={funcId} /> : <Outlet />}</div>
     </div>
   );
 }
 
-/**
- * Visão geral inline do funcionário (aba padrão).
- * Exibe blocos de resumo: contrato, alocação, provisões, horas extras, documentos, FOPAG.
- */
 function FuncionarioVisaoGeral({ funcId }: { funcId: string | undefined }) {
-  const { funcionario, resumoBlocos, isLoading, isError } = useFuncionarioDetails(funcId);
+  const { funcionario, resumoBlocos, alocacaoAtual, isLoading, isError } = useFuncionarioDetails(funcId);
 
   if (isLoading) {
     return (
@@ -157,7 +143,35 @@ function FuncionarioVisaoGeral({ funcId }: { funcId: string | undefined }) {
 
   return (
     <MainContent>
-      {/* Resumo por domínio — blocos */}
+      {alocacaoAtual && (
+        <section className="mb-6 rounded-lg border border-gray-200 bg-white p-4">
+          <div className="mb-3 flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-jogab-50 text-jogab-600">
+              <MapPinned size={16} />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">Vínculo atual com obra</h3>
+              <p className="text-xs text-gray-500">Resumo técnico para integração entre RH, Obra e centro de custo.</p>
+            </div>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <ResumoMeta label="Obra" value={alocacaoAtual.obraNome} />
+            <ResumoMeta label="Centro de custo" value={alocacaoAtual.centroCustoNome ?? 'Não vinculado'} />
+            <ResumoMeta label="Filial" value={alocacaoAtual.filialNome} />
+            <ResumoMeta label="Gestor" value={alocacaoAtual.gestorNome ?? 'Não definido'} />
+          </div>
+          <div className="mt-4">
+            <Link
+              to={`/obras/${alocacaoAtual.obraId}/equipe`}
+              className="inline-flex items-center gap-2 rounded-md border border-jogab-200 px-3 py-1.5 text-sm font-medium text-jogab-700 hover:bg-jogab-50"
+            >
+              <Building2 size={14} />
+              Abrir equipe da obra
+            </Link>
+          </div>
+        </section>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {resumoBlocos.map((bloco) => (
           <ResumoBlocoCard key={bloco.titulo} bloco={bloco} />
@@ -167,7 +181,15 @@ function FuncionarioVisaoGeral({ funcId }: { funcId: string | undefined }) {
   );
 }
 
-/** Card de bloco de resumo (contrato, alocação, provisões, etc.) */
+function ResumoMeta({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-gray-100 bg-gray-50 p-3">
+      <p className="text-[11px] font-medium uppercase tracking-wide text-gray-500">{label}</p>
+      <p className="mt-1 text-sm font-medium text-gray-900">{value}</p>
+    </div>
+  );
+}
+
 function ResumoBlocoCard({ bloco }: { bloco: FuncionarioResumoBloco }) {
   const iconMap: Record<string, React.ReactNode> = {
     Contrato: <FileSignature size={16} />,

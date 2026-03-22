@@ -4,8 +4,18 @@
  * Atualmente usa dados mock. Quando a API estiver disponível,
  * basta trocar as implementações para chamadas reais via api.ts.
  */
-import type { Obra, ObraListItem, ObrasKpis, ObraVisaoGeralKpis, ObraResumoBloco } from '../types';
-import type { ObraFiltersData } from '../types';
+import { getFuncionariosByObra, mapFuncionarioStatusToEquipeStatus } from '@/modules/rh/data/funcionarios.mock';
+import type {
+  Obra,
+  ObraAlocacaoResumo,
+  ObraCreatePayload,
+  ObraDetailResponse,
+  ObraFiltersData,
+  ObraResumoBloco,
+  ObraUpdatePayload,
+  ObraVisaoGeralKpis,
+  ObrasListResponse,
+} from '../types';
 import {
   mockObras,
   toObraListItem,
@@ -14,19 +24,70 @@ import {
   gerarResumoBlocos,
 } from '../data/obras.mock';
 
+/**
+ * Contratos esperados para futura API real de Obras.
+ * Mantidos próximos ao service mock para facilitar a troca por integração HTTP.
+ */
+export const OBRAS_API_ENDPOINTS = {
+  list: '/obras',
+  detail: (obraId: string) => `/obras/${obraId}`,
+  create: '/obras',
+  update: (obraId: string) => `/obras/${obraId}`,
+} as const;
+
+export interface ObrasApiContract {
+  list: {
+    filters?: ObraFiltersData;
+    response: ObrasListResponse;
+  };
+  detail: {
+    obraId: string;
+    response: ObraDetailResponse;
+  };
+  create: {
+    payload: ObraCreatePayload;
+  };
+  update: {
+    obraId: string;
+    payload: ObraUpdatePayload;
+  };
+}
+
 /** Simula latência de rede */
 function delay(ms = 300): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function syncObraWithRh(obra: Obra): Obra {
+  const alocados = getFuncionariosByObra(obra.id).filter((funcionario) => funcionario.status !== 'desligado');
+  return {
+    ...obra,
+    totalFuncionarios: alocados.length,
+  };
+}
+
+export async function fetchObraAlocacaoResumo(obraId: string): Promise<ObraAlocacaoResumo | null> {
+  await delay(120);
+  const obra = mockObras.find((item) => item.id === obraId);
+  if (!obra) return null;
+
+  const funcionarios = getFuncionariosByObra(obraId);
+  const statuses = funcionarios.map((funcionario) => mapFuncionarioStatusToEquipeStatus(funcionario.status));
+
+  return {
+    totalAlocados: statuses.filter((status) => status === 'alocado').length,
+    totalFerias: statuses.filter((status) => status === 'ferias').length,
+    totalDesmobilizando: statuses.filter((status) => status === 'desmobilizando').length,
+    centrosCustoAtivos: new Set(funcionarios.map((funcionario) => funcionario.centroCustoId).filter(Boolean)).size,
+    departamentos: [...new Set(funcionarios.map((funcionario) => funcionario.departamento))],
+  };
+}
+
 /** Lista obras com filtros */
-export async function fetchObras(filters?: ObraFiltersData): Promise<{
-  data: ObraListItem[];
-  kpis: ObrasKpis;
-}> {
+export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListResponse> {
   await delay();
 
-  let resultado = [...mockObras];
+  let resultado = mockObras.map(syncObraWithRh);
 
   if (filters?.search) {
     const term = filters.search.toLowerCase();
@@ -53,13 +114,14 @@ export async function fetchObras(filters?: ObraFiltersData): Promise<{
   const kpis = calcularObrasKpis(resultado);
   const data = resultado.map(toObraListItem);
 
-  return { data, kpis };
+  return { data, kpis, total: data.length };
 }
 
 /** Busca uma obra pelo ID */
 export async function fetchObraById(obraId: string): Promise<Obra | null> {
   await delay(200);
-  return mockObras.find((o) => o.id === obraId) ?? null;
+  const obra = mockObras.find((o) => o.id === obraId);
+  return obra ? syncObraWithRh(obra) : null;
 }
 
 /** KPIs da visão geral da obra */
@@ -67,7 +129,7 @@ export async function fetchObraVisaoGeralKpis(obraId: string): Promise<ObraVisao
   await delay(150);
   const obra = mockObras.find((o) => o.id === obraId);
   if (!obra) return null;
-  return calcularObraVisaoGeralKpis(obra);
+  return calcularObraVisaoGeralKpis(syncObraWithRh(obra));
 }
 
 /** Blocos de resumo da visão geral da obra */
@@ -75,5 +137,22 @@ export async function fetchObraResumoBlocos(obraId: string): Promise<ObraResumoB
   await delay(200);
   const obra = mockObras.find((o) => o.id === obraId);
   if (!obra) return [];
-  return gerarResumoBlocos(obra);
+  return gerarResumoBlocos(syncObraWithRh(obra));
+}
+
+/** Agregador de detalhe preparado para futura API real única do workspace da obra. */
+export async function fetchObraDetail(obraId: string): Promise<ObraDetailResponse> {
+  const [obra, kpis, resumoBlocos, alocacaoResumo] = await Promise.all([
+    fetchObraById(obraId),
+    fetchObraVisaoGeralKpis(obraId),
+    fetchObraResumoBlocos(obraId),
+    fetchObraAlocacaoResumo(obraId),
+  ]);
+
+  return {
+    obra,
+    kpis,
+    resumoBlocos,
+    alocacaoResumo,
+  };
 }

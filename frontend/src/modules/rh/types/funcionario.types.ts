@@ -1,3 +1,5 @@
+import type { FuncionarioFormData } from './funcionario.schema';
+
 /**
  * Tipos do módulo RH — gestão de funcionários do ERP JOGAB.
  *
@@ -58,7 +60,9 @@ export interface FuncionarioListItem {
   funcao: string;
   departamento: string;
   filialNome: string;
+  obraAlocadoId: string | null;
   obraAlocadoNome: string | null;
+  centroCustoNome: string | null;
   dataAdmissao: string;
   salarioBase: number;
 }
@@ -83,6 +87,39 @@ export interface FuncionarioResumoItem {
   label: string;
   valor: string;
   destaque?: boolean;
+}
+
+/** Contrato de resposta para listagem de funcionários. */
+export interface FuncionariosListResponse {
+  data: FuncionarioListItem[];
+  kpis: FuncionariosKpis;
+  total: number;
+}
+
+export interface FuncionarioAlocacaoAtual {
+  obraId: string;
+  obraNome: string;
+  centroCustoId: string | null;
+  centroCustoNome: string | null;
+  filialId: string;
+  filialNome: string;
+  gestorId: string | null;
+  gestorNome: string | null;
+}
+
+/** Contrato de resposta para detalhe do funcionário. */
+export interface FuncionarioDetailResponse {
+  funcionario: Funcionario | null;
+  resumoBlocos: FuncionarioResumoBloco[];
+  alocacaoAtual: FuncionarioAlocacaoAtual | null;
+}
+
+/** Payload esperado para criação de funcionário. */
+export type FuncionarioCreatePayload = FuncionarioFormData;
+
+/** Payload esperado para edição parcial de funcionário. */
+export interface FuncionarioUpdatePayload extends Partial<FuncionarioFormData> {
+  id: string;
 }
 
 /** Labels para status de funcionário */

@@ -1,14 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { ContextoGlobal } from '@/shared/types';
+import type { ContextBootstrapData, ContextOptionsResponse, ContextoGlobal } from '@/shared/types';
 
 interface ContextState extends ContextoGlobal {
+  options: ContextOptionsResponse | null;
+  isInitialized: boolean;
   setEmpresa: (empresaId: string | null) => void;
   setFilial: (filialId: string | null) => void;
   setObra: (obraId: string | null) => void;
   setCompetencia: (competencia: string | null) => void;
   setPeriodo: (inicio: string | null, fim: string | null) => void;
   setCentroCusto: (centroCustoId: string | null) => void;
+  initializeContext: (data: ContextBootstrapData) => void;
   resetContext: () => void;
 }
 
@@ -26,6 +29,8 @@ export const useContextStore = create<ContextState>()(
   persist(
     (set) => ({
       ...initialContext,
+      options: null,
+      isInitialized: false,
 
       setEmpresa: (empresaId) =>
         set({ empresaId, filialId: null, obraId: null, centroCustoId: null }),
@@ -43,7 +48,15 @@ export const useContextStore = create<ContextState>()(
 
       setCentroCusto: (centroCustoId) => set({ centroCustoId }),
 
-      resetContext: () => set(initialContext),
+      initializeContext: ({ contexto, options }) =>
+        set((state) => ({
+          ...state,
+          ...contexto,
+          options,
+          isInitialized: true,
+        })),
+
+      resetContext: () => set({ ...initialContext, options: null, isInitialized: false }),
     }),
     {
       name: 'erp-jogab-context',

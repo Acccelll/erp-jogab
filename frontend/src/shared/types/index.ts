@@ -28,6 +28,11 @@ export interface SelectOption {
   label: string;
 }
 
+export interface ContextOption extends SelectOption {
+  empresaId?: string;
+  filialId?: string;
+}
+
 /** Empresa */
 export interface Empresa {
   id: string;
@@ -84,6 +89,28 @@ export interface Usuario {
   permissoes: string[];
   empresaId: string;
   filialId: string;
+}
+
+export interface AuthCredentials {
+  email: string;
+  password: string;
+}
+
+export interface AuthSession {
+  token: string;
+  usuario: Usuario;
+}
+
+export interface ContextOptionsResponse {
+  empresas: ContextOption[];
+  filiais: ContextOption[];
+  obras: ContextOption[];
+  competencias: SelectOption[];
+}
+
+export interface ContextBootstrapData {
+  options: ContextOptionsResponse;
+  contexto: ContextoGlobal;
 }
 
 /** Item de navegação da sidebar */

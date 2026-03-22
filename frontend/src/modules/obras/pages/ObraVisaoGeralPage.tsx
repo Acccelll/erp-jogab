@@ -23,7 +23,7 @@ import type { ObraResumoBloco } from '../types';
 
 export function ObraVisaoGeralPage() {
   const { obraId } = useParams<{ obraId: string }>();
-  const { kpis, resumoBlocos, isLoading, isError } = useObraDetails(obraId);
+  const { kpis, resumoBlocos, alocacaoResumo, isLoading, isError } = useObraDetails(obraId);
 
   if (isLoading) {
     return (
@@ -46,23 +46,15 @@ export function ObraVisaoGeralPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* KPIs da obra */}
       <KPISection>
-        <KPICard
-          label="Orçamento Previsto"
-          value={formatCurrency(kpis.orcamentoPrevisto)}
-        />
+        <KPICard label="Orçamento Previsto" value={formatCurrency(kpis.orcamentoPrevisto)} />
         <KPICard
           label="Custo Realizado"
           value={formatCurrency(kpis.custoRealizado)}
           subtitle={`${kpis.orcamentoPrevisto > 0 ? Math.round((kpis.custoRealizado / kpis.orcamentoPrevisto) * 100) : 0}% do orçamento`}
           trend={kpis.custoRealizado > kpis.orcamentoPrevisto * 0.8 ? 'down' : 'neutral'}
         />
-        <KPICard
-          label="Comprometido"
-          value={formatCurrency(kpis.custoComprometido)}
-          trend="neutral"
-        />
+        <KPICard label="Comprometido" value={formatCurrency(kpis.custoComprometido)} trend="neutral" />
         <KPICard
           label="Saldo Disponível"
           value={formatCurrency(kpis.saldoDisponivel)}
@@ -78,7 +70,6 @@ export function ObraVisaoGeralPage() {
       </KPISection>
 
       <MainContent>
-        {/* Progress bar large */}
         <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4">
           <div className="mb-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -99,13 +90,30 @@ export function ObraVisaoGeralPage() {
           </div>
         </div>
 
-        {/* Resumo por domínio — blocos */}
+        {alocacaoResumo && (
+          <section className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <ResumoIndicador label="Equipe alocada" value={String(alocacaoResumo.totalAlocados)} />
+            <ResumoIndicador label="Férias / afastamentos" value={String(alocacaoResumo.totalFerias + alocacaoResumo.totalDesmobilizando)} />
+            <ResumoIndicador label="Centros de custo" value={String(alocacaoResumo.centrosCustoAtivos)} />
+            <ResumoIndicador label="Departamentos" value={alocacaoResumo.departamentos.join(', ') || 'Sem vínculo'} />
+          </section>
+        )}
+
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {resumoBlocos.map((bloco) => (
             <ResumoBlocoCard key={bloco.titulo} bloco={bloco} />
           ))}
         </div>
       </MainContent>
+    </div>
+  );
+}
+
+function ResumoIndicador({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">{label}</p>
+      <p className="mt-2 text-sm font-semibold text-gray-900">{value}</p>
     </div>
   );
 }

@@ -60,9 +60,13 @@ export function FuncionarioCard({ funcionario }: FuncionarioCardProps) {
       </div>
 
       {/* Tipo contrato + departamento */}
-      <p className="mb-3 text-xs text-gray-400">
+      <p className="mb-2 text-xs text-gray-400">
         {TIPO_CONTRATO_LABELS[funcionario.tipoContrato]} · {funcionario.departamento}
       </p>
+
+      {funcionario.centroCustoNome && (
+        <p className="mb-3 text-xs text-gray-500">Centro de custo: {funcionario.centroCustoNome}</p>
+      )}
 
       {/* Salário */}
       <div className="flex items-center justify-between text-xs">

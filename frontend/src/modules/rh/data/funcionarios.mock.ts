@@ -4,9 +4,11 @@
  */
 import type {
   Funcionario,
+  FuncionarioAlocacaoAtual,
   FuncionarioListItem,
   FuncionariosKpis,
   FuncionarioResumoBloco,
+  FuncionarioStatus,
 } from '../types';
 
 export const mockFuncionarios: Funcionario[] = [
@@ -302,6 +304,39 @@ export const mockFuncionarios: Funcionario[] = [
   },
 ];
 
+export function isFuncionarioAlocado(func: Funcionario): boolean {
+  return Boolean(func.obraAlocadoId);
+}
+
+export function mapFuncionarioStatusToEquipeStatus(
+  status: FuncionarioStatus,
+): 'alocado' | 'ferias' | 'desmobilizando' {
+  if (status === 'ferias') return 'ferias';
+  if (status === 'afastado' || status === 'desligado') return 'desmobilizando';
+  return 'alocado';
+}
+
+export function getFuncionariosByObra(obraId: string): Funcionario[] {
+  return mockFuncionarios.filter((funcionario) => funcionario.obraAlocadoId === obraId);
+}
+
+export function buildFuncionarioAlocacaoAtual(
+  func: Funcionario,
+): FuncionarioAlocacaoAtual | null {
+  if (!func.obraAlocadoId || !func.obraAlocadoNome) return null;
+
+  return {
+    obraId: func.obraAlocadoId,
+    obraNome: func.obraAlocadoNome,
+    centroCustoId: func.centroCustoId,
+    centroCustoNome: func.centroCustoNome,
+    filialId: func.filialId,
+    filialNome: func.filialNome,
+    gestorId: func.gestorId,
+    gestorNome: func.gestorNome,
+  };
+}
+
 /** Converte Funcionario completo para FuncionarioListItem */
 export function toFuncionarioListItem(func: Funcionario): FuncionarioListItem {
   return {
@@ -315,7 +350,9 @@ export function toFuncionarioListItem(func: Funcionario): FuncionarioListItem {
     funcao: func.funcao,
     departamento: func.departamento,
     filialNome: func.filialNome,
+    obraAlocadoId: func.obraAlocadoId,
     obraAlocadoNome: func.obraAlocadoNome,
+    centroCustoNome: func.centroCustoNome,
     dataAdmissao: func.dataAdmissao,
     salarioBase: func.salarioBase,
   };
@@ -361,7 +398,7 @@ export function gerarFuncionarioResumoBlocos(func: Funcionario): FuncionarioResu
     {
       titulo: 'Provisões',
       itens: [
-        { label: 'Férias provisionadas', valor: fmt(func.salarioBase * 1.33 / 12) },
+        { label: 'Férias provisionadas', valor: fmt((func.salarioBase * 1.33) / 12) },
         { label: '13º provisionado', valor: fmt(func.salarioBase / 12) },
         { label: 'FGTS estimado', valor: fmt(func.salarioBase * 0.08) },
         { label: 'INSS estimado', valor: fmt(func.salarioBase * 0.11) },
@@ -370,17 +407,20 @@ export function gerarFuncionarioResumoBlocos(func: Funcionario): FuncionarioResu
     {
       titulo: 'Horas Extras',
       itens: [
-        { label: 'Horas extras mês', valor: `${Math.ceil(Math.random() * 30)}h` },
-        { label: 'Banco de horas', valor: `${Math.ceil(Math.random() * 16)}h` },
-        { label: 'Valor estimado HE', valor: fmt(func.salarioBase / 220 * 1.5 * Math.ceil(Math.random() * 30)) },
+        { label: 'Horas extras mês', valor: `${Math.ceil((func.salarioBase % 17) + 8)}h` },
+        { label: 'Banco de horas', valor: `${Math.ceil((func.salarioBase % 9) + 2)}h` },
+        {
+          label: 'Valor estimado HE',
+          valor: fmt((func.salarioBase / 220) * 1.5 * Math.ceil((func.salarioBase % 17) + 8)),
+        },
       ],
     },
     {
       titulo: 'Documentos',
       itens: [
-        { label: 'Documentos ativos', valor: String(Math.ceil(Math.random() * 8 + 3)) },
-        { label: 'Vencendo em 30 dias', valor: String(Math.ceil(Math.random() * 2)), destaque: true },
-        { label: 'ASOs pendentes', valor: String(Math.ceil(Math.random() * 1)) },
+        { label: 'Documentos ativos', valor: String((func.nome.length % 5) + 4) },
+        { label: 'Vencendo em 30 dias', valor: String(func.status === 'ativo' ? 1 : 0), destaque: func.status === 'ativo' },
+        { label: 'ASOs pendentes', valor: String(func.status === 'admissao_pendente' ? 1 : 0) },
       ],
     },
     {
