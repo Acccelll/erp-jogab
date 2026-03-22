@@ -3,10 +3,10 @@ import { Plus, FileCheck2, CalendarRange, Clock3 } from 'lucide-react';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useHorasExtras, useHorasExtrasFilters } from '../hooks';
 import {
-  HorasExtrasAprovacaoPlaceholder,
   HorasExtrasFilters,
   HorasExtrasKpiBar,
   HorasExtrasResumoCard,
+  HorasExtrasSectionHeader,
   HorasExtrasTable,
 } from '../components';
 
@@ -157,7 +157,12 @@ export function HorasExtrasDashboardPage() {
               </section>
             )}
 
-            <HorasExtrasAprovacaoPlaceholder />
+            <HorasExtrasSectionHeader
+              title="Aprovação e histórico"
+              description="Acompanhe a fila de aprovação e a trilha operacional que conecta RH, Obra, Horas Extras e FOPAG."
+              actionLabel="Abrir aprovação"
+              actionHref="/horas-extras/aprovacao"
+            />
           </>
         )}
       </MainContent>

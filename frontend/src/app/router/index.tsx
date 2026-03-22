@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+import type { RouteObject } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
@@ -23,22 +25,77 @@ import { AppLayout } from '@/app/layouts/AppLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { ModuleLayout } from '@/app/layouts/ModuleLayout';
 import { ObraWorkspaceLayout } from '@/app/layouts/ObraWorkspaceLayout';
-import * as AdminModule from '@/modules/admin';
-import * as DashboardModule from '@/modules/dashboard';
-import * as ComprasModule from '@/modules/compras';
-import * as DocumentosModule from '@/modules/documentos';
-import * as EstoqueModule from '@/modules/estoque';
-import * as FinanceiroModule from '@/modules/financeiro';
-import * as FiscalModule from '@/modules/fiscal';
-import * as FopagModule from '@/modules/fopag';
-import * as HorasExtrasModule from '@/modules/horas-extras';
-import * as MedicoesModule from '@/modules/medicoes';
-import * as ObrasModule from '@/modules/obras';
-import { ObraTabPlaceholder } from '@/modules/obras/components/ObraTabPlaceholder';
+import { DashboardPage } from '@/modules/dashboard';
+import {
+  ObraComprasPage,
+  ObraCronogramaPage,
+  ObraDocumentosPage,
+  ObraEquipePage,
+  ObraFinanceiroPage,
+  ObrasListPage,
+  ObraVisaoGeralPage,
+} from '@/modules/obras';
+import { FuncionariosListPage, FuncionarioDetailPage } from '@/modules/rh';
+import {
+  AdminIntegracoesPage,
+  AdminLogsPage,
+  AdminPage,
+  AdminParametrosPage,
+  AdminPerfisPage,
+  AdminPermissoesPage,
+  AdminUsuariosPage,
+} from '@/modules/admin';
+import {
+  ComprasCotacoesPage,
+  ComprasListPage,
+  ComprasPedidosPage,
+  ComprasSolicitacoesPage,
+  PedidoCompraDetailPage,
+} from '@/modules/compras';
+import { DashboardPage } from '@/modules/dashboard';
+import { DocumentoDetailPage, DocumentosListPage } from '@/modules/documentos';
+import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
+import {
+  ContasPagarPage,
+  ContasReceberPage,
+  FinanceiroListPage,
+  FluxoCaixaPage,
+  TituloFinanceiroDetailPage,
+} from '@/modules/financeiro';
+import {
+  DocumentoFiscalDetailPage,
+  FiscalEntradasPage,
+  FiscalListPage,
+  FiscalSaidasPage,
+} from '@/modules/fiscal';
+import {
+  ContasPagarPage,
+  ContasReceberPage,
+  FinanceiroListPage,
+  FluxoCaixaPage,
+  TituloFinanceiroDetailPage,
+} from '@/modules/financeiro';
+import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
+import { MedicoesListPage } from '@/modules/medicoes';
+import { DocumentosListPage } from '@/modules/documentos';
+import { RelatoriosListPage } from '@/modules/relatorios';
+import { AdminPage } from '@/modules/admin';
 import { PerfilPage } from '@/modules/perfil';
-import * as RelatoriosModule from '@/modules/relatorios';
-import * as RhModule from '@/modules/rh';
-import { FuncionarioTabPlaceholder } from '@/modules/rh/components/FuncionarioTabPlaceholder';
+import { RelatorioCategoriaPage, RelatoriosListPage } from '@/modules/relatorios';
+import {
+  FuncionarioAlocacoesPage,
+  FuncionarioContratoPage,
+  FuncionarioDecimoTerceiroPage,
+  FuncionarioDetailPage,
+  FuncionarioDocumentosPage,
+  FuncionarioFeriasPage,
+  FuncionarioFopagPage,
+  FuncionariosListPage,
+  FuncionarioHistoricoSalarialPage,
+  FuncionarioHorasExtrasPage,
+  FuncionarioProvisoesPage,
+} from '@/modules/rh';
+import { FuncionarioTabPlaceholder } from '@/modules/rh/components';
 import { NotFoundPage } from '@/shared/components';
 
 interface PlaceholderTabConfig {
@@ -53,144 +110,198 @@ const obraWorkspaceTabs: PlaceholderTabConfig[] = [
     path: 'cronograma',
     icon: CalendarDays,
     title: 'Cronograma',
-    description: 'Cronograma físico-financeiro da obra com etapas, marcos e % de avanço.',
+    description:
+      'Cronograma físico-financeiro da obra com etapas, marcos e percentual de avanço.',
   },
   {
     path: 'contratos',
     icon: FileSignature,
     title: 'Contratos',
-    description: 'Contratos da obra com clientes e fornecedores, aditivos e medições.',
+    description:
+      'Contratos da obra com clientes e fornecedores, aditivos e medições vinculadas.',
   },
   {
     path: 'equipe',
     icon: UsersRound,
     title: 'Equipe',
-    description: 'Equipe alocada na obra com cargos, funções e período de atuação.',
+    description:
+      'Equipe alocada na obra com cargos, funções, jornadas e período de atuação.',
   },
   {
     path: 'rh',
     icon: Users,
     title: 'RH da Obra',
-    description: 'Dados de RH dos funcionários alocados nesta obra.',
+    description:
+      'Dados de RH dos funcionários alocados na obra com vínculo de centro de custo.',
   },
   {
     path: 'compras',
     icon: ShoppingCart,
     title: 'Compras da Obra',
-    description: 'Solicitações e pedidos de compra vinculados a esta obra.',
+    description:
+      'Solicitações, cotações e pedidos de compra vinculados à execução da obra.',
   },
   {
     path: 'financeiro',
     icon: DollarSign,
     title: 'Financeiro da Obra',
-    description: 'Visão financeira da obra: títulos, previsão de desembolso e custos.',
+    description:
+      'Visão financeira da obra com títulos, previsões de desembolso e custos realizados.',
   },
   {
     path: 'estoque',
     icon: Package,
     title: 'Estoque da Obra',
-    description: 'Movimentações de estoque e saldos de materiais desta obra.',
+    description:
+      'Movimentações de estoque, consumo de materiais e saldos por obra.',
   },
   {
     path: 'medicoes',
     icon: Ruler,
     title: 'Medições da Obra',
-    description: 'Medições contratuais e faturamento vinculado à obra.',
+    description:
+      'Medições contratuais, faturamento e acompanhamento da produção executada.',
   },
   {
     path: 'documentos',
     icon: FolderOpen,
     title: 'Documentos da Obra',
-    description: 'Documentos vinculados à obra com controle de vencimentos.',
+    description:
+      'Documentos vinculados à obra com controle de vencimentos, responsáveis e status.',
   },
   {
     path: 'riscos',
     icon: AlertTriangle,
     title: 'Riscos da Obra',
-    description: 'Matriz de riscos e oportunidades identificados para a obra.',
+    description:
+      'Matriz de riscos e oportunidades identificados ao longo da execução da obra.',
   },
 ];
 
-const funcionarioTabs: PlaceholderTabConfig[] = [
+const funcionarioDetailTabs: PlaceholderTabConfig[] = [
   {
     path: 'contrato',
     icon: FileSignature,
     title: 'Contrato',
-    description: 'Dados contratuais do funcionário: tipo, vigência, cláusulas e aditivos.',
+    description:
+      'Dados contratuais do funcionário com tipo, vigência, cláusulas e aditivos.',
   },
   {
     path: 'historico-salarial',
     icon: DollarSign,
     title: 'Histórico Salarial',
-    description: 'Histórico de reajustes, promoções e alterações salariais.',
+    description:
+      'Histórico de reajustes, promoções e alterações salariais por vigência.',
   },
   {
     path: 'documentos',
     icon: FolderOpen,
     title: 'Documentos',
-    description: 'Documentos do funcionário: ASOs, certificados, contratos e comprovantes.',
+    description:
+      'ASOs, certificados, contratos, identificações e demais documentos do colaborador.',
   },
   {
     path: 'alocacoes',
     icon: Building2,
     title: 'Alocações',
-    description: 'Histórico de alocações por obra e centro de custo.',
+    description:
+      'Histórico de alocações por obra, função e centro de custo do funcionário.',
   },
   {
     path: 'ferias',
     icon: Palmtree,
     title: 'Férias',
-    description: 'Períodos aquisitivos, programação e histórico de férias.',
+    description:
+      'Períodos aquisitivos, programação, saldo e histórico de gozo de férias.',
   },
   {
     path: 'decimo-terceiro',
     icon: Gift,
     title: '13º Salário',
-    description: 'Cálculo e histórico de pagamentos do 13º salário.',
+    description:
+      'Cálculo, provisão e histórico de pagamentos do décimo terceiro salário.',
   },
   {
     path: 'provisoes',
     icon: Wallet,
     title: 'Provisões',
-    description: 'Provisões trabalhistas: férias, 13º, FGTS, rescisão.',
+    description:
+      'Provisões trabalhistas de férias, 13º, FGTS e rescisão do colaborador.',
   },
   {
     path: 'horas-extras',
     icon: Clock,
     title: 'Horas Extras',
-    description: 'Lançamentos de horas extras e banco de horas do funcionário.',
+    description:
+      'Lançamentos, aprovação, banco de horas e reflexos de horas extras.',
   },
   {
     path: 'fopag',
     icon: Receipt,
     title: 'FOPAG',
-    description: 'Participação do funcionário na folha de pagamento por competência.',
+    description:
+      'Participação do funcionário na folha por competência e eventos consolidados.',
   },
 ];
 
-function createObraPlaceholderRoute(tab: PlaceholderTabConfig) {
-  return {
-    path: tab.path,
-    element: (
-      <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />
-    ),
-  };
+const obraImplementedTabs = new Set([
+  'cronograma',
+  'equipe',
+  'compras',
+  'financeiro',
+  'documentos',
+]);
+
+const funcionarioImplementedTabs = new Set([
+  'contrato',
+  'historico-salarial',
+  'documentos',
+  'alocacoes',
+  'ferias',
+  'decimo-terceiro',
+  'provisoes',
+  'horas-extras',
+  'fopag',
+]);
+
+function createPlaceholderRoutes(
+  tabs: PlaceholderTabConfig[],
+  implementedTabs: Set<string>,
+  renderPlaceholder: (tab: PlaceholderTabConfig) => ReactElement,
+): RouteObject[] {
+  return tabs
+    .filter(({ path }) => !implementedTabs.has(path))
+    .map((tab) => ({
+      path: tab.path,
+      element: renderPlaceholder(tab),
+    }));
 }
 
-function createFuncionarioPlaceholderRoute(tab: PlaceholderTabConfig) {
-  return {
-    path: tab.path,
-    element: (
-      <FuncionarioTabPlaceholder
-        icon={tab.icon}
-        title={tab.title}
-        description={tab.description}
-      />
-    ),
-  };
-}
+const obraPlaceholderRoutes = createPlaceholderRoutes(
+  obraWorkspaceTabs,
+  obraImplementedTabs,
+  (tab) => (
+    <ObraTabPlaceholder
+      icon={tab.icon}
+      title={tab.title}
+      description={tab.description}
+    />
+  ),
+);
 
-const appRoutes = [
+const funcionarioPlaceholderRoutes = createPlaceholderRoutes(
+  funcionarioDetailTabs,
+  funcionarioImplementedTabs,
+  (tab) => (
+    <FuncionarioTabPlaceholder
+      icon={tab.icon}
+      title={tab.title}
+      description={tab.description}
+    />
+  ),
+);
+
+const appRoutes: RouteObject[] = [
   {
     index: true,
     element: <Navigate to="/dashboard" replace />,
@@ -198,26 +309,24 @@ const appRoutes = [
   {
     path: '/dashboard',
     element: <ModuleLayout />,
-    children: [{ index: true, element: <DashboardModule.DashboardPage /> }],
+    children: [{ index: true, element: <DashboardPage /> }],
   },
   {
     path: '/obras',
     element: <ModuleLayout />,
     children: [
-      { index: true, element: <ObrasModule.ObrasListPage /> },
+      { index: true, element: <ObrasListPage /> },
       {
         path: ':obraId',
         element: <ObraWorkspaceLayout />,
         children: [
-          { index: true, element: <ObrasModule.ObraVisaoGeralPage /> },
-          { path: 'cronograma', element: <ObrasModule.ObraCronogramaPage /> },
-          { path: 'equipe', element: <ObrasModule.ObraEquipePage /> },
-          { path: 'compras', element: <ObrasModule.ObraComprasPage /> },
-          { path: 'financeiro', element: <ObrasModule.ObraFinanceiroPage /> },
-          { path: 'documentos', element: <ObrasModule.ObraDocumentosPage /> },
-          ...obraWorkspaceTabs
-            .filter((tab) => !['cronograma', 'equipe', 'compras', 'financeiro', 'documentos'].includes(tab.path))
-            .map(createObraPlaceholderRoute),
+          { index: true, element: <ObraVisaoGeralPage /> },
+          { path: 'cronograma', element: <ObraCronogramaPage /> },
+          { path: 'equipe', element: <ObraEquipePage /> },
+          { path: 'compras', element: <ObraComprasPage /> },
+          { path: 'financeiro', element: <ObraFinanceiroPage /> },
+          { path: 'documentos', element: <ObraDocumentosPage /> },
+          ...obraPlaceholderRoutes,
         ],
       },
     ],
@@ -227,41 +336,280 @@ const appRoutes = [
     element: <ModuleLayout />,
     children: [
       { index: true, element: <Navigate to="/rh/funcionarios" replace /> },
-      { path: 'funcionarios', element: <RhModule.FuncionariosListPage /> },
+      { path: 'funcionarios', element: <FuncionariosListPage /> },
       {
         path: 'funcionarios/:funcId',
-        element: <RhModule.FuncionarioDetailPage />,
-        children: funcionarioTabs.map(createFuncionarioPlaceholderRoute),
-      },
-    ],
-  },
-  {
-    path: '/horas-extras',
-    element: <ModuleLayout />,
-    children: [
-      { index: true, element: <HorasExtrasModule.HorasExtrasDashboardPage /> },
-      { path: 'fechamento', element: <HorasExtrasModule.HorasExtrasFechamentoPage /> },
-      { path: 'aprovacao', element: <HorasExtrasModule.HorasExtrasAprovacaoPage /> },
-    ],
-  },
-  {
-    path: '/fopag',
-    element: <ModuleLayout />,
-    children: [
-      { index: true, element: <FopagModule.FopagListPage /> },
-      {
-        path: ':competenciaId',
-        element: <FopagModule.FopagCompetenciaDetailPage />,
+        element: <FuncionarioDetailPage />,
         children: [
-          { index: true, element: <FopagModule.FopagCompetenciaOverviewPage /> },
-          { path: 'funcionarios', element: <FopagModule.FopagCompetenciaFuncionariosPage /> },
-          { path: 'obras', element: <FopagModule.FopagCompetenciaObrasPage /> },
-          { path: 'eventos', element: <FopagModule.FopagCompetenciaEventosPage /> },
-          { path: 'rateio', element: <FopagModule.FopagCompetenciaRateioPage /> },
-          { path: 'financeiro', element: <FopagModule.FopagCompetenciaFinanceiroPage /> },
+          // Redirect root to dashboard
+          {
+            index: true,
+            element: <Navigate to="/dashboard" replace />,
+          },
+
+          // Dashboard
+          {
+            path: '/dashboard',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <DashboardPage /> },
+            ],
+          },
+
+          // Obras
+          {
+            path: '/obras',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <ObrasListPage /> },
+              {
+                path: ':obraId',
+                element: <ObraWorkspaceLayout />,
+                children: [
+                  { index: true, element: <ObraVisaoGeralPage /> },
+                  { path: 'cronograma', element: <ObraCronogramaPage /> },
+                  { path: 'equipe', element: <ObraEquipePage /> },
+                  { path: 'compras', element: <ObraComprasPage /> },
+                  { path: 'financeiro', element: <ObraFinanceiroPage /> },
+                  { path: 'documentos', element: <ObraDocumentosPage /> },
+                  ...obraTabPlaceholders
+                    .filter((tab) => !['cronograma', 'equipe', 'compras', 'financeiro', 'documentos'].includes(tab.path))
+                    .map((tab) => ({
+                      path: tab.path,
+                      element: <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                    })),
+                ],
+              },
+            ],
+          },
+
+          // RH
+          {
+            path: '/rh',
+            element: <ModuleLayout />,
+            children: [
+              { path: 'funcionarios', element: <FuncionariosListPage /> },
+              {
+                path: 'funcionarios/:funcId',
+                element: <FuncionarioDetailPage />,
+                children: [
+                  { path: 'contrato', element: <FuncionarioContratoPage /> },
+                  { path: 'alocacoes', element: <FuncionarioAlocacoesPage /> },
+                  { path: 'provisoes', element: <FuncionarioProvisoesPage /> },
+                  { path: 'horas-extras', element: <FuncionarioHorasExtrasPage /> },
+                  { path: 'fopag', element: <FuncionarioFopagPage /> },
+                  ...funcionarioTabPlaceholders
+                    .filter((tab) => !['contrato', 'alocacoes', 'provisoes', 'horas-extras', 'fopag'].includes(tab.path))
+                    .map((tab) => ({
+                      path: tab.path,
+                      element: <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
+                    })),
+                ],
+              },
+              { index: true, element: <Navigate to="/rh/funcionarios" replace /> },
+            ],
+          },
+
+          // Horas Extras
+          {
+            path: '/horas-extras',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <HorasExtrasDashboardPage /> },
+              { path: 'fechamento', element: <HorasExtrasFechamentoPage /> },
+              { path: 'aprovacao', element: <HorasExtrasAprovacaoPage /> },
+            ],
+          },
+
+          // FOPAG
+          {
+            path: 'historico-salarial',
+            element: <FuncionarioHistoricoSalarialPage />,
+          },
+
+          // Compras
+          {
+            path: '/compras',
+            element: <ModuleLayout />,
+            children: [
+              // /compras
+              {
+                index: true,
+                element: <ComprasListPage />,
+              },
+              // /compras/solicitacoes
+              {
+                path: 'solicitacoes',
+                element: <ComprasSolicitacoesPage />,
+              },
+              // /compras/cotacoes
+              {
+                path: 'cotacoes',
+                element: <ComprasCotacoesPage />,
+              },
+              // /compras/pedidos
+              {
+                path: 'pedidos',
+                element: <ComprasPedidosPage />,
+              },
+              // /compras/pedidos/:pedidoId
+              {
+                path: 'pedidos/:pedidoId',
+                element: <PedidoCompraDetailPage />,
+              },
+            ],
+          },
+
+          // Fiscal
+          {
+            path: '/fiscal',
+            element: <ModuleLayout />,
+            children: [
+              {
+                index: true,
+                element: <FiscalListPage />,
+              },
+              {
+                path: 'entradas',
+                element: <FiscalEntradasPage />,
+              },
+              {
+                path: 'saidas',
+                element: <FiscalSaidasPage />,
+              },
+              {
+                path: 'documentos/:documentoId',
+                element: <DocumentoFiscalDetailPage />,
+              },
+            ],
+          },
+
+          // Financeiro
+          {
+            path: '/financeiro',
+            element: <ModuleLayout />,
+            children: [
+              // /financeiro
+              {
+                index: true,
+                element: <FinanceiroListPage />,
+              },
+              // /financeiro/fluxo
+              {
+                path: 'fluxo',
+                element: <FluxoCaixaPage />,
+              },
+              // /financeiro/contas-pagar
+              {
+                path: 'contas-pagar',
+                element: <ContasPagarPage />,
+              },
+              // /financeiro/contas-receber
+              {
+                path: 'contas-receber',
+                element: <ContasReceberPage />,
+              },
+              // /financeiro/titulos/:tituloId
+              {
+                path: 'titulos/:tituloId',
+                element: <TituloFinanceiroDetailPage />,
+              },
+            ],
+          },
+
+          // Estoque
+          {
+            path: '/estoque',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <EstoqueListPage /> },
+              { path: 'movimentacoes', element: <EstoqueMovimentacoesPage /> },
+              { path: 'itens/:itemId', element: <EstoqueItemDetailPage /> },
+            ],
+          },
+
+          // Medições e Faturamento
+          {
+            path: '/medicoes',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <MedicoesListPage /> },
+              { path: ':medicaoId', element: <MedicaoDetailPage /> },
+            ],
+          },
+
+          // Documentos
+          {
+            path: '/documentos',
+            element: <ModuleLayout />,
+            children: [
+              // /documentos
+              {
+                index: true,
+                element: <DocumentosListPage />,
+              },
+              // /documentos/:documentoId
+              {
+                path: ':documentoId',
+                element: <DocumentoDetailPage />,
+              },
+            ],
+          },
+
+          // Relatórios
+          {
+            path: '/relatorios',
+            element: <ModuleLayout />,
+            children: [
+              // /relatorios
+              {
+                index: true,
+                element: <RelatoriosListPage />,
+              },
+              // /relatorios/:categoria
+              {
+                path: ':categoria',
+                element: <RelatorioCategoriaPage />,
+              },
+            ],
+          },
+
+          // Administração
+          // /admin
+          //   index -> AdminPage
+          //   usuarios -> AdminUsuariosPage
+          //   perfis -> AdminPerfisPage
+          //   permissoes -> AdminPermissoesPage
+          //   parametros -> AdminParametrosPage
+          //   logs -> AdminLogsPage
+          //   integracoes -> AdminIntegracoesPage
+          {
+            path: '/admin',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <AdminPage /> },
+              { path: 'usuarios', element: <AdminUsuariosPage /> },
+              { path: 'perfis', element: <AdminPerfisPage /> },
+              { path: 'permissoes', element: <AdminPermissoesPage /> },
+              { path: 'parametros', element: <AdminParametrosPage /> },
+              { path: 'logs', element: <AdminLogsPage /> },
+              { path: 'integracoes', element: <AdminIntegracoesPage /> },
+            ],
+          },
+
+          // Perfil
+          {
+            path: '/perfil',
+            element: <ModuleLayout />,
+            children: [
+              { index: true, element: <PerfilPage /> },
+            ],
+          },
+
+          // 404 — Catch-all
           {
             path: 'previsto-realizado',
-            element: <FopagModule.FopagCompetenciaPrevistoRealizadoPage />,
+            element: <FopagCompetenciaPrevistoRealizadoPage />,
           },
         ],
       },
@@ -271,78 +619,78 @@ const appRoutes = [
     path: '/compras',
     element: <ModuleLayout />,
     children: [
-      { index: true, element: <ComprasModule.ComprasListPage /> },
-      { path: 'solicitacoes', element: <ComprasModule.ComprasSolicitacoesPage /> },
-      { path: 'cotacoes', element: <ComprasModule.ComprasCotacoesPage /> },
-      { path: 'pedidos', element: <ComprasModule.ComprasPedidosPage /> },
-      { path: 'pedidos/:pedidoId', element: <ComprasModule.PedidoCompraDetailPage /> },
+      { index: true, element: <ComprasListPage /> },
+      { path: 'solicitacoes', element: <ComprasSolicitacoesPage /> },
+      { path: 'cotacoes', element: <ComprasCotacoesPage /> },
+      { path: 'pedidos', element: <ComprasPedidosPage /> },
+      { path: 'pedidos/:pedidoId', element: <PedidoCompraDetailPage /> },
     ],
   },
   {
     path: '/fiscal',
     element: <ModuleLayout />,
     children: [
-      { index: true, element: <FiscalModule.FiscalListPage /> },
-      { path: 'entradas', element: <FiscalModule.FiscalEntradasPage /> },
-      { path: 'saidas', element: <FiscalModule.FiscalSaidasPage /> },
-      { path: 'documentos/:documentoId', element: <FiscalModule.DocumentoFiscalDetailPage /> },
+      { index: true, element: <FiscalListPage /> },
+      { path: 'entradas', element: <FiscalEntradasPage /> },
+      { path: 'saidas', element: <FiscalSaidasPage /> },
+      { path: 'documentos/:documentoId', element: <DocumentoFiscalDetailPage /> },
     ],
   },
   {
     path: '/financeiro',
     element: <ModuleLayout />,
     children: [
-      { index: true, element: <FinanceiroModule.FinanceiroListPage /> },
-      { path: 'fluxo', element: <FinanceiroModule.FluxoCaixaPage /> },
-      { path: 'contas-pagar', element: <FinanceiroModule.ContasPagarPage /> },
-      { path: 'contas-receber', element: <FinanceiroModule.ContasReceberPage /> },
-      { path: 'titulos/:tituloId', element: <FinanceiroModule.TituloFinanceiroDetailPage /> },
+      { index: true, element: <FinanceiroListPage /> },
+      { path: 'fluxo', element: <FluxoCaixaPage /> },
+      { path: 'contas-pagar', element: <ContasPagarPage /> },
+      { path: 'contas-receber', element: <ContasReceberPage /> },
+      { path: 'titulos/:tituloId', element: <TituloFinanceiroDetailPage /> },
     ],
   },
   {
     path: '/estoque',
     element: <ModuleLayout />,
     children: [
-      { index: true, element: <EstoqueModule.EstoqueListPage /> },
-      { path: 'movimentacoes', element: <EstoqueModule.EstoqueMovimentacoesPage /> },
-      { path: 'itens/:itemId', element: <EstoqueModule.EstoqueItemDetailPage /> },
+      { index: true, element: <EstoqueListPage /> },
+      { path: 'movimentacoes', element: <EstoqueMovimentacoesPage /> },
+      { path: 'itens/:itemId', element: <EstoqueItemDetailPage /> },
     ],
   },
   {
     path: '/medicoes',
     element: <ModuleLayout />,
     children: [
-      { index: true, element: <MedicoesModule.MedicoesListPage /> },
-      { path: ':medicaoId', element: <MedicoesModule.MedicaoDetailPage /> },
+      { index: true, element: <MedicoesListPage /> },
+      { path: ':medicaoId', element: <MedicaoDetailPage /> },
     ],
   },
   {
     path: '/documentos',
     element: <ModuleLayout />,
     children: [
-      { index: true, element: <DocumentosModule.DocumentosListPage /> },
-      { path: ':documentoId', element: <DocumentosModule.DocumentoDetailPage /> },
+      { index: true, element: <DocumentosListPage /> },
+      { path: ':documentoId', element: <DocumentoDetailPage /> },
     ],
   },
   {
     path: '/relatorios',
     element: <ModuleLayout />,
     children: [
-      { index: true, element: <RelatoriosModule.RelatoriosListPage /> },
-      { path: ':categoria', element: <RelatoriosModule.RelatorioCategoriaPage /> },
+      { index: true, element: <RelatoriosListPage /> },
+      { path: ':categoria', element: <RelatorioCategoriaPage /> },
     ],
   },
   {
     path: '/admin',
     element: <ModuleLayout />,
     children: [
-      { index: true, element: <AdminModule.AdminPage /> },
-      { path: 'usuarios', element: <AdminModule.AdminUsuariosPage /> },
-      { path: 'perfis', element: <AdminModule.AdminPerfisPage /> },
-      { path: 'permissoes', element: <AdminModule.AdminPermissoesPage /> },
-      { path: 'parametros', element: <AdminModule.AdminParametrosPage /> },
-      { path: 'logs', element: <AdminModule.AdminLogsPage /> },
-      { path: 'integracoes', element: <AdminModule.AdminIntegracoesPage /> },
+      { index: true, element: <AdminPage /> },
+      { path: 'usuarios', element: <AdminUsuariosPage /> },
+      { path: 'perfis', element: <AdminPerfisPage /> },
+      { path: 'permissoes', element: <AdminPermissoesPage /> },
+      { path: 'parametros', element: <AdminParametrosPage /> },
+      { path: 'logs', element: <AdminLogsPage /> },
+      { path: 'integracoes', element: <AdminIntegracoesPage /> },
     ],
   },
   {
