@@ -3,7 +3,7 @@
  * Integra com o filtersStore global.
  */
 import { useCallback, useMemo } from 'react';
-import { useFiltersStore } from '@/shared/stores';
+import { useContextStore, useFiltersStore } from '@/shared/stores';
 import { defaultFuncionarioFilters } from '../types';
 import type { FuncionarioFiltersData, FuncionarioStatus, TipoContrato } from '../types';
 
@@ -11,7 +11,7 @@ const MODULE_KEY = 'rh';
 
 export function useFuncionarioFilters() {
   const { getModuleFilters, setFilter, clearModuleFilters } = useFiltersStore();
-
+  const { filialId: contextFilialId, obraId: contextObraId } = useContextStore();
   const raw = getModuleFilters(MODULE_KEY);
 
   const filters: FuncionarioFiltersData = useMemo(
@@ -19,11 +19,11 @@ export function useFuncionarioFilters() {
       search: (raw.search as string) ?? defaultFuncionarioFilters.search,
       status: (raw.status as FuncionarioStatus) ?? defaultFuncionarioFilters.status,
       tipoContrato: (raw.tipoContrato as TipoContrato) ?? defaultFuncionarioFilters.tipoContrato,
-      filialId: (raw.filialId as string) ?? defaultFuncionarioFilters.filialId,
-      obraId: (raw.obraId as string) ?? defaultFuncionarioFilters.obraId,
+      filialId: (raw.filialId as string) ?? contextFilialId ?? defaultFuncionarioFilters.filialId,
+      obraId: (raw.obraId as string) ?? contextObraId ?? defaultFuncionarioFilters.obraId,
       departamento: (raw.departamento as string) ?? defaultFuncionarioFilters.departamento,
     }),
-    [raw],
+    [contextFilialId, contextObraId, raw],
   );
 
   const setSearch = useCallback(
@@ -60,8 +60,8 @@ export function useFuncionarioFilters() {
     filters.search ||
     filters.status ||
     filters.tipoContrato ||
-    filters.filialId ||
-    filters.obraId
+    (filters.filialId && filters.filialId !== contextFilialId) ||
+    (filters.obraId && filters.obraId !== contextObraId)
   );
 
   return {

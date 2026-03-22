@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react';
+
 export function ObraWorkspaceTable({
   columns,
   rows,
 }: {
   columns: string[];
-  rows: string[][];
+  rows: ReactNode[][];
 }) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm shadow-gray-100/60">

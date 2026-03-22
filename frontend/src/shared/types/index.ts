@@ -159,3 +159,5 @@ export type Permissao =
 
 /** Papel do usuário no sistema */
 export type PapelUsuario = 'admin' | 'gestor' | 'operador' | 'visualizador';
+
+export * from './relationships';
