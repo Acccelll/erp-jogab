@@ -30,20 +30,21 @@ export function calcularObrasKpis(obras: Obra[]): ObrasKpis {
 }
 
 export function calcularObraVisaoGeralKpis(obra: Obra): ObraVisaoGeralKpis {
-  const saldo = obra.orcamentoPrevisto - obra.custoRealizado - obra.custoComprometido;
+  const normalized = normalizeObra(obra);
+  const saldo = normalized.orcamentoPrevisto - normalized.custoRealizado - normalized.custoComprometido;
   const hoje = new Date();
-  const fim = new Date(obra.dataPrevisaoFim);
+  const fim = new Date(normalized.dataPrevisaoFim);
   const diasRestantes = Math.max(0, Math.ceil((fim.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)));
 
   return {
-    orcamentoPrevisto: obra.orcamentoPrevisto,
-    custoRealizado: obra.custoRealizado,
-    custoComprometido: obra.custoComprometido,
+    orcamentoPrevisto: normalized.orcamentoPrevisto,
+    custoRealizado: normalized.custoRealizado,
+    custoComprometido: normalized.custoComprometido,
     saldoDisponivel: saldo,
-    percentualConcluido: obra.percentualConcluido,
+    percentualConcluido: normalized.percentualConcluido,
     diasRestantes,
-    totalFuncionarios: obra.totalFuncionarios,
-    totalContratos: obra.totalContratos,
+    totalFuncionarios: normalized.totalFuncionarios,
+    totalContratos: normalized.totalContratos,
   };
 }
 

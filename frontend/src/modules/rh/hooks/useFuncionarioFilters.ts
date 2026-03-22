@@ -11,7 +11,11 @@ const MODULE_KEY = 'rh';
 
 export function useFuncionarioFilters() {
   const { getModuleFilters, setFilter, clearModuleFilters } = useFiltersStore();
+<<<<<<< codex/implement-first-functional-layer-for-obras-and-rh-h63j6z
+  const { filialId: contextFilialId, obraId: contextObraId, centroCustoId: contextCentroCustoId } = useContextStore();
+=======
   const { filialId: contextFilialId, obraId: contextObraId } = useContextStore();
+>>>>>>> main
   const raw = getModuleFilters(MODULE_KEY);
 
   const filters: FuncionarioFiltersData = useMemo(
@@ -21,9 +25,16 @@ export function useFuncionarioFilters() {
       tipoContrato: (raw.tipoContrato as TipoContrato) ?? defaultFuncionarioFilters.tipoContrato,
       filialId: (raw.filialId as string) ?? contextFilialId ?? defaultFuncionarioFilters.filialId,
       obraId: (raw.obraId as string) ?? contextObraId ?? defaultFuncionarioFilters.obraId,
+<<<<<<< codex/implement-first-functional-layer-for-obras-and-rh-h63j6z
+      centroCustoId: (raw.centroCustoId as string) ?? contextCentroCustoId ?? defaultFuncionarioFilters.centroCustoId,
+      departamento: (raw.departamento as string) ?? defaultFuncionarioFilters.departamento,
+    }),
+    [contextCentroCustoId, contextFilialId, contextObraId, raw],
+=======
       departamento: (raw.departamento as string) ?? defaultFuncionarioFilters.departamento,
     }),
     [contextFilialId, contextObraId, raw],
+>>>>>>> main
   );
 
   const setSearch = useCallback(
@@ -61,7 +72,12 @@ export function useFuncionarioFilters() {
     filters.status ||
     filters.tipoContrato ||
     (filters.filialId && filters.filialId !== contextFilialId) ||
+<<<<<<< codex/implement-first-functional-layer-for-obras-and-rh-h63j6z
+    (filters.obraId && filters.obraId !== contextObraId) ||
+    (filters.centroCustoId && filters.centroCustoId !== contextCentroCustoId)
+=======
     (filters.obraId && filters.obraId !== contextObraId)
+>>>>>>> main
   );
 
   return {
