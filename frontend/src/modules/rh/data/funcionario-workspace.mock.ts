@@ -1,3 +1,4 @@
+import { getAlocacoesByFuncionarioId } from '@/shared/lib/erpRelations';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import type {
   FuncionarioAlocacaoItem,
@@ -41,17 +42,6 @@ const contratosPorFuncionario: Record<string, Omit<FuncionarioContratoData, 'res
       { id: 'hist-5', data: '2024-06-01', tipo: 'reajuste', descricao: 'Revisão de piso da área de segurança', responsavel: 'Patricia Fernandes' },
     ],
   },
-};
-
-const alocacoesPorFuncionario: Record<string, FuncionarioAlocacaoItem[]> = {
-  'func-1': [
-    { id: 'alo-1', obraId: 'obra-1', obraNome: 'Edifício Aurora', funcao: 'Engenheiro de Obra', periodoInicio: '2023-03-15', percentual: 100, centroCusto: 'Aurora — Engenharia', status: 'ativa' },
-    { id: 'alo-2', obraId: 'obra-3', obraNome: 'Torre Empresarial', funcao: 'Suporte de compatibilização', periodoInicio: '2025-08-01', periodoFim: '2025-10-15', percentual: 20, centroCusto: 'Torre — Projetos', status: 'encerrada' },
-  ],
-  'func-3': [
-    { id: 'alo-3', obraId: 'obra-2', obraNome: 'Residencial Parque', funcao: 'Mestre de Obras', periodoInicio: '2020-01-10', percentual: 100, centroCusto: 'Parque — Produção', status: 'ativa' },
-    { id: 'alo-4', obraId: 'obra-4', obraNome: 'Ponte BR-101', funcao: 'Apoio em mobilização', periodoInicio: '2026-04-01', percentual: 30, centroCusto: 'Ponte — Mobilização', status: 'planejada' },
-  ],
 };
 
 const provisoesPorFuncionario: Record<string, FuncionarioProvisaoItem[]> = {
@@ -135,6 +125,7 @@ export function getFuncionarioContratoWorkspace(funcId: string): FuncionarioCont
         descricao: 'Leitura rápida dos vínculos que alimentam Obra, Horas Extras e FOPAG.',
         itens: [
           { label: 'Obra principal', valor: contratoBase.obraPrincipal?.nome ?? 'Sem obra ativa' },
+          { label: 'Centro de custo', valor: contratoBase.centroCusto },
           { label: 'Horas extras', valor: 'Elegível por competência' },
           { label: 'FOPAG', valor: 'Consolida folha mensal' },
         ],
@@ -144,7 +135,7 @@ export function getFuncionarioContratoWorkspace(funcId: string): FuncionarioCont
 }
 
 export function getFuncionarioAlocacoesWorkspace(funcId: string): FuncionarioWorkspaceTabData<FuncionarioAlocacaoItem> {
-  const items = alocacoesPorFuncionario[funcId] ?? [];
+  const items = getAlocacoesByFuncionarioId(funcId);
   return {
     items,
     resumoCards: items.length
@@ -157,6 +148,7 @@ export function getFuncionarioAlocacoesWorkspace(funcId: string): FuncionarioWor
               { label: 'Ativas', valor: String(items.filter((item) => item.status === 'ativa').length), destaque: true },
               { label: 'Planejadas', valor: String(items.filter((item) => item.status === 'planejada').length) },
               { label: 'Obras distintas', valor: String(new Set(items.map((item) => item.obraId)).size) },
+              { label: 'Centros de custo', valor: String(new Set(items.map((item) => item.centroCustoId)).size) },
             ],
           },
         ]

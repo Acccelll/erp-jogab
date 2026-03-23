@@ -21,17 +21,24 @@ import {
 } from 'lucide-react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AuthGuard } from '@/app/guards';
+import { LoginPage } from '@/app/pages/LoginPage';
 import { AppLayout } from '@/app/layouts/AppLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { ModuleLayout } from '@/app/layouts/ModuleLayout';
 import { ObraWorkspaceLayout } from '@/app/layouts/ObraWorkspaceLayout';
 import { DashboardPage } from '@/modules/dashboard';
+import { NotFoundPage } from '@/shared/components/NotFoundPage';
 import {
+  ObraContratosPage,
   ObraComprasPage,
   ObraCronogramaPage,
   ObraDocumentosPage,
   ObraEquipePage,
+  ObraEstoquePage,
   ObraFinanceiroPage,
+  ObraMedicoesPage,
+  ObraRhPage,
+  ObraRiscosPage,
   ObrasListPage,
   ObraVisaoGeralPage,
 } from '@/modules/obras';
@@ -249,10 +256,15 @@ const funcionarioDetailTabs: PlaceholderTabConfig[] = [
 
 const obraImplementedTabs = new Set([
   'cronograma',
+  'contratos',
   'equipe',
+  'rh',
   'compras',
   'financeiro',
+  'estoque',
+  'medicoes',
   'documentos',
+  'riscos',
 ]);
 
 const funcionarioImplementedTabs = new Set([
@@ -325,10 +337,15 @@ const appRoutes: RouteObject[] = [
         children: [
           { index: true, element: <ObraVisaoGeralPage /> },
           { path: 'cronograma', element: <ObraCronogramaPage /> },
+          { path: 'contratos', element: <ObraContratosPage /> },
           { path: 'equipe', element: <ObraEquipePage /> },
+          { path: 'rh', element: <ObraRhPage /> },
           { path: 'compras', element: <ObraComprasPage /> },
           { path: 'financeiro', element: <ObraFinanceiroPage /> },
+          { path: 'estoque', element: <ObraEstoquePage /> },
+          { path: 'medicoes', element: <ObraMedicoesPage /> },
           { path: 'documentos', element: <ObraDocumentosPage /> },
+          { path: 'riscos', element: <ObraRiscosPage /> },
           ...obraPlaceholderRoutes,
         ],
       },
@@ -483,11 +500,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/login',
-        element: (
-          <div className="text-center text-sm text-gray-500">
-            Tela de login — em desenvolvimento
-          </div>
-        ),
+        element: <LoginPage />,
       },
     ],
   },

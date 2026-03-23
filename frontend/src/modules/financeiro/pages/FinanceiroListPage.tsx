@@ -1,8 +1,15 @@
 import { Landmark, TrendingDown, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { ContextBar, EmptyState, MainContent, PageHeader, StatusBadge } from '@/shared/components';
+import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { FinanceiroFilters, FinanceiroKpiBar, FinanceiroResumoCard, FinanceiroVisaoStatusTipo, TitulosFinanceirosTable } from '../components';
-import { useFinanceiro, useFinanceiroFilters } from '../hooks';
+import { useFinanceiro, useFinanceiroFilters, useFinanceiroPessoal } from '../hooks';
+
+const FECHAMENTO_VARIANTS = {
+  aberta: 'warning',
+  parcial: 'info',
+  fechada: 'success',
+} as const;
 
 export function FinanceiroListPage() {
   const {
@@ -17,12 +24,13 @@ export function FinanceiroListPage() {
   } = useFinanceiroFilters();
 
   const { data, isLoading, isError, refetch } = useFinanceiro(filters);
+  const { data: pessoal } = useFinanceiroPessoal(filters);
 
   return (
     <div className="flex flex-1 flex-col">
       <PageHeader
         title="Financeiro"
-        subtitle="Programação financeira com integração conceitual entre Obra, FOPAG, Compras, Fiscal e Medições."
+        subtitle="Programação financeira com integração conceitual entre Obra, FOPAG, Horas Extras, Compras, Fiscal e Medições."
         actions={
           <div className="flex items-center gap-2">
             <Link to="/financeiro/fluxo" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
@@ -93,6 +101,99 @@ export function FinanceiroListPage() {
                 <FinanceiroResumoCard key={card.id} card={card} />
               ))}
             </section>
+
+            {pessoal && (
+              <>
+                <section className="grid gap-4 xl:grid-cols-3">
+                  {pessoal.destaques.map((card) => (
+                    <FinanceiroResumoCard key={card.id} card={card} />
+                  ))}
+                </section>
+
+                <section className="grid gap-4 xl:grid-cols-[1.1fr,0.9fr]">
+                  <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h2 className="text-base font-semibold text-gray-900">Custo de pessoal por competência e obra</h2>
+                        <p className="mt-1 text-sm text-gray-500">Reflexo consolidado do fluxo Horas Extras → FOPAG → Financeiro, preservando Obra e centro de custo.</p>
+                      </div>
+                      <StatusBadge label={pessoal.competencia.statusFechamento} variant={FECHAMENTO_VARIANTS[pessoal.competencia.statusFechamento]} />
+                    </div>
+
+                    <div className="mt-4 grid gap-3 md:grid-cols-4">
+                      <div className="rounded-lg bg-gray-50 px-3 py-2"><p className="text-xs uppercase tracking-wide text-gray-400">Competência</p><p className="mt-1 text-sm font-semibold text-gray-900">{formatCompetencia(pessoal.competencia.competencia)}</p></div>
+                      <div className="rounded-lg bg-gray-50 px-3 py-2"><p className="text-xs uppercase tracking-wide text-gray-400">Funcionários</p><p className="mt-1 text-sm font-semibold text-gray-900">{pessoal.competencia.totalFuncionarios}</p></div>
+                      <div className="rounded-lg bg-gray-50 px-3 py-2"><p className="text-xs uppercase tracking-wide text-gray-400">Obras</p><p className="mt-1 text-sm font-semibold text-gray-900">{pessoal.competencia.totalObras}</p></div>
+                      <div className="rounded-lg bg-gray-50 px-3 py-2"><p className="text-xs uppercase tracking-wide text-gray-400">Centros de custo</p><p className="mt-1 text-sm font-semibold text-gray-900">{pessoal.competencia.totalCentrosCusto}</p></div>
+                    </div>
+
+                    <div className="mt-4 overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-3 text-left font-semibold text-gray-600">Obra</th>
+                            <th className="px-4 py-3 text-right font-semibold text-gray-600">HE previsto</th>
+                            <th className="px-4 py-3 text-right font-semibold text-gray-600">FOPAG prevista</th>
+                            <th className="px-4 py-3 text-right font-semibold text-gray-600">Previsto</th>
+                            <th className="px-4 py-3 text-right font-semibold text-gray-600">Realizado</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 bg-white">
+                          {pessoal.porObra.map((item) => (
+                            <tr key={item.obraId} className="hover:bg-gray-50/70">
+                              <td className="px-4 py-3 align-top"><div className="font-medium text-gray-900">{item.obraNome}</div><div className="text-xs text-gray-500">{item.totalFuncionarios} funcionário(s) · {item.totalCentrosCusto} centro(s)</div></td>
+                              <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.valorHorasExtrasPrevisto)}</td>
+                              <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.valorFopagPrevisto)}</td>
+                              <td className="px-4 py-3 text-right font-medium text-gray-900">{formatCurrency(item.valorPrevisto)}</td>
+                              <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.valorRealizado)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </article>
+
+                  <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+                    <h2 className="text-base font-semibold text-gray-900">Previsto x realizado de pessoal</h2>
+                    <p className="mt-1 text-sm text-gray-500">Leitura gerencial mínima para apoiar relatórios e comparativos financeiros futuros.</p>
+                    <div className="mt-4 space-y-3">
+                      {pessoal.previstoRealizado.map((item) => (
+                        <div key={item.id} className="rounded-lg bg-gray-50 p-3">
+                          <div className="flex items-center justify-between gap-3">
+                            <p className="text-sm font-semibold text-gray-900">{item.label}</p>
+                            <span className="text-xs text-gray-500">Δ {formatCurrency(item.variacao)}</span>
+                          </div>
+                          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                            <div><p className="text-xs uppercase tracking-wide text-gray-400">Previsto</p><p className="mt-1 text-sm font-medium text-gray-900">{formatCurrency(item.valorPrevisto)}</p></div>
+                            <div><p className="text-xs uppercase tracking-wide text-gray-400">Realizado</p><p className="mt-1 text-sm font-medium text-gray-900">{formatCurrency(item.valorRealizado)}</p></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-3 text-left font-semibold text-gray-600">Centro de custo</th>
+                            <th className="px-4 py-3 text-left font-semibold text-gray-600">Obra</th>
+                            <th className="px-4 py-3 text-right font-semibold text-gray-600">Previsto</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 bg-white">
+                          {pessoal.porCentroCusto.slice(0, 5).map((item) => (
+                            <tr key={item.centroCustoId} className="hover:bg-gray-50/70">
+                              <td className="px-4 py-3 font-medium text-gray-900">{item.centroCustoNome}</td>
+                              <td className="px-4 py-3 text-gray-700">{item.obraNome}</td>
+                              <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.valorPrevisto)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </article>
+                </section>
+              </>
+            )}
 
             <FinanceiroVisaoStatusTipo statusItems={data.statusResumo} tipoItems={data.tipoResumo} />
 

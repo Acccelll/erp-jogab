@@ -1,9 +1,14 @@
+import { fetchObraAlocacoesWorkspace } from '@/modules/rh/services/alocacoes.service';
 import {
   getComprasWorkspace,
+  getContratosWorkspace,
   getCronogramaWorkspace,
   getDocumentosWorkspace,
-  getEquipeWorkspace,
+  getEstoqueWorkspace,
   getFinanceiroWorkspace,
+  getMedicoesWorkspace,
+  getRhWorkspace,
+  getRiscosWorkspace,
 } from '../data/obra-workspace.mock';
 
 function delay(ms = 180): Promise<void> {
@@ -15,9 +20,18 @@ export async function fetchObraCronograma(obraId: string) {
   return getCronogramaWorkspace(obraId);
 }
 
-export async function fetchObraEquipe(obraId: string) {
+export async function fetchObraContratos(obraId: string) {
   await delay();
-  return getEquipeWorkspace(obraId);
+  return getContratosWorkspace(obraId);
+}
+
+export async function fetchObraEquipe(obraId: string) {
+  return fetchObraAlocacoesWorkspace(obraId);
+}
+
+export async function fetchObraRh(obraId: string) {
+  await delay();
+  return getRhWorkspace(obraId);
 }
 
 export async function fetchObraCompras(obraId: string) {
@@ -30,7 +44,22 @@ export async function fetchObraFinanceiro(obraId: string) {
   return getFinanceiroWorkspace(obraId);
 }
 
+export async function fetchObraEstoque(obraId: string) {
+  await delay();
+  return getEstoqueWorkspace(obraId);
+}
+
+export async function fetchObraMedicoes(obraId: string) {
+  await delay();
+  return getMedicoesWorkspace(obraId);
+}
+
 export async function fetchObraDocumentos(obraId: string) {
   await delay();
   return getDocumentosWorkspace(obraId);
+}
+
+export async function fetchObraRiscos(obraId: string) {
+  await delay();
+  return getRiscosWorkspace(obraId);
 }

@@ -1,10 +1,19 @@
+import { getMockTitulosFinanceiros } from '@/modules/financeiro/data/financeiro.mock';
+import { mockFuncionarios } from '@/modules/rh/data/funcionarios.mock';
+import { buildWorkforceFinancialSummary } from '@/shared/lib/workforceCost';
+import { getAlocacoesByObraId } from '@/shared/lib/erpRelations';
 import { formatCurrency } from '@/shared/lib/utils';
 import type {
   ObraComprasItem,
+  ObraContratoItem,
   ObraCronogramaItem,
   ObraDocumentoItem,
   ObraEquipeItem,
+  ObraEstoqueItem,
   ObraFinanceiroItem,
+  ObraMedicaoItem,
+  ObraRhItem,
+  ObraRiscoItem,
   ObraWorkspaceTabData,
 } from '../types';
 
@@ -20,15 +29,13 @@ const cronogramaPorObra: Record<string, ObraCronogramaItem[]> = {
   ],
 };
 
-const equipePorObra: Record<string, ObraEquipeItem[]> = {
+const contratosPorObra: Record<string, ObraContratoItem[]> = {
   'obra-1': [
-    { id: 'eq-1', nome: 'Paulo Mendes', funcao: 'Mestre de Obras', equipe: 'Campo', status: 'alocado', jornada: '44h semanais' },
-    { id: 'eq-2', nome: 'Renata Gomes', funcao: 'Engenheira Civil', equipe: 'Planejamento', status: 'alocado', jornada: '44h semanais' },
-    { id: 'eq-3', nome: 'Thiago Silva', funcao: 'Armador', equipe: 'Estrutura', status: 'ferias', jornada: '44h semanais' },
+    { id: 'ctr-1', codigo: 'CTR-OBR-001', objeto: 'Estrutura de concreto — torre A', contratado: 'Concretiza SP', status: 'vigente', valor: 1840000, vencimento: '2026-09-30' },
+    { id: 'ctr-2', codigo: 'CTR-OBR-002', objeto: 'Instalações elétricas', contratado: 'Energia Técnica', status: 'em_aprovacao', valor: 620000, vencimento: '2026-12-15' },
   ],
   'obra-4': [
-    { id: 'eq-4', nome: 'Marcos Santos', funcao: 'Coordenador de Obra', equipe: 'Gestão', status: 'alocado', jornada: '44h semanais' },
-    { id: 'eq-5', nome: 'Luan Ferreira', funcao: 'Operador de Equipamentos', equipe: 'Infraestrutura', status: 'desmobilizando', jornada: '12x36' },
+    { id: 'ctr-3', codigo: 'CTR-OBR-019', objeto: 'Fundação e apoios da ponte', contratado: 'Infra Base', status: 'vigente', valor: 3250000, vencimento: '2026-08-31' },
   ],
 };
 
@@ -42,14 +49,33 @@ const comprasPorObra: Record<string, ObraComprasItem[]> = {
   ],
 };
 
-const financeiroPorObra: Record<string, ObraFinanceiroItem[]> = {
+const estoquePorObra: Record<string, ObraEstoqueItem[]> = {
   'obra-1': [
-    { id: 'fin-1', codigo: 'TIT-2026-005', descricao: 'Reembolso contratual de mobilização', tipo: 'receber', status: 'recebido', competencia: '2026-03', valor: 38750 },
-    { id: 'fin-2', codigo: 'TIT-2026-001', descricao: 'Folha administrativa rateada na obra', tipo: 'pagar', status: 'programado', competencia: '2026-03', valor: 182450.32 },
+    { id: 'est-1', item: 'Cimento CP II 50kg', categoria: 'Material', status: 'disponivel', saldo: 480, custoTotal: 19152 },
+    { id: 'est-2', item: 'Vergalhão CA-50 10mm', categoria: 'Aço', status: 'baixo', saldo: 95, custoTotal: 7980 },
+  ],
+  'obra-4': [
+    { id: 'est-3', item: 'Cabo de protensão', categoria: 'Estrutural', status: 'critico', saldo: 18, custoTotal: 12900 },
+  ],
+};
+
+const medicoesPorObra: Record<string, ObraMedicaoItem[]> = {
+  'obra-1': [
+    { id: 'med-1', competencia: '2026-03', etapa: 'Estrutura concluída bloco A', status: 'em_aprovacao', valor: 486000, percentual: 42 },
+    { id: 'med-2', competencia: '2026-02', etapa: 'Mobilização e fundações', status: 'faturada', valor: 255000, percentual: 27 },
   ],
   'obra-2': [
-    { id: 'fin-3', codigo: 'TIT-2026-003', descricao: 'Medição parcial do contrato CP-88', tipo: 'receber', status: 'previsto', competencia: '2026-03', valor: 245000 },
-    { id: 'fin-4', codigo: 'TIT-2026-006', descricao: 'Locação de equipamentos de içamento', tipo: 'pagar', status: 'pago', competencia: '2026-03', valor: 52640 },
+    { id: 'med-3', competencia: '2026-03', etapa: 'Terraplanagem e drenagem', status: 'em_preparacao', valor: 312000, percentual: 18 },
+  ],
+};
+
+const riscosPorObra: Record<string, ObraRiscoItem[]> = {
+  'obra-1': [
+    { id: 'risk-1', titulo: 'Atraso na fachada', categoria: 'Prazo', severidade: 'alta', status: 'monitorado', responsavel: 'Juliana Prado' },
+    { id: 'risk-2', titulo: 'Concentração de desembolso de pessoal', categoria: 'Financeiro', severidade: 'media', status: 'aberto', responsavel: 'Carlos Oliveira' },
+  ],
+  'obra-4': [
+    { id: 'risk-3', titulo: 'Janela climática para concretagem', categoria: 'Operacional', severidade: 'alta', status: 'mitigado', responsavel: 'Marcos Santos' },
   ],
 };
 
@@ -89,8 +115,27 @@ export function getCronogramaWorkspace(obraId: string): ObraWorkspaceTabData<Obr
   };
 }
 
+export function getContratosWorkspace(obraId: string): ObraWorkspaceTabData<ObraContratoItem> {
+  const items = fallback(contratosPorObra, obraId);
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'contratos-resumo',
+        titulo: 'Contratos da obra',
+        descricao: 'Bloco inicial de contratos técnicos e aditivos com leitura pronta para futura API.',
+        itens: [
+          { label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length), destaque: true },
+          { label: 'Em aprovação', valor: String(items.filter((item) => item.status === 'em_aprovacao').length) },
+          { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)) },
+        ],
+      },
+    ],
+  };
+}
+
 export function getEquipeWorkspace(obraId: string): ObraWorkspaceTabData<ObraEquipeItem> {
-  const items = fallback(equipePorObra, obraId);
+  const items = getAlocacoesByObraId(obraId);
 
   return {
     items,
@@ -98,11 +143,45 @@ export function getEquipeWorkspace(obraId: string): ObraWorkspaceTabData<ObraEqu
       {
         id: 'equipe-alocacao',
         titulo: 'Alocação de equipe',
-        descricao: 'Pessoas-chave e status atual da frente operacional da obra.',
+        descricao: 'Pessoas-chave, centros de custo e status atual da frente operacional da obra.',
         itens: [
-          { label: 'Alocados', valor: String(items.filter((item) => item.status === 'alocado').length), destaque: true },
-          { label: 'Férias', valor: String(items.filter((item) => item.status === 'ferias').length) },
-          { label: 'Desmobilizando', valor: String(items.filter((item) => item.status === 'desmobilizando').length) },
+          { label: 'Alocados', valor: String(items.filter((item) => item.status === 'ativa').length), destaque: true },
+          { label: 'Planejados', valor: String(items.filter((item) => item.status === 'planejada').length) },
+          { label: 'Centros de custo', valor: String(new Set(items.map((item) => item.centroCustoId)).size) },
+        ],
+      },
+    ],
+  };
+}
+
+export function getRhWorkspace(obraId: string, competencia = '2026-03'): ObraWorkspaceTabData<ObraRhItem> {
+  const pessoal = buildWorkforceFinancialSummary(competencia).porCentroCusto;
+  const items = mockFuncionarios
+    .filter((item) => item.obraAlocadoId === obraId)
+    .map((item) => {
+      const centro = pessoal.find((centro) => centro.centroCustoId === item.centroCustoId);
+      return {
+        id: item.id,
+        funcionarioNome: item.nome,
+        cargo: item.cargo,
+        centroCustoNome: item.centroCustoNome ?? 'Sem centro',
+        status: item.status === 'desligado' ? 'afastado' : item.status,
+        salarioBase: item.salarioBase,
+        custoPessoalPrevisto: centro?.valorPrevisto ?? item.salarioBase,
+      };
+    });
+
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'rh-fopag-resumo',
+        titulo: 'RH / FOPAG da obra',
+        descricao: 'Visão base de colaboradores, centros de custo e custo previsto de pessoal na competência ativa.',
+        itens: [
+          { label: 'Funcionários na obra', valor: String(items.length), destaque: true },
+          { label: 'Centros de custo', valor: String(new Set(items.map((item) => item.centroCustoNome)).size) },
+          { label: 'Custo previsto', valor: formatCurrency(items.reduce((acc, item) => acc + item.custoPessoalPrevisto, 0)) },
         ],
       },
     ],
@@ -111,26 +190,21 @@ export function getEquipeWorkspace(obraId: string): ObraWorkspaceTabData<ObraEqu
 
 export function getComprasWorkspace(obraId: string): ObraWorkspaceTabData<ObraComprasItem> {
   const items = fallback(comprasPorObra, obraId);
-
-  return {
-    items,
-    resumoCards: [
-      {
-        id: 'compras-compromisso',
-        titulo: 'Pipeline de compras',
-        descricao: 'Solicitações e pedidos que afetam prazo, recebimento e integração fiscal da obra.',
-        itens: [
-          { label: 'Itens em cotação', valor: String(items.filter((item) => item.status === 'em_cotacao').length) },
-          { label: 'Pedidos emitidos', valor: String(items.filter((item) => item.status === 'pedido_emitido').length) },
-          { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)), destaque: true },
-        ],
-      },
-    ],
-  };
+  return { items, resumoCards: [{ id: 'compras-compromisso', titulo: 'Pipeline de compras', descricao: 'Solicitações e pedidos que afetam prazo, recebimento e integração fiscal da obra.', itens: [{ label: 'Itens em cotação', valor: String(items.filter((item) => item.status === 'em_cotacao').length) }, { label: 'Pedidos emitidos', valor: String(items.filter((item) => item.status === 'pedido_emitido').length) }, { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)), destaque: true }] }] };
 }
 
-export function getFinanceiroWorkspace(obraId: string): ObraWorkspaceTabData<ObraFinanceiroItem> {
-  const items = fallback(financeiroPorObra, obraId);
+export function getFinanceiroWorkspace(obraId: string, competencia = '2026-03'): ObraWorkspaceTabData<ObraFinanceiroItem> {
+  const items = getMockTitulosFinanceiros({ obraId, competencia }).map((item) => ({
+    id: item.id,
+    codigo: item.codigo,
+    descricao: item.descricao,
+    tipo: item.tipo,
+    status: item.status,
+    competencia: item.competencia,
+    valor: item.valor,
+    origem: item.origem,
+  }));
+  const pessoal = buildWorkforceFinancialSummary(competencia).porObra.find((item) => item.obraId === obraId);
   const saldo = items.reduce((acc, item) => acc + (item.tipo === 'receber' ? item.valor : -item.valor), 0);
 
   return {
@@ -139,11 +213,59 @@ export function getFinanceiroWorkspace(obraId: string): ObraWorkspaceTabData<Obr
       {
         id: 'financeiro-saldo',
         titulo: 'Fluxo financeiro da obra',
-        descricao: 'Visão do planejado/realizado da obra com reflexo em caixa e faturamento.',
+        descricao: 'Visão do planejado/realizado da obra com reflexo em caixa, faturamento e custo de pessoal.',
         itens: [
           { label: 'A pagar', valor: formatCurrency(items.filter((item) => item.tipo === 'pagar').reduce((acc, item) => acc + item.valor, 0)) },
           { label: 'A receber', valor: formatCurrency(items.filter((item) => item.tipo === 'receber').reduce((acc, item) => acc + item.valor, 0)) },
           { label: 'Saldo projetado', valor: formatCurrency(saldo), destaque: true },
+        ],
+      },
+      {
+        id: 'financeiro-pessoal',
+        titulo: 'Custo de pessoal da obra',
+        descricao: 'Reflexo direto de Horas Extras e FOPAG na leitura financeira da obra.',
+        itens: [
+          { label: 'HE prevista', valor: formatCurrency(pessoal?.valorHorasExtrasPrevisto ?? 0) },
+          { label: 'FOPAG prevista', valor: formatCurrency(pessoal?.valorFopagPrevisto ?? 0) },
+          { label: 'Previsto x realizado', valor: `${formatCurrency(pessoal?.valorPrevisto ?? 0)} / ${formatCurrency(pessoal?.valorRealizado ?? 0)}`, destaque: true },
+        ],
+      },
+    ],
+  };
+}
+
+export function getEstoqueWorkspace(obraId: string): ObraWorkspaceTabData<ObraEstoqueItem> {
+  const items = fallback(estoquePorObra, obraId);
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'estoque-resumo',
+        titulo: 'Estoque da obra',
+        descricao: 'Estrutura inicial para consumo, saldo e materiais críticos da obra.',
+        itens: [
+          { label: 'Itens monitorados', valor: String(items.length) },
+          { label: 'Itens críticos', valor: String(items.filter((item) => item.status === 'critico').length), destaque: true },
+          { label: 'Valor em estoque', valor: formatCurrency(items.reduce((acc, item) => acc + item.custoTotal, 0)) },
+        ],
+      },
+    ],
+  };
+}
+
+export function getMedicoesWorkspace(obraId: string): ObraWorkspaceTabData<ObraMedicaoItem> {
+  const items = fallback(medicoesPorObra, obraId);
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'medicoes-resumo',
+        titulo: 'Medições da obra',
+        descricao: 'Bloco inicial para evolução contratual, aprovação e faturamento por competência.',
+        itens: [
+          { label: 'Medições', valor: String(items.length) },
+          { label: 'Em aprovação', valor: String(items.filter((item) => item.status === 'em_aprovacao').length), destaque: true },
+          { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)) },
         ],
       },
     ],
@@ -152,18 +274,22 @@ export function getFinanceiroWorkspace(obraId: string): ObraWorkspaceTabData<Obr
 
 export function getDocumentosWorkspace(obraId: string): ObraWorkspaceTabData<ObraDocumentoItem> {
   const items = fallback(documentosPorObra, obraId);
+  return { items, resumoCards: [{ id: 'documentos-alerta', titulo: 'Governança documental', descricao: 'Documentos críticos da obra para conformidade, segurança e liberação operacional.', itens: [{ label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length) }, { label: 'A vencer', valor: String(items.filter((item) => item.status === 'a_vencer').length), destaque: true }, { label: 'Em análise', valor: String(items.filter((item) => item.status === 'em_analise').length) }] }] };
+}
 
+export function getRiscosWorkspace(obraId: string): ObraWorkspaceTabData<ObraRiscoItem> {
+  const items = fallback(riscosPorObra, obraId);
   return {
     items,
     resumoCards: [
       {
-        id: 'documentos-alerta',
-        titulo: 'Governança documental',
-        descricao: 'Documentos críticos da obra para conformidade, segurança e liberação operacional.',
+        id: 'riscos-resumo',
+        titulo: 'Riscos e pendências',
+        descricao: 'Leitura inicial de risco operacional, financeiro e de prazo vinculada ao workspace da obra.',
         itens: [
-          { label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length) },
-          { label: 'A vencer', valor: String(items.filter((item) => item.status === 'a_vencer').length), destaque: true },
-          { label: 'Em análise', valor: String(items.filter((item) => item.status === 'em_analise').length) },
+          { label: 'Riscos abertos', valor: String(items.filter((item) => item.status === 'aberto').length), destaque: true },
+          { label: 'Monitorados', valor: String(items.filter((item) => item.status === 'monitorado').length) },
+          { label: 'Mitigados', valor: String(items.filter((item) => item.status === 'mitigado').length) },
         ],
       },
     ],

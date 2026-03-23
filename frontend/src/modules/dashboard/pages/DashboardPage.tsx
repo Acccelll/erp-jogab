@@ -94,8 +94,7 @@ export function DashboardPage() {
                 </div>
                 <h2 className="mt-3 text-2xl font-semibold">A Obra segue como núcleo da operação do ERP.</h2>
                 <p className="mt-2 max-w-2xl text-sm text-white/85">
-                  O dashboard inicial consolida avanço de obras, alocação de equipe, provisões trabalhistas,
-                  desembolsos e pendências críticas para apoiar decisões rápidas sem romper a arquitetura por domínio.
+                  O dashboard executivo consolida custo de pessoal, Horas Extras, FOPAG, previsto x realizado e leitura por obra/centro de custo para apoiar decisões rápidas sem romper a arquitetura por domínio.
                 </p>
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
                   <div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm">
@@ -125,13 +124,13 @@ export function DashboardPage() {
                 </div>
                 <ul className="space-y-3 text-sm text-gray-600">
                   <li className="rounded-lg bg-gray-50 p-3">
-                    Obras com maior avanço físico devem puxar medições e compromissos financeiros nas próximas semanas.
+                    A competência ativa agora destaca custo de pessoal por obra e o centro de custo com maior exposição financeira.
                   </li>
                   <li className="rounded-lg bg-gray-50 p-3">
-                    RH já sinaliza pendências documentais e provisões relevantes para a competência ativa.
+                    RH e Horas Extras passam a alimentar uma leitura executiva única para equipe, provisões e fechamento da competência.
                   </li>
                   <li className="rounded-lg bg-gray-50 p-3">
-                    Financeiro começa a refletir desembolsos e recebimentos esperados a partir do andamento das obras.
+                    Financeiro e FOPAG refletem previsto x realizado de pessoal com rastreabilidade suficiente para visão gerencial.
                   </li>
                 </ul>
               </article>
@@ -156,8 +155,8 @@ export function DashboardPage() {
             </DashboardSectionGroup>
 
             <DashboardSectionGroup
-              title="Resumo Financeiro"
-              description="Indicadores preliminares de desembolso, medições e pressão de caixa por obra."
+              title="Resumo Financeiro e Pessoal"
+              description="Indicadores executivos de desembolso, FOPAG, Horas Extras e previsto x realizado por obra."
             >
               {data.financeiro.map((section) => (
                 <DashboardSectionCard key={section.id} section={section} />

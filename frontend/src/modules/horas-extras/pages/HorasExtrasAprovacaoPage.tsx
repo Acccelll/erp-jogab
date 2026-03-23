@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
-import { useHorasExtrasAprovacao, useHorasExtrasFilters } from '../hooks';
+import { useApproveHoraExtra, useHorasExtrasAprovacao, useHorasExtrasFilters } from '../hooks';
 import {
   HorasExtrasAprovacaoResumoCard,
   HorasExtrasAprovacaoTable,
@@ -23,6 +23,7 @@ export function HorasExtrasAprovacaoPage() {
   } = useHorasExtrasFilters();
 
   const { data, isLoading, isError, refetch } = useHorasExtrasAprovacao(filters.competencia);
+  const approveMutation = useApproveHoraExtra();
 
   const filteredAprovacoes = useMemo(() => {
     const items = data?.aprovacoes ?? [];
@@ -148,7 +149,7 @@ export function HorasExtrasAprovacaoPage() {
                     Lançamentos que precisam de análise ou já seguem em direção ao fechamento/FOPAG.
                   </p>
                 </div>
-                <HorasExtrasAprovacaoTable items={filteredAprovacoes} />
+                <HorasExtrasAprovacaoTable items={filteredAprovacoes} onApprove={(id) => void approveMutation.mutateAsync(id)} approvingId={approveMutation.variables ?? null} />
               </section>
             )}
 

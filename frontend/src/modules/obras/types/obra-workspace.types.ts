@@ -1,3 +1,5 @@
+import type { AlocacaoResumo } from '@/shared/types';
+
 export interface ObraCronogramaItem {
   id: string;
   etapa: string;
@@ -8,13 +10,26 @@ export interface ObraCronogramaItem {
   status: 'em_dia' | 'atencao' | 'atrasada' | 'concluida';
 }
 
-export interface ObraEquipeItem {
+export type ObraEquipeItem = AlocacaoResumo;
+
+export interface ObraContratoItem {
   id: string;
-  nome: string;
-  funcao: string;
-  equipe: string;
-  status: 'alocado' | 'ferias' | 'desmobilizando';
-  jornada: string;
+  codigo: string;
+  objeto: string;
+  contratado: string;
+  status: 'vigente' | 'em_aprovacao' | 'encerrado';
+  valor: number;
+  vencimento?: string;
+}
+
+export interface ObraRhItem {
+  id: string;
+  funcionarioNome: string;
+  cargo: string;
+  centroCustoNome: string;
+  status: 'ativo' | 'ferias' | 'afastado' | 'admissao_pendente';
+  salarioBase: number;
+  custoPessoalPrevisto: number;
 }
 
 export interface ObraComprasItem {
@@ -32,9 +47,37 @@ export interface ObraFinanceiroItem {
   codigo: string;
   descricao: string;
   tipo: 'pagar' | 'receber';
-  status: 'programado' | 'previsto' | 'pago' | 'recebido' | 'vencido';
+  status: 'programado' | 'previsto' | 'pago' | 'recebido' | 'vencido' | 'aguardando_documentos' | 'em_aprovacao';
   competencia: string;
   valor: number;
+  origem?: 'fopag' | 'horas_extras' | 'compras' | 'fiscal' | 'medicoes' | 'manual';
+}
+
+export interface ObraEstoqueItem {
+  id: string;
+  item: string;
+  categoria: string;
+  status: 'disponivel' | 'baixo' | 'critico';
+  saldo: number;
+  custoTotal: number;
+}
+
+export interface ObraMedicaoItem {
+  id: string;
+  competencia: string;
+  etapa: string;
+  status: 'em_preparacao' | 'em_aprovacao' | 'faturada';
+  valor: number;
+  percentual: number;
+}
+
+export interface ObraRiscoItem {
+  id: string;
+  titulo: string;
+  categoria: string;
+  severidade: 'baixa' | 'media' | 'alta';
+  status: 'aberto' | 'monitorado' | 'mitigado';
+  responsavel: string;
 }
 
 export interface ObraDocumentoItem {

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { HORA_EXTRA_STATUS_LABELS, HORA_EXTRA_TIPO_LABELS } from '../types';
 import type { HoraExtraAprovacaoItem } from '../types';
@@ -11,10 +12,19 @@ const COLUMNS = [
   'Status',
   'Horas',
   'Valor',
+  'Ações',
   'Navegação',
 ];
 
-export function HorasExtrasAprovacaoTable({ items }: { items: HoraExtraAprovacaoItem[] }) {
+export function HorasExtrasAprovacaoTable({
+  items,
+  onApprove,
+  approvingId,
+}: {
+  items: HoraExtraAprovacaoItem[];
+  onApprove?: (id: string) => void;
+  approvingId?: string | null;
+}) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm shadow-gray-100/60">
       <div className="overflow-x-auto">
@@ -34,6 +44,7 @@ export function HorasExtrasAprovacaoTable({ items }: { items: HoraExtraAprovacao
                 HORA_EXTRA_TIPO_LABELS[item.tipo as keyof typeof HORA_EXTRA_TIPO_LABELS] ?? item.tipo;
               const statusLabel =
                 HORA_EXTRA_STATUS_LABELS[item.status as keyof typeof HORA_EXTRA_STATUS_LABELS] ?? item.status;
+              const canApprove = item.status === 'pendente_aprovacao' || item.status === 'digitada';
 
               return (
                 <tr key={item.id} className="hover:bg-gray-50/70">
@@ -50,6 +61,21 @@ export function HorasExtrasAprovacaoTable({ items }: { items: HoraExtraAprovacao
                   <td className="px-4 py-3 text-gray-700">{item.quantidadeHoras}h</td>
                   <td className="px-4 py-3 text-gray-700">{formatCurrency(item.valorCalculado)}</td>
                   <td className="px-4 py-3 text-gray-700">
+                    {canApprove ? (
+                      <button
+                        type="button"
+                        onClick={() => onApprove?.(item.id)}
+                        disabled={!onApprove || approvingId === item.id}
+                        className="inline-flex items-center gap-1 rounded-md border border-jogab-200 px-2 py-1 text-xs font-medium text-jogab-700 disabled:opacity-60"
+                      >
+                        {approvingId === item.id ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
+                        Aprovar
+                      </button>
+                    ) : (
+                      <span className="text-xs text-gray-400">Sem ação</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-gray-700">
                     <div className="flex flex-wrap gap-2">
                       <Link
                         to={`/rh/funcionarios/${item.funcionarioId}/horas-extras`}
@@ -63,7 +89,7 @@ export function HorasExtrasAprovacaoTable({ items }: { items: HoraExtraAprovacao
                       >
                         Obra
                       </Link>
-                      <Link to="/fopag" className="text-xs font-medium text-jogab-700 hover:underline">
+                      <Link to={`/fopag/${item.competencia}`} className="text-xs font-medium text-jogab-700 hover:underline">
                         FOPAG
                       </Link>
                     </div>

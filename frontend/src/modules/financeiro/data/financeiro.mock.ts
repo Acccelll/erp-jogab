@@ -1,8 +1,11 @@
+import { buildWorkforceFinancialSummary } from '@/shared/lib/workforceCost';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import type {
   FinanceiroDashboardData,
   FinanceiroFiltersData,
   FinanceiroKpis,
+  FinanceiroPessoalDashboardData,
+  FinanceiroPessoalPrevistoRealizadoItem,
   FinanceiroResumoCardData,
   FinanceiroStatusResumo,
   FinanceiroTipoResumo,
@@ -11,26 +14,7 @@ import type {
   TituloFinanceiroDetalhe,
 } from '../types';
 
-const titulos: TituloFinanceiro[] = [
-  {
-    id: 'tit-001',
-    codigo: 'TIT-2026-001',
-    tipo: 'pagar',
-    status: 'programado',
-    origem: 'fopag',
-    descricao: 'Folha salarial administrativa - março/2026',
-    obraId: 'obra-1',
-    obraNome: 'OBR-001 — Edifício Aurora',
-    centroCusto: 'CC-RH-ADM',
-    competencia: '2026-03',
-    fornecedorCliente: 'Equipe administrativa',
-    emissao: '2026-03-01',
-    vencimento: '2026-03-25',
-    pagamentoRecebimentoPrevisto: '2026-03-25',
-    valor: 182450.32,
-    valorPagoRecebido: 0,
-    observacao: 'Título originado na consolidação da FOPAG com rateio por obra.',
-  },
+const staticTitulos: TituloFinanceiro[] = [
   {
     id: 'tit-002',
     codigo: 'TIT-2026-002',
@@ -131,44 +115,102 @@ const titulos: TituloFinanceiro[] = [
   },
 ];
 
-const fluxoCaixa: FluxoCaixaItem[] = [
-  {
-    periodo: '2026-03-18',
-    previstoEntrada: 40000,
-    previstoSaida: 52300,
-    realizadoEntrada: 38750,
-    realizadoSaida: 0,
-    saldoProjetado: -13550,
-    status: 'atencao',
-  },
-  {
-    periodo: '2026-03-22',
-    previstoEntrada: 0,
-    previstoSaida: 96420,
-    realizadoEntrada: 0,
-    realizadoSaida: 0,
-    saldoProjetado: -109970,
-    status: 'atencao',
-  },
-  {
-    periodo: '2026-03-25',
-    previstoEntrada: 0,
-    previstoSaida: 182450.32,
-    realizadoEntrada: 0,
-    realizadoSaida: 0,
-    saldoProjetado: -292420.32,
-    status: 'equilibrio',
-  },
-  {
-    periodo: '2026-04-02',
-    previstoEntrada: 245000,
-    previstoSaida: 0,
-    realizadoEntrada: 0,
-    realizadoSaida: 0,
-    saldoProjetado: -47420.32,
-    status: 'superavit',
-  },
-];
+function getCompetenciaFromFilters(filters?: FinanceiroFiltersData) {
+  return filters?.competencia ?? '2026-03';
+}
+
+function buildWorkforceTitles(competencia: string): TituloFinanceiro[] {
+  const summary = buildWorkforceFinancialSummary(competencia);
+  const fopagStatus: TituloFinanceiro['status'] = summary.statusFechamento === 'fechada' ? 'pago' : 'programado';
+  const horasExtrasStatus: TituloFinanceiro['status'] = summary.origemHorasExtras.totalLancamentosIntegrados > 0 ? 'programado' : 'previsto';
+
+  const titles: TituloFinanceiro[] = summary.porObra.flatMap((obra, index) => {
+    const folhaTitle: TituloFinanceiro = {
+      id: `tit-pessoal-fopag-${obra.obraId}-${competencia}`,
+      codigo: `FOPAG-${competencia.replace('-', '')}-${String(index + 1).padStart(2, '0')}`,
+      tipo: 'pagar',
+      status: fopagStatus,
+      origem: 'fopag',
+      descricao: `Folha e encargos da obra ${obra.obraNome}`,
+      obraId: obra.obraId,
+      obraNome: obra.obraNome,
+      centroCusto: obra.totalCentrosCusto > 1 ? 'Rateio por centros de custo' : 'Centro principal da obra',
+      competencia,
+      fornecedorCliente: 'Colaboradores e encargos da competência',
+      emissao: `${competencia}-01`,
+      vencimento: `${competencia}-25`,
+      pagamentoRecebimentoPrevisto: `${competencia}-25`,
+      valor: Number(obra.valorFopagPrevisto.toFixed(2)),
+      valorPagoRecebido: Number(obra.valorFopagRealizado.toFixed(2)),
+      observacao: 'Título gerado a partir do snapshot de FOPAG com vínculo por obra e centro de custo.',
+    };
+    const horaExtraTitle: TituloFinanceiro = {
+      id: `tit-pessoal-he-${obra.obraId}-${competencia}`,
+      codigo: `HE-${competencia.replace('-', '')}-${String(index + 1).padStart(2, '0')}`,
+      tipo: 'pagar',
+      status: horasExtrasStatus,
+      origem: 'horas_extras',
+      descricao: `Horas extras integradas da obra ${obra.obraNome}`,
+      obraId: obra.obraId,
+      obraNome: obra.obraNome,
+      centroCusto: obra.totalCentrosCusto > 1 ? 'Rateio por centros de custo' : 'Centro principal da obra',
+      competencia,
+      fornecedorCliente: 'Colaboradores com HE aprovada/fechada',
+      emissao: `${competencia}-20`,
+      vencimento: `${competencia}-28`,
+      pagamentoRecebimentoPrevisto: `${competencia}-28`,
+      valor: Number(obra.valorHorasExtrasPrevisto.toFixed(2)),
+      valorPagoRecebido: Number(obra.valorHorasExtrasRealizado.toFixed(2)),
+      observacao: 'Reflexo financeiro das horas extras aprovadas, fechadas e preparadas para compor a FOPAG.',
+    };
+    return [folhaTitle, horaExtraTitle];
+  }).filter((item) => item.valor > 0);
+
+  return titles;
+}
+
+function getAllTitulos(filters?: FinanceiroFiltersData) {
+  const competencia = getCompetenciaFromFilters(filters);
+  return [...buildWorkforceTitles(competencia), ...staticTitulos];
+}
+
+function buildFluxoCaixa(filters?: FinanceiroFiltersData): FluxoCaixaItem[] {
+  const competencia = getCompetenciaFromFilters(filters);
+  const summary = buildWorkforceFinancialSummary(competencia);
+  const titulos = getAllTitulos(filters);
+  const receber = titulos.filter((item) => item.tipo === 'receber');
+  const pagar = titulos.filter((item) => item.tipo === 'pagar');
+
+  return [
+    {
+      periodo: `${competencia}-22`,
+      previstoEntrada: receber.filter((item) => item.competencia === competencia).reduce((acc, item) => acc + item.valor, 0),
+      previstoSaida: Number((summary.valorPrevisto * 0.35).toFixed(2)),
+      realizadoEntrada: receber.filter((item) => item.status === 'recebido').reduce((acc, item) => acc + item.valorPagoRecebido, 0),
+      realizadoSaida: Number((summary.valorRealizado * 0.18).toFixed(2)),
+      saldoProjetado: Number((receber.reduce((acc, item) => acc + item.valor, 0) - pagar.reduce((acc, item) => acc + item.valor, 0) + summary.variacao).toFixed(2)),
+      status: 'atencao',
+    },
+    {
+      periodo: `${competencia}-25`,
+      previstoEntrada: 0,
+      previstoSaida: Number(summary.valorFopagPrevisto.toFixed(2)),
+      realizadoEntrada: 0,
+      realizadoSaida: Number(summary.valorFopagRealizado.toFixed(2)),
+      saldoProjetado: Number((-summary.valorFopagPrevisto).toFixed(2)),
+      status: summary.statusFechamento === 'fechada' ? 'equilibrio' : 'atencao',
+    },
+    {
+      periodo: `${competencia}-28`,
+      previstoEntrada: 0,
+      previstoSaida: Number(summary.valorHorasExtrasPrevisto.toFixed(2)),
+      realizadoEntrada: 0,
+      realizadoSaida: Number(summary.valorHorasExtrasRealizado.toFixed(2)),
+      saldoProjetado: Number((-summary.valorHorasExtrasPrevisto).toFixed(2)),
+      status: summary.origemHorasExtras.totalLancamentosIntegrados > 0 ? 'equilibrio' : 'atencao',
+    },
+  ];
+}
 
 function matchesFilters(item: TituloFinanceiro, filters?: FinanceiroFiltersData) {
   if (!filters) return true;
@@ -218,10 +260,96 @@ function buildKpis(items: TituloFinanceiro[]): FinanceiroKpis {
   };
 }
 
-function buildResumoCards(items: TituloFinanceiro[]): FinanceiroResumoCardData[] {
+function buildPessoalDashboard(filters?: FinanceiroFiltersData): FinanceiroPessoalDashboardData {
+  const competencia = getCompetenciaFromFilters(filters);
+  const summary = buildWorkforceFinancialSummary(competencia);
+  const previstoRealizado: FinanceiroPessoalPrevistoRealizadoItem[] = [
+    {
+      id: 'pessoal-fopag',
+      categoria: 'fopag',
+      label: 'FOPAG e encargos',
+      valorPrevisto: summary.valorFopagPrevisto,
+      valorRealizado: summary.valorFopagRealizado,
+      variacao: summary.valorFopagPrevisto - summary.valorFopagRealizado,
+    },
+    {
+      id: 'pessoal-he',
+      categoria: 'horas_extras',
+      label: 'Horas Extras',
+      valorPrevisto: summary.valorHorasExtrasPrevisto,
+      valorRealizado: summary.valorHorasExtrasRealizado,
+      variacao: summary.valorHorasExtrasPrevisto - summary.valorHorasExtrasRealizado,
+    },
+    {
+      id: 'pessoal-total',
+      categoria: 'custo_total',
+      label: 'Custo total de pessoal',
+      valorPrevisto: summary.valorPrevisto,
+      valorRealizado: summary.valorRealizado,
+      variacao: summary.variacao,
+    },
+  ];
+
+  return {
+    competencia: {
+      competencia: summary.competencia,
+      totalFuncionarios: summary.totalFuncionarios,
+      totalObras: summary.totalObras,
+      totalCentrosCusto: summary.totalCentrosCusto,
+      valorHorasExtrasPrevisto: summary.valorHorasExtrasPrevisto,
+      valorHorasExtrasRealizado: summary.valorHorasExtrasRealizado,
+      valorFopagPrevisto: summary.valorFopagPrevisto,
+      valorFopagRealizado: summary.valorFopagRealizado,
+      valorPrevisto: summary.valorPrevisto,
+      valorRealizado: summary.valorRealizado,
+      variacao: summary.variacao,
+      statusFechamento: summary.statusFechamento,
+    },
+    porObra: summary.porObra,
+    porCentroCusto: summary.porCentroCusto,
+    previstoRealizado,
+    destaques: [
+      {
+        id: 'pessoal-competencia',
+        titulo: `Custo de pessoal · ${formatCompetencia(summary.competencia)}`,
+        descricao: 'Resumo financeiro do fluxo Horas Extras → FOPAG → Financeiro, com rastreabilidade por obra e centro de custo.',
+        itens: [
+          { label: 'Previsto', valor: formatCurrency(summary.valorPrevisto), destaque: true },
+          { label: 'Realizado', valor: formatCurrency(summary.valorRealizado) },
+          { label: 'Variação', valor: formatCurrency(summary.variacao) },
+          { label: 'Status do fechamento', valor: summary.statusFechamento },
+        ],
+      },
+      {
+        id: 'pessoal-he',
+        titulo: 'Horas Extras integradas',
+        descricao: 'Lançamentos elegíveis e já refletidos financeiramente na competência.',
+        itens: [
+          { label: 'Lançamentos', valor: String(summary.origemHorasExtras.totalLancamentos) },
+          { label: 'Elegíveis FOPAG', valor: String(summary.origemHorasExtras.totalLancamentosElegiveis), destaque: true },
+          { label: 'Integrados', valor: String(summary.origemHorasExtras.totalLancamentosIntegrados) },
+          { label: 'Valor realizado', valor: formatCurrency(summary.valorHorasExtrasRealizado) },
+        ],
+      },
+      {
+        id: 'pessoal-alocacao',
+        titulo: 'Leitura gerencial por rateio',
+        descricao: 'Base preparada para relatórios e comparativos futuros mantendo Obra como eixo central.',
+        itens: [
+          { label: 'Obras impactadas', valor: String(summary.totalObras) },
+          { label: 'Centros de custo', valor: String(summary.totalCentrosCusto) },
+          { label: 'Maior obra', valor: summary.porObra[0]?.obraNome ?? '—', destaque: true },
+          { label: 'Maior centro', valor: summary.porCentroCusto[0]?.centroCustoNome ?? '—' },
+        ],
+      },
+    ],
+  };
+}
+
+function buildResumoCards(items: TituloFinanceiro[], pessoal: FinanceiroPessoalDashboardData): FinanceiroResumoCardData[] {
   const fopag = items.filter((item) => item.origem === 'fopag').reduce((acc, item) => acc + item.valor, 0);
+  const horasExtras = items.filter((item) => item.origem === 'horas_extras').reduce((acc, item) => acc + item.valor, 0);
   const compras = items.filter((item) => item.origem === 'compras').reduce((acc, item) => acc + item.valor, 0);
-  const fiscal = items.filter((item) => item.origem === 'fiscal').reduce((acc, item) => acc + item.valor, 0);
   const medicoes = items.filter((item) => item.origem === 'medicoes').reduce((acc, item) => acc + item.valor, 0);
   const pagos = items.filter((item) => item.status === 'pago' || item.status === 'recebido').reduce((acc, item) => acc + item.valorPagoRecebido, 0);
 
@@ -229,11 +357,11 @@ function buildResumoCards(items: TituloFinanceiro[]): FinanceiroResumoCardData[]
     {
       id: 'origens',
       titulo: 'Integração entre módulos',
-      descricao: 'Financeiro consolidando previsões e realizados vindos de FOPAG, Compras, Fiscal e Medições.',
+      descricao: 'Financeiro consolidando previsões e realizados vindos de FOPAG, Horas Extras, Compras, Fiscal e Medições.',
       itens: [
         { label: 'FOPAG', valor: formatCurrency(fopag) },
+        { label: 'Horas Extras', valor: formatCurrency(horasExtras) },
         { label: 'Compras', valor: formatCurrency(compras) },
-        { label: 'Fiscal', valor: formatCurrency(fiscal) },
         { label: 'Medições', valor: formatCurrency(medicoes), destaque: true },
       ],
     },
@@ -244,7 +372,8 @@ function buildResumoCards(items: TituloFinanceiro[]): FinanceiroResumoCardData[]
       itens: [
         { label: 'Liquidados', valor: formatCurrency(pagos), destaque: true },
         { label: 'Vencidos', valor: formatCurrency(items.filter((item) => item.status === 'vencido').reduce((acc, item) => acc + item.valor, 0)) },
-        { label: 'Em aprovação', valor: String(items.filter((item) => item.status === 'em_aprovacao').length) },
+        { label: 'Custo pessoal previsto', valor: formatCurrency(pessoal.competencia.valorPrevisto) },
+        { label: 'Custo pessoal realizado', valor: formatCurrency(pessoal.competencia.valorRealizado) },
       ],
     },
     {
@@ -255,126 +384,80 @@ function buildResumoCards(items: TituloFinanceiro[]): FinanceiroResumoCardData[]
         { label: 'Competências mapeadas', valor: String(new Set(items.map((item) => item.competencia)).size) },
         { label: 'Obras com títulos', valor: String(new Set(items.map((item) => item.obraId)).size) },
         { label: 'Maior exposição', valor: formatCurrency(Math.max(...items.map((item) => item.valor), 0)), destaque: true },
+        { label: 'Cenário pessoal', valor: pessoal.competencia.statusFechamento },
       ],
     },
   ];
 }
 
 function buildStatusResumo(items: TituloFinanceiro[]): FinanceiroStatusResumo[] {
-  const catalog: Array<Pick<FinanceiroStatusResumo, 'status' | 'label' | 'descricao'>> = [
-    { status: 'previsto', label: 'Previsto', descricao: 'Títulos ainda em projeção e preparação operacional.' },
-    { status: 'programado', label: 'Programado', descricao: 'Títulos já previstos na agenda de pagamentos.' },
-    { status: 'aguardando_documentos', label: 'Aguardando documentos', descricao: 'Dependem de conferência fiscal/documental para avançar.' },
-    { status: 'vencido', label: 'Vencido', descricao: 'Exigem atuação imediata para evitar impacto financeiro e fiscal.' },
-    { status: 'pago', label: 'Pago', descricao: 'Saídas liquidadas e refletidas no caixa.' },
-    { status: 'recebido', label: 'Recebido', descricao: 'Entradas já efetivadas e conciliadas.' },
-  ];
-
-  return catalog.map((entry) => {
-    const selected = items.filter((item) => item.status === entry.status);
-    return {
-      ...entry,
-      quantidade: selected.length,
-      valor: selected.reduce((acc, item) => acc + item.valor, 0),
-    };
+  const statuses = new Map<string, { quantidade: number; valor: number }>();
+  items.forEach((item) => {
+    const current = statuses.get(item.status) ?? { quantidade: 0, valor: 0 };
+    current.quantidade += 1;
+    current.valor += item.valor;
+    statuses.set(item.status, current);
   });
+
+  return [...statuses.entries()].map(([status, data]) => ({
+    status: status as FinanceiroStatusResumo['status'],
+    label: status.replaceAll('_', ' '),
+    descricao: `Títulos em status ${status.replaceAll('_', ' ')}.`,
+    quantidade: data.quantidade,
+    valor: data.valor,
+  }));
 }
 
 function buildTipoResumo(items: TituloFinanceiro[]): FinanceiroTipoResumo[] {
-  return [
-    {
-      tipo: 'pagar',
-      label: 'Contas a pagar',
-      descricao: 'Compromissos vindos de FOPAG, compras e fiscal com impacto em desembolso.',
-      quantidade: items.filter((item) => item.tipo === 'pagar').length,
-      valor: items.filter((item) => item.tipo === 'pagar').reduce((acc, item) => acc + item.valor, 0),
-    },
-    {
-      tipo: 'receber',
-      label: 'Contas a receber',
-      descricao: 'Entradas previstas/realizadas ligadas a contratos, medições e ajustes financeiros.',
-      quantidade: items.filter((item) => item.tipo === 'receber').length,
-      valor: items.filter((item) => item.tipo === 'receber').reduce((acc, item) => acc + item.valor, 0),
-    },
-  ];
-}
-
-export function getMockTitulosFinanceiros(filters?: FinanceiroFiltersData): TituloFinanceiro[] {
-  return titulos.filter((item) => matchesFilters(item, filters));
+  return ['pagar', 'receber'].map((tipo) => ({
+    tipo: tipo as FinanceiroTipoResumo['tipo'],
+    label: tipo === 'pagar' ? 'Contas a pagar' : 'Contas a receber',
+    descricao: tipo === 'pagar' ? 'Saídas monitoradas no financeiro.' : 'Entradas previstas/realizadas.',
+    quantidade: items.filter((item) => item.tipo === tipo).length,
+    valor: items.filter((item) => item.tipo === tipo).reduce((acc, item) => acc + item.valor, 0),
+  }));
 }
 
 export function getMockFinanceiroDashboard(filters?: FinanceiroFiltersData): FinanceiroDashboardData {
-  const filtered = getMockTitulosFinanceiros(filters);
-
+  const items = getAllTitulos(filters).filter((item) => matchesFilters(item, filters));
+  const pessoal = buildPessoalDashboard(filters);
   return {
-    titulos: filtered,
-    kpis: buildKpis(filtered),
-    resumoCards: buildResumoCards(filtered),
-    statusResumo: buildStatusResumo(filtered),
-    tipoResumo: buildTipoResumo(filtered),
+    titulos: items,
+    kpis: buildKpis(items),
+    resumoCards: buildResumoCards(items, pessoal),
+    statusResumo: buildStatusResumo(items),
+    tipoResumo: buildTipoResumo(items),
+    pessoal,
   };
 }
 
 export function getMockFluxoCaixa(filters?: FinanceiroFiltersData): FluxoCaixaItem[] {
-  const competencia = filters?.competencia;
-  const filtered = competencia
-    ? fluxoCaixa.filter((item) => item.periodo.startsWith(competencia))
-    : fluxoCaixa;
-
-  if (!competencia) {
-    return fluxoCaixa;
-  }
-
-  return fluxoCaixa.filter((item) => item.periodo.startsWith(competencia));
+  return buildFluxoCaixa(filters);
 }
 
-export function getMockTituloFinanceiroById(tituloId: string): TituloFinanceiroDetalhe | undefined {
-  const titulo = titulos.find((item) => item.id === tituloId);
-  if (!titulo) return undefined;
+export function getMockTitulosFinanceiros(filters?: FinanceiroFiltersData): TituloFinanceiro[] {
+  return getAllTitulos(filters).filter((item) => matchesFilters(item, filters));
+}
+
+export function getMockFinanceiroPessoal(filters?: FinanceiroFiltersData): FinanceiroPessoalDashboardData {
+  return buildPessoalDashboard(filters);
+}
+
+export function getMockTituloFinanceiroById(tituloId: string): TituloFinanceiroDetalhe | null {
+  const titulo = getAllTitulos().find((item) => item.id === tituloId);
+  if (!titulo) return null;
 
   return {
     titulo,
     timeline: [
-      {
-        id: 'evt-1',
-        label: 'Título gerado',
-        descricao: `Título criado a partir da origem ${titulo.origem.toUpperCase()} na competência ${formatCompetencia(titulo.competencia)}.`,
-        data: titulo.emissao,
-      },
-      {
-        id: 'evt-2',
-        label: 'Programação financeira',
-        descricao: 'Título incorporado à programação de caixa da obra e do centro de custo.',
-        data: titulo.pagamentoRecebimentoPrevisto,
-      },
-      {
-        id: 'evt-3',
-        label: 'Rastreabilidade operacional',
-        descricao: `Origem conectada a ${titulo.origem === 'medicoes' ? 'Medições/Faturamento' : titulo.origem.charAt(0).toUpperCase() + titulo.origem.slice(1)} para acompanhamento cruzado.`,
-        data: titulo.vencimento,
-      },
+      { id: 'tl-1', label: 'Título originado', descricao: 'Origem do título registrada no módulo de origem.', data: titulo.emissao },
+      { id: 'tl-2', label: 'Programação financeira', descricao: 'Título disponibilizado para leitura financeira por competência.', data: titulo.pagamentoRecebimentoPrevisto },
+      { id: 'tl-3', label: 'Vencimento', descricao: 'Marco financeiro de pagamento/recebimento.', data: titulo.vencimento },
     ],
     integracoes: [
-      {
-        modulo: 'Obras',
-        descricao: `Obra vinculada: ${titulo.obraNome}.`,
-        href: `/obras/${titulo.obraId}`,
-      },
-      {
-        modulo: 'FOPAG',
-        descricao: 'Previsões de folha devem refletir programação de desembolso quando a origem for FOPAG.',
-        href: titulo.origem === 'fopag' ? '/fopag' : undefined,
-      },
-      {
-        modulo: 'Compras',
-        descricao: 'Pedidos de compra e recebimentos fiscais retroalimentam o comprometido do caixa.',
-        href: titulo.origem === 'compras' ? '/compras/pedidos' : '/compras',
-      },
-      {
-        modulo: 'Fiscal',
-        descricao: 'Documentos e obrigações fiscais influenciam liberação, retenção e vencimentos.',
-        href: titulo.documentoNumero ? '/fiscal' : undefined,
-      },
+      { modulo: 'Obras', descricao: 'A obra permanece como eixo principal de custo e leitura gerencial.', href: `/obras/${titulo.obraId}/financeiro` },
+      { modulo: 'FOPAG', descricao: 'Competência de folha e encargos relacionada ao custo de pessoal.', href: titulo.origem === 'fopag' ? `/fopag/${titulo.competencia}/financeiro` : undefined },
+      { modulo: 'Horas Extras', descricao: 'Lançamentos aprovados/fechados alimentam a leitura financeira do pessoal.', href: titulo.origem === 'horas_extras' ? '/horas-extras' : undefined },
     ],
   };
 }

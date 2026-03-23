@@ -8,13 +8,16 @@
  */
 import { Plus } from 'lucide-react';
 import { PageHeader, MainContent, EmptyState } from '@/shared/components';
+import { useDrawerStore } from '@/shared/stores';
 import { FuncionarioKpiBar } from '../components/FuncionarioKpiBar';
 import { FuncionarioFilters } from '../components/FuncionarioFilters';
 import { FuncionarioCard } from '../components/FuncionarioCard';
+import { FuncionarioMutationDrawerForm } from '../components/FuncionarioMutationDrawerForm';
 import { useFuncionarios } from '../hooks/useFuncionarios';
 import { useFuncionarioFilters } from '../hooks/useFuncionarioFilters';
 
 export function FuncionariosListPage() {
+  const openDrawer = useDrawerStore((state) => state.openDrawer);
   const {
     filters,
     setSearch,
@@ -26,15 +29,31 @@ export function FuncionariosListPage() {
 
   const { data, isLoading, isError } = useFuncionarios(filters);
 
+  const openCreateDrawer = () => {
+    openDrawer({
+      title: 'Novo funcionário',
+      content: <FuncionarioMutationDrawerForm />,
+      width: '760px',
+    });
+  };
+
+  const openEditDrawer = (funcionarioId: string) => {
+    openDrawer({
+      title: 'Editar funcionário',
+      content: <FuncionarioMutationDrawerForm funcionarioId={funcionarioId} />,
+      width: '760px',
+    });
+  };
+
   return (
     <div className="flex flex-1 flex-col">
-      {/* 1. PageHeader */}
       <PageHeader
         title="Funcionários"
         subtitle="Gestão de funcionários, alocações e vínculos trabalhistas"
         actions={
           <button
             type="button"
+            onClick={openCreateDrawer}
             className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-600"
           >
             <Plus size={16} />
@@ -43,7 +62,6 @@ export function FuncionariosListPage() {
         }
       />
 
-      {/* 2. FilterBar */}
       <FuncionarioFilters
         search={filters.search ?? ''}
         status={filters.status}
@@ -55,12 +73,9 @@ export function FuncionariosListPage() {
         hasActiveFilters={hasActiveFilters}
       />
 
-      {/* 3. KPISection */}
       {data?.kpis && <FuncionarioKpiBar kpis={data.kpis} />}
 
-      {/* 4. MainContent */}
       <MainContent>
-        {/* Loading state */}
         {isLoading && (
           <div className="flex flex-1 items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3">
@@ -70,7 +85,6 @@ export function FuncionariosListPage() {
           </div>
         )}
 
-        {/* Error state */}
         {isError && (
           <EmptyState
             title="Erro ao carregar funcionários"
@@ -87,7 +101,6 @@ export function FuncionariosListPage() {
           />
         )}
 
-        {/* Empty state */}
         {!isLoading && !isError && data?.data.length === 0 && (
           <EmptyState
             title="Nenhum funcionário encontrado"
@@ -108,6 +121,7 @@ export function FuncionariosListPage() {
               ) : (
                 <button
                   type="button"
+                  onClick={openCreateDrawer}
                   className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
                 >
                   <Plus size={16} />
@@ -118,11 +132,10 @@ export function FuncionariosListPage() {
           />
         )}
 
-        {/* Funcionários grid */}
         {!isLoading && !isError && data && data.data.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {data.data.map((func) => (
-              <FuncionarioCard key={func.id} funcionario={func} />
+              <FuncionarioCard key={func.id} funcionario={func} onEdit={openEditDrawer} />
             ))}
           </div>
         )}
