@@ -30,11 +30,16 @@ import { DashboardPage } from '@/modules/dashboard';
 import { NotFoundPage } from '@/shared/components/NotFoundPage';
 import {
   ObraComprasPage,
+  ObraContratosPage,
   ObraCronogramaPage,
   ObraDocumentosPage,
   ObraEquipePage,
+  ObraEstoquePage,
   ObraFinanceiroPage,
+  ObraMedicoesPage,
   ObrasListPage,
+  ObraRhPage,
+  ObraRiscosPage,
   ObraVisaoGeralPage,
 } from '@/modules/obras';
 import { ObraTabPlaceholder } from '@/modules/obras/components';
@@ -251,10 +256,15 @@ const funcionarioDetailTabs: PlaceholderTabConfig[] = [
 
 const obraImplementedTabs = new Set([
   'cronograma',
+  'contratos',
   'equipe',
+  'rh',
   'compras',
   'financeiro',
+  'estoque',
+  'medicoes',
   'documentos',
+  'riscos',
 ]);
 
 const funcionarioImplementedTabs = new Set([
@@ -327,10 +337,15 @@ const appRoutes: RouteObject[] = [
         children: [
           { index: true, element: <ObraVisaoGeralPage /> },
           { path: 'cronograma', element: <ObraCronogramaPage /> },
+          { path: 'contratos', element: <ObraContratosPage /> },
           { path: 'equipe', element: <ObraEquipePage /> },
+          { path: 'rh', element: <ObraRhPage /> },
           { path: 'compras', element: <ObraComprasPage /> },
           { path: 'financeiro', element: <ObraFinanceiroPage /> },
+          { path: 'estoque', element: <ObraEstoquePage /> },
+          { path: 'medicoes', element: <ObraMedicoesPage /> },
           { path: 'documentos', element: <ObraDocumentosPage /> },
+          { path: 'riscos', element: <ObraRiscosPage /> },
           ...obraPlaceholderRoutes,
         ],
       },

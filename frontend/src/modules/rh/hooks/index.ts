@@ -11,5 +11,3 @@ export { useFuncionarioDocumentos } from './useFuncionarioDocumentos';
 export { useFuncionarioFerias } from './useFuncionarioFerias';
 export { useFuncionarioDecimoTerceiro } from './useFuncionarioDecimoTerceiro';
 export { useCreateFuncionario, useUpdateFuncionario } from './useFuncionarioMutations';
-
-export { useCreateAlocacao, useUpdateAlocacao, useEncerrarAlocacao } from './useAlocacaoMutations';
