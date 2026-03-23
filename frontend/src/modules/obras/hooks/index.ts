@@ -6,4 +6,4 @@ export { useObraCronograma } from './useObraCronograma';
 export { useObraEquipe } from './useObraEquipe';
 export { useObraCompras } from './useObraCompras';
 export { useObraFinanceiro } from './useObraFinanceiro';
-export { useObraDocumentos } from './useObraDocumentos';
+export { useObraDocumentos } from './useObraDocumentos';export { useCreateObra, useUpdateObra } from './useObraMutations';

@@ -1,3 +1,4 @@
+import type { ApiListResponse } from '@/shared/types';
 import type { FuncionarioFormData } from './funcionario.schema';
 
 /**
@@ -88,11 +89,7 @@ export interface FuncionarioResumoItem {
 }
 
 /** Contrato de resposta para listagem de funcionários. */
-export interface FuncionariosListResponse {
-  data: FuncionarioListItem[];
-  kpis: FuncionariosKpis;
-  total: number;
-}
+export type FuncionariosListResponse = ApiListResponse<FuncionarioListItem, FuncionariosKpis>;
 
 /** Contrato de resposta para detalhe do funcionário. */
 export interface FuncionarioDetailResponse {
@@ -106,6 +103,13 @@ export type FuncionarioCreatePayload = FuncionarioFormData;
 /** Payload esperado para edição parcial de funcionário. */
 export interface FuncionarioUpdatePayload extends Partial<FuncionarioFormData> {
   id: string;
+}
+
+
+/** Resposta de sucesso para mutações de funcionário. */
+export interface FuncionarioMutationResponse {
+  message: string;
+  funcionario: Funcionario;
 }
 
 /** Labels para status de funcionário */

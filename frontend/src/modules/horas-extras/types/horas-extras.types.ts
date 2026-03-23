@@ -102,6 +102,16 @@ export interface HorasExtrasDashboardData {
   fechamentoAtual: FechamentoCompetencia | null;
 }
 
+export interface HoraExtraMutationResponse {
+  message: string;
+  lancamento: HoraExtraLancamento;
+}
+
+export interface HorasExtrasFechamentoResponse {
+  message: string;
+  fechamento: FechamentoCompetencia;
+}
+
 export const HORA_EXTRA_TIPO_LABELS: Record<HoraExtraTipo, string> = {
   he_50: 'HE 50%',
   he_100: 'HE 100%',

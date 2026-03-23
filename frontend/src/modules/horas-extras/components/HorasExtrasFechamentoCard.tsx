@@ -1,4 +1,4 @@
-import { CalendarCheck2 } from 'lucide-react';
+import { CalendarCheck2, Loader2 } from 'lucide-react';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { StatusBadge } from '@/shared/components';
 import { FECHAMENTO_STATUS_LABELS, FECHAMENTO_STATUS_VARIANTS } from '../types';
@@ -6,9 +6,13 @@ import type { FechamentoCompetencia } from '../types';
 
 interface HorasExtrasFechamentoCardProps {
   fechamento: FechamentoCompetencia;
+  onClose?: (competencia: string) => void;
+  isClosing?: boolean;
 }
 
-export function HorasExtrasFechamentoCard({ fechamento }: HorasExtrasFechamentoCardProps) {
+export function HorasExtrasFechamentoCard({ fechamento, onClose, isClosing }: HorasExtrasFechamentoCardProps) {
+  const canClose = fechamento.pendentesAprovacao === 0 && fechamento.status !== 'fechada_para_fopag';
+
   return (
     <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
       <div className="mb-4 flex items-start justify-between gap-4">
@@ -45,6 +49,18 @@ export function HorasExtrasFechamentoCard({ fechamento }: HorasExtrasFechamentoC
           <dd className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(fechamento.valorTotal)}</dd>
         </div>
       </dl>
+
+      <div className="mt-4 flex justify-end">
+        <button
+          type="button"
+          disabled={!canClose || !onClose || isClosing}
+          onClick={() => onClose?.(fechamento.competencia)}
+          className="inline-flex items-center gap-2 rounded-md border border-jogab-200 px-3 py-2 text-sm font-medium text-jogab-700 disabled:opacity-50"
+        >
+          {isClosing ? <Loader2 size={16} className="animate-spin" /> : <CalendarCheck2 size={16} />}
+          Fechar competência
+        </button>
+      </div>
     </article>
   );
 }

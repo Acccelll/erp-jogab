@@ -1,5 +1,6 @@
 import {
   getMockFinanceiroDashboard,
+  getMockFinanceiroPessoal,
   getMockFluxoCaixa,
   getMockTituloFinanceiroById,
   getMockTitulosFinanceiros,
@@ -27,6 +28,11 @@ export async function fetchFinanceiroDashboard(filters?: FinanceiroFiltersData) 
 export async function fetchFluxoCaixa(filters?: FinanceiroFiltersData) {
   await wait();
   return getMockFluxoCaixa(normalizeFilters(filters));
+}
+
+export async function fetchFinanceiroPessoal(filters?: FinanceiroFiltersData) {
+  await wait();
+  return getMockFinanceiroPessoal(normalizeFilters(filters));
 }
 
 export async function fetchContasPagar(filters?: FinanceiroFiltersData) {

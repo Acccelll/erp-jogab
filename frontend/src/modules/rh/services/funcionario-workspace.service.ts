@@ -1,5 +1,5 @@
+import { fetchFuncionarioAlocacoesWorkspace } from './alocacoes.service';
 import {
-  getFuncionarioAlocacoesWorkspace,
   getFuncionarioContratoWorkspace,
   getFuncionarioDecimoTerceiroWorkspace,
   getFuncionarioDocumentosWorkspace,
@@ -20,8 +20,7 @@ export async function fetchFuncionarioContrato(funcId: string) {
 }
 
 export async function fetchFuncionarioAlocacoes(funcId: string) {
-  await delay();
-  return getFuncionarioAlocacoesWorkspace(funcId);
+  return fetchFuncionarioAlocacoesWorkspace(funcId);
 }
 
 export async function fetchFuncionarioProvisoes(funcId: string) {

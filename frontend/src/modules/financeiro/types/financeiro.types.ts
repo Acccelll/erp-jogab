@@ -10,7 +10,7 @@ export type FinanceiroStatus =
   | 'recebido';
 
 export type FinanceiroTipo = 'pagar' | 'receber';
-export type FinanceiroOrigem = 'fopag' | 'compras' | 'fiscal' | 'medicoes' | 'manual';
+export type FinanceiroOrigem = 'fopag' | 'horas_extras' | 'compras' | 'fiscal' | 'medicoes' | 'manual';
 export type FluxoCaixaStatus = 'superavit' | 'equilibrio' | 'atencao';
 
 export interface TituloFinanceiro {
@@ -63,6 +63,66 @@ export interface FinanceiroKpis {
   saldoProjetado: number;
 }
 
+
+export interface FinanceiroPessoalCompetenciaResumo {
+  competencia: string;
+  totalFuncionarios: number;
+  totalObras: number;
+  totalCentrosCusto: number;
+  valorHorasExtrasPrevisto: number;
+  valorHorasExtrasRealizado: number;
+  valorFopagPrevisto: number;
+  valorFopagRealizado: number;
+  valorPrevisto: number;
+  valorRealizado: number;
+  variacao: number;
+  statusFechamento: 'aberta' | 'parcial' | 'fechada';
+}
+
+export interface FinanceiroPessoalObraResumo {
+  obraId: string;
+  obraNome: string;
+  totalFuncionarios: number;
+  totalCentrosCusto: number;
+  valorHorasExtrasPrevisto: number;
+  valorHorasExtrasRealizado: number;
+  valorFopagPrevisto: number;
+  valorFopagRealizado: number;
+  valorPrevisto: number;
+  valorRealizado: number;
+}
+
+export interface FinanceiroPessoalCentroCustoResumo {
+  centroCustoId: string;
+  centroCustoNome: string;
+  obraId: string;
+  obraNome: string;
+  totalFuncionarios: number;
+  valorHorasExtrasPrevisto: number;
+  valorHorasExtrasRealizado: number;
+  valorFopagPrevisto: number;
+  valorFopagRealizado: number;
+  valorPrevisto: number;
+  valorRealizado: number;
+}
+
+export interface FinanceiroPessoalPrevistoRealizadoItem {
+  id: string;
+  categoria: 'fopag' | 'horas_extras' | 'custo_total';
+  label: string;
+  valorPrevisto: number;
+  valorRealizado: number;
+  variacao: number;
+}
+
+export interface FinanceiroPessoalDashboardData {
+  competencia: FinanceiroPessoalCompetenciaResumo;
+  porObra: FinanceiroPessoalObraResumo[];
+  porCentroCusto: FinanceiroPessoalCentroCustoResumo[];
+  previstoRealizado: FinanceiroPessoalPrevistoRealizadoItem[];
+  destaques: FinanceiroResumoCardData[];
+}
+
 export interface FinanceiroResumoCardItem {
   label: string;
   valor: string;
@@ -98,6 +158,7 @@ export interface FinanceiroDashboardData {
   resumoCards: FinanceiroResumoCardData[];
   statusResumo: FinanceiroStatusResumo[];
   tipoResumo: FinanceiroTipoResumo[];
+  pessoal: FinanceiroPessoalDashboardData;
 }
 
 export interface TituloFinanceiroDetalhe {
@@ -142,6 +203,7 @@ export const FINANCEIRO_TIPO_LABELS: Record<FinanceiroTipo, string> = {
 
 export const FINANCEIRO_ORIGEM_LABELS: Record<FinanceiroOrigem, string> = {
   fopag: 'FOPAG',
+  horas_extras: 'Horas Extras',
   compras: 'Compras',
   fiscal: 'Fiscal',
   medicoes: 'Medições',
