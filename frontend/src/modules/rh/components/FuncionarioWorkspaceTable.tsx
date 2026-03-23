@@ -1,4 +1,6 @@
-export function FuncionarioWorkspaceTable({ columns, rows }: { columns: string[]; rows: string[][] }) {
+import type { ReactNode } from 'react';
+
+export function FuncionarioWorkspaceTable({ columns, rows }: { columns: string[]; rows: ReactNode[][] }) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm shadow-gray-100/60">
       <div className="overflow-x-auto">

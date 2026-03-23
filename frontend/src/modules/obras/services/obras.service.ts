@@ -16,6 +16,7 @@ import type {
 } from '../types';
 import {
   mockObras,
+  normalizeObra,
   toObraListItem,
   calcularObrasKpis,
   calcularObraVisaoGeralKpis,
@@ -84,6 +85,10 @@ export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListRe
     resultado = resultado.filter((o) => o.filialId === filters.filialId);
   }
 
+  if (filters?.responsavelId) {
+    resultado = resultado.filter((o) => o.responsavelId === filters.responsavelId);
+  }
+
   const kpis = calcularObrasKpis(resultado);
   const data = resultado.map(toObraListItem);
 
@@ -93,7 +98,8 @@ export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListRe
 /** Busca uma obra pelo ID */
 export async function fetchObraById(obraId: string): Promise<Obra | null> {
   await delay(200);
-  return mockObras.find((o) => o.id === obraId) ?? null;
+  const obra = mockObras.find((o) => o.id === obraId);
+  return obra ? normalizeObra(obra) : null;
 }
 
 /** KPIs da visão geral da obra */
@@ -101,7 +107,7 @@ export async function fetchObraVisaoGeralKpis(obraId: string): Promise<ObraVisao
   await delay(150);
   const obra = mockObras.find((o) => o.id === obraId);
   if (!obra) return null;
-  return calcularObraVisaoGeralKpis(obra);
+  return calcularObraVisaoGeralKpis(normalizeObra(obra));
 }
 
 /** Blocos de resumo da visão geral da obra */
@@ -109,7 +115,7 @@ export async function fetchObraResumoBlocos(obraId: string): Promise<ObraResumoB
   await delay(200);
   const obra = mockObras.find((o) => o.id === obraId);
   if (!obra) return [];
-  return gerarResumoBlocos(obra);
+  return gerarResumoBlocos(normalizeObra(obra));
 }
 
 /** Agregador de detalhe preparado para futura API real única do workspace da obra. */
