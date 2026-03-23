@@ -1,6 +1,6 @@
 /**
  * Hook para gerenciamento de filtros de funcionários.
- * Integra com o filtersStore global.
+ * Integra com o filtersStore global e herda contexto ativo de RH/Obras.
  */
 import { useCallback, useMemo } from 'react';
 import { useContextStore, useFiltersStore } from '@/shared/stores';
@@ -11,7 +11,11 @@ const MODULE_KEY = 'rh';
 
 export function useFuncionarioFilters() {
   const { getModuleFilters, setFilter, clearModuleFilters } = useFiltersStore();
-  const { filialId: contextFilialId, obraId: contextObraId, centroCustoId: contextCentroCustoId } = useContextStore();
+  const {
+    filialId: contextFilialId,
+    obraId: contextObraId,
+    centroCustoId: contextCentroCustoId,
+  } = useContextStore();
   const raw = getModuleFilters(MODULE_KEY);
 
   const filters: FuncionarioFiltersData = useMemo(
@@ -21,7 +25,8 @@ export function useFuncionarioFilters() {
       tipoContrato: (raw.tipoContrato as TipoContrato) ?? defaultFuncionarioFilters.tipoContrato,
       filialId: (raw.filialId as string) ?? contextFilialId ?? defaultFuncionarioFilters.filialId,
       obraId: (raw.obraId as string) ?? contextObraId ?? defaultFuncionarioFilters.obraId,
-      centroCustoId: (raw.centroCustoId as string) ?? contextCentroCustoId ?? defaultFuncionarioFilters.centroCustoId,
+      centroCustoId:
+        (raw.centroCustoId as string) ?? contextCentroCustoId ?? defaultFuncionarioFilters.centroCustoId,
       departamento: (raw.departamento as string) ?? defaultFuncionarioFilters.departamento,
     }),
     [contextCentroCustoId, contextFilialId, contextObraId, raw],
@@ -52,18 +57,26 @@ export function useFuncionarioFilters() {
     [setFilter],
   );
 
-  const clearFilters = useCallback(
-    () => clearModuleFilters(MODULE_KEY),
-    [clearModuleFilters],
+  const setCentroCustoId = useCallback(
+    (value: string | undefined) => setFilter(MODULE_KEY, 'centroCustoId', value),
+    [setFilter],
   );
 
-  const hasActiveFilters = !!(
+  const setDepartamento = useCallback(
+    (value: string | undefined) => setFilter(MODULE_KEY, 'departamento', value),
+    [setFilter],
+  );
+
+  const clearFilters = useCallback(() => clearModuleFilters(MODULE_KEY), [clearModuleFilters]);
+
+  const hasActiveFilters = Boolean(
     filters.search ||
-    filters.status ||
-    filters.tipoContrato ||
-    (filters.filialId && filters.filialId !== contextFilialId) ||
-    (filters.obraId && filters.obraId !== contextObraId) ||
-    (filters.centroCustoId && filters.centroCustoId !== contextCentroCustoId)
+      filters.status ||
+      filters.tipoContrato ||
+      filters.departamento ||
+      (filters.filialId && filters.filialId !== contextFilialId) ||
+      (filters.obraId && filters.obraId !== contextObraId) ||
+      (filters.centroCustoId && filters.centroCustoId !== contextCentroCustoId),
   );
 
   return {
@@ -73,6 +86,8 @@ export function useFuncionarioFilters() {
     setTipoContrato,
     setFilialId,
     setObraId,
+    setCentroCustoId,
+    setDepartamento,
     clearFilters,
     hasActiveFilters,
   };
