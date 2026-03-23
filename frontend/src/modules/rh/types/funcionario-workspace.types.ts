@@ -1,3 +1,5 @@
+import type { AlocacaoResumo } from '@/shared/types';
+
 export interface FuncionarioContratoHistoricoItem {
   id: string;
   data: string;
@@ -19,17 +21,7 @@ export interface FuncionarioContratoData {
   historico: FuncionarioContratoHistoricoItem[];
 }
 
-export interface FuncionarioAlocacaoItem {
-  id: string;
-  obraId: string;
-  obraNome: string;
-  funcao: string;
-  periodoInicio: string;
-  periodoFim?: string;
-  percentual: number;
-  centroCusto: string;
-  status: 'ativa' | 'planejada' | 'encerrada';
-}
+export type FuncionarioAlocacaoItem = AlocacaoResumo;
 
 export interface FuncionarioProvisaoItem {
   id: string;

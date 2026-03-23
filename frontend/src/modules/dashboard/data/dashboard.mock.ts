@@ -1,161 +1,140 @@
+import { buildExecutiveManagementSnapshot } from '@/shared/lib/executiveInsights';
+import { formatCurrency } from '@/shared/lib/utils';
 import type { DashboardSummary } from '../types';
 
-export const dashboardSummaryMock: DashboardSummary = {
-  generatedAt: '2026-03-20T09:00:00.000Z',
-  kpis: [
-    {
-      label: 'Obras Ativas',
-      value: 12,
-      format: 'number',
-      subtitle: '8 em execução e 4 em mobilização',
-      trend: 'up',
-    },
-    {
-      label: 'Custo Realizado no Mês',
-      value: 4823500,
-      format: 'currency',
-      subtitle: '82% do orçamento mensal previsto',
-      trend: 'neutral',
-    },
-    {
-      label: 'Comprometido em Aberto',
-      value: 1764200,
-      format: 'currency',
-      subtitle: 'Pedidos, contratos e provisões já assumidos',
-      trend: 'down',
-    },
-    {
-      label: 'Colaboradores Ativos',
-      value: 186,
-      format: 'number',
-      subtitle: '23 admitidos nos últimos 60 dias',
-      trend: 'up',
-    },
-    {
-      label: 'Medição Prevista do Ciclo',
-      value: 68,
-      format: 'percent',
-      subtitle: 'Percentual das obras aptas a faturamento',
-      trend: 'up',
-    },
-  ],
-  obras: [
-    {
-      id: 'obra-destaque-aurora',
-      title: 'Obra em Destaque — Edifício Aurora',
-      description: 'Maior concentração de custo realizado e avanço físico entre as obras em execução.',
-      metrics: [
-        { label: 'Avanço Físico', value: '74%', highlight: true },
-        { label: 'Custo Realizado', value: 'R$ 1,48 mi' },
-        { label: 'Comprometido', value: 'R$ 420 mil' },
-        { label: 'Próxima Medição', value: '25/03/2026' },
-      ],
-      action: { label: 'Abrir workspace da obra', to: '/obras/obra-1' },
-    },
-    {
-      id: 'obras-custos',
-      title: 'Custos por Obra',
-      description: 'Comparativo inicial entre planejado, comprometido e realizado nas principais frentes ativas.',
-      metrics: [
-        { label: 'Planejado', value: 'R$ 6,10 mi' },
-        { label: 'Comprometido', value: 'R$ 4,92 mi', highlight: true },
-        { label: 'Realizado', value: 'R$ 4,82 mi' },
-        { label: 'Desvio', value: '+2,1%' },
-      ],
-      action: { label: 'Ver todas as obras', to: '/obras' },
-    },
-  ],
-  rh: [
-    {
-      id: 'rh-alocacoes',
-      title: 'Alocações e Produtividade',
-      description: 'Visão consolidada de colaboradores alocados nas obras prioritárias.',
-      metrics: [
-        { label: 'Alocados em obra', value: '164', highlight: true },
-        { label: 'Em mobilização', value: '11' },
-        { label: 'Próx. vencimentos ASO', value: '7' },
-        { label: 'Pendências documentais', value: '5' },
-      ],
-      action: { label: 'Ir para RH', to: '/rh/funcionarios' },
-    },
-    {
-      id: 'rh-provisoes',
-      title: 'Provisões Trabalhistas',
-      description: 'Indicadores iniciais para férias, 13º e exposição trabalhista por competência.',
-      metrics: [
-        { label: 'Férias provisionadas', value: 'R$ 312 mil' },
-        { label: '13º provisionado', value: 'R$ 248 mil' },
-        { label: 'Funcionários em férias', value: '6' },
-        { label: 'Maior impacto', value: 'Obra Aurora', highlight: true },
-      ],
-      action: { label: 'Abrir provisões', to: '/rh/funcionarios' },
-    },
-  ],
-  financeiro: [
-    {
-      id: 'fin-previsao',
-      title: 'Previsão de Desembolso',
-      description: 'Saídas financeiras previstas com maior pressão de caixa na competência ativa.',
-      metrics: [
-        { label: 'Previsto 15 dias', value: 'R$ 2,18 mi', highlight: true },
-        { label: 'Realizado acumulado', value: 'R$ 4,82 mi' },
-        { label: 'Fornecedores críticos', value: '4' },
-        { label: 'Maior concentração', value: 'Concreto e aço' },
-      ],
-      action: { label: 'Ir para Financeiro', to: '/financeiro' },
-    },
-    {
-      id: 'fin-recebimentos',
-      title: 'Recebimentos e Medições',
-      description: 'Sinaliza medições próximas de faturamento e impactos no fluxo financeiro.',
-      metrics: [
-        { label: 'Medições a faturar', value: 'R$ 1,34 mi' },
-        { label: 'Recebimentos previstos', value: 'R$ 960 mil' },
-        { label: 'Atrasos > 15 dias', value: '2' },
-        { label: 'Obra prioritária', value: 'Ponte BR-101', highlight: true },
-      ],
-      action: { label: 'Abrir medições', to: '/medicoes' },
-    },
-  ],
-  alertas: [
-    {
-      id: 'alerta-1',
-      title: 'Medição pendente de aprovação',
-      description: 'A Obra Edifício Aurora possui medição aguardando aprovação para faturamento ainda nesta competência.',
-      severity: 'critical',
-      module: 'Medições',
-      obraNome: 'Edifício Aurora',
-      actionLabel: 'Abrir obra',
-      actionTo: '/obras/obra-1',
-    },
-    {
-      id: 'alerta-2',
-      title: 'Documentos trabalhistas a vencer',
-      description: 'Sete colaboradores com ASO ou certificado próximo do vencimento em até 10 dias.',
-      severity: 'warning',
-      module: 'RH',
-      obraNome: 'Residencial Parque',
-      actionLabel: 'Ver funcionários',
-      actionTo: '/rh/funcionarios',
-    },
-    {
-      id: 'alerta-3',
-      title: 'Desembolso relevante previsto',
-      description: 'Há concentração de pagamentos de fornecedores estratégicos nos próximos 5 dias úteis.',
-      severity: 'warning',
-      module: 'Financeiro',
-      actionLabel: 'Abrir financeiro',
-      actionTo: '/financeiro',
-    },
-    {
-      id: 'alerta-4',
-      title: 'Nova obra em mobilização',
-      description: 'A obra Torre Empresarial entrou na fase de mobilização e deve receber equipe e compras iniciais.',
-      severity: 'info',
-      module: 'Obras',
-      obraNome: 'Torre Empresarial',
-      actionLabel: 'Ver obras',
-      actionTo: '/obras',
-    },
-  ],
-};
+function formatCompactCurrency(value: number) {
+  if (value >= 1_000_000) {
+    return `R$ ${(value / 1_000_000).toFixed(2)} mi`;
+  }
+  if (value >= 1_000) {
+    return `R$ ${(value / 1_000).toFixed(0)} mil`;
+  }
+  return formatCurrency(value);
+}
+
+export function buildDashboardSummaryMock(competencia = '2026-03'): DashboardSummary {
+  const snapshot = buildExecutiveManagementSnapshot(competencia);
+  const principalObra = snapshot.obras[0];
+  const principalCentro = snapshot.pessoal.porCentroCusto[0];
+  const fechamentoLabel = snapshot.pessoal.statusFechamento === 'fechada' ? 'Fechamento consistente' : snapshot.pessoal.statusFechamento === 'parcial' ? 'Fechamento parcial' : 'Fechamento em aberto';
+
+  return {
+    generatedAt: new Date().toISOString(),
+    kpis: [
+      { label: 'Custo pessoal previsto', value: snapshot.pessoal.valorPrevisto, format: 'currency', subtitle: `Competência ${competencia}`, trend: 'up' },
+      { label: 'Custo pessoal realizado', value: snapshot.pessoal.valorRealizado, format: 'currency', subtitle: fechamentoLabel, trend: 'neutral' },
+      { label: 'Horas extras', value: Number(snapshot.horasExtras.totalHoras.toFixed(1)), format: 'number', subtitle: `${snapshot.horasExtras.totalLancamentos} lançamento(s)`, trend: snapshot.horasExtras.pendentesAprovacao > 0 ? 'up' : 'neutral' },
+      { label: 'FOPAG consolidada', value: snapshot.fopag.competencia.valorPrevisto, format: 'currency', subtitle: `${snapshot.fopag.competencia.totalFuncionarios} funcionários`, trend: 'up' },
+      { label: 'Obras impactadas', value: snapshot.pessoal.totalObras, format: 'number', subtitle: `${snapshot.pessoal.totalCentrosCusto} centros de custo`, trend: 'neutral' },
+    ],
+    obras: [
+      {
+        id: 'obra-destaque',
+        title: `Obra com maior custo de pessoal — ${principalObra?.nome ?? '—'}`,
+        description: 'Leitura executiva do impacto financeiro e operacional por obra, mantendo Obras como eixo central do ERP.',
+        metrics: [
+          { label: 'Custo pessoal previsto', value: formatCompactCurrency(principalObra?.custoPessoalPrevisto ?? 0), highlight: true },
+          { label: 'Custo realizado', value: formatCompactCurrency(principalObra?.custoRealizado ?? 0) },
+          { label: 'Avanço físico', value: `${principalObra?.percentualConcluido ?? 0}%` },
+          { label: 'Desvio financeiro', value: `${principalObra?.desvioFinanceiro ?? 0}%` },
+        ],
+        action: { label: 'Abrir obra', to: principalObra ? `/obras/${principalObra.id}` : '/obras' },
+      },
+      {
+        id: 'obras-rateio',
+        title: 'Rateio por obra e centro de custo',
+        description: 'Resumo do custo de pessoal distribuído por obra e preparado para leitura gerencial futura.',
+        metrics: [
+          { label: 'Obras impactadas', value: String(snapshot.pessoal.totalObras), highlight: true },
+          { label: 'Maior centro', value: principalCentro?.centroCustoNome ?? '—' },
+          { label: 'Previsto total', value: formatCompactCurrency(snapshot.pessoal.valorPrevisto) },
+          { label: 'Realizado total', value: formatCompactCurrency(snapshot.pessoal.valorRealizado) },
+        ],
+        action: { label: 'Abrir Financeiro', to: '/financeiro' },
+      },
+    ],
+    rh: [
+      {
+        id: 'rh-alocacoes',
+        title: 'RH e alocações por obra',
+        description: 'Consolidação de equipe ativa, férias, afastamentos e vínculo com custo de pessoal.',
+        metrics: [
+          { label: 'Ativos', value: String(snapshot.rh.ativos), highlight: true },
+          { label: 'Alocados em obra', value: String(snapshot.rh.alocadosEmObra) },
+          { label: 'Férias', value: String(snapshot.rh.emFerias) },
+          { label: 'Maior obra', value: snapshot.rh.maiorObra ?? '—' },
+        ],
+        action: { label: 'Ir para RH', to: '/rh/funcionarios' },
+      },
+      {
+        id: 'rh-he-fopag',
+        title: 'Horas Extras e FOPAG',
+        description: 'Sinalização executiva do funil operacional que forma o custo de pessoal.',
+        metrics: [
+          { label: 'Pendentes de aprovação', value: String(snapshot.horasExtras.pendentesAprovacao) },
+          { label: 'Fechadas p/ FOPAG', value: String(snapshot.horasExtras.fechadasParaFopag), highlight: true },
+          { label: 'HE valor total', value: formatCompactCurrency(snapshot.horasExtras.valorTotal) },
+          { label: 'FOPAG prevista', value: formatCompactCurrency(snapshot.fopag.competencia.valorPrevisto) },
+        ],
+        action: { label: 'Abrir FOPAG', to: `/fopag/${competencia}` },
+      },
+    ],
+    financeiro: [
+      {
+        id: 'fin-previsto-realizado',
+        title: 'Previsto x realizado do pessoal',
+        description: 'Leitura consolidada do reflexo financeiro do custo de pessoal na competência ativa.',
+        metrics: [
+          { label: 'Previsto', value: formatCompactCurrency(snapshot.pessoal.valorPrevisto), highlight: true },
+          { label: 'Realizado', value: formatCompactCurrency(snapshot.pessoal.valorRealizado) },
+          { label: 'Variação', value: formatCompactCurrency(snapshot.pessoal.variacao) },
+          { label: 'Status', value: fechamentoLabel },
+        ],
+        action: { label: 'Ver Financeiro', to: '/financeiro' },
+      },
+      {
+        id: 'fin-centro-custo',
+        title: 'Centro de custo com maior exposição',
+        description: 'Visão mínima por centro de custo para preparar relatórios comparativos e filtros avançados.',
+        metrics: [
+          { label: 'Centro', value: principalCentro?.centroCustoNome ?? '—', highlight: true },
+          { label: 'Obra', value: principalCentro?.obraNome ?? '—' },
+          { label: 'Previsto', value: formatCompactCurrency(principalCentro?.valorPrevisto ?? 0) },
+          { label: 'Realizado', value: formatCompactCurrency(principalCentro?.valorRealizado ?? 0) },
+        ],
+        action: { label: 'Abrir Relatórios', to: '/relatorios/categorias/financeiro' },
+      },
+    ],
+    alertas: [
+      {
+        id: 'alerta-he',
+        title: 'Horas extras pendentes de aprovação',
+        description: `Existem ${snapshot.horasExtras.pendentesAprovacao} lançamento(s) ainda pendentes na competência ${competencia}.`,
+        severity: snapshot.horasExtras.pendentesAprovacao > 0 ? 'warning' : 'info',
+        module: 'Horas Extras',
+        actionLabel: 'Abrir horas extras',
+        actionTo: '/horas-extras/aprovacao',
+      },
+      {
+        id: 'alerta-fin',
+        title: 'Variação de custo de pessoal monitorada',
+        description: `A diferença entre previsto e realizado está em ${formatCompactCurrency(snapshot.pessoal.variacao)}.`,
+        severity: snapshot.pessoal.variacao > 50000 ? 'critical' : 'info',
+        module: 'Financeiro',
+        obraNome: principalObra?.nome,
+        actionLabel: 'Abrir financeiro',
+        actionTo: '/financeiro',
+      },
+      {
+        id: 'alerta-obra',
+        title: 'Obra com maior impacto financeiro de pessoal',
+        description: `${principalObra?.nome ?? 'Obra principal'} concentra o maior custo de pessoal previsto na competência ativa.`,
+        severity: 'info',
+        module: 'Obras',
+        obraNome: principalObra?.nome,
+        actionLabel: 'Abrir obra',
+        actionTo: principalObra ? `/obras/${principalObra.id}/financeiro` : '/obras',
+      },
+    ],
+  };
+}

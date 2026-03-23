@@ -1,3 +1,4 @@
+import { getCentrosCustoByObraId } from '@/shared/lib/erpRelations';
 import type {
   ContextBootstrapData,
   ContextOption,
@@ -22,8 +23,10 @@ const filiais: ContextOption[] = [
 const obras: (ObraResumo & { label: string })[] = [
   { id: 'obra-1', codigo: 'OBR-001', nome: 'Edifício Aurora', status: 'ativo', filialId: 'fil-1', label: 'OBR-001 — Edifício Aurora' },
   { id: 'obra-2', codigo: 'OBR-002', nome: 'Residencial Parque', status: 'ativo', filialId: 'fil-2', label: 'OBR-002 — Residencial Parque' },
-  { id: 'obra-3', codigo: 'OBR-003', nome: 'Torre Empresarial', status: 'pendente', filialId: 'fil-3', label: 'OBR-003 — Torre Empresarial' },
-  { id: 'obra-4', codigo: 'OBR-004', nome: 'Ponte BR-101', status: 'ativo', filialId: 'fil-2', label: 'OBR-004 — Ponte BR-101' },
+  { id: 'obra-3', codigo: 'OBR-003', nome: 'Torre Empresarial', status: 'pendente', filialId: 'fil-1', label: 'OBR-003 — Torre Empresarial' },
+  { id: 'obra-4', codigo: 'OBR-004', nome: 'Ponte BR-101', status: 'ativo', filialId: 'fil-3', label: 'OBR-004 — Ponte BR-101' },
+  { id: 'obra-5', codigo: 'OBR-005', nome: 'Reforma Sede Central', status: 'concluido', filialId: 'fil-1', label: 'OBR-005 — Reforma Sede Central' },
+  { id: 'obra-6', codigo: 'OBR-006', nome: 'Galpão Industrial Sigma', status: 'pendente', filialId: 'fil-3', label: 'OBR-006 — Galpão Industrial Sigma' },
 ];
 
 const competencias: SelectOption[] = [
@@ -51,7 +54,15 @@ export async function fetchContextOptions(): Promise<ContextOptionsResponse> {
       label: obra.label,
       empresaId: filiais.find((filial) => filial.value === obra.filialId)?.empresaId,
       filialId: obra.filialId,
+      obraId: obra.id,
     })),
+    centrosCusto: obras.flatMap((obra) => getCentrosCustoByObraId(obra.id).map((centro) => ({
+      value: centro.id,
+      label: `${centro.codigo} — ${centro.nome}`,
+      filialId: obra.filialId,
+      obraId: obra.id,
+      empresaId: filiais.find((filial) => filial.value === obra.filialId)?.empresaId,
+    }))),
     competencias,
   };
 }
@@ -62,6 +73,9 @@ export async function fetchContextBootstrap(usuario: Usuario): Promise<ContextBo
     ? usuario.filialId
     : options.filiais.find((filial) => filial.empresaId === usuario.empresaId)?.value ?? null;
   const obraId = options.obras.find((obra) => obra.filialId === filialId)?.value ?? null;
+  const centroCustoId = obraId
+    ? options.centrosCusto.find((centro) => centro.obraId === obraId)?.value ?? null
+    : null;
 
   return {
     options,
@@ -72,7 +86,7 @@ export async function fetchContextBootstrap(usuario: Usuario): Promise<ContextBo
       competencia: competencias[0]?.value ?? null,
       periodoInicio: null,
       periodoFim: null,
-      centroCustoId: null,
+      centroCustoId,
     },
   };
 }

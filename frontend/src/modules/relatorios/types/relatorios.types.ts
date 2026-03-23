@@ -41,6 +41,35 @@ export interface RelatoriosDashboardData {
   itens: RelatorioItem[];
   categorias: RelatorioCategoriaResumo[];
   resumo: RelatoriosResumoExecutivo;
+  destaques: RelatorioGerencialCard[];
+}
+
+
+export interface RelatorioGerencialCard {
+  id: string;
+  titulo: string;
+  descricao: string;
+  itens: { label: string; valor: string; destaque?: boolean }[];
+}
+
+export interface RelatorioGerencialLinha {
+  id: string;
+  label: string;
+  obraNome?: string;
+  centroCustoNome?: string;
+  funcionarioNome?: string;
+  competencia?: string;
+  previsto?: number;
+  realizado?: number;
+  valor?: number;
+  quantidade?: number;
+  descricao?: string;
+}
+
+export interface RelatorioCategoriaData {
+  itens: RelatorioItem[];
+  resumoCards: RelatorioGerencialCard[];
+  linhas: RelatorioGerencialLinha[];
 }
 
 export const RELATORIO_CATEGORIA_LABELS: Record<RelatorioCategoria, string> = {

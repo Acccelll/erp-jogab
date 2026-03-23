@@ -1,3 +1,5 @@
+import type { AlocacaoResumo } from '@/shared/types';
+
 export interface ObraCronogramaItem {
   id: string;
   etapa: string;
@@ -8,14 +10,7 @@ export interface ObraCronogramaItem {
   status: 'em_dia' | 'atencao' | 'atrasada' | 'concluida';
 }
 
-export interface ObraEquipeItem {
-  id: string;
-  nome: string;
-  funcao: string;
-  equipe: string;
-  status: 'alocado' | 'ferias' | 'desmobilizando';
-  jornada: string;
-}
+export type ObraEquipeItem = AlocacaoResumo;
 
 export interface ObraComprasItem {
   id: string;
@@ -32,9 +27,10 @@ export interface ObraFinanceiroItem {
   codigo: string;
   descricao: string;
   tipo: 'pagar' | 'receber';
-  status: 'programado' | 'previsto' | 'pago' | 'recebido' | 'vencido';
+  status: 'programado' | 'previsto' | 'pago' | 'recebido' | 'vencido' | 'aguardando_documentos' | 'em_aprovacao';
   competencia: string;
   valor: number;
+  origem?: 'fopag' | 'horas_extras' | 'compras' | 'fiscal' | 'medicoes' | 'manual';
 }
 
 export interface ObraDocumentoItem {

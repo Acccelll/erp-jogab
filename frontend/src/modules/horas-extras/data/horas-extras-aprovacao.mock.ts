@@ -13,12 +13,12 @@ const gestorPorObra: Record<string, string> = {
   'obra-4': 'Sérgio Dias',
 };
 
-const historicoBase: HoraExtraHistoricoItem[] = [
+export const mockHorasExtrasHistorico: HoraExtraHistoricoItem[] = [
   {
     id: 'hist-he-1',
     horaExtraId: 'he-1',
     competencia: '2026-03',
-    funcionarioNome: 'Lucas Andrade',
+    funcionarioNome: 'João Silva',
     obraNome: 'Edifício Aurora',
     evento: 'lancada',
     dataEvento: '2026-03-18T21:10:00Z',
@@ -30,7 +30,7 @@ const historicoBase: HoraExtraHistoricoItem[] = [
     id: 'hist-he-2',
     horaExtraId: 'he-2',
     competencia: '2026-03',
-    funcionarioNome: 'Mariana Costa',
+    funcionarioNome: 'Maria Oliveira',
     obraNome: 'Edifício Aurora',
     evento: 'aprovada',
     dataEvento: '2026-03-18T14:30:00Z',
@@ -42,7 +42,7 @@ const historicoBase: HoraExtraHistoricoItem[] = [
     id: 'hist-he-3',
     horaExtraId: 'he-3',
     competencia: '2026-03',
-    funcionarioNome: 'João Pedro Lima',
+    funcionarioNome: 'Pedro Santos',
     obraNome: 'Residencial Parque',
     evento: 'fechada_para_fopag',
     dataEvento: '2026-03-19T18:00:00Z',
@@ -54,7 +54,7 @@ const historicoBase: HoraExtraHistoricoItem[] = [
     id: 'hist-he-4',
     horaExtraId: 'he-5',
     competencia: '2026-02',
-    funcionarioNome: 'Gustavo Ribeiro',
+    funcionarioNome: 'Luciana Almeida',
     obraNome: 'Torre Empresarial',
     evento: 'enviada_para_fopag',
     dataEvento: '2026-03-01T08:45:00Z',
@@ -66,8 +66,8 @@ const historicoBase: HoraExtraHistoricoItem[] = [
     id: 'hist-he-5',
     horaExtraId: 'he-7',
     competencia: '2026-03',
-    funcionarioNome: 'Rafael Martins',
-    obraNome: 'Ponte BR-101',
+    funcionarioNome: 'Ricardo Barbosa',
+    obraNome: 'Edifício Aurora',
     evento: 'rejeitada',
     dataEvento: '2026-03-13T10:15:00Z',
     responsavel: 'Sérgio Dias',
@@ -78,7 +78,7 @@ const historicoBase: HoraExtraHistoricoItem[] = [
     id: 'hist-he-6',
     horaExtraId: 'he-4',
     competencia: '2026-03',
-    funcionarioNome: 'Ana Beatriz Souza',
+    funcionarioNome: 'Carlos Mendes',
     obraNome: 'Ponte BR-101',
     evento: 'lancada',
     dataEvento: '2026-03-14T19:20:00Z',
@@ -98,6 +98,14 @@ function destinoPorStatus(status: string): 'fopag' | 'financeiro' | 'obra' {
   if (status === 'fechada_para_fopag' || status === 'enviada_para_fopag') return 'fopag';
   if (status === 'aprovada') return 'financeiro';
   return 'obra';
+}
+
+export function registrarHoraExtraHistorico(entry: Omit<HoraExtraHistoricoItem, 'id' | 'dataEvento'> & { dataEvento?: string }) {
+  mockHorasExtrasHistorico.unshift({
+    id: `hist-he-${mockHorasExtrasHistorico.length + 1}`,
+    dataEvento: entry.dataEvento ?? new Date().toISOString(),
+    ...entry,
+  });
 }
 
 export function getHorasExtrasAprovacaoData(competencia?: string): HorasExtrasAprovacaoData {
@@ -124,7 +132,7 @@ export function getHorasExtrasAprovacaoData(competencia?: string): HorasExtrasAp
     observacao: item.observacao,
   }));
 
-  const historico = historicoBase.filter((item) => !competencia || item.competencia === competencia);
+  const historico = mockHorasExtrasHistorico.filter((item) => !competencia || item.competencia === competencia);
   const pendentes = aprovacoes.filter((item) => item.status === 'pendente_aprovacao' || item.status === 'digitada');
   const valorPendente = pendentes.reduce((acc, item) => acc + item.valorCalculado, 0);
   const obrasImpactadas = new Set(pendentes.map((item) => item.obraId)).size;
