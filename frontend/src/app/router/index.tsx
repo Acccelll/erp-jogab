@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AuthGuard } from '@/app/guards';
+import { LoginPage } from '@/app/pages/LoginPage';
 import { AppLayout } from '@/app/layouts/AppLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { ModuleLayout } from '@/app/layouts/ModuleLayout';
@@ -484,11 +485,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/login',
-        element: (
-          <div className="text-center text-sm text-gray-500">
-            Tela de login — em desenvolvimento
-          </div>
-        ),
+        element: <LoginPage />,
       },
     ],
   },
