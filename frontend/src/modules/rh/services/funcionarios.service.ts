@@ -4,15 +4,7 @@
  * Usa a camada HTTP compartilhada com fallback controlado para mocks locais.
  * Quando a API estiver estável, basta desligar o fallback por configuração.
  */
-import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
-import {
-  clearFuncionarioAlocacaoAtiva,
-  getAlocacaoAtivaByFuncionarioId,
-  getAlocacoesByFuncionarioId,
-  getCentroCustoById,
-  upsertFuncionarioAlocacaoAtiva,
-} from '@/shared/lib/erpRelations';
-import { mockObras } from '@/modules/obras/data/obras.mock';
+import { getAlocacaoAtivaByFuncionarioId, getAlocacoesByFuncionarioId } from '@/shared/lib/erpRelations';
 import type {
   Funcionario,
   FuncionarioCreatePayload,
@@ -153,7 +145,7 @@ export function getFuncionarioFormReferenceData() {
   };
 }
 
-async function fetchFuncionariosMock(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
+export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
   await delay();
 
   let resultado = [...mockFuncionarios];
@@ -202,19 +194,31 @@ async function fetchFuncionariosMock(filters?: FuncionarioFiltersData): Promise<
   return { data, kpis, total: data.length };
 }
 
-async function fetchFuncionarioByIdMock(funcId: string): Promise<Funcionario | null> {
+export async function fetchFuncionarioById(funcId: string): Promise<Funcionario | null> {
   await delay(200);
   return mockFuncionarios.find((f) => f.id === funcId) ?? null;
 }
 
-async function fetchFuncionarioResumoBlocosMock(funcId: string): Promise<FuncionarioResumoBloco[]> {
+export async function fetchFuncionarioResumoBlocos(funcId: string): Promise<FuncionarioResumoBloco[]> {
   await delay(200);
   const func = mockFuncionarios.find((f) => f.id === funcId);
   if (!func) return [];
   return gerarFuncionarioResumoBlocos(func);
 }
 
-async function createFuncionarioMock(payload: FuncionarioCreatePayload): Promise<FuncionarioMutationResponse> {
+export async function fetchFuncionarioDetail(funcId: string): Promise<FuncionarioDetailResponse> {
+  const [funcionario, resumoBlocos] = await Promise.all([
+    fetchFuncionarioById(funcId),
+    fetchFuncionarioResumoBlocos(funcId),
+  ]);
+
+  return {
+    message: 'Funcionário criado com sucesso.',
+    funcionario,
+  };
+}
+
+export async function createFuncionario(payload: FuncionarioCreatePayload): Promise<FuncionarioMutationResponse> {
   await delay(250);
   validateFuncionarioPayload(payload);
 
@@ -254,6 +258,38 @@ async function createFuncionarioMock(payload: FuncionarioCreatePayload): Promise
 
   return {
     message: 'Funcionário criado com sucesso.',
+    funcionario,
+  };
+}
+
+export async function updateFuncionario(payload: FuncionarioUpdatePayload): Promise<FuncionarioMutationResponse> {
+  await delay(250);
+  const funcionario = mockFuncionarios.find((item) => item.id === payload.id);
+
+  if (!funcionario) {
+    throw new Error('Funcionário não encontrado para atualização.');
+  }
+
+  validateFuncionarioPayload(payload, payload.id);
+
+  Object.assign(funcionario, {
+    ...payload,
+    filialNome: payload.filialId ? getFilialNomeById(payload.filialId) : funcionario.filialNome,
+    empresaId: payload.filialId ? getEmpresaIdByFilialId(payload.filialId) : funcionario.empresaId,
+    gestorNome: payload.gestorId !== undefined ? getGestorNomeById(payload.gestorId) : funcionario.gestorNome,
+    dataDesligamento:
+      payload.status === 'desligado'
+        ? funcionario.dataDesligamento ?? new Date().toISOString().slice(0, 10)
+        : payload.status
+          ? null
+          : funcionario.dataDesligamento,
+    updatedAt: new Date().toISOString(),
+  });
+
+  syncFuncionarioAllocation(funcionario);
+
+  return {
+    message: 'Funcionário atualizado com sucesso.',
     funcionario,
   };
 }

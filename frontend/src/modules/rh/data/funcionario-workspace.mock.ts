@@ -44,6 +44,8 @@ const contratosPorFuncionario: Record<string, Omit<FuncionarioContratoData, 'res
   },
 };
 
+const alocacoesPorFuncionario = Object.fromEntries(mockFuncionarios.map((funcionario) => [funcionario.id, getAlocacoesByFuncionarioId(funcionario.id)]));
+
 const provisoesPorFuncionario: Record<string, FuncionarioProvisaoItem[]> = {
   'func-1': [
     { id: 'prov-1', competencia: '2026-01', categoria: 'ferias', status: 'consolidada', valor: 3250.45, observacao: 'Provisão regular mensal de férias' },
