@@ -34,6 +34,16 @@ export function getAlocacoesByFuncionarioId(funcionarioId: string) {
   return mockAlocacoes.filter((alocacao) => alocacao.funcionarioId === funcionarioId);
 }
 
+/** Retorna a alocação ativa do funcionário, ou null se não houver. */
+export function getAlocacaoAtivaByFuncionarioId(funcionarioId: string) {
+  return mockAlocacoes.find((alocacao) => alocacao.funcionarioId === funcionarioId && alocacao.status === 'ativa') ?? null;
+}
+
 export function getCentroCustoById(centroCustoId: string | null | undefined) {
   return centroCustoId ? mockCentrosCusto.find((centro) => centro.id === centroCustoId) ?? null : null;
+}
+
+/** Retorna todos os centros de custo vinculados a uma obra. Retorna [] se nenhum encontrado. */
+export function getCentrosCustoByObraId(obraId: string) {
+  return mockCentrosCusto.filter((centro) => centro.obraId === obraId);
 }
