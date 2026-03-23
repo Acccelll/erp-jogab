@@ -1,8 +1,8 @@
 /**
  * Service do módulo RH.
  *
- * Atualmente usa dados mock. Quando a API estiver disponível,
- * basta trocar as implementações para chamadas reais via api.ts.
+ * Usa a camada HTTP compartilhada com fallback controlado para mocks locais.
+ * Quando a API estiver estável, basta desligar o fallback por configuração.
  */
 import { getAlocacaoAtivaByFuncionarioId, getAlocacoesByFuncionarioId } from '@/shared/lib/erpRelations';
 import type {
@@ -213,8 +213,8 @@ export async function fetchFuncionarioDetail(funcId: string): Promise<Funcionari
   ]);
 
   return {
+    message: 'Funcionário criado com sucesso.',
     funcionario,
-    resumoBlocos,
   };
 }
 

@@ -1,9 +1,10 @@
 /**
  * Service do módulo Obras.
  *
- * Atualmente usa dados mock. Quando a API estiver disponível,
- * basta trocar as implementações para chamadas reais via api.ts.
+ * Usa a camada HTTP compartilhada com fallback controlado para mocks locais.
+ * Quando a API estiver estável, basta desligar o fallback por configuração.
  */
+import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import type {
   Obra,
   ObraCreatePayload,
@@ -24,10 +25,6 @@ import {
   gerarResumoBlocos,
 } from '../data/obras.mock';
 
-/**
- * Contratos esperados para futura API real de Obras.
- * Mantidos próximos ao service mock para facilitar a troca por integração HTTP.
- */
 export const OBRAS_API_ENDPOINTS = {
   list: '/obras',
   detail: (obraId: string) => `/obras/${obraId}`,
@@ -175,9 +172,8 @@ export async function fetchObraDetail(obraId: string): Promise<ObraDetailRespons
   ]);
 
   return {
-    obra,
-    kpis,
-    resumoBlocos,
+    message: 'Obra atualizada com sucesso.',
+    obra: normalizeObra(obra),
   };
 }
 
