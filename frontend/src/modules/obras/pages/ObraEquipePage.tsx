@@ -65,18 +65,14 @@ export function ObraEquipePage() {
               <EmptyState title="Nenhum membro encontrado" description="Não há pessoas correspondentes ao filtro atual nesta obra." />
             ) : (
               <ObraWorkspaceTable
-                columns={['Funcionário', 'Função', 'Equipe', 'Centro de custo', 'Vigência', 'Rateio', 'Status', 'Ações']}
+                columns={['Funcionário', 'Função', 'Equipe', 'Centro de custo', 'Rateio', 'Status']}
                 rows={filtered.map((item) => [
                   <Link key={`${item.id}-func`} to={`/rh/funcionarios/${item.funcionarioId}`} className="font-medium text-jogab-700 hover:underline">{item.funcionarioNome}</Link>,
                   item.funcao,
                   item.equipe,
                   item.centroCustoNome,
-                  `${item.periodoInicio} ${item.periodoFim ? `→ ${item.periodoFim}` : '→ atual'}`,
                   `${item.percentual}%`,
                   STATUS_OPTIONS.find((option) => option.value === item.status)?.label ?? item.status,
-                  <Link key={`${item.id}-action`} to={`/rh/funcionarios/${item.funcionarioId}/alocacoes`} className="text-xs font-medium text-jogab-700 hover:underline">
-                    Ajustar vínculo
-                  </Link>,
                 ])}
               />
             )}

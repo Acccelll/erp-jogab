@@ -80,7 +80,7 @@ export function FuncionarioAlocacoesPage() {
               <EmptyState title="Nenhuma alocação encontrada" description="Não há alocações deste funcionário para o filtro atual." action={<button type="button" onClick={openCreateDrawer} className="rounded-md bg-jogab-500 px-3 py-2 text-sm font-medium text-white">Criar alocação</button>} />
             ) : (
               <FuncionarioWorkspaceTable
-                columns={['Obra', 'Função', 'Centro de custo', 'Início', 'Fim', 'Rateio', 'Status', 'Ações']}
+                columns={['Obra', 'Função', 'Centro de custo', 'Início', 'Fim', 'Rateio', 'Status']}
                 rows={filtered.map((item) => [
                   <Link key={`${item.id}-obra`} to={`/obras/${item.obraId}`} className="font-medium text-jogab-700 hover:underline">{item.obraNome}</Link>,
                   item.funcao,
@@ -89,14 +89,6 @@ export function FuncionarioAlocacoesPage() {
                   item.periodoFim ?? 'Atual',
                   `${item.percentual}%`,
                   STATUS_OPTIONS.find((option) => option.value === item.status)?.label ?? item.status,
-                  <div key={`${item.id}-acoes`} className="flex items-center gap-2">
-                    <button type="button" onClick={() => openEditDrawer(item.id)} className="rounded-md border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700">
-                      Editar
-                    </button>
-                    <Link to={`/obras/${item.obraId}/equipe`} className="text-xs font-medium text-jogab-700 hover:underline">
-                      Ver na obra
-                    </Link>
-                  </div>,
                 ])}
               />
             )}

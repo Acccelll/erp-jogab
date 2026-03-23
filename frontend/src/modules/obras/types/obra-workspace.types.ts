@@ -1,5 +1,52 @@
 import type { AlocacaoResumo } from '@/shared/types';
 
+export interface ObraContratoItem {
+  id: string;
+  codigo: string;
+  objeto: string;
+  contratado: string;
+  tipo: 'cliente' | 'fornecedor' | 'subcontrato';
+  status: 'ativo' | 'em_negociacao' | 'suspenso' | 'encerrado';
+  valorContrato: number;
+  valorAditivos: number;
+  dataInicio: string;
+  dataFim: string;
+}
+
+export interface ObraEstoqueItem {
+  id: string;
+  codigo: string;
+  descricao: string;
+  unidade: string;
+  saldoAtual: number;
+  consumoMes: number;
+  status: 'disponivel' | 'critico' | 'esgotado';
+  almoxarife: string;
+}
+
+export interface ObraMedicaoItem {
+  id: string;
+  codigo: string;
+  descricao: string;
+  competencia: string;
+  percentualMedido: number;
+  valorMedido: number;
+  status: 'prevista' | 'em_apuracao' | 'aprovada' | 'faturada';
+  responsavel: string;
+}
+
+export interface ObraRiscoItem {
+  id: string;
+  codigo: string;
+  titulo: string;
+  categoria: string;
+  probabilidade: 'baixa' | 'media' | 'alta';
+  impacto: 'baixo' | 'medio' | 'alto';
+  status: 'identificado' | 'em_mitigacao' | 'mitigado' | 'materializado';
+  responsavel: string;
+  prazoResposta: string;
+}
+
 export interface ObraCronogramaItem {
   id: string;
   etapa: string;

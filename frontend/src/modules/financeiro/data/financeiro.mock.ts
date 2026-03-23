@@ -432,12 +432,10 @@ export function getMockFinanceiroDashboard(filters?: FinanceiroFiltersData): Fin
 }
 
 export function getMockFluxoCaixa(filters?: FinanceiroFiltersData): FluxoCaixaItem[] {
-  return buildFluxoCaixa(filters);
-}
-
-export function getMockTitulosFinanceiros(filters?: FinanceiroFiltersData): TituloFinanceiro[] {
-  return getAllTitulos(filters).filter((item) => matchesFilters(item, filters));
-}
+  const competencia = filters?.competencia;
+  if (!competencia) {
+    return fluxoCaixa;
+  }
 
 export function getMockFinanceiroPessoal(filters?: FinanceiroFiltersData): FinanceiroPessoalDashboardData {
   return buildPessoalDashboard(filters);
