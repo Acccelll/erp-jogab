@@ -12,7 +12,7 @@ export function RelatoriosListPage() {
     <div className="flex flex-1 flex-col">
       <PageHeader
         title="Relatórios"
-        subtitle="Catálogo consolidado de relatórios gerenciais e operacionais integrando Obras, RH, HE, FOPAG, Compras, Fiscal, Financeiro, Estoque, Medições e Documentos."
+        subtitle="Catálogo consolidado de relatórios gerenciais com foco em Obras, RH, Horas Extras, FOPAG e Financeiro, reaproveitando a base já estruturada do ERP."
         actions={
           <div className="flex items-center gap-2">
             <Link to="/dashboard" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
@@ -59,6 +59,23 @@ export function RelatoriosListPage() {
 
         {!isLoading && !isError && data && (
           <>
+            <section className="grid gap-4 xl:grid-cols-2">
+              {data.destaques.map((card) => (
+                <article key={card.id} className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+                  <h2 className="text-base font-semibold text-gray-900">{card.titulo}</h2>
+                  <p className="mt-1 text-sm text-gray-500">{card.descricao}</p>
+                  <div className="mt-4 space-y-3">
+                    {card.itens.map((item) => (
+                      <div key={item.label} className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                        <span className="text-sm text-gray-600">{item.label}</span>
+                        <span className={item.destaque ? 'text-sm font-semibold text-jogab-700' : 'text-sm font-medium text-gray-900'}>{item.valor}</span>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </section>
+
             <section className="grid gap-4 xl:grid-cols-3">
               {data.categorias.map((item) => <RelatorioCategoriaCard key={item.categoria} item={item} />)}
             </section>

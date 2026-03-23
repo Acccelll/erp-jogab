@@ -1,6 +1,6 @@
 import { relatoriosFiltersSchema } from '../types';
 import type { RelatorioCategoria, RelatoriosFiltersData } from '../types';
-import { getMockRelatorioCategoria, getMockRelatoriosDashboard } from '../data/relatorios.mock';
+import { getMockRelatorioCategoriaData, getMockRelatoriosDashboard } from '../data/relatorios.mock';
 
 const NETWORK_DELAY_MS = 180;
 
@@ -19,5 +19,5 @@ export async function fetchRelatoriosDashboard(filters?: RelatoriosFiltersData) 
 
 export async function fetchRelatorioCategoria(categoria: RelatorioCategoria, filters?: RelatoriosFiltersData) {
   await wait();
-  return getMockRelatorioCategoria(categoria, normalizeFilters(filters));
+  return getMockRelatorioCategoriaData(categoria, normalizeFilters(filters));
 }
