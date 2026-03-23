@@ -137,7 +137,7 @@ export function getFuncionarioContratoWorkspace(funcId: string): FuncionarioCont
 }
 
 export function getFuncionarioAlocacoesWorkspace(funcId: string): FuncionarioWorkspaceTabData<FuncionarioAlocacaoItem> {
-  const items = alocacoesPorFuncionario[funcId] ?? [];
+  const items = getAlocacoesByFuncionarioId(funcId);
   return {
     items,
     resumoCards: items.length

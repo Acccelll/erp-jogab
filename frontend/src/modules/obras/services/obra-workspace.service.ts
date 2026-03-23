@@ -1,3 +1,4 @@
+import { fetchObraAlocacoesWorkspace } from '@/modules/rh/services/alocacoes.service';
 import {
   getComprasWorkspace,
   getContratosWorkspace,
@@ -20,8 +21,7 @@ export async function fetchObraCronograma(obraId: string) {
 }
 
 export async function fetchObraEquipe(obraId: string) {
-  await delay();
-  return getEquipeWorkspace(obraId);
+  return fetchObraAlocacoesWorkspace(obraId);
 }
 
 export async function fetchObraCompras(obraId: string) {

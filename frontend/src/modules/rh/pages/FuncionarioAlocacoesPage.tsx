@@ -1,8 +1,15 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
+import { useDrawerStore } from '@/shared/stores';
 import { useFuncionarioAlocacoes } from '../hooks';
-import { FuncionarioWorkspaceFilters, FuncionarioWorkspaceResumoCard, FuncionarioWorkspaceSectionHeader, FuncionarioWorkspaceTable } from '../components';
+import {
+  AlocacaoMutationDrawerForm,
+  FuncionarioWorkspaceFilters,
+  FuncionarioWorkspaceResumoCard,
+  FuncionarioWorkspaceSectionHeader,
+  FuncionarioWorkspaceTable,
+} from '../components';
 
 const STATUS_OPTIONS = [
   { value: 'ativa', label: 'Ativa' },
@@ -12,6 +19,7 @@ const STATUS_OPTIONS = [
 
 export function FuncionarioAlocacoesPage() {
   const { funcId } = useParams<{ funcId: string }>();
+  const openDrawer = useDrawerStore((state) => state.openDrawer);
   const { data, isLoading, isError, refetch } = useFuncionarioAlocacoes(funcId);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<string | undefined>(undefined);
@@ -25,14 +33,37 @@ export function FuncionarioAlocacoesPage() {
     });
   }, [data?.items, search, status]);
 
+  const openCreateDrawer = () => {
+    if (!funcId) return;
+    openDrawer({
+      title: 'Nova alocação do funcionário',
+      content: <AlocacaoMutationDrawerForm funcionarioId={funcId} />,
+      width: 'max-w-3xl',
+    });
+  };
+
+  const openEditDrawer = (alocacaoId: string) => {
+    if (!funcId) return;
+    openDrawer({
+      title: 'Editar alocação',
+      content: <AlocacaoMutationDrawerForm funcionarioId={funcId} alocacaoId={alocacaoId} />,
+      width: 'max-w-3xl',
+    });
+  };
+
   return (
     <div className="flex flex-1 flex-col">
       <MainContent className="space-y-6">
         <FuncionarioWorkspaceSectionHeader
           title="Alocações do Funcionário"
           description="Histórico de apropriação em obras e centros de custo, preservando a centralidade da obra."
-          actionLabel="Abrir Obras"
-          actionHref="/obras"
+          actionLabel="Nova alocação"
+          actionHref={undefined}
+          action={
+            <button type="button" onClick={openCreateDrawer} className="rounded-md bg-jogab-500 px-3 py-2 text-sm font-medium text-white">
+              Nova alocação
+            </button>
+          }
         />
 
         <FuncionarioWorkspaceFilters search={search} status={status} statusOptions={STATUS_OPTIONS} onSearchChange={setSearch} onStatusChange={setStatus} onClear={() => { setSearch(''); setStatus(undefined); }} hasActiveFilters={Boolean(search || status)} />
@@ -46,7 +77,7 @@ export function FuncionarioAlocacoesPage() {
               {data.resumoCards.map((card) => <FuncionarioWorkspaceResumoCard key={card.id} card={card} />)}
             </section>
             {filtered.length === 0 ? (
-              <EmptyState title="Nenhuma alocação encontrada" description="Não há alocações deste funcionário para o filtro atual." />
+              <EmptyState title="Nenhuma alocação encontrada" description="Não há alocações deste funcionário para o filtro atual." action={<button type="button" onClick={openCreateDrawer} className="rounded-md bg-jogab-500 px-3 py-2 text-sm font-medium text-white">Criar alocação</button>} />
             ) : (
               <FuncionarioWorkspaceTable
                 columns={['Obra', 'Função', 'Centro de custo', 'Início', 'Fim', 'Rateio', 'Status']}
