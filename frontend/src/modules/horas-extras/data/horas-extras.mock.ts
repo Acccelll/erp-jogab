@@ -3,8 +3,10 @@ import type {
   FechamentoCompetencia,
   HoraExtraLancamento,
   HoraExtraListItem,
+  HoraExtraMutationResponse,
   HoraExtraResumoCard,
   HoraExtraRegra,
+  HorasExtrasFechamentoResponse,
   HorasExtrasKpis,
 } from '../types';
 
@@ -43,38 +45,38 @@ export const mockHoraExtraRegras: HoraExtraRegra[] = [
 
 export const mockHorasExtras: HoraExtraLancamento[] = [
   {
-    id: 'he-1', funcionarioId: 'func-1', funcionarioNome: 'Lucas Andrade', matricula: 'RH-001', cargo: 'Encarregado',
-    obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-1', centroCustoNome: 'Estrutura', filialId: 'fil-1', filialNome: 'Matriz — São Paulo',
+    id: 'he-1', funcionarioId: 'func-1', funcionarioNome: 'João Silva', matricula: 'MAT-001', cargo: 'Engenheiro Civil',
+    obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-1', centroCustoNome: 'Obra Aurora — Engenharia', filialId: 'fil-1', filialNome: 'Matriz — São Paulo',
     competencia: '2026-03', dataLancamento: '2026-03-18', quantidadeHoras: 4.5, valorCalculado: 286.4, tipo: 'he_50', status: 'pendente_aprovacao', origem: 'obra', aprovadorNome: null, regraId: 'regra-he50', observacao: 'Concretagem noturna',
   },
   {
-    id: 'he-2', funcionarioId: 'func-2', funcionarioNome: 'Mariana Costa', matricula: 'RH-014', cargo: 'Técnica de Segurança',
-    obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-2', centroCustoNome: 'Segurança', filialId: 'fil-1', filialNome: 'Matriz — São Paulo',
+    id: 'he-2', funcionarioId: 'func-2', funcionarioNome: 'Maria Oliveira', matricula: 'MAT-002', cargo: 'Técnica de Segurança',
+    obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-2', centroCustoNome: 'Obra Aurora — Segurança', filialId: 'fil-1', filialNome: 'Matriz — São Paulo',
     competencia: '2026-03', dataLancamento: '2026-03-17', quantidadeHoras: 2, valorCalculado: 154.2, tipo: 'he_noturna', status: 'aprovada', origem: 'rh', aprovadorNome: 'Carlos Mendes', regraId: 'regra-noturna',
   },
   {
-    id: 'he-3', funcionarioId: 'func-3', funcionarioNome: 'João Pedro Lima', matricula: 'RH-022', cargo: 'Pedreiro',
-    obraId: 'obra-2', obraNome: 'Residencial Parque', centroCustoId: 'cc-3', centroCustoNome: 'Acabamento', filialId: 'fil-2', filialNome: 'Filial — Rio de Janeiro',
+    id: 'he-3', funcionarioId: 'func-3', funcionarioNome: 'Pedro Santos', matricula: 'MAT-003', cargo: 'Mestre de Obras',
+    obraId: 'obra-2', obraNome: 'Residencial Parque', centroCustoId: 'cc-3', centroCustoNome: 'Obra Parque — Produção', filialId: 'fil-2', filialNome: 'Filial — Rio de Janeiro',
     competencia: '2026-03', dataLancamento: '2026-03-16', quantidadeHoras: 6, valorCalculado: 398.7, tipo: 'domingo', status: 'fechada_para_fopag', origem: 'obra', aprovadorNome: 'Patrícia Rocha', regraId: 'regra-he100',
   },
   {
-    id: 'he-4', funcionarioId: 'func-4', funcionarioNome: 'Ana Beatriz Souza', matricula: 'RH-031', cargo: 'Eletricista',
-    obraId: 'obra-4', obraNome: 'Ponte BR-101', centroCustoId: 'cc-4', centroCustoNome: 'Instalações', filialId: 'fil-3', filialNome: 'Filial — Belo Horizonte',
+    id: 'he-4', funcionarioId: 'func-5', funcionarioNome: 'Carlos Mendes', matricula: 'MAT-005', cargo: 'Pedreiro',
+    obraId: 'obra-4', obraNome: 'Ponte BR-101', centroCustoId: 'cc-4', centroCustoNome: 'Obra Ponte — Produção', filialId: 'fil-3', filialNome: 'Filial — Belo Horizonte',
     competencia: '2026-03', dataLancamento: '2026-03-14', quantidadeHoras: 3.5, valorCalculado: 271.15, tipo: 'feriado', status: 'pendente_aprovacao', origem: 'integracao_ponto', aprovadorNome: null, regraId: 'regra-he100',
   },
   {
-    id: 'he-5', funcionarioId: 'func-5', funcionarioNome: 'Gustavo Ribeiro', matricula: 'RH-040', cargo: 'Mestre de Obras',
-    obraId: 'obra-3', obraNome: 'Torre Empresarial', centroCustoId: 'cc-5', centroCustoNome: 'Mobilização', filialId: 'fil-1', filialNome: 'Matriz — São Paulo',
+    id: 'he-5', funcionarioId: 'func-6', funcionarioNome: 'Luciana Almeida', matricula: 'MAT-006', cargo: 'Arquiteta',
+    obraId: 'obra-3', obraNome: 'Torre Empresarial', centroCustoId: 'cc-5', centroCustoNome: 'Obra Torre — Projetos', filialId: 'fil-1', filialNome: 'Matriz — São Paulo',
     competencia: '2026-02', dataLancamento: '2026-02-26', quantidadeHoras: 5, valorCalculado: 362.5, tipo: 'he_100', status: 'enviada_para_fopag', origem: 'obra', aprovadorNome: 'Renato Alves', regraId: 'regra-he100',
   },
   {
-    id: 'he-6', funcionarioId: 'func-6', funcionarioNome: 'Fernanda Nunes', matricula: 'RH-045', cargo: 'Auxiliar Administrativo',
-    obraId: 'obra-2', obraNome: 'Residencial Parque', centroCustoId: 'cc-6', centroCustoNome: 'Apoio Administrativo', filialId: 'fil-2', filialNome: 'Filial — Rio de Janeiro',
+    id: 'he-6', funcionarioId: 'func-8', funcionarioNome: 'Fernanda Costa', matricula: 'MAT-008', cargo: 'Encarregada',
+    obraId: 'obra-2', obraNome: 'Residencial Parque', centroCustoId: 'cc-6', centroCustoNome: 'Obra Parque — Encarregados', filialId: 'fil-2', filialNome: 'Filial — Rio de Janeiro',
     competencia: '2026-03', dataLancamento: '2026-03-15', quantidadeHoras: 1.5, valorCalculado: 68.9, tipo: 'adicional_noturno', status: 'digitada', origem: 'rh', aprovadorNome: null, regraId: 'regra-noturna',
   },
   {
-    id: 'he-7', funcionarioId: 'func-7', funcionarioNome: 'Rafael Martins', matricula: 'RH-052', cargo: 'Armador',
-    obraId: 'obra-4', obraNome: 'Ponte BR-101', centroCustoId: 'cc-1', centroCustoNome: 'Estrutura', filialId: 'fil-3', filialNome: 'Filial — Belo Horizonte',
+    id: 'he-7', funcionarioId: 'func-9', funcionarioNome: 'Ricardo Barbosa', matricula: 'MAT-009', cargo: 'Auxiliar de Obras',
+    obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-7', centroCustoNome: 'Obra Aurora — Auxiliares', filialId: 'fil-1', filialNome: 'Matriz — São Paulo',
     competencia: '2026-03', dataLancamento: '2026-03-12', quantidadeHoras: 7, valorCalculado: 504.8, tipo: 'he_100', status: 'rejeitada', origem: 'obra', aprovadorNome: 'Sérgio Dias', regraId: 'regra-he100', observacao: 'Horas divergentes com apontamento',
   },
 ];
@@ -103,6 +105,41 @@ export const mockFechamentosCompetencia: FechamentoCompetencia[] = [
     updatedAt: '2026-03-01T17:15:00.000Z',
   },
 ];
+
+function getStatusFechamento(competencia: string): FechamentoCompetencia['status'] {
+  const itens = mockHorasExtras.filter((item) => item.competencia === competencia);
+  const pendentes = itens.filter((item) => item.status === 'pendente_aprovacao' || item.status === 'digitada').length;
+  const fechadas = itens.filter((item) => item.status === 'fechada_para_fopag' || item.status === 'enviada_para_fopag' || item.status === 'paga').length;
+
+  if (itens.length > 0 && fechadas === itens.length) return 'fechada_para_fopag';
+  if (pendentes === 0 && itens.length > 0) return 'pronta_para_fechamento';
+  if (pendentes > 0) return 'em_apuracao';
+  return 'aberta';
+}
+
+export function syncFechamentoCompetencia(competencia: string) {
+  const itens = mockHorasExtras.filter((item) => item.competencia === competencia);
+  const fechamento = mockFechamentosCompetencia.find((item) => item.competencia === competencia);
+  const payload: FechamentoCompetencia = {
+    id: fechamento?.id ?? `fech-${competencia}`,
+    competencia,
+    status: getStatusFechamento(competencia),
+    totalLancamentos: itens.length,
+    pendentesAprovacao: itens.filter((item) => item.status === 'pendente_aprovacao' || item.status === 'digitada').length,
+    horasTotais: itens.reduce((acc, item) => acc + item.quantidadeHoras, 0),
+    valorTotal: itens.reduce((acc, item) => acc + item.valorCalculado, 0),
+    obrasImpactadas: new Set(itens.map((item) => item.obraId)).size,
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (fechamento) {
+    Object.assign(fechamento, payload);
+    return fechamento;
+  }
+
+  mockFechamentosCompetencia.unshift(payload);
+  return payload;
+}
 
 export function toHoraExtraListItem(item: HoraExtraLancamento): HoraExtraListItem {
   return {
@@ -183,3 +220,36 @@ export function gerarHorasExtrasResumoCards(items: HoraExtraLancamento[], fecham
     },
   ];
 }
+
+export function approveHoraExtraMock(id: string, aprovadorNome = 'Gestor da Competência'): HoraExtraMutationResponse {
+  const lancamento = mockHorasExtras.find((item) => item.id === id);
+  if (!lancamento) throw new Error('Lançamento de hora extra não encontrado.');
+
+  lancamento.status = 'aprovada';
+  lancamento.aprovadorNome = aprovadorNome;
+  syncFechamentoCompetencia(lancamento.competencia);
+
+  return { message: 'Hora extra aprovada com sucesso.', lancamento };
+}
+
+export function fecharCompetenciaMock(competencia: string): HorasExtrasFechamentoResponse {
+  const itens = mockHorasExtras.filter((item) => item.competencia === competencia);
+  const pendentes = itens.filter((item) => item.status === 'pendente_aprovacao' || item.status === 'digitada');
+
+  if (pendentes.length > 0) {
+    throw new Error('Ainda existem lançamentos pendentes de aprovação para esta competência.');
+  }
+
+  itens.forEach((item) => {
+    if (item.status === 'aprovada') {
+      item.status = 'fechada_para_fopag';
+    }
+  });
+
+  const fechamento = syncFechamentoCompetencia(competencia);
+  return { message: 'Competência fechada para integração com FOPAG.', fechamento };
+}
+
+mockFechamentosCompetencia.forEach((item) => {
+  syncFechamentoCompetencia(item.competencia);
+});

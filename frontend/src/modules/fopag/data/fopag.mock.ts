@@ -1,4 +1,5 @@
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
+import { buildFopagCompetenciaSnapshot } from '@/shared/lib/workforceCost';
 import type {
   FopagCompetenciaDetalhe,
   FopagCompetenciaListItem,
@@ -6,7 +7,7 @@ import type {
   FopagResumoCard,
 } from '../types';
 
-export const mockFopagCompetencias: FopagCompetenciaListItem[] = [
+const baseCompetencias: FopagCompetenciaListItem[] = [
   {
     id: '2026-03',
     competencia: '2026-03',
@@ -45,132 +46,79 @@ export const mockFopagCompetencias: FopagCompetenciaListItem[] = [
   },
 ];
 
-export const mockFopagDetalhes: Record<string, FopagCompetenciaDetalhe> = {
-  '2026-03': {
-    competencia: mockFopagCompetencias[0],
-    resumoCards: [
-      {
-        id: 'resumo-origem',
-        titulo: 'Integrações da Competência',
-        descricao: 'Leitura consolidada das principais origens da previsão mensal.',
-        itens: [
-          { label: 'RH cadastral', valor: 'Base de vínculos ativa', destaque: true },
-          { label: 'Horas Extras integradas', valor: formatCurrency(117935) },
-          { label: 'Benefícios previstos', valor: formatCurrency(186400) },
-          { label: 'Encargos previstos', valor: formatCurrency(248120) },
-        ],
-      },
-      {
-        id: 'resumo-obra',
-        titulo: 'Consolidação por Obra',
-        descricao: 'A folha prevista já nasce com leitura por obra e centro de custo.',
-        itens: [
-          { label: 'Obra com maior impacto', valor: 'Edifício Aurora', destaque: true },
-          { label: 'Participação da obra', valor: '19,4%' },
-          { label: 'Obras com rateio', valor: '12' },
-          { label: 'Maior origem variável', valor: 'Horas extras' },
-        ],
-      },
-      {
-        id: 'resumo-financeiro',
-        titulo: 'Leitura Financeira',
-        descricao: 'Sinalização preliminar do desembolso a refletir no Financeiro.',
-        itens: [
-          { label: 'Previsto de desembolso', valor: formatCurrency(1568200), destaque: true },
-          { label: 'Realizado até o momento', valor: formatCurrency(1494300) },
-          { label: 'Diferença', valor: formatCurrency(73900) },
-          { label: 'Próximo marco', valor: 'Fechar rateio da competência' },
-        ],
-      },
-    ],
-    funcionarios: [
-      {
-        id: 'fopag-func-1', funcionarioId: 'func-1', funcionarioNome: 'Lucas Andrade', matricula: 'RH-001', cargo: 'Encarregado',
-        obraPrincipalId: 'obra-1', obraPrincipalNome: 'Edifício Aurora', salarioBase: 6200, horasExtrasValor: 286.4, beneficiosValor: 980, descontosValor: 420, valorPrevisto: 7046.4, valorRealizado: 6912.1,
-      },
-      {
-        id: 'fopag-func-2', funcionarioId: 'func-2', funcionarioNome: 'Mariana Costa', matricula: 'RH-014', cargo: 'Técnica de Segurança',
-        obraPrincipalId: 'obra-1', obraPrincipalNome: 'Edifício Aurora', salarioBase: 4900, horasExtrasValor: 154.2, beneficiosValor: 740, descontosValor: 310, valorPrevisto: 5484.2, valorRealizado: 5400,
-      },
-      {
-        id: 'fopag-func-3', funcionarioId: 'func-3', funcionarioNome: 'João Pedro Lima', matricula: 'RH-022', cargo: 'Pedreiro',
-        obraPrincipalId: 'obra-2', obraPrincipalNome: 'Residencial Parque', salarioBase: 3100, horasExtrasValor: 398.7, beneficiosValor: 520, descontosValor: 210, valorPrevisto: 3808.7, valorRealizado: 3754.4,
-      },
-    ],
-    obras: [
-      { id: 'fopag-obra-1', obraId: 'obra-1', obraNome: 'Edifício Aurora', totalFuncionarios: 36, valorPrevisto: 304100, valorRealizado: 292800, valorHorasExtras: 26400, percentualParticipacao: 19.4 },
-      { id: 'fopag-obra-2', obraId: 'obra-2', obraNome: 'Residencial Parque', totalFuncionarios: 29, valorPrevisto: 246300, valorRealizado: 239100, valorHorasExtras: 18200, percentualParticipacao: 15.7 },
-      { id: 'fopag-obra-3', obraId: 'obra-4', obraNome: 'Ponte BR-101', totalFuncionarios: 31, valorPrevisto: 272900, valorRealizado: 261500, valorHorasExtras: 34100, percentualParticipacao: 17.4 },
-    ],
-    eventos: [
-      { id: 'evt-1', codigo: 'SAL', nome: 'Salário Base', tipo: 'provento', origem: 'rh', quantidadeLancamentos: 186, valorPrevisto: 1086200, valorRealizado: 1081200 },
-      { id: 'evt-2', codigo: 'HE', nome: 'Horas Extras', tipo: 'provento', origem: 'horas_extras', quantidadeLancamentos: 27, valorPrevisto: 117935, valorRealizado: 109740 },
-      { id: 'evt-3', codigo: 'BEN', nome: 'Benefícios', tipo: 'provento', origem: 'beneficios', quantidadeLancamentos: 186, valorPrevisto: 186400, valorRealizado: 184900 },
-      { id: 'evt-4', codigo: 'ENC', nome: 'Encargos', tipo: 'encargo', origem: 'provisoes', quantidadeLancamentos: 186, valorPrevisto: 248120, valorRealizado: 242180 },
-    ],
-    rateios: [
-      { id: 'rat-1', centroCustoNome: 'Estrutura', obraNome: 'Edifício Aurora', criterio: 'Alocação principal', percentual: 100, valorPrevisto: 158200 },
-      { id: 'rat-2', centroCustoNome: 'Acabamento', obraNome: 'Residencial Parque', criterio: 'Rateio por apontamento', percentual: 72, valorPrevisto: 112300 },
-      { id: 'rat-3', centroCustoNome: 'Instalações', obraNome: 'Ponte BR-101', criterio: 'Rateio por equipe', percentual: 68, valorPrevisto: 128500 },
-    ],
-    financeiro: {
-      valorPrevistoDesembolso: 1568200,
-      valorRealizadoDesembolso: 1494300,
-      valorEncargos: 248120,
-      valorBeneficios: 186400,
-      valorHorasExtrasIntegradas: 117935,
-      principalSaida: 'Folha operacional das obras em execução',
+function buildResumoCards(competencia: FopagCompetenciaListItem, detalhe: ReturnType<typeof buildFopagCompetenciaSnapshot>): FopagResumoCard[] {
+  const principalObra = detalhe.obras[0];
+
+  return [
+    {
+      id: 'resumo-origem',
+      titulo: 'Integrações da Competência',
+      descricao: 'Leitura consolidada das principais origens da previsão mensal.',
+      itens: [
+        { label: 'RH cadastral', valor: `${detalhe.funcionarios.length} vínculo(s) com folha`, destaque: true },
+        { label: 'Horas Extras integradas', valor: formatCurrency(detalhe.financeiro.valorHorasExtrasIntegradas) },
+        { label: 'Benefícios previstos', valor: formatCurrency(detalhe.financeiro.valorBeneficios) },
+        { label: 'Encargos previstos', valor: formatCurrency(detalhe.financeiro.valorEncargos) },
+      ],
     },
-    previstoRealizado: [
-      { id: 'pr-1', categoria: 'Salário Base', valorPrevisto: 1086200, valorRealizado: 1081200 },
-      { id: 'pr-2', categoria: 'Horas Extras', valorPrevisto: 117935, valorRealizado: 109740 },
-      { id: 'pr-3', categoria: 'Benefícios', valorPrevisto: 186400, valorRealizado: 184900 },
-      { id: 'pr-4', categoria: 'Encargos', valorPrevisto: 248120, valorRealizado: 242180 },
-    ],
-  },
-};
+    {
+      id: 'resumo-obra',
+      titulo: 'Consolidação por Obra',
+      descricao: 'A folha prevista já nasce com leitura por obra e centro de custo.',
+      itens: [
+        { label: 'Obra com maior impacto', valor: principalObra?.obraNome ?? '—', destaque: true },
+        { label: 'Participação da obra', valor: principalObra ? `${principalObra.percentualParticipacao}%` : '0%' },
+        { label: 'Obras com rateio', valor: String(detalhe.obras.length) },
+        { label: 'Maior origem variável', valor: 'Horas extras' },
+      ],
+    },
+    {
+      id: 'resumo-financeiro',
+      titulo: 'Leitura Financeira',
+      descricao: 'Sinalização preliminar do desembolso a refletir no Financeiro.',
+      itens: [
+        { label: 'Previsto de desembolso', valor: formatCurrency(competencia.valorPrevisto), destaque: true },
+        { label: 'Realizado até o momento', valor: formatCurrency(competencia.valorRealizado) },
+        { label: 'Diferença', valor: formatCurrency(competencia.valorPrevisto - competencia.valorRealizado) },
+        { label: 'Próximo marco', valor: competencia.status === 'fechada_prevista' ? 'Rateio consolidado' : 'Fechar rateio da competência' },
+      ],
+    },
+  ];
+}
 
-mockFopagDetalhes['2026-02'] = {
-  ...mockFopagDetalhes['2026-03'],
-  competencia: mockFopagCompetencias[1],
-  resumoCards: mockFopagDetalhes['2026-03'].resumoCards.map((card) => ({
-    ...card,
-    itens: card.itens.map((item) => ({ ...item })),
-  })),
-  financeiro: {
-    valorPrevistoDesembolso: 1492800,
-    valorRealizadoDesembolso: 1478600,
-    valorEncargos: 237900,
-    valorBeneficios: 181600,
-    valorHorasExtrasIntegradas: 84520,
-    principalSaida: 'Folha consolidada com menor exposição variável',
-  },
-  previstoRealizado: [
-    { id: 'pr-1', categoria: 'Salário Base', valorPrevisto: 1049800, valorRealizado: 1047500 },
-    { id: 'pr-2', categoria: 'Horas Extras', valorPrevisto: 84520, valorRealizado: 84210 },
-    { id: 'pr-3', categoria: 'Benefícios', valorPrevisto: 181600, valorRealizado: 180950 },
-    { id: 'pr-4', categoria: 'Encargos', valorPrevisto: 237900, valorRealizado: 236100 },
-  ],
-};
+export function getFopagCompetenciasMock() {
+  return baseCompetencias.map((item) => {
+    const snapshot = buildFopagCompetenciaSnapshot(item.competencia);
+    return {
+      ...item,
+      totalFuncionarios: Math.max(item.totalFuncionarios, snapshot.meta.totalFuncionarios),
+      totalObras: Math.max(item.totalObras, snapshot.meta.totalObras),
+      totalEventos: Math.max(item.totalEventos, snapshot.meta.totalEventos),
+      valorPrevisto: Math.max(item.valorPrevisto, snapshot.meta.valorPrevisto),
+      valorRealizado: Math.max(item.valorRealizado, snapshot.meta.valorRealizado),
+      valorHorasExtras: snapshot.meta.valorHorasExtras,
+      updatedAt: new Date().toISOString(),
+    };
+  });
+}
 
-mockFopagDetalhes['2026-01'] = {
-  ...mockFopagDetalhes['2026-03'],
-  competencia: mockFopagCompetencias[2],
-  financeiro: {
-    valorPrevistoDesembolso: 1423500,
-    valorRealizadoDesembolso: 1420100,
-    valorEncargos: 229700,
-    valorBeneficios: 175200,
-    valorHorasExtrasIntegradas: 79300,
-    principalSaida: 'Competência já conciliada com Financeiro',
-  },
-  previstoRealizado: [
-    { id: 'pr-1', categoria: 'Salário Base', valorPrevisto: 1001200, valorRealizado: 1000300 },
-    { id: 'pr-2', categoria: 'Horas Extras', valorPrevisto: 79300, valorRealizado: 79010 },
-    { id: 'pr-3', categoria: 'Benefícios', valorPrevisto: 175200, valorRealizado: 174900 },
-    { id: 'pr-4', categoria: 'Encargos', valorPrevisto: 229700, valorRealizado: 228890 },
-  ],
-};
+export function getFopagCompetenciaDetalheMock(competenciaId: string): FopagCompetenciaDetalhe | null {
+  const competencia = getFopagCompetenciasMock().find((item) => item.id === competenciaId);
+  if (!competencia) return null;
+
+  const snapshot = buildFopagCompetenciaSnapshot(competenciaId);
+
+  return {
+    competencia,
+    resumoCards: buildResumoCards(competencia, snapshot),
+    funcionarios: snapshot.funcionarios,
+    obras: snapshot.obras,
+    eventos: snapshot.eventos,
+    rateios: snapshot.rateios,
+    financeiro: snapshot.financeiro,
+    previstoRealizado: snapshot.previstoRealizado,
+  };
+}
 
 export function calcularFopagCompetenciasKpis(items: FopagCompetenciaListItem[]): FopagCompetenciasKpis {
   return {

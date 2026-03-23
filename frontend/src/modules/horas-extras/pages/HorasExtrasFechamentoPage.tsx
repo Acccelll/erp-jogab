@@ -2,9 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { CalendarCheck2, SendHorizonal } from 'lucide-react';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { fetchFechamentosCompetencia } from '../services/horasExtras.service';
+import { useFecharCompetenciaHorasExtras } from '../hooks';
 import { HorasExtrasFechamentoCard } from '../components';
 
 export function HorasExtrasFechamentoPage() {
+  const fecharCompetenciaMutation = useFecharCompetenciaHorasExtras();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['horas-extras-fechamentos'],
     queryFn: fetchFechamentosCompetencia,
@@ -70,7 +72,7 @@ export function HorasExtrasFechamentoPage() {
           <>
             <section className="grid gap-4 xl:grid-cols-2">
               {data.map((fechamento) => (
-                <HorasExtrasFechamentoCard key={fechamento.id} fechamento={fechamento} />
+                <HorasExtrasFechamentoCard key={fechamento.id} fechamento={fechamento} onClose={(competencia) => void fecharCompetenciaMutation.mutateAsync(competencia)} isClosing={fecharCompetenciaMutation.isPending && fecharCompetenciaMutation.variables === fechamento.competencia} />
               ))}
             </section>
 
