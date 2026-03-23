@@ -29,6 +29,7 @@ import { ObraWorkspaceLayout } from '@/app/layouts/ObraWorkspaceLayout';
 import { DashboardPage } from '@/modules/dashboard';
 import { NotFoundPage } from '@/shared/components/NotFoundPage';
 import {
+  ObraContratosPage,
   ObraComprasPage,
   ObraContratosPage,
   ObraCronogramaPage,

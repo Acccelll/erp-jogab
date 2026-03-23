@@ -1,9 +1,10 @@
 export { useObras } from './useObras';
 export { useObraDetails } from './useObraDetails';
 export { useObraFilters } from './useObraFilters';
-
 export { useObraCronograma } from './useObraCronograma';
+export { useObraContratos } from './useObraContratos';
 export { useObraEquipe } from './useObraEquipe';
+export { useObraRh } from './useObraRh';
 export { useObraCompras } from './useObraCompras';
 export { useObraFinanceiro } from './useObraFinanceiro';
 export { useObraDocumentos } from './useObraDocumentos';

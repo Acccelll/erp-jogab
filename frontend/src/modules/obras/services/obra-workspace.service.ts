@@ -20,6 +20,11 @@ export async function fetchObraCronograma(obraId: string) {
   return getCronogramaWorkspace(obraId);
 }
 
+export async function fetchObraContratos(obraId: string) {
+  await delay();
+  return getContratosWorkspace(obraId);
+}
+
 export async function fetchObraEquipe(obraId: string) {
   return fetchObraAlocacoesWorkspace(obraId);
 }
@@ -32,6 +37,16 @@ export async function fetchObraCompras(obraId: string) {
 export async function fetchObraFinanceiro(obraId: string) {
   await delay();
   return getFinanceiroWorkspace(obraId);
+}
+
+export async function fetchObraEstoque(obraId: string) {
+  await delay();
+  return getEstoqueWorkspace(obraId);
+}
+
+export async function fetchObraMedicoes(obraId: string) {
+  await delay();
+  return getMedicoesWorkspace(obraId);
 }
 
 export async function fetchObraDocumentos(obraId: string) {

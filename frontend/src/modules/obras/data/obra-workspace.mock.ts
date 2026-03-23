@@ -135,6 +135,25 @@ export function getCronogramaWorkspace(obraId: string): ObraWorkspaceTabData<Obr
   };
 }
 
+export function getContratosWorkspace(obraId: string): ObraWorkspaceTabData<ObraContratoItem> {
+  const items = fallback(contratosPorObra, obraId);
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'contratos-resumo',
+        titulo: 'Contratos da obra',
+        descricao: 'Bloco inicial de contratos técnicos e aditivos com leitura pronta para futura API.',
+        itens: [
+          { label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length), destaque: true },
+          { label: 'Em aprovação', valor: String(items.filter((item) => item.status === 'em_aprovacao').length) },
+          { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)) },
+        ],
+      },
+    ],
+  };
+}
+
 export function getEquipeWorkspace(obraId: string): ObraWorkspaceTabData<ObraEquipeItem> {
   const items = getAlocacoesByObraId(obraId);
 
@@ -205,6 +224,54 @@ export function getEstoqueWorkspace(obraId: string): ObraWorkspaceTabData<ObraEs
           { label: 'Itens disponíveis', valor: String(items.filter((item) => item.status === 'disponivel').length) },
           { label: 'Críticos / esgotados', valor: String(criticos), destaque: criticos > 0 },
           { label: 'Insumos monitorados', valor: String(items.length) },
+        ],
+      },
+      {
+        id: 'financeiro-pessoal',
+        titulo: 'Custo de pessoal da obra',
+        descricao: 'Reflexo direto de Horas Extras e FOPAG na leitura financeira da obra.',
+        itens: [
+          { label: 'HE prevista', valor: formatCurrency(pessoal?.valorHorasExtrasPrevisto ?? 0) },
+          { label: 'FOPAG prevista', valor: formatCurrency(pessoal?.valorFopagPrevisto ?? 0) },
+          { label: 'Previsto x realizado', valor: `${formatCurrency(pessoal?.valorPrevisto ?? 0)} / ${formatCurrency(pessoal?.valorRealizado ?? 0)}`, destaque: true },
+        ],
+      },
+    ],
+  };
+}
+
+export function getEstoqueWorkspace(obraId: string): ObraWorkspaceTabData<ObraEstoqueItem> {
+  const items = fallback(estoquePorObra, obraId);
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'estoque-resumo',
+        titulo: 'Estoque da obra',
+        descricao: 'Estrutura inicial para consumo, saldo e materiais críticos da obra.',
+        itens: [
+          { label: 'Itens monitorados', valor: String(items.length) },
+          { label: 'Itens críticos', valor: String(items.filter((item) => item.status === 'critico').length), destaque: true },
+          { label: 'Valor em estoque', valor: formatCurrency(items.reduce((acc, item) => acc + item.custoTotal, 0)) },
+        ],
+      },
+    ],
+  };
+}
+
+export function getMedicoesWorkspace(obraId: string): ObraWorkspaceTabData<ObraMedicaoItem> {
+  const items = fallback(medicoesPorObra, obraId);
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'medicoes-resumo',
+        titulo: 'Medições da obra',
+        descricao: 'Bloco inicial para evolução contratual, aprovação e faturamento por competência.',
+        itens: [
+          { label: 'Medições', valor: String(items.length) },
+          { label: 'Em aprovação', valor: String(items.filter((item) => item.status === 'em_aprovacao').length), destaque: true },
+          { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)) },
         ],
       },
     ],
