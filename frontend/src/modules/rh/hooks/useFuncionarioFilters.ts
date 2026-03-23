@@ -1,7 +1,3 @@
-/**
- * Hook para gerenciamento de filtros de funcionários.
- * Integra com o filtersStore global e herda contexto ativo de RH/Obras.
- */
 import { useCallback, useMemo } from 'react';
 import { useContextStore, useFiltersStore } from '@/shared/stores';
 import { defaultFuncionarioFilters } from '../types';
@@ -9,27 +5,56 @@ import type { FuncionarioFiltersData, FuncionarioStatus, TipoContrato } from '..
 
 const MODULE_KEY = 'rh';
 
+interface ContextDefaults {
+  filialId: string | null;
+  obraId: string | null;
+  centroCustoId: string | null;
+}
+
+function buildFuncionarioFilters(
+  raw: Record<string, unknown>,
+  contextDefaults: ContextDefaults,
+): FuncionarioFiltersData {
+  return {
+    search: (raw.search as string) ?? defaultFuncionarioFilters.search,
+    status: (raw.status as FuncionarioStatus) ?? defaultFuncionarioFilters.status,
+    tipoContrato: (raw.tipoContrato as TipoContrato) ?? defaultFuncionarioFilters.tipoContrato,
+    filialId: (raw.filialId as string) ?? contextDefaults.filialId ?? defaultFuncionarioFilters.filialId,
+    obraId: (raw.obraId as string) ?? contextDefaults.obraId ?? defaultFuncionarioFilters.obraId,
+    centroCustoId:
+      (raw.centroCustoId as string) ?? contextDefaults.centroCustoId ?? defaultFuncionarioFilters.centroCustoId,
+    departamento: (raw.departamento as string) ?? defaultFuncionarioFilters.departamento,
+  };
+}
+
+function hasNonContextFilter(
+  filters: FuncionarioFiltersData,
+  contextDefaults: ContextDefaults,
+): boolean {
+  return Boolean(
+    filters.search ||
+      filters.status ||
+      filters.tipoContrato ||
+      filters.departamento ||
+      (filters.filialId && filters.filialId !== contextDefaults.filialId) ||
+      (filters.obraId && filters.obraId !== contextDefaults.obraId) ||
+      (filters.centroCustoId && filters.centroCustoId !== contextDefaults.centroCustoId),
+  );
+}
+
 export function useFuncionarioFilters() {
   const { getModuleFilters, setFilter, clearModuleFilters } = useFiltersStore();
-  const {
-    filialId: contextFilialId,
-    obraId: contextObraId,
-    centroCustoId: contextCentroCustoId,
-  } = useContextStore();
+  const contextDefaults = useContextStore(
+    useCallback(
+      ({ filialId, obraId, centroCustoId }) => ({ filialId, obraId, centroCustoId }),
+      [],
+    ),
+  );
   const raw = getModuleFilters(MODULE_KEY);
 
-  const filters: FuncionarioFiltersData = useMemo(
-    () => ({
-      search: (raw.search as string) ?? defaultFuncionarioFilters.search,
-      status: (raw.status as FuncionarioStatus) ?? defaultFuncionarioFilters.status,
-      tipoContrato: (raw.tipoContrato as TipoContrato) ?? defaultFuncionarioFilters.tipoContrato,
-      filialId: (raw.filialId as string) ?? contextFilialId ?? defaultFuncionarioFilters.filialId,
-      obraId: (raw.obraId as string) ?? contextObraId ?? defaultFuncionarioFilters.obraId,
-      centroCustoId:
-        (raw.centroCustoId as string) ?? contextCentroCustoId ?? defaultFuncionarioFilters.centroCustoId,
-      departamento: (raw.departamento as string) ?? defaultFuncionarioFilters.departamento,
-    }),
-    [contextCentroCustoId, contextFilialId, contextObraId, raw],
+  const filters = useMemo(
+    () => buildFuncionarioFilters(raw, contextDefaults),
+    [contextDefaults, raw],
   );
 
   const setSearch = useCallback(
@@ -69,14 +94,9 @@ export function useFuncionarioFilters() {
 
   const clearFilters = useCallback(() => clearModuleFilters(MODULE_KEY), [clearModuleFilters]);
 
-  const hasActiveFilters = Boolean(
-    filters.search ||
-      filters.status ||
-      filters.tipoContrato ||
-      filters.departamento ||
-      (filters.filialId && filters.filialId !== contextFilialId) ||
-      (filters.obraId && filters.obraId !== contextObraId) ||
-      (filters.centroCustoId && filters.centroCustoId !== contextCentroCustoId),
+  const hasActiveFilters = useMemo(
+    () => hasNonContextFilter(filters, contextDefaults),
+    [contextDefaults, filters],
   );
 
   return {
