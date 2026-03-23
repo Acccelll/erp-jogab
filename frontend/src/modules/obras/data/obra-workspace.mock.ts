@@ -99,17 +99,6 @@ const comprasPorObra: Record<string, ObraComprasItem[]> = {
   ],
 };
 
-const financeiroPorObra: Record<string, ObraFinanceiroItem[]> = {
-  'obra-1': [
-    { id: 'fin-1', codigo: 'TIT-2026-005', descricao: 'Reembolso contratual de mobilização', tipo: 'receber', status: 'recebido', competencia: '2026-03', valor: 38750 },
-    { id: 'fin-2', codigo: 'TIT-2026-001', descricao: 'Folha administrativa rateada na obra', tipo: 'pagar', status: 'programado', competencia: '2026-03', valor: 182450.32 },
-  ],
-  'obra-2': [
-    { id: 'fin-3', codigo: 'TIT-2026-003', descricao: 'Medição parcial do contrato CP-88', tipo: 'receber', status: 'previsto', competencia: '2026-03', valor: 245000 },
-    { id: 'fin-4', codigo: 'TIT-2026-006', descricao: 'Locação de equipamentos de içamento', tipo: 'pagar', status: 'pago', competencia: '2026-03', valor: 52640 },
-  ],
-};
-
 const documentosPorObra: Record<string, ObraDocumentoItem[]> = {
   'obra-1': [
     { id: 'doc-1', codigo: 'DOC-2026-014', titulo: 'ART de execução estrutural', tipo: 'ART', status: 'vigente', responsavel: 'Renata Gomes', vencimento: '2026-12-31' },
@@ -260,4 +249,9 @@ export function getRiscosWorkspace(obraId: string): ObraWorkspaceTabData<ObraRis
       },
     ],
   };
+}
+
+export function getDocumentosWorkspace(obraId: string): ObraWorkspaceTabData<ObraDocumentoItem> {
+  const items = fallback(documentosPorObra, obraId);
+  return { items, resumoCards: [{ id: 'documentos-alerta', titulo: 'Governança documental', descricao: 'Documentos críticos da obra para conformidade, segurança e liberação operacional.', itens: [{ label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length) }, { label: 'A vencer', valor: String(items.filter((item) => item.status === 'a_vencer').length), destaque: true }, { label: 'Em análise', valor: String(items.filter((item) => item.status === 'em_analise').length) }] }] };
 }

@@ -74,9 +74,10 @@ export interface ObraFinanceiroItem {
   codigo: string;
   descricao: string;
   tipo: 'pagar' | 'receber';
-  status: 'programado' | 'previsto' | 'pago' | 'recebido' | 'vencido';
+  status: 'programado' | 'previsto' | 'pago' | 'recebido' | 'vencido' | 'aguardando_documentos' | 'em_aprovacao';
   competencia: string;
   valor: number;
+  origem?: 'fopag' | 'horas_extras' | 'compras' | 'fiscal' | 'medicoes' | 'manual';
 }
 
 export interface ObraDocumentoItem {
