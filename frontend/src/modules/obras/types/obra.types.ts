@@ -127,6 +127,13 @@ export interface ObraUpdatePayload extends Partial<ObraFormData> {
   id: string;
 }
 
+
+/** Resposta de sucesso para mutações de obra. */
+export interface ObraMutationResponse {
+  message: string;
+  obra: Obra;
+}
+
 /** Labels para status de obra */
 export const OBRA_STATUS_LABELS: Record<ObraStatus, string> = {
   planejamento: 'Planejamento',

@@ -105,6 +105,13 @@ export interface FuncionarioUpdatePayload extends Partial<FuncionarioFormData> {
   id: string;
 }
 
+
+/** Resposta de sucesso para mutações de funcionário. */
+export interface FuncionarioMutationResponse {
+  message: string;
+  funcionario: Funcionario;
+}
+
 /** Labels para status de funcionário */
 export const FUNCIONARIO_STATUS_LABELS: Record<FuncionarioStatus, string> = {
   ativo: 'Ativo',

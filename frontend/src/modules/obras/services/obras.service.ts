@@ -9,6 +9,7 @@ import type {
   ObraCreatePayload,
   ObraDetailResponse,
   ObraFiltersData,
+  ObraMutationResponse,
   ObraResumoBloco,
   ObraUpdatePayload,
   ObraVisaoGeralKpis,
@@ -45,19 +46,70 @@ export interface ObrasApiContract {
   };
   create: {
     payload: ObraCreatePayload;
+    response: ObraMutationResponse;
   };
   update: {
     obraId: string;
     payload: ObraUpdatePayload;
+    response: ObraMutationResponse;
   };
 }
 
-/** Simula latência de rede */
 function delay(ms = 300): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/** Lista obras com filtros */
+function buildObraId() {
+  return `obra-${mockObras.length + 1}`;
+}
+
+function dedupeBy<T extends string>(items: T[]) {
+  return [...new Set(items.filter(Boolean))];
+}
+
+function getClienteNomeById(clienteId: string) {
+  return mockObras.find((obra) => obra.clienteId === clienteId)?.clienteNome ?? `Cliente ${clienteId.toUpperCase()}`;
+}
+
+function getResponsavelNomeById(responsavelId: string) {
+  return mockObras.find((obra) => obra.responsavelId === responsavelId)?.responsavelNome ?? `Responsável ${responsavelId.toUpperCase()}`;
+}
+
+function getFilialNomeById(filialId: string) {
+  return mockObras.find((obra) => obra.filialId === filialId)?.filialNome ?? `Filial ${filialId.toUpperCase()}`;
+}
+
+function buildEmpresaIdByFilialId(filialId: string) {
+  return mockObras.find((obra) => obra.filialId === filialId)?.empresaId ?? 'emp-1';
+}
+
+function validateObraPayload(payload: ObraCreatePayload | ObraUpdatePayload, currentId?: string) {
+  const duplicateCodigo = mockObras.find(
+    (obra) => obra.codigo.toLowerCase() === payload.codigo?.toLowerCase() && obra.id !== currentId,
+  );
+
+  if (duplicateCodigo) {
+    throw new Error(`Já existe uma obra cadastrada com o código ${payload.codigo}.`);
+  }
+}
+
+export function getObraFormReferenceData() {
+  return {
+    clientes: dedupeBy(mockObras.map((obra) => obra.clienteId)).map((id) => ({
+      value: id,
+      label: getClienteNomeById(id),
+    })),
+    responsaveis: dedupeBy(mockObras.map((obra) => obra.responsavelId)).map((id) => ({
+      value: id,
+      label: getResponsavelNomeById(id),
+    })),
+    filiais: dedupeBy(mockObras.map((obra) => obra.filialId)).map((id) => ({
+      value: id,
+      label: getFilialNomeById(id),
+    })),
+  };
+}
+
 export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListResponse> {
   await delay();
 
@@ -95,14 +147,12 @@ export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListRe
   return { data, kpis, total: data.length };
 }
 
-/** Busca uma obra pelo ID */
 export async function fetchObraById(obraId: string): Promise<Obra | null> {
   await delay(200);
   const obra = mockObras.find((o) => o.id === obraId);
   return obra ? normalizeObra(obra) : null;
 }
 
-/** KPIs da visão geral da obra */
 export async function fetchObraVisaoGeralKpis(obraId: string): Promise<ObraVisaoGeralKpis | null> {
   await delay(150);
   const obra = mockObras.find((o) => o.id === obraId);
@@ -110,7 +160,6 @@ export async function fetchObraVisaoGeralKpis(obraId: string): Promise<ObraVisao
   return calcularObraVisaoGeralKpis(normalizeObra(obra));
 }
 
-/** Blocos de resumo da visão geral da obra */
 export async function fetchObraResumoBlocos(obraId: string): Promise<ObraResumoBloco[]> {
   await delay(200);
   const obra = mockObras.find((o) => o.id === obraId);
@@ -118,7 +167,6 @@ export async function fetchObraResumoBlocos(obraId: string): Promise<ObraResumoB
   return gerarResumoBlocos(normalizeObra(obra));
 }
 
-/** Agregador de detalhe preparado para futura API real única do workspace da obra. */
 export async function fetchObraDetail(obraId: string): Promise<ObraDetailResponse> {
   const [obra, kpis, resumoBlocos] = await Promise.all([
     fetchObraById(obraId),
@@ -130,5 +178,74 @@ export async function fetchObraDetail(obraId: string): Promise<ObraDetailRespons
     obra,
     kpis,
     resumoBlocos,
+  };
+}
+
+export async function createObra(payload: ObraCreatePayload): Promise<ObraMutationResponse> {
+  await delay(250);
+  validateObraPayload(payload);
+
+  const agora = new Date().toISOString();
+  const obra: Obra = {
+    id: buildObraId(),
+    codigo: payload.codigo,
+    nome: payload.nome,
+    descricao: payload.descricao,
+    status: payload.status,
+    tipo: payload.tipo,
+    clienteId: payload.clienteId,
+    clienteNome: getClienteNomeById(payload.clienteId),
+    responsavelId: payload.responsavelId,
+    responsavelNome: getResponsavelNomeById(payload.responsavelId),
+    filialId: payload.filialId,
+    filialNome: getFilialNomeById(payload.filialId),
+    empresaId: buildEmpresaIdByFilialId(payload.filialId),
+    endereco: payload.endereco,
+    cidade: payload.cidade,
+    uf: payload.uf,
+    dataInicio: payload.dataInicio,
+    dataPrevisaoFim: payload.dataPrevisaoFim,
+    dataFimReal: null,
+    percentualConcluido: payload.status === 'concluida' ? 100 : 0,
+    orcamentoPrevisto: payload.orcamentoPrevisto,
+    custoRealizado: 0,
+    custoComprometido: 0,
+    totalFuncionarios: 0,
+    totalContratos: 0,
+    createdAt: agora,
+    updatedAt: agora,
+  };
+
+  mockObras.unshift(obra);
+
+  return {
+    message: 'Obra criada com sucesso.',
+    obra: normalizeObra(obra),
+  };
+}
+
+export async function updateObra(payload: ObraUpdatePayload): Promise<ObraMutationResponse> {
+  await delay(250);
+  const obra = mockObras.find((item) => item.id === payload.id);
+
+  if (!obra) {
+    throw new Error('Obra não encontrada para atualização.');
+  }
+
+  validateObraPayload(payload, payload.id);
+
+  Object.assign(obra, {
+    ...payload,
+    clienteNome: payload.clienteId ? getClienteNomeById(payload.clienteId) : obra.clienteNome,
+    responsavelNome: payload.responsavelId ? getResponsavelNomeById(payload.responsavelId) : obra.responsavelNome,
+    filialNome: payload.filialId ? getFilialNomeById(payload.filialId) : obra.filialNome,
+    empresaId: payload.filialId ? buildEmpresaIdByFilialId(payload.filialId) : obra.empresaId,
+    dataFimReal: payload.status === 'concluida' ? obra.dataFimReal ?? new Date().toISOString().slice(0, 10) : null,
+    updatedAt: new Date().toISOString(),
+  });
+
+  return {
+    message: 'Obra atualizada com sucesso.',
+    obra: normalizeObra(obra),
   };
 }
