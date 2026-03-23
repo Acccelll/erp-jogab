@@ -137,17 +137,18 @@ export function getCronogramaWorkspace(obraId: string): ObraWorkspaceTabData<Obr
 
 export function getContratosWorkspace(obraId: string): ObraWorkspaceTabData<ObraContratoItem> {
   const items = fallback(contratosPorObra, obraId);
+  const valorTotal = items.reduce((acc, item) => acc + item.valorContrato + item.valorAditivos, 0);
   return {
     items,
     resumoCards: [
       {
         id: 'contratos-resumo',
         titulo: 'Contratos da obra',
-        descricao: 'Bloco inicial de contratos técnicos e aditivos com leitura pronta para futura API.',
+        descricao: 'Contratos ativos com clientes, fornecedores e subcontratados que impactam prazo e custo.',
         itens: [
-          { label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length), destaque: true },
-          { label: 'Em aprovação', valor: String(items.filter((item) => item.status === 'em_aprovacao').length) },
-          { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)) },
+          { label: 'Ativos', valor: String(items.filter((item) => item.status === 'ativo').length), destaque: true },
+          { label: 'Em negociação', valor: String(items.filter((item) => item.status === 'em_negociacao').length) },
+          { label: 'Valor contratado', valor: formatCurrency(valorTotal) },
         ],
       },
     ],
@@ -179,6 +180,22 @@ export function getComprasWorkspace(obraId: string): ObraWorkspaceTabData<ObraCo
   return { items, resumoCards: [{ id: 'compras-compromisso', titulo: 'Pipeline de compras', descricao: 'Solicitações e pedidos que afetam prazo, recebimento e integração fiscal da obra.', itens: [{ label: 'Itens em cotação', valor: String(items.filter((item) => item.status === 'em_cotacao').length) }, { label: 'Pedidos emitidos', valor: String(items.filter((item) => item.status === 'pedido_emitido').length) }, { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)), destaque: true }] }] };
 }
 
+const financeiroPorObra: Record<string, ObraFinanceiroItem[]> = {
+  'obra-1': [
+    { id: 'fin-1', codigo: 'FIN-2026-001', descricao: 'Medição parcial — estrutura bloco A', tipo: 'receber', status: 'previsto', competencia: '2026-03', etapa: 'Estrutura', valor: 1190400, origem: 'medicoes' },
+    { id: 'fin-2', codigo: 'FIN-2026-002', descricao: 'Pagamento concreto usinado', tipo: 'pagar', status: 'programado', competencia: '2026-03', etapa: 'Fundações', valor: 124200, origem: 'compras' },
+    { id: 'fin-3', codigo: 'FIN-2026-003', descricao: 'Folha operacional — competência 03/2026', tipo: 'pagar', status: 'previsto', competencia: '2026-03', etapa: 'Pessoal', valor: 380000, origem: 'fopag' },
+  ],
+  'obra-2': [
+    { id: 'fin-4', codigo: 'FIN-2026-004', descricao: 'Medição final — terraplanagem', tipo: 'receber', status: 'recebido', competencia: '2026-03', etapa: 'Terraplanagem', valor: 382500, origem: 'medicoes' },
+    { id: 'fin-5', codigo: 'FIN-2026-005', descricao: 'Locação de equipamentos', tipo: 'pagar', status: 'pago', competencia: '2026-03', etapa: 'Equipamentos', valor: 39200, origem: 'compras' },
+  ],
+  'obra-4': [
+    { id: 'fin-6', codigo: 'FIN-2026-006', descricao: 'Faturamento — fundações especiais', tipo: 'receber', status: 'recebido', competencia: '2026-03', etapa: 'Fundações', valor: 760000, origem: 'medicoes' },
+    { id: 'fin-7', codigo: 'FIN-2026-007', descricao: 'Folha operacional — competência 03/2026', tipo: 'pagar', status: 'previsto', competencia: '2026-03', etapa: 'Pessoal', valor: 540000, origem: 'fopag' },
+  ],
+};
+
 export function getFinanceiroWorkspace(obraId: string): ObraWorkspaceTabData<ObraFinanceiroItem> {
   const items = fallback(financeiroPorObra, obraId);
   const saldo = items.reduce((acc, item) => acc + (item.tipo === 'receber' ? item.valor : -item.valor), 0);
@@ -188,26 +205,6 @@ export function getFinanceiroWorkspace(obraId: string): ObraWorkspaceTabData<Obr
 export function getDocumentosWorkspace(obraId: string): ObraWorkspaceTabData<ObraDocumentoItem> {
   const items = fallback(documentosPorObra, obraId);
   return { items, resumoCards: [{ id: 'documentos-alerta', titulo: 'Governança documental', descricao: 'Documentos críticos da obra para conformidade, segurança e liberação operacional.', itens: [{ label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length) }, { label: 'A vencer', valor: String(items.filter((item) => item.status === 'a_vencer').length), destaque: true }, { label: 'Em análise', valor: String(items.filter((item) => item.status === 'em_analise').length) }] }] };
-}
-
-export function getContratosWorkspace(obraId: string): ObraWorkspaceTabData<ObraContratoItem> {
-  const items = fallback(contratosPorObra, obraId);
-  const valorTotal = items.reduce((acc, item) => acc + item.valorContrato + item.valorAditivos, 0);
-  return {
-    items,
-    resumoCards: [
-      {
-        id: 'contratos-resumo',
-        titulo: 'Contratos da obra',
-        descricao: 'Contratos ativos com clientes, fornecedores e subcontratados que impactam prazo e custo.',
-        itens: [
-          { label: 'Ativos', valor: String(items.filter((item) => item.status === 'ativo').length), destaque: true },
-          { label: 'Em negociação', valor: String(items.filter((item) => item.status === 'em_negociacao').length) },
-          { label: 'Valor contratado', valor: formatCurrency(valorTotal) },
-        ],
-      },
-    ],
-  };
 }
 
 export function getEstoqueWorkspace(obraId: string): ObraWorkspaceTabData<ObraEstoqueItem> {
@@ -224,54 +221,6 @@ export function getEstoqueWorkspace(obraId: string): ObraWorkspaceTabData<ObraEs
           { label: 'Itens disponíveis', valor: String(items.filter((item) => item.status === 'disponivel').length) },
           { label: 'Críticos / esgotados', valor: String(criticos), destaque: criticos > 0 },
           { label: 'Insumos monitorados', valor: String(items.length) },
-        ],
-      },
-      {
-        id: 'financeiro-pessoal',
-        titulo: 'Custo de pessoal da obra',
-        descricao: 'Reflexo direto de Horas Extras e FOPAG na leitura financeira da obra.',
-        itens: [
-          { label: 'HE prevista', valor: formatCurrency(pessoal?.valorHorasExtrasPrevisto ?? 0) },
-          { label: 'FOPAG prevista', valor: formatCurrency(pessoal?.valorFopagPrevisto ?? 0) },
-          { label: 'Previsto x realizado', valor: `${formatCurrency(pessoal?.valorPrevisto ?? 0)} / ${formatCurrency(pessoal?.valorRealizado ?? 0)}`, destaque: true },
-        ],
-      },
-    ],
-  };
-}
-
-export function getEstoqueWorkspace(obraId: string): ObraWorkspaceTabData<ObraEstoqueItem> {
-  const items = fallback(estoquePorObra, obraId);
-  return {
-    items,
-    resumoCards: [
-      {
-        id: 'estoque-resumo',
-        titulo: 'Estoque da obra',
-        descricao: 'Estrutura inicial para consumo, saldo e materiais críticos da obra.',
-        itens: [
-          { label: 'Itens monitorados', valor: String(items.length) },
-          { label: 'Itens críticos', valor: String(items.filter((item) => item.status === 'critico').length), destaque: true },
-          { label: 'Valor em estoque', valor: formatCurrency(items.reduce((acc, item) => acc + item.custoTotal, 0)) },
-        ],
-      },
-    ],
-  };
-}
-
-export function getMedicoesWorkspace(obraId: string): ObraWorkspaceTabData<ObraMedicaoItem> {
-  const items = fallback(medicoesPorObra, obraId);
-  return {
-    items,
-    resumoCards: [
-      {
-        id: 'medicoes-resumo',
-        titulo: 'Medições da obra',
-        descricao: 'Bloco inicial para evolução contratual, aprovação e faturamento por competência.',
-        itens: [
-          { label: 'Medições', valor: String(items.length) },
-          { label: 'Em aprovação', valor: String(items.filter((item) => item.status === 'em_aprovacao').length), destaque: true },
-          { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)) },
         ],
       },
     ],
@@ -316,9 +265,4 @@ export function getRiscosWorkspace(obraId: string): ObraWorkspaceTabData<ObraRis
       },
     ],
   };
-}
-
-export function getDocumentosWorkspace(obraId: string): ObraWorkspaceTabData<ObraDocumentoItem> {
-  const items = fallback(documentosPorObra, obraId);
-  return { items, resumoCards: [{ id: 'documentos-alerta', titulo: 'Governança documental', descricao: 'Documentos críticos da obra para conformidade, segurança e liberação operacional.', itens: [{ label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length) }, { label: 'A vencer', valor: String(items.filter((item) => item.status === 'a_vencer').length), destaque: true }, { label: 'Em análise', valor: String(items.filter((item) => item.status === 'em_analise').length) }] }] };
 }

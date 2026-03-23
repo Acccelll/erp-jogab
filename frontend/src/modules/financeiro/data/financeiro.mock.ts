@@ -418,6 +418,10 @@ function buildTipoResumo(items: TituloFinanceiro[]): FinanceiroTipoResumo[] {
   }));
 }
 
+export function getMockTitulosFinanceiros(filters?: FinanceiroFiltersData): TituloFinanceiro[] {
+  return getAllTitulos(filters).filter((item) => matchesFilters(item, filters));
+}
+
 export function getMockFinanceiroDashboard(filters?: FinanceiroFiltersData): FinanceiroDashboardData {
   const items = getAllTitulos(filters).filter((item) => matchesFilters(item, filters));
   const pessoal = buildPessoalDashboard(filters);
