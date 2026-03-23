@@ -432,10 +432,8 @@ export function getMockFinanceiroDashboard(filters?: FinanceiroFiltersData): Fin
 }
 
 export function getMockFluxoCaixa(filters?: FinanceiroFiltersData): FluxoCaixaItem[] {
-  const competencia = filters?.competencia;
-  if (!competencia) {
-    return fluxoCaixa;
-  }
+  return buildFluxoCaixa(filters);
+}
 
 export function getMockFinanceiroPessoal(filters?: FinanceiroFiltersData): FinanceiroPessoalDashboardData {
   return buildPessoalDashboard(filters);

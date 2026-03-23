@@ -29,7 +29,6 @@ import { ObraWorkspaceLayout } from '@/app/layouts/ObraWorkspaceLayout';
 import { DashboardPage } from '@/modules/dashboard';
 import { NotFoundPage } from '@/shared/components/NotFoundPage';
 import {
-  ObraContratosPage,
   ObraComprasPage,
   ObraContratosPage,
   ObraCronogramaPage,
@@ -362,7 +361,6 @@ const appRoutes: RouteObject[] = [
         path: 'funcionarios/:funcId',
         element: <FuncionarioDetailPage />,
         children: [
-          { index: true, element: <Navigate to="contrato" replace /> },
           { path: 'contrato', element: <FuncionarioContratoPage /> },
           { path: 'historico-salarial', element: <FuncionarioHistoricoSalarialPage /> },
           { path: 'documentos', element: <FuncionarioDocumentosPage /> },
