@@ -31,15 +31,16 @@ import { NotFoundPage } from '@/shared/components/NotFoundPage';
 import {
   ObraContratosPage,
   ObraComprasPage,
+  ObraContratosPage,
   ObraCronogramaPage,
   ObraDocumentosPage,
   ObraEquipePage,
   ObraEstoquePage,
   ObraFinanceiroPage,
   ObraMedicoesPage,
+  ObrasListPage,
   ObraRhPage,
   ObraRiscosPage,
-  ObrasListPage,
   ObraVisaoGeralPage,
 } from '@/modules/obras';
 import { ObraTabPlaceholder } from '@/modules/obras/components';

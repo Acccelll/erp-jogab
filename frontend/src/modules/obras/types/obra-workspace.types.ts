@@ -1,5 +1,52 @@
 import type { AlocacaoResumo } from '@/shared/types';
 
+export interface ObraContratoItem {
+  id: string;
+  codigo: string;
+  objeto: string;
+  contratado: string;
+  tipo: 'cliente' | 'fornecedor' | 'subcontrato';
+  status: 'ativo' | 'em_negociacao' | 'suspenso' | 'encerrado';
+  valorContrato: number;
+  valorAditivos: number;
+  dataInicio: string;
+  dataFim: string;
+}
+
+export interface ObraEstoqueItem {
+  id: string;
+  codigo: string;
+  descricao: string;
+  unidade: string;
+  saldoAtual: number;
+  consumoMes: number;
+  status: 'disponivel' | 'critico' | 'esgotado';
+  almoxarife: string;
+}
+
+export interface ObraMedicaoItem {
+  id: string;
+  codigo: string;
+  descricao: string;
+  competencia: string;
+  percentualMedido: number;
+  valorMedido: number;
+  status: 'prevista' | 'em_apuracao' | 'aprovada' | 'faturada';
+  responsavel: string;
+}
+
+export interface ObraRiscoItem {
+  id: string;
+  codigo: string;
+  titulo: string;
+  categoria: string;
+  probabilidade: 'baixa' | 'media' | 'alta';
+  impacto: 'baixo' | 'medio' | 'alto';
+  status: 'identificado' | 'em_mitigacao' | 'mitigado' | 'materializado';
+  responsavel: string;
+  prazoResposta: string;
+}
+
 export interface ObraCronogramaItem {
   id: string;
   etapa: string;
@@ -11,26 +58,6 @@ export interface ObraCronogramaItem {
 }
 
 export type ObraEquipeItem = AlocacaoResumo;
-
-export interface ObraContratoItem {
-  id: string;
-  codigo: string;
-  objeto: string;
-  contratado: string;
-  status: 'vigente' | 'em_aprovacao' | 'encerrado';
-  valor: number;
-  vencimento?: string;
-}
-
-export interface ObraRhItem {
-  id: string;
-  funcionarioNome: string;
-  cargo: string;
-  centroCustoNome: string;
-  status: 'ativo' | 'ferias' | 'afastado' | 'admissao_pendente';
-  salarioBase: number;
-  custoPessoalPrevisto: number;
-}
 
 export interface ObraComprasItem {
   id: string;
@@ -49,35 +76,10 @@ export interface ObraFinanceiroItem {
   tipo: 'pagar' | 'receber';
   status: 'programado' | 'previsto' | 'pago' | 'recebido' | 'vencido' | 'aguardando_documentos' | 'em_aprovacao';
   competencia: string;
-  valor: number;
-  origem?: 'fopag' | 'horas_extras' | 'compras' | 'fiscal' | 'medicoes' | 'manual';
-}
-
-export interface ObraEstoqueItem {
-  id: string;
-  item: string;
-  categoria: string;
-  status: 'disponivel' | 'baixo' | 'critico';
-  saldo: number;
-  custoTotal: number;
-}
-
-export interface ObraMedicaoItem {
-  id: string;
-  competencia: string;
   etapa: string;
   status: 'em_preparacao' | 'em_aprovacao' | 'faturada';
   valor: number;
-  percentual: number;
-}
-
-export interface ObraRiscoItem {
-  id: string;
-  titulo: string;
-  categoria: string;
-  severidade: 'baixa' | 'media' | 'alta';
-  status: 'aberto' | 'monitorado' | 'mitigado';
-  responsavel: string;
+  origem?: 'fopag' | 'horas_extras' | 'compras' | 'fiscal' | 'medicoes' | 'manual';
 }
 
 export interface ObraDocumentoItem {

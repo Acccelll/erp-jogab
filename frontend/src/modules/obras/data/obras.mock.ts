@@ -2,8 +2,7 @@
  * Dados mock do módulo Obras.
  * Substituídos por chamadas API reais em fases futuras.
  */
-import { getAlocacoesAtivasByObraId, getAlocacoesByObraId } from '@/shared/lib/erpRelations';
-import { getObraLaborCostSnapshot } from '@/shared/lib/workforceCost';
+import { getAlocacoesByObraId } from '@/shared/lib/erpRelations';
 import type { Obra, ObraListItem, ObrasKpis, ObraVisaoGeralKpis, ObraResumoBloco } from '../types';
 
 export const mockObras: Obra[] = [
@@ -15,17 +14,13 @@ export const mockObras: Obra[] = [
   { id: 'obra-6', codigo: 'OBR-006', nome: 'Galpão Industrial Sigma', descricao: 'Construção de galpão industrial com 8.000m² de área coberta.', status: 'paralisada', tipo: 'industrial', clienteNome: 'Indústria Sigma', clienteId: 'cli-6', responsavelNome: 'Carlos Oliveira', responsavelId: 'resp-1', filialId: 'fil-3', filialNome: 'Filial — Belo Horizonte', empresaId: 'emp-1', endereco: 'Distrito Industrial, Lote 15', cidade: 'Belo Horizonte', uf: 'MG', dataInicio: '2025-09-01', dataPrevisaoFim: '2026-12-31', dataFimReal: null, percentualConcluido: 35, orcamentoPrevisto: 9000000, custoRealizado: 2700000, custoComprometido: 800000, totalFuncionarios: 0, totalContratos: 5, createdAt: '2025-08-10T10:00:00Z', updatedAt: '2026-02-28T12:00:00Z' },
 ];
 
-
+/** Normaliza uma obra (preparado para transformações futuras ao integrar com API real). */
 export function normalizeObra(obra: Obra): Obra {
-  return {
-    ...obra,
-    totalFuncionarios: getAlocacoesAtivasByObraId(obra.id).length,
-  };
+  return obra;
 }
 
 export function toObraListItem(obra: Obra): ObraListItem {
-  const normalized = normalizeObra(obra);
-  return { id: normalized.id, codigo: normalized.codigo, nome: normalized.nome, status: normalized.status, tipo: normalized.tipo, clienteNome: normalized.clienteNome, responsavelNome: normalized.responsavelNome, filialNome: normalized.filialNome, cidade: normalized.cidade, uf: normalized.uf, dataInicio: normalized.dataInicio, dataPrevisaoFim: normalized.dataPrevisaoFim, percentualConcluido: normalized.percentualConcluido, orcamentoPrevisto: normalized.orcamentoPrevisto, custoRealizado: normalized.custoRealizado, totalFuncionarios: normalized.totalFuncionarios };
+  return { id: obra.id, codigo: obra.codigo, nome: obra.nome, status: obra.status, tipo: obra.tipo, clienteNome: obra.clienteNome, responsavelNome: obra.responsavelNome, filialNome: obra.filialNome, cidade: obra.cidade, uf: obra.uf, dataInicio: obra.dataInicio, dataPrevisaoFim: obra.dataPrevisaoFim, percentualConcluido: obra.percentualConcluido, orcamentoPrevisto: obra.orcamentoPrevisto, custoRealizado: obra.custoRealizado, totalFuncionarios: obra.totalFuncionarios };
 }
 
 export function calcularObrasKpis(obras: Obra[]): ObrasKpis {
@@ -63,7 +58,7 @@ export function gerarResumoBlocos(obra: Obra): ObraResumoBloco[] {
   const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
   const ativos = alocacoes.filter((item) => item.status === 'ativa');
   const planejados = alocacoes.filter((item) => item.status === 'planejada');
-  const custoPessoal = getObraLaborCostSnapshot(obra.id);
+  const horasExtrasMes = ativos.reduce((acc, item) => acc + Math.round(item.percentual / 10), 0);
 
   return [
     {
@@ -110,10 +105,9 @@ export function gerarResumoBlocos(obra: Obra): ObraResumoBloco[] {
     {
       titulo: 'RH / FOPAG',
       itens: [
-        { label: 'Custo folha previsto', valor: fmt(custoPessoal.fopagPrevista), destaque: true },
-        { label: 'Horas extras mês', valor: `${custoPessoal.totalHorasExtras.toFixed(1)}h` },
-        { label: 'Custo HE', valor: fmt(custoPessoal.custoHorasExtras) },
-        { label: 'Custo total pessoal', valor: fmt(custoPessoal.custoTotalPessoal) },
+        { label: 'Custo folha previsto', valor: fmt(ativos.reduce((acc, item) => acc + item.percentual * 42, 0) * 100) },
+        { label: 'Horas extras mês', valor: `${horasExtrasMes}h` },
+        { label: 'Competência ativa', valor: '03/2026' },
       ],
     },
   ];

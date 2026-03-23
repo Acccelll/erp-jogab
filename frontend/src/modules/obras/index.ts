@@ -10,6 +10,10 @@ export { ObraFinanceiroPage } from './pages/ObraFinanceiroPage';
 export { ObraEstoquePage } from './pages/ObraEstoquePage';
 export { ObraMedicoesPage } from './pages/ObraMedicoesPage';
 export { ObraDocumentosPage } from './pages/ObraDocumentosPage';
+export { ObraContratosPage } from './pages/ObraContratosPage';
+export { ObraRhPage } from './pages/ObraRhPage';
+export { ObraEstoquePage } from './pages/ObraEstoquePage';
+export { ObraMedicoesPage } from './pages/ObraMedicoesPage';
 export { ObraRiscosPage } from './pages/ObraRiscosPage';
 
 export type {
