@@ -1,9 +1,13 @@
 import {
   getComprasWorkspace,
+  getContratosWorkspace,
   getCronogramaWorkspace,
   getDocumentosWorkspace,
   getEquipeWorkspace,
+  getEstoqueWorkspace,
   getFinanceiroWorkspace,
+  getMedicoesWorkspace,
+  getRiscosWorkspace,
 } from '../data/obra-workspace.mock';
 
 function delay(ms = 180): Promise<void> {
@@ -33,4 +37,24 @@ export async function fetchObraFinanceiro(obraId: string) {
 export async function fetchObraDocumentos(obraId: string) {
   await delay();
   return getDocumentosWorkspace(obraId);
+}
+
+export async function fetchObraContratos(obraId: string) {
+  await delay();
+  return getContratosWorkspace(obraId);
+}
+
+export async function fetchObraEstoque(obraId: string) {
+  await delay();
+  return getEstoqueWorkspace(obraId);
+}
+
+export async function fetchObraMedicoes(obraId: string) {
+  await delay();
+  return getMedicoesWorkspace(obraId);
+}
+
+export async function fetchObraRiscos(obraId: string) {
+  await delay();
+  return getRiscosWorkspace(obraId);
 }

@@ -10,7 +10,7 @@ export const mockCentrosCusto: CentroCustoResumo[] = [
   { id: 'cc-7', codigo: 'CC-AUR-AUX', nome: 'Obra Aurora — Auxiliares', obraId: 'obra-1', obraNome: 'Edifício Aurora', filialId: 'fil-1' },
   { id: 'cc-8', codigo: 'CC-AUR-ALM', nome: 'Obra Aurora — Almoxarifado', obraId: 'obra-1', obraNome: 'Edifício Aurora', filialId: 'fil-1' },
   { id: 'cc-9', codigo: 'CC-PON-OPER', nome: 'Obra Ponte — Equipamentos', obraId: 'obra-4', obraNome: 'Ponte BR-101', filialId: 'fil-3' },
-];
+]
 
 export const mockAlocacoes: AlocacaoResumo[] = [
   { id: 'alo-1', funcionarioId: 'func-1', funcionarioNome: 'João Silva', obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-1', centroCustoNome: 'Obra Aurora — Engenharia', funcao: 'Engenheiro de Obra', equipe: 'Engenharia', jornada: '44h semanais', percentual: 100, departamento: 'Engenharia', periodoInicio: '2023-03-15', status: 'ativa' },
@@ -24,11 +24,7 @@ export const mockAlocacoes: AlocacaoResumo[] = [
   { id: 'alo-9', funcionarioId: 'func-9', funcionarioNome: 'Ricardo Barbosa', obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-7', centroCustoNome: 'Obra Aurora — Auxiliares', funcao: 'Auxiliar Geral', equipe: 'Campo', jornada: '44h semanais', percentual: 100, departamento: 'Produção', periodoInicio: '2025-11-01', status: 'ativa' },
   { id: 'alo-10', funcionarioId: 'func-10', funcionarioNome: 'Patrícia Rocha', obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-8', centroCustoNome: 'Obra Aurora — Almoxarifado', funcao: 'Almoxarife de Obra', equipe: 'Suprimentos', jornada: '44h semanais', percentual: 100, departamento: 'Estoque', periodoInicio: '2026-04-01', status: 'planejada' },
   { id: 'alo-11', funcionarioId: 'func-11', funcionarioNome: 'Luan Ferreira', obraId: 'obra-4', obraNome: 'Ponte BR-101', centroCustoId: 'cc-9', centroCustoNome: 'Obra Ponte — Equipamentos', funcao: 'Operador de Equipamentos', equipe: 'Infraestrutura', jornada: '12x36', percentual: 100, departamento: 'Produção', periodoInicio: '2025-07-10', periodoFim: '2026-04-30', status: 'encerrada' },
-];
-
-function buildId(prefix: string, itemsLength: number) {
-  return `${prefix}-${itemsLength + 1}`;
-}
+]
 
 export function getAlocacoesByObraId(obraId: string) {
   return mockAlocacoes.filter((alocacao) => alocacao.obraId === obraId);
@@ -38,72 +34,16 @@ export function getAlocacoesByFuncionarioId(funcionarioId: string) {
   return mockAlocacoes.filter((alocacao) => alocacao.funcionarioId === funcionarioId);
 }
 
+/** Retorna a alocação ativa do funcionário, ou null se não houver. */
+export function getAlocacaoAtivaByFuncionarioId(funcionarioId: string) {
+  return mockAlocacoes.find((alocacao) => alocacao.funcionarioId === funcionarioId && alocacao.status === 'ativa') ?? null;
+}
+
 export function getCentroCustoById(centroCustoId: string | null | undefined) {
   return centroCustoId ? mockCentrosCusto.find((centro) => centro.id === centroCustoId) ?? null : null;
 }
 
+/** Retorna todos os centros de custo vinculados a uma obra. Retorna [] se nenhum encontrado. */
 export function getCentrosCustoByObraId(obraId: string) {
   return mockCentrosCusto.filter((centro) => centro.obraId === obraId);
-}
-
-export function getAlocacoesAtivasByObraId(obraId: string) {
-  return getAlocacoesByObraId(obraId).filter((alocacao) => alocacao.status === 'ativa');
-}
-
-export function getAlocacaoAtivaByFuncionarioId(funcionarioId: string) {
-  return getAlocacoesByFuncionarioId(funcionarioId).find((alocacao) => alocacao.status === 'ativa') ?? null;
-}
-
-export function upsertFuncionarioAlocacaoAtiva(input: {
-  funcionarioId: string;
-  funcionarioNome: string;
-  obraId: string;
-  obraNome: string;
-  centroCustoId: string;
-  centroCustoNome: string;
-  funcao: string;
-  departamento: string;
-}) {
-  const currentActive = getAlocacaoAtivaByFuncionarioId(input.funcionarioId);
-
-  if (currentActive) {
-    Object.assign(currentActive, {
-      obraId: input.obraId,
-      obraNome: input.obraNome,
-      centroCustoId: input.centroCustoId,
-      centroCustoNome: input.centroCustoNome,
-      funcao: input.funcao,
-      departamento: input.departamento,
-      funcionarioNome: input.funcionarioNome,
-      equipe: input.departamento,
-    });
-    return currentActive;
-  }
-
-  const alocacao: AlocacaoResumo = {
-    id: buildId('alo', mockAlocacoes.length),
-    funcionarioId: input.funcionarioId,
-    funcionarioNome: input.funcionarioNome,
-    obraId: input.obraId,
-    obraNome: input.obraNome,
-    centroCustoId: input.centroCustoId,
-    centroCustoNome: input.centroCustoNome,
-    funcao: input.funcao,
-    equipe: input.departamento,
-    jornada: '44h semanais',
-    percentual: 100,
-    departamento: input.departamento,
-    periodoInicio: new Date().toISOString().slice(0, 10),
-    status: 'ativa',
-  };
-
-  mockAlocacoes.push(alocacao);
-  return alocacao;
-}
-
-export function clearFuncionarioAlocacaoAtiva(funcionarioId: string) {
-  const currentActive = getAlocacaoAtivaByFuncionarioId(funcionarioId);
-  if (!currentActive) return;
-  currentActive.status = 'encerrada';
-  currentActive.periodoFim = new Date().toISOString().slice(0, 10);
 }

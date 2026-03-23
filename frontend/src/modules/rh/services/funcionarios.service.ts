@@ -4,14 +4,7 @@
  * Atualmente usa dados mock. Quando a API estiver disponível,
  * basta trocar as implementações para chamadas reais via api.ts.
  */
-import {
-  clearFuncionarioAlocacaoAtiva,
-  getAlocacaoAtivaByFuncionarioId,
-  getAlocacoesByFuncionarioId,
-  getCentroCustoById,
-  upsertFuncionarioAlocacaoAtiva,
-} from '@/shared/lib/erpRelations';
-import { mockObras } from '@/modules/obras/data/obras.mock';
+import { getAlocacaoAtivaByFuncionarioId, getAlocacoesByFuncionarioId } from '@/shared/lib/erpRelations';
 import type {
   Funcionario,
   FuncionarioCreatePayload,
