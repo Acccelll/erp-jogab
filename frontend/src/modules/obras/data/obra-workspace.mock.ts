@@ -1,12 +1,6 @@
+import { getAlocacoesByObraId } from '@/shared/lib/erpRelations';
 import { formatCurrency } from '@/shared/lib/utils';
-import type {
-  ObraComprasItem,
-  ObraCronogramaItem,
-  ObraDocumentoItem,
-  ObraEquipeItem,
-  ObraFinanceiroItem,
-  ObraWorkspaceTabData,
-} from '../types';
+import type { ObraComprasItem, ObraCronogramaItem, ObraDocumentoItem, ObraEquipeItem, ObraFinanceiroItem, ObraWorkspaceTabData } from '../types';
 
 const cronogramaPorObra: Record<string, ObraCronogramaItem[]> = {
   'obra-1': [
@@ -17,18 +11,6 @@ const cronogramaPorObra: Record<string, ObraCronogramaItem[]> = {
   'obra-2': [
     { id: 'cro-4', etapa: 'Terraplanagem', responsavel: 'Ana Souza', inicioPrevisto: '2026-01-15', fimPrevisto: '2026-03-30', percentual: 82, status: 'em_dia' },
     { id: 'cro-5', etapa: 'Drenagem principal', responsavel: 'Marcelo Dias', inicioPrevisto: '2026-02-20', fimPrevisto: '2026-04-25', percentual: 47, status: 'atencao' },
-  ],
-};
-
-const equipePorObra: Record<string, ObraEquipeItem[]> = {
-  'obra-1': [
-    { id: 'eq-1', nome: 'Paulo Mendes', funcao: 'Mestre de Obras', equipe: 'Campo', status: 'alocado', jornada: '44h semanais' },
-    { id: 'eq-2', nome: 'Renata Gomes', funcao: 'Engenheira Civil', equipe: 'Planejamento', status: 'alocado', jornada: '44h semanais' },
-    { id: 'eq-3', nome: 'Thiago Silva', funcao: 'Armador', equipe: 'Estrutura', status: 'ferias', jornada: '44h semanais' },
-  ],
-  'obra-4': [
-    { id: 'eq-4', nome: 'Marcos Santos', funcao: 'Coordenador de Obra', equipe: 'Gestão', status: 'alocado', jornada: '44h semanais' },
-    { id: 'eq-5', nome: 'Luan Ferreira', funcao: 'Operador de Equipamentos', equipe: 'Infraestrutura', status: 'desmobilizando', jornada: '12x36' },
   ],
 };
 
@@ -90,7 +72,7 @@ export function getCronogramaWorkspace(obraId: string): ObraWorkspaceTabData<Obr
 }
 
 export function getEquipeWorkspace(obraId: string): ObraWorkspaceTabData<ObraEquipeItem> {
-  const items = fallback(equipePorObra, obraId);
+  const items = getAlocacoesByObraId(obraId);
 
   return {
     items,
@@ -98,11 +80,11 @@ export function getEquipeWorkspace(obraId: string): ObraWorkspaceTabData<ObraEqu
       {
         id: 'equipe-alocacao',
         titulo: 'Alocação de equipe',
-        descricao: 'Pessoas-chave e status atual da frente operacional da obra.',
+        descricao: 'Pessoas-chave, centros de custo e status atual da frente operacional da obra.',
         itens: [
-          { label: 'Alocados', valor: String(items.filter((item) => item.status === 'alocado').length), destaque: true },
-          { label: 'Férias', valor: String(items.filter((item) => item.status === 'ferias').length) },
-          { label: 'Desmobilizando', valor: String(items.filter((item) => item.status === 'desmobilizando').length) },
+          { label: 'Alocados', valor: String(items.filter((item) => item.status === 'ativa').length), destaque: true },
+          { label: 'Planejados', valor: String(items.filter((item) => item.status === 'planejada').length) },
+          { label: 'Centros de custo', valor: String(new Set(items.map((item) => item.centroCustoId)).size) },
         ],
       },
     ],
@@ -111,61 +93,16 @@ export function getEquipeWorkspace(obraId: string): ObraWorkspaceTabData<ObraEqu
 
 export function getComprasWorkspace(obraId: string): ObraWorkspaceTabData<ObraComprasItem> {
   const items = fallback(comprasPorObra, obraId);
-
-  return {
-    items,
-    resumoCards: [
-      {
-        id: 'compras-compromisso',
-        titulo: 'Pipeline de compras',
-        descricao: 'Solicitações e pedidos que afetam prazo, recebimento e integração fiscal da obra.',
-        itens: [
-          { label: 'Itens em cotação', valor: String(items.filter((item) => item.status === 'em_cotacao').length) },
-          { label: 'Pedidos emitidos', valor: String(items.filter((item) => item.status === 'pedido_emitido').length) },
-          { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)), destaque: true },
-        ],
-      },
-    ],
-  };
+  return { items, resumoCards: [{ id: 'compras-compromisso', titulo: 'Pipeline de compras', descricao: 'Solicitações e pedidos que afetam prazo, recebimento e integração fiscal da obra.', itens: [{ label: 'Itens em cotação', valor: String(items.filter((item) => item.status === 'em_cotacao').length) }, { label: 'Pedidos emitidos', valor: String(items.filter((item) => item.status === 'pedido_emitido').length) }, { label: 'Valor monitorado', valor: formatCurrency(items.reduce((acc, item) => acc + item.valor, 0)), destaque: true }] }] };
 }
 
 export function getFinanceiroWorkspace(obraId: string): ObraWorkspaceTabData<ObraFinanceiroItem> {
   const items = fallback(financeiroPorObra, obraId);
   const saldo = items.reduce((acc, item) => acc + (item.tipo === 'receber' ? item.valor : -item.valor), 0);
-
-  return {
-    items,
-    resumoCards: [
-      {
-        id: 'financeiro-saldo',
-        titulo: 'Fluxo financeiro da obra',
-        descricao: 'Visão do planejado/realizado da obra com reflexo em caixa e faturamento.',
-        itens: [
-          { label: 'A pagar', valor: formatCurrency(items.filter((item) => item.tipo === 'pagar').reduce((acc, item) => acc + item.valor, 0)) },
-          { label: 'A receber', valor: formatCurrency(items.filter((item) => item.tipo === 'receber').reduce((acc, item) => acc + item.valor, 0)) },
-          { label: 'Saldo projetado', valor: formatCurrency(saldo), destaque: true },
-        ],
-      },
-    ],
-  };
+  return { items, resumoCards: [{ id: 'financeiro-saldo', titulo: 'Fluxo financeiro da obra', descricao: 'Visão do planejado/realizado da obra com reflexo em caixa e faturamento.', itens: [{ label: 'A pagar', valor: formatCurrency(items.filter((item) => item.tipo === 'pagar').reduce((acc, item) => acc + item.valor, 0)) }, { label: 'A receber', valor: formatCurrency(items.filter((item) => item.tipo === 'receber').reduce((acc, item) => acc + item.valor, 0)) }, { label: 'Saldo projetado', valor: formatCurrency(saldo), destaque: true }] }] };
 }
 
 export function getDocumentosWorkspace(obraId: string): ObraWorkspaceTabData<ObraDocumentoItem> {
   const items = fallback(documentosPorObra, obraId);
-
-  return {
-    items,
-    resumoCards: [
-      {
-        id: 'documentos-alerta',
-        titulo: 'Governança documental',
-        descricao: 'Documentos críticos da obra para conformidade, segurança e liberação operacional.',
-        itens: [
-          { label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length) },
-          { label: 'A vencer', valor: String(items.filter((item) => item.status === 'a_vencer').length), destaque: true },
-          { label: 'Em análise', valor: String(items.filter((item) => item.status === 'em_analise').length) },
-        ],
-      },
-    ],
-  };
+  return { items, resumoCards: [{ id: 'documentos-alerta', titulo: 'Governança documental', descricao: 'Documentos críticos da obra para conformidade, segurança e liberação operacional.', itens: [{ label: 'Vigentes', valor: String(items.filter((item) => item.status === 'vigente').length) }, { label: 'A vencer', valor: String(items.filter((item) => item.status === 'a_vencer').length), destaque: true }, { label: 'Em análise', valor: String(items.filter((item) => item.status === 'em_analise').length) }] }] };
 }

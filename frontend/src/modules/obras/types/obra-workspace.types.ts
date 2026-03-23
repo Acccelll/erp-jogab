@@ -1,3 +1,5 @@
+import type { AlocacaoResumo } from '@/shared/types';
+
 export interface ObraCronogramaItem {
   id: string;
   etapa: string;
@@ -8,14 +10,7 @@ export interface ObraCronogramaItem {
   status: 'em_dia' | 'atencao' | 'atrasada' | 'concluida';
 }
 
-export interface ObraEquipeItem {
-  id: string;
-  nome: string;
-  funcao: string;
-  equipe: string;
-  status: 'alocado' | 'ferias' | 'desmobilizando';
-  jornada: string;
-}
+export type ObraEquipeItem = AlocacaoResumo;
 
 export interface ObraComprasItem {
   id: string;
