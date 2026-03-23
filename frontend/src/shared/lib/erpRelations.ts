@@ -37,15 +37,3 @@ export function getAlocacoesByFuncionarioId(funcionarioId: string) {
 export function getCentroCustoById(centroCustoId: string | null | undefined) {
   return centroCustoId ? mockCentrosCusto.find((centro) => centro.id === centroCustoId) ?? null : null;
 }
-
-export function getCentrosCustoByObraId(obraId: string) {
-  return mockCentrosCusto.filter((centro) => centro.obraId === obraId);
-}
-
-export function getAlocacoesAtivasByObraId(obraId: string) {
-  return getAlocacoesByObraId(obraId).filter((alocacao) => alocacao.status === 'ativa');
-}
-
-export function getAlocacaoAtivaByFuncionarioId(funcionarioId: string) {
-  return getAlocacoesByFuncionarioId(funcionarioId).find((alocacao) => alocacao.status === 'ativa') ?? null;
-}
