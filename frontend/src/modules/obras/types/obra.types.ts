@@ -1,3 +1,4 @@
+import type { ApiListResponse } from '@/shared/types';
 import type { ObraFormData } from './obra.schema';
 
 /**
@@ -109,11 +110,7 @@ export interface ObraResumoItem {
 }
 
 /** Contrato de resposta para listagem de obras. */
-export interface ObrasListResponse {
-  data: ObraListItem[];
-  kpis: ObrasKpis;
-  total: number;
-}
+export type ObrasListResponse = ApiListResponse<ObraListItem, ObrasKpis>;
 
 /** Contrato de resposta para detalhe de obra/workspace. */
 export interface ObraDetailResponse {
@@ -128,6 +125,13 @@ export type ObraCreatePayload = ObraFormData;
 /** Payload esperado para edição parcial de obra. */
 export interface ObraUpdatePayload extends Partial<ObraFormData> {
   id: string;
+}
+
+
+/** Resposta de sucesso para mutações de obra. */
+export interface ObraMutationResponse {
+  message: string;
+  obra: Obra;
 }
 
 /** Labels para status de obra */

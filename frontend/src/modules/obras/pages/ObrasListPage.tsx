@@ -8,13 +8,16 @@
  */
 import { Plus } from 'lucide-react';
 import { PageHeader, MainContent, EmptyState } from '@/shared/components';
+import { useDrawerStore } from '@/shared/stores';
 import { ObraKpiBar } from '../components/ObraKpiBar';
 import { ObraFilters } from '../components/ObraFilters';
 import { ObraCard } from '../components/ObraCard';
+import { ObraMutationDrawerForm } from '../components/ObraMutationDrawerForm';
 import { useObras } from '../hooks/useObras';
 import { useObraFilters } from '../hooks/useObraFilters';
 
 export function ObrasListPage() {
+  const openDrawer = useDrawerStore((state) => state.openDrawer);
   const {
     filters,
     setSearch,
@@ -26,15 +29,31 @@ export function ObrasListPage() {
 
   const { data, isLoading, isError } = useObras(filters);
 
+  const openCreateDrawer = () => {
+    openDrawer({
+      title: 'Nova obra',
+      content: <ObraMutationDrawerForm />,
+      width: '720px',
+    });
+  };
+
+  const openEditDrawer = (obraId: string) => {
+    openDrawer({
+      title: 'Editar obra',
+      content: <ObraMutationDrawerForm obraId={obraId} />,
+      width: '720px',
+    });
+  };
+
   return (
     <div className="flex flex-1 flex-col">
-      {/* 1. PageHeader */}
       <PageHeader
         title="Obras"
         subtitle="Gestão de obras e projetos — núcleo central do ERP"
         actions={
           <button
             type="button"
+            onClick={openCreateDrawer}
             className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-600"
           >
             <Plus size={16} />
@@ -43,7 +62,6 @@ export function ObrasListPage() {
         }
       />
 
-      {/* 2. FilterBar */}
       <ObraFilters
         search={filters.search ?? ''}
         status={filters.status}
@@ -55,12 +73,9 @@ export function ObrasListPage() {
         hasActiveFilters={hasActiveFilters}
       />
 
-      {/* 3. KPISection */}
       {data?.kpis && <ObraKpiBar kpis={data.kpis} />}
 
-      {/* 4. MainContent */}
       <MainContent>
-        {/* Loading state */}
         {isLoading && (
           <div className="flex flex-1 items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3">
@@ -70,7 +85,6 @@ export function ObrasListPage() {
           </div>
         )}
 
-        {/* Error state */}
         {isError && (
           <EmptyState
             title="Erro ao carregar obras"
@@ -87,7 +101,6 @@ export function ObrasListPage() {
           />
         )}
 
-        {/* Empty state */}
         {!isLoading && !isError && data?.data.length === 0 && (
           <EmptyState
             title="Nenhuma obra encontrada"
@@ -108,6 +121,7 @@ export function ObrasListPage() {
               ) : (
                 <button
                   type="button"
+                  onClick={openCreateDrawer}
                   className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
                 >
                   <Plus size={16} />
@@ -118,11 +132,10 @@ export function ObrasListPage() {
           />
         )}
 
-        {/* Obras grid */}
         {!isLoading && !isError && data && data.data.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {data.data.map((obra) => (
-              <ObraCard key={obra.id} obra={obra} />
+              <ObraCard key={obra.id} obra={obra} onEdit={openEditDrawer} />
             ))}
           </div>
         )}

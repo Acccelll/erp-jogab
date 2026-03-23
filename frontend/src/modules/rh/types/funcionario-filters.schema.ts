@@ -10,6 +10,7 @@ export const funcionarioFiltersSchema = z.object({
   tipoContrato: tipoContratoSchema.optional(),
   filialId: z.string().optional(),
   obraId: z.string().optional(),
+  centroCustoId: z.string().optional(),
   departamento: z.string().optional(),
 });
 
@@ -22,5 +23,6 @@ export const defaultFuncionarioFilters: FuncionarioFiltersData = {
   tipoContrato: undefined,
   filialId: undefined,
   obraId: undefined,
+  centroCustoId: undefined,
   departamento: undefined,
 };
