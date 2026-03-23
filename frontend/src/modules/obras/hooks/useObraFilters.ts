@@ -3,7 +3,7 @@
  * Integra com o filtersStore global.
  */
 import { useCallback, useMemo } from 'react';
-import { useFiltersStore } from '@/shared/stores';
+import { useContextStore, useFiltersStore } from '@/shared/stores';
 import { defaultObraFilters } from '../types';
 import type { ObraFiltersData, ObraStatus, ObraTipo } from '../types';
 
@@ -11,7 +11,7 @@ const MODULE_KEY = 'obras';
 
 export function useObraFilters() {
   const { getModuleFilters, setFilter, clearModuleFilters } = useFiltersStore();
-
+  const { filialId: contextFilialId } = useContextStore();
   const raw = getModuleFilters(MODULE_KEY);
 
   const filters: ObraFiltersData = useMemo(
@@ -19,10 +19,10 @@ export function useObraFilters() {
       search: (raw.search as string) ?? defaultObraFilters.search,
       status: (raw.status as ObraStatus) ?? defaultObraFilters.status,
       tipo: (raw.tipo as ObraTipo) ?? defaultObraFilters.tipo,
-      filialId: (raw.filialId as string) ?? defaultObraFilters.filialId,
+      filialId: (raw.filialId as string) ?? contextFilialId ?? defaultObraFilters.filialId,
       responsavelId: (raw.responsavelId as string) ?? defaultObraFilters.responsavelId,
     }),
-    [raw],
+    [contextFilialId, raw],
   );
 
   const setSearch = useCallback(
@@ -50,7 +50,12 @@ export function useObraFilters() {
     [clearModuleFilters],
   );
 
-  const hasActiveFilters = !!(filters.search || filters.status || filters.tipo || filters.filialId);
+  const hasActiveFilters = !!(
+    filters.search ||
+    filters.status ||
+    filters.tipo ||
+    (filters.filialId && filters.filialId !== contextFilialId)
+  );
 
   return {
     filters,
