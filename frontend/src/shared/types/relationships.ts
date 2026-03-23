@@ -32,3 +32,37 @@ export interface ApiListResponse<TData, TKpis> {
   kpis: TKpis;
   total: number;
 }
+
+export interface AlocacaoCreatePayload {
+  funcionarioId: string;
+  obraId: string;
+  centroCustoId: string;
+  funcao: string;
+  equipe: string;
+  jornada: string;
+  percentual: number;
+  departamento: string;
+  periodoInicio: string;
+  periodoFim?: string;
+  status?: AlocacaoStatus;
+}
+
+export interface AlocacaoUpdatePayload {
+  id: string;
+  funcionarioId: string;
+  obraId: string;
+  centroCustoId: string;
+  funcao: string;
+  equipe: string;
+  jornada: string;
+  percentual: number;
+  departamento: string;
+  periodoInicio: string;
+  periodoFim?: string;
+  status?: AlocacaoStatus;
+}
+
+export interface AlocacaoMutationResponse {
+  message: string;
+  alocacao: AlocacaoResumo;
+}

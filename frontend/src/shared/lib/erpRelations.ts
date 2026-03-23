@@ -1,4 +1,4 @@
-import type { AlocacaoResumo, CentroCustoResumo } from '@/shared/types';
+import type { AlocacaoCreatePayload, AlocacaoMutationResponse, AlocacaoResumo, AlocacaoUpdatePayload, CentroCustoResumo } from '@/shared/types';
 
 export const mockCentrosCusto: CentroCustoResumo[] = [
   { id: 'cc-1', codigo: 'CC-AUR-ENG', nome: 'Obra Aurora — Engenharia', obraId: 'obra-1', obraNome: 'Edifício Aurora', filialId: 'fil-1' },
@@ -46,4 +46,127 @@ export function getCentroCustoById(centroCustoId: string | null | undefined) {
 /** Retorna todos os centros de custo vinculados a uma obra. Retorna [] se nenhum encontrado. */
 export function getCentrosCustoByObraId(obraId: string) {
   return mockCentrosCusto.filter((centro) => centro.obraId === obraId);
+}
+
+/** Retorna alocação por ID, ou null se não encontrada. */
+export function getAlocacaoById(id: string): AlocacaoResumo | null {
+  return mockAlocacoes.find((a) => a.id === id) ?? null;
+}
+
+/** Retorna todas as alocações ativas vinculadas a uma obra. */
+export function getAlocacoesAtivasByObraId(obraId: string): AlocacaoResumo[] {
+  return mockAlocacoes.filter((a) => a.obraId === obraId && a.status === 'ativa');
+}
+
+/** Retorna todas as alocações ativas do funcionário. */
+export function getAlocacoesAtivasByFuncionarioId(funcionarioId: string): AlocacaoResumo[] {
+  return mockAlocacoes.filter((a) => a.funcionarioId === funcionarioId && a.status === 'ativa');
+}
+
+let _nextAloId = 100;
+
+/** Cria uma nova alocação no mock e retorna a resposta de mutação. */
+export function createAlocacao(payload: AlocacaoCreatePayload & { funcionarioNome: string; obraNome: string; centroCustoNome: string }): AlocacaoMutationResponse {
+  const alocacao: AlocacaoResumo = {
+    id: `alo-${++_nextAloId}`,
+    funcionarioId: payload.funcionarioId,
+    funcionarioNome: payload.funcionarioNome,
+    obraId: payload.obraId,
+    obraNome: payload.obraNome,
+    centroCustoId: payload.centroCustoId,
+    centroCustoNome: payload.centroCustoNome,
+    funcao: payload.funcao,
+    equipe: payload.equipe,
+    jornada: payload.jornada,
+    percentual: payload.percentual,
+    departamento: payload.departamento,
+    periodoInicio: payload.periodoInicio,
+    periodoFim: payload.periodoFim,
+    status: payload.status ?? 'ativa',
+  };
+  mockAlocacoes.push(alocacao);
+  return { message: 'Alocação criada com sucesso.', alocacao };
+}
+
+/** Atualiza uma alocação existente no mock. */
+export function updateAlocacao(payload: AlocacaoUpdatePayload & { funcionarioNome: string; obraNome: string; centroCustoNome: string }): AlocacaoMutationResponse {
+  const index = mockAlocacoes.findIndex((a) => a.id === payload.id);
+  if (index === -1) throw new Error('Alocação não encontrada para atualização.');
+  const alocacao: AlocacaoResumo = {
+    ...mockAlocacoes[index],
+    funcionarioId: payload.funcionarioId,
+    funcionarioNome: payload.funcionarioNome,
+    obraId: payload.obraId,
+    obraNome: payload.obraNome,
+    centroCustoId: payload.centroCustoId,
+    centroCustoNome: payload.centroCustoNome,
+    funcao: payload.funcao,
+    equipe: payload.equipe,
+    jornada: payload.jornada,
+    percentual: payload.percentual,
+    departamento: payload.departamento,
+    periodoInicio: payload.periodoInicio,
+    periodoFim: payload.periodoFim,
+    status: payload.status ?? mockAlocacoes[index].status,
+  };
+  mockAlocacoes[index] = alocacao;
+  return { message: 'Alocação atualizada com sucesso.', alocacao };
+}
+
+/** Encerra uma alocação pelo ID. */
+export function encerrarAlocacao(id: string): AlocacaoMutationResponse {
+  const index = mockAlocacoes.findIndex((a) => a.id === id);
+  if (index === -1) throw new Error('Alocação não encontrada para encerramento.');
+  mockAlocacoes[index] = { ...mockAlocacoes[index], status: 'encerrada' };
+  return { message: 'Alocação encerrada com sucesso.', alocacao: mockAlocacoes[index] };
+}
+
+/** Remove alocações ativas do funcionário (limpa vínculo atual). */
+export function clearFuncionarioAlocacaoAtiva(funcionarioId: string): void {
+  for (let i = 0; i < mockAlocacoes.length; i++) {
+    if (mockAlocacoes[i].funcionarioId === funcionarioId && mockAlocacoes[i].status === 'ativa') {
+      mockAlocacoes[i] = { ...mockAlocacoes[i], status: 'encerrada' };
+    }
+  }
+}
+
+/** Cria ou atualiza a alocação ativa de um funcionário. */
+export function upsertFuncionarioAlocacaoAtiva(payload: {
+  funcionarioId: string;
+  funcionarioNome: string;
+  obraId: string;
+  obraNome: string;
+  centroCustoId: string;
+  centroCustoNome: string;
+  funcao: string;
+  departamento: string;
+}): void {
+  const existing = mockAlocacoes.find((a) => a.funcionarioId === payload.funcionarioId && a.status === 'ativa');
+  if (existing) {
+    Object.assign(existing, {
+      obraId: payload.obraId,
+      obraNome: payload.obraNome,
+      centroCustoId: payload.centroCustoId,
+      centroCustoNome: payload.centroCustoNome,
+      funcao: payload.funcao,
+      departamento: payload.departamento,
+    });
+  } else {
+    mockAlocacoes.push({
+      id: `alo-${++_nextAloId}`,
+      funcionarioId: payload.funcionarioId,
+      funcionarioNome: payload.funcionarioNome,
+      obraId: payload.obraId,
+      obraNome: payload.obraNome,
+      centroCustoId: payload.centroCustoId,
+      centroCustoNome: payload.centroCustoNome,
+      funcao: payload.funcao,
+      equipe: 'Campo',
+      jornada: '44h semanais',
+      percentual: 100,
+      departamento: payload.departamento,
+      periodoInicio: new Date().toISOString().slice(0, 10),
+      status: 'ativa',
+    });
+  }
 }

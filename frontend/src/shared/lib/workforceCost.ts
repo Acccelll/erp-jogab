@@ -173,3 +173,69 @@ export function getObraLaborCostSnapshot(obraId: string, competencia = '2026-03'
     custoTotalPessoal: (obraFolha?.valorPrevisto ?? 0) + horasExtrasIntegradas.reduce((acc, item) => acc + item.valorCalculado, 0),
   };
 }
+
+export function buildWorkforceFinancialSummary(competencia: string) {
+  const fopag = buildFopagCompetenciaSnapshot(competencia);
+  const horasExtras = getHorasExtrasElegiveisFopag(competencia);
+  const horasIntegradas = getHorasExtrasIntegradasFopag(competencia);
+
+  const porObra = fopag.obras.map((obra) => {
+    const heObra = horasExtras.filter((h) => h.obraId === obra.obraId);
+    const heIntegradas = horasIntegradas.filter((h) => h.obraId === obra.obraId);
+    const centrosCusto = new Set(heObra.map((h) => h.centroCustoId));
+    const valorHorasExtrasPrevisto = heObra.reduce((acc, h) => acc + h.valorCalculado, 0);
+    const valorHorasExtrasRealizado = heIntegradas.reduce((acc, h) => acc + h.valorCalculado, 0);
+    return {
+      obraId: obra.obraId,
+      obraNome: obra.obraNome,
+      totalFuncionarios: obra.totalFuncionarios,
+      totalCentrosCusto: centrosCusto.size || 1,
+      valorFopagPrevisto: obra.valorPrevisto,
+      valorFopagRealizado: obra.valorRealizado,
+      valorHorasExtrasPrevisto,
+      valorHorasExtrasRealizado,
+      valorPrevisto: obra.valorPrevisto + valorHorasExtrasPrevisto,
+      valorRealizado: obra.valorRealizado + valorHorasExtrasRealizado,
+      valorHorasExtras: valorHorasExtrasRealizado,
+      percentualParticipacao: obra.percentualParticipacao,
+    };
+  });
+
+  const porCentroCusto = fopag.rateios.map((rateio, index) => ({
+    centroCustoId: `cc-rateio-${index + 1}`,
+    centroCustoNome: rateio.centroCustoNome,
+    obraNome: rateio.obraNome,
+    totalFuncionarios: fopag.funcionarios.filter((f) => f.obraPrincipalNome === rateio.obraNome).length,
+    valorPrevisto: rateio.valorPrevisto,
+    valorRealizado: Math.round(rateio.valorPrevisto * 0.975 * 100) / 100,
+  }));
+
+  const valorFopagPrevisto = fopag.meta.valorPrevisto;
+  const valorFopagRealizado = fopag.meta.valorRealizado;
+  const valorHorasExtrasPrevisto = horasExtras.reduce((acc, h) => acc + h.valorCalculado, 0);
+  const valorHorasExtrasRealizado = horasIntegradas.reduce((acc, h) => acc + h.valorCalculado, 0);
+  const valorPrevisto = valorFopagPrevisto + valorHorasExtrasPrevisto;
+  const valorRealizado = valorFopagRealizado + valorHorasExtrasRealizado;
+
+  return {
+    competencia,
+    totalFuncionarios: fopag.meta.totalFuncionarios,
+    totalObras: fopag.meta.totalObras,
+    totalCentrosCusto: porCentroCusto.length,
+    valorFopagPrevisto,
+    valorFopagRealizado,
+    valorHorasExtrasPrevisto,
+    valorHorasExtrasRealizado,
+    valorPrevisto,
+    valorRealizado,
+    variacao: valorPrevisto - valorRealizado,
+    statusFechamento: horasIntegradas.length > 0 ? 'fechada' : 'aberta',
+    origemHorasExtras: {
+      totalLancamentos: horasExtras.length,
+      totalLancamentosElegiveis: horasExtras.length,
+      totalLancamentosIntegrados: horasIntegradas.length,
+    },
+    porObra,
+    porCentroCusto,
+  };
+}

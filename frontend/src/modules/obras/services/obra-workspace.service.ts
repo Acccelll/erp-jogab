@@ -4,7 +4,6 @@ import {
   getContratosWorkspace,
   getCronogramaWorkspace,
   getDocumentosWorkspace,
-  getEquipeWorkspace,
   getEstoqueWorkspace,
   getFinanceiroWorkspace,
   getMedicoesWorkspace,
@@ -29,6 +28,8 @@ export async function fetchObraEquipe(obraId: string) {
   return fetchObraAlocacoesWorkspace(obraId);
 }
 
+export const fetchObraRh = fetchObraEquipe;
+
 export async function fetchObraCompras(obraId: string) {
   await delay();
   return getComprasWorkspace(obraId);
@@ -52,21 +53,6 @@ export async function fetchObraMedicoes(obraId: string) {
 export async function fetchObraDocumentos(obraId: string) {
   await delay();
   return getDocumentosWorkspace(obraId);
-}
-
-export async function fetchObraContratos(obraId: string) {
-  await delay();
-  return getContratosWorkspace(obraId);
-}
-
-export async function fetchObraEstoque(obraId: string) {
-  await delay();
-  return getEstoqueWorkspace(obraId);
-}
-
-export async function fetchObraMedicoes(obraId: string) {
-  await delay();
-  return getMedicoesWorkspace(obraId);
 }
 
 export async function fetchObraRiscos(obraId: string) {
