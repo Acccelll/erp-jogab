@@ -4,15 +4,7 @@
  * Usa a camada HTTP compartilhada com fallback controlado para mocks locais.
  * Quando a API estiver estável, basta desligar o fallback por configuração.
  */
-import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
-import {
-  clearFuncionarioAlocacaoAtiva,
-  getAlocacaoAtivaByFuncionarioId,
-  getAlocacoesByFuncionarioId,
-  getCentroCustoById,
-  upsertFuncionarioAlocacaoAtiva,
-} from '@/shared/lib/erpRelations';
-import { mockObras } from '@/modules/obras/data/obras.mock';
+import { getAlocacaoAtivaByFuncionarioId, getAlocacoesByFuncionarioId } from '@/shared/lib/erpRelations';
 import type {
   Funcionario,
   FuncionarioCreatePayload,
@@ -153,7 +145,7 @@ export function getFuncionarioFormReferenceData() {
   };
 }
 
-async function fetchFuncionariosMock(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
+export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
   await delay();
 
   let resultado = [...mockFuncionarios];
@@ -202,19 +194,31 @@ async function fetchFuncionariosMock(filters?: FuncionarioFiltersData): Promise<
   return { data, kpis, total: data.length };
 }
 
-async function fetchFuncionarioByIdMock(funcId: string): Promise<Funcionario | null> {
+export async function fetchFuncionarioById(funcId: string): Promise<Funcionario | null> {
   await delay(200);
   return mockFuncionarios.find((f) => f.id === funcId) ?? null;
 }
 
-async function fetchFuncionarioResumoBlocosMock(funcId: string): Promise<FuncionarioResumoBloco[]> {
+export async function fetchFuncionarioResumoBlocos(funcId: string): Promise<FuncionarioResumoBloco[]> {
   await delay(200);
   const func = mockFuncionarios.find((f) => f.id === funcId);
   if (!func) return [];
   return gerarFuncionarioResumoBlocos(func);
 }
 
-async function createFuncionarioMock(payload: FuncionarioCreatePayload): Promise<FuncionarioMutationResponse> {
+export async function fetchFuncionarioDetail(funcId: string): Promise<FuncionarioDetailResponse> {
+  const [funcionario, resumoBlocos] = await Promise.all([
+    fetchFuncionarioById(funcId),
+    fetchFuncionarioResumoBlocos(funcId),
+  ]);
+
+  return {
+    message: 'Funcionário criado com sucesso.',
+    funcionario,
+  };
+}
+
+export async function createFuncionario(payload: FuncionarioCreatePayload): Promise<FuncionarioMutationResponse> {
   await delay(250);
   validateFuncionarioPayload(payload);
 
@@ -258,7 +262,7 @@ async function createFuncionarioMock(payload: FuncionarioCreatePayload): Promise
   };
 }
 
-async function updateFuncionarioMock(payload: FuncionarioUpdatePayload): Promise<FuncionarioMutationResponse> {
+export async function updateFuncionario(payload: FuncionarioUpdatePayload): Promise<FuncionarioMutationResponse> {
   await delay(250);
   const funcionario = mockFuncionarios.find((item) => item.id === payload.id);
 
@@ -288,74 +292,4 @@ async function updateFuncionarioMock(payload: FuncionarioUpdatePayload): Promise
     message: 'Funcionário atualizado com sucesso.',
     funcionario,
   };
-}
-
-export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
-  return withApiFallback(
-    async () => {
-      const response = await api.get(RH_API_ENDPOINTS.list, { params: filters });
-      return unwrapApiResponse<FuncionariosListResponse>(response.data);
-    },
-    () => fetchFuncionariosMock(filters),
-  );
-}
-
-export async function fetchFuncionarioById(funcId: string): Promise<Funcionario | null> {
-  return withApiFallback(
-    async () => {
-      const response = await api.get(RH_API_ENDPOINTS.detail(funcId));
-      return unwrapApiResponse<Funcionario | null>(response.data);
-    },
-    () => fetchFuncionarioByIdMock(funcId),
-  );
-}
-
-export async function fetchFuncionarioResumoBlocos(funcId: string): Promise<FuncionarioResumoBloco[]> {
-  return withApiFallback(
-    async () => {
-      const response = await api.get(`${RH_API_ENDPOINTS.detail(funcId)}/resumo`);
-      return unwrapApiResponse<FuncionarioResumoBloco[]>(response.data);
-    },
-    () => fetchFuncionarioResumoBlocosMock(funcId),
-  );
-}
-
-export async function fetchFuncionarioDetail(funcId: string): Promise<FuncionarioDetailResponse> {
-  return withApiFallback(
-    async () => {
-      const response = await api.get(RH_API_ENDPOINTS.detail(funcId));
-      return unwrapApiResponse<FuncionarioDetailResponse>(response.data);
-    },
-    async () => {
-      const [funcionario, resumoBlocos] = await Promise.all([
-        fetchFuncionarioByIdMock(funcId),
-        fetchFuncionarioResumoBlocosMock(funcId),
-      ]);
-
-      return {
-        funcionario,
-        resumoBlocos,
-      };
-    },
-  );
-}
-
-export async function createFuncionario(payload: FuncionarioCreatePayload): Promise<FuncionarioMutationResponse> {
-  return withApiFallback(
-    async () => {
-      const response = await api.post(RH_API_ENDPOINTS.create, payload);
-      return unwrapApiResponse<FuncionarioMutationResponse>(response.data);
-    },
-    () => createFuncionarioMock(payload),
-  );
-}
-
-export async function updateFuncionario(payload: FuncionarioUpdatePayload): Promise<FuncionarioMutationResponse> {
-  return withApiFallback(
-    async () => {
-      const response = await api.put(RH_API_ENDPOINTS.update(payload.id), payload);
-      return unwrapApiResponse<FuncionarioMutationResponse>(response.data);
-    },
-    () => updateFuncionarioMock(payload),
-  );
 }
