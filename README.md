@@ -35,3 +35,44 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 10. Estoque
 11. Medições
 12. Documentos, relatórios e administração
+
+---
+
+## Testes automatizados
+
+### Infraestrutura
+- **Framework:** Vitest + Testing Library (React) + jsdom
+- **Config:** `frontend/vitest.config.ts`
+- **Setup:** `frontend/src/test/setup.ts`
+
+### Fluxos cobertos
+
+| Área | Arquivo de teste | Cenários |
+|------|-----------------|----------|
+| HTTP Client (`shared/lib/api.ts`) | `src/shared/lib/api.test.ts` | unwrapApiResponse (envelope/raw/primitivo), normalizeApiError (JSON, HTML/não-JSON, rede, genérico), shouldFallbackToMock (rede, status 404-504, 400, não-Axios), withApiFallback (sucesso, fallback rede, fallback 502/Vercel, erro 400/500) |
+| Dashboard | `src/modules/dashboard/pages/DashboardPage.test.tsx` | loading, erro com retry, dados com KPIs e seções, ação de refresh |
+| Relatórios | `src/modules/relatorios/pages/RelatoriosListPage.test.tsx` | loading, erro com retry, dados com resumo/categorias/tabela, estado vazio com filtros ativos |
+| Logs de Auditoria | `src/modules/admin/pages/AdminLogsPage.test.tsx` | loading, erro com retry, dados com tabela e preview cards, guarda para data undefined |
+
+**Total: 4 arquivos, 34 testes**
+
+### Checklist de validação local
+
+```bash
+cd frontend
+npm install
+npm run test          # Roda todos os testes (Vitest)
+npm run test:watch    # Modo watch durante desenvolvimento
+npm run build         # TypeScript + Vite build
+npm run lint          # ESLint
+```
+
+### Gaps de cobertura restantes
+
+- **Backend:** Repositório atualmente sem diretório backend — testes de integração de API (logs-auditoria, relatórios, comercial/fiscal) dependem da implementação do backend.
+- **Páginas de módulo:** Obras, RH, Financeiro, Fiscal, Compras, Estoque, Medições, FOPAG, Horas Extras ainda sem testes de página.
+- **Hooks e services:** Hooks de TanStack Query e services de cada módulo ainda sem testes unitários isolados.
+- **Fluxo comercial/fiscal:** Conversão orçamento→pedido→ordem→nota fiscal→estoque requer backend para teste de integração end-to-end.
+- **Componentes compartilhados:** PageHeader, EmptyState, KPISection, FilterBar, StatusBadge ainda sem testes unitários.
+- **Stores Zustand:** authStore, contextStore, filtersStore, drawerStore sem testes unitários.
+- **Validação Zod:** Schemas de filtro e domínio (obras, RH, admin, relatórios) sem testes de validação.
