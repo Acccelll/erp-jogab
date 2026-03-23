@@ -1,6 +1,6 @@
 import type { FopagCompetenciaDetalhe, FopagCompetenciaListItem, FopagCompetenciasKpis } from '../types';
 import type { FopagFiltersData } from '../types';
-import { calcularFopagCompetenciasKpis, mockFopagCompetencias, mockFopagDetalhes } from '../data/fopag.mock';
+import { calcularFopagCompetenciasKpis, getFopagCompetenciaDetalheMock, getFopagCompetenciasMock } from '../data/fopag.mock';
 
 function delay(ms = 250): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -27,11 +27,11 @@ function applyFilters(items: FopagCompetenciaListItem[], filters?: FopagFiltersD
 
 export async function fetchFopagCompetencias(filters?: FopagFiltersData): Promise<{ data: FopagCompetenciaListItem[]; kpis: FopagCompetenciasKpis }> {
   await delay();
-  const filtered = applyFilters(mockFopagCompetencias, filters);
+  const filtered = applyFilters(getFopagCompetenciasMock(), filters);
   return { data: filtered, kpis: calcularFopagCompetenciasKpis(filtered) };
 }
 
 export async function fetchFopagCompetenciaDetails(competenciaId: string): Promise<FopagCompetenciaDetalhe | null> {
   await delay(180);
-  return mockFopagDetalhes[competenciaId] ?? null;
+  return getFopagCompetenciaDetalheMock(competenciaId);
 }
