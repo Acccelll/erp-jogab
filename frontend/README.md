@@ -142,9 +142,17 @@ npm run format:check # Verificar formatação
 ## Testes
 
 - **Framework:** Vitest + Testing Library + jsdom
-- **Total:** 10 arquivos, 128 testes
+- **Total:** 36 arquivos, 384 testes
 - **Padrão:** testes co-localizados com o código (`*.test.ts` / `*.test.tsx`)
-- **Cobertura:** cliente HTTP, normalização de services, páginas de lista (loading/erro/dados/vazio)
+- **Cobertura:**
+  - Cliente HTTP (api.ts)
+  - Normalização de services (14 módulos)
+  - Páginas de lista (loading/erro/dados/vazio)
+  - Componentes compartilhados (EmptyState, PageHeader, KPISection, KPICard, StatusBadge, FilterBar)
+  - Stores Zustand (contextStore, authStore/drawerStore, filtersStore, notificationStore, uiStore)
+  - Schemas Zod (enums, formulários, filtros dos módulos Obras, RH, Compras, FOPAG)
+  - Hooks TanStack Query (Dashboard, Obras, RH, FOPAG, Compras, Horas Extras)
+  - Utilitários compartilhados (cn, formatCompetencia, formatCurrency)
 
 ## Deploy
 
