@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
 import { formatCurrency } from '@/shared/lib/utils';
 import { useObraMedicoes } from '../hooks';
+import type { ObraMedicaoItem, ObraWorkspaceResumoCard as ResumoCardData } from '../types';
 import {
   ObraWorkspaceFilters,
   ObraWorkspaceResumoCard,
@@ -25,7 +26,7 @@ export function ObraMedicoesPage() {
 
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
-    return items.filter((item) => {
+    return items.filter((item: ObraMedicaoItem) => {
       const matchesSearch =
         !search.trim() ||
         `${item.codigo} ${item.descricao} ${item.responsavel}`.toLowerCase().includes(search.trim().toLowerCase());
@@ -82,7 +83,7 @@ export function ObraMedicoesPage() {
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-3">
-              {data.resumoCards.map((card) => (
+              {data.resumoCards.map((card: ResumoCardData) => (
                 <ObraWorkspaceResumoCard key={card.id} card={card} />
               ))}
             </section>
@@ -99,7 +100,7 @@ export function ObraMedicoesPage() {
             ) : (
               <ObraWorkspaceTable
                 columns={['Código', 'Descrição', 'Competência', 'Percentual medido', 'Valor', 'Responsável', 'Status']}
-                rows={filtered.map((item) => [
+                rows={filtered.map((item: ObraMedicaoItem) => [
                   item.codigo,
                   item.descricao,
                   item.competencia,

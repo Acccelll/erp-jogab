@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
 import { formatCurrency } from '@/shared/lib/utils';
 import { useObraContratos } from '../hooks';
+import type { ObraContratoItem, ObraWorkspaceResumoCard as ResumoCardData } from '../types';
 import {
   ObraWorkspaceFilters,
   ObraWorkspaceResumoCard,
@@ -31,7 +32,7 @@ export function ObraContratosPage() {
 
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
-    return items.filter((item) => {
+    return items.filter((item: ObraContratoItem) => {
       const matchesSearch =
         !search.trim() ||
         `${item.codigo} ${item.objeto} ${item.contratado}`.toLowerCase().includes(search.trim().toLowerCase());
@@ -88,7 +89,7 @@ export function ObraContratosPage() {
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-3">
-              {data.resumoCards.map((card) => (
+              {data.resumoCards.map((card: ResumoCardData) => (
                 <ObraWorkspaceResumoCard key={card.id} card={card} />
               ))}
             </section>
@@ -105,7 +106,7 @@ export function ObraContratosPage() {
             ) : (
               <ObraWorkspaceTable
                 columns={['Código', 'Objeto', 'Contratado', 'Tipo', 'Valor contratado', 'Vigência', 'Status']}
-                rows={filtered.map((item) => [
+                rows={filtered.map((item: ObraContratoItem) => [
                   item.codigo,
                   item.objeto,
                   item.contratado,

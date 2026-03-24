@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
 import { useObraRiscos } from '../hooks';
+import type { ObraRiscoItem, ObraWorkspaceResumoCard as ResumoCardData } from '../types';
 import {
   ObraWorkspaceFilters,
   ObraWorkspaceResumoCard,
@@ -36,7 +37,7 @@ export function ObraRiscosPage() {
 
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
-    return items.filter((item) => {
+    return items.filter((item: ObraRiscoItem) => {
       const matchesSearch =
         !search.trim() ||
         `${item.codigo} ${item.titulo} ${item.categoria} ${item.responsavel}`.toLowerCase().includes(search.trim().toLowerCase());
@@ -93,7 +94,7 @@ export function ObraRiscosPage() {
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-3">
-              {data.resumoCards.map((card) => (
+              {data.resumoCards.map((card: ResumoCardData) => (
                 <ObraWorkspaceResumoCard key={card.id} card={card} />
               ))}
             </section>
@@ -110,7 +111,7 @@ export function ObraRiscosPage() {
             ) : (
               <ObraWorkspaceTable
                 columns={['Código', 'Título', 'Categoria', 'Probabilidade', 'Impacto', 'Responsável', 'Status']}
-                rows={filtered.map((item) => [
+                rows={filtered.map((item: ObraRiscoItem) => [
                   item.codigo,
                   item.titulo,
                   item.categoria,

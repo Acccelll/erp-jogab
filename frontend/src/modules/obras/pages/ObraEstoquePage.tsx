@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
 import { useObraEstoque } from '../hooks';
+import type { ObraEstoqueItem, ObraWorkspaceResumoCard as ResumoCardData } from '../types';
 import {
   ObraWorkspaceFilters,
   ObraWorkspaceResumoCard,
@@ -23,7 +24,7 @@ export function ObraEstoquePage() {
 
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
-    return items.filter((item) => {
+    return items.filter((item: ObraEstoqueItem) => {
       const matchesSearch =
         !search.trim() ||
         `${item.codigo} ${item.descricao} ${item.almoxarife}`.toLowerCase().includes(search.trim().toLowerCase());
@@ -80,7 +81,7 @@ export function ObraEstoquePage() {
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-3">
-              {data.resumoCards.map((card) => (
+              {data.resumoCards.map((card: ResumoCardData) => (
                 <ObraWorkspaceResumoCard key={card.id} card={card} />
               ))}
             </section>
@@ -97,7 +98,7 @@ export function ObraEstoquePage() {
             ) : (
               <ObraWorkspaceTable
                 columns={['Código', 'Descrição', 'Unidade', 'Saldo atual', 'Consumo/mês', 'Status', 'Almoxarife']}
-                rows={filtered.map((item) => [
+                rows={filtered.map((item: ObraEstoqueItem) => [
                   item.codigo,
                   item.descricao,
                   item.unidade,
