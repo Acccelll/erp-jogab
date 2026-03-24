@@ -4,30 +4,35 @@ Frontend do ERP JOGAB para gestão integrada de construção civil.
 
 ## Stack Tecnológica
 
-| Tecnologia | Uso |
-|---|---|
-| React 19 | Biblioteca de UI |
-| Vite | Build tool e dev server |
-| TypeScript (strict) | Tipagem estática |
-| React Router v7 | Roteamento SPA |
-| TanStack Query v5 | Cache e gerenciamento de dados da API |
-| Zustand v5 | Estado global (auth, contexto, UI) |
-| Tailwind CSS v4 | Estilização utilitária |
-| shadcn/ui | Componentes base (previsto) |
-| React Hook Form + Zod | Formulários com validação |
-| TanStack Table | Tabelas avançadas |
-| Recharts | Gráficos e KPIs |
-| Axios | Cliente HTTP |
-| Lucide React | Ícones |
+| Tecnologia               | Uso                                   |
+| ------------------------ | ------------------------------------- |
+| React 19                 | Biblioteca de UI                      |
+| Vite                     | Build tool e dev server               |
+| TypeScript (strict)      | Tipagem estática                      |
+| React Router v7          | Roteamento SPA                        |
+| TanStack Query v5        | Cache e gerenciamento de dados da API |
+| Zustand v5               | Estado global (auth, contexto, UI)    |
+| Tailwind CSS v4          | Estilização utilitária                |
+| shadcn/ui                | Componentes base (previsto)           |
+| React Hook Form + Zod    | Formulários com validação             |
+| TanStack Table           | Tabelas avançadas                     |
+| Recharts                 | Gráficos e KPIs                       |
+| Axios                    | Cliente HTTP                          |
+| Lucide React             | Ícones                                |
+| Vitest + Testing Library | Testes automatizados                  |
+| Prettier + ESLint        | Formatação e linting                  |
+| Husky + lint-staged      | Pre-commit hooks                      |
 
 ## Estrutura do Projeto
 
 ```
 src/
-├── app/                    # Aplicação (layouts, router, providers)
+├── app/                    # Aplicação (guards, layouts, pages, router, providers)
+│   ├── guards/             # AuthGuard, PermissionGuard
 │   ├── layouts/            # AppLayout, AuthLayout, ModuleLayout, ObraWorkspaceLayout
+│   ├── pages/              # LoginPage
 │   ├── providers/          # QueryProvider (TanStack Query)
-│   ├── router/             # Definição de rotas
+│   ├── router/             # Definição centralizada de rotas
 │   └── App.tsx             # Entry component
 ├── modules/                # Módulos por domínio
 │   ├── dashboard/          # Dashboard Executivo
@@ -47,30 +52,46 @@ src/
 ├── shared/                 # Código compartilhado
 │   ├── components/         # Componentes reutilizáveis (PageHeader, ContextBar, etc.)
 │   ├── hooks/              # Hooks compartilhados
-│   ├── lib/                # Utilitários (cn, formatCurrency, api)
+│   ├── lib/                # Utilitários (cn, formatCurrency, api, auth, etc.)
 │   ├── stores/             # Zustand stores globais
 │   └── types/              # Tipos TypeScript compartilhados
+├── test/                   # Setup de testes (Vitest)
 └── assets/                 # Imagens e ícones estáticos
+```
+
+Cada módulo segue a estrutura:
+
+```
+modules/<dominio>/
+├── components/       # Componentes específicos do domínio
+├── data/             # Mock data
+├── hooks/            # TanStack Query hooks e hooks de filtro
+├── pages/            # Páginas do módulo (+ testes)
+├── services/         # Services de fetch (mock, preparados para API real)
+├── types/            # Types e schemas Zod do domínio
+└── index.ts          # Barrel exports
 ```
 
 ## Módulos do ERP
 
-| Módulo | Rota | Fase |
-|---|---|---|
-| Dashboard | `/dashboard` | 3 |
-| Obras | `/obras`, `/obras/:obraId/*` | 3 |
-| RH | `/rh/funcionarios` | 3 |
-| Horas Extras | `/horas-extras` | 4 |
-| FOPAG | `/fopag` | 5 |
-| Compras | `/compras` | 6 |
-| Fiscal | `/fiscal` | 6 |
-| Financeiro | `/financeiro` | 7 |
-| Estoque | `/estoque` | 7 |
-| Medições | `/medicoes` | 7 |
-| Documentos | `/documentos` | 8 |
-| Relatórios | `/relatorios` | 8 |
-| Administração | `/admin` | 8 |
-| Perfil | `/perfil` | 8 |
+| Módulo        | Rota principal               | Status                                                                        |
+| ------------- | ---------------------------- | ----------------------------------------------------------------------------- |
+| Dashboard     | `/dashboard`                 | ✅ Implementado                                                               |
+| Obras         | `/obras`, `/obras/:obraId/*` | ✅ Implementado (11 abas)                                                     |
+| RH            | `/rh/funcionarios`           | ✅ Implementado (10 abas do funcionário)                                      |
+| Horas Extras  | `/horas-extras`              | ✅ Implementado (dashboard, aprovação, fechamento)                            |
+| FOPAG         | `/fopag`                     | ✅ Implementado (7 abas da competência)                                       |
+| Compras       | `/compras`                   | ✅ Implementado (solicitações, cotações, pedidos)                             |
+| Fiscal        | `/fiscal`                    | ✅ Implementado (entradas, saídas, detalhe)                                   |
+| Financeiro    | `/financeiro`                | ✅ Implementado (fluxo, contas, detalhe)                                      |
+| Estoque       | `/estoque`                   | ✅ Implementado (movimentações, detalhe)                                      |
+| Medições      | `/medicoes`                  | ✅ Implementado (lista, detalhe)                                              |
+| Documentos    | `/documentos`                | ✅ Implementado (lista, detalhe)                                              |
+| Relatórios    | `/relatorios`                | ✅ Implementado (lista, por categoria)                                        |
+| Administração | `/admin`                     | ✅ Implementado (usuários, perfis, permissões, parâmetros, logs, integrações) |
+| Perfil        | `/perfil`                    | ✅ Implementado                                                               |
+
+> Rotas completas em `docs/06-arquitetura-de-telas.md`.
 
 ## Conceito Central
 
@@ -80,6 +101,7 @@ Visão Geral, Cronograma, Contratos, Equipe, RH, Compras, Financeiro, Estoque, M
 ## Contexto Global
 
 O sistema mantém um contexto global ativo (persistido) com:
+
 - **Empresa** — empresa selecionada
 - **Filial** — filial da empresa
 - **Obra** — obra ativa (central no ERP)
@@ -87,14 +109,14 @@ O sistema mantém um contexto global ativo (persistido) com:
 
 ## Stores Globais (Zustand)
 
-| Store | Responsabilidade |
-|---|---|
-| `authStore` | Autenticação, usuário e token (persistido) |
-| `contextStore` | Empresa, filial, obra, competência, período, centro de custo (persistido) |
-| `uiStore` | Estado da sidebar (open/collapsed) |
-| `filtersStore` | Filtros por módulo |
-| `notificationStore` | Fila de notificações/toasts |
-| `drawerStore` | Estado do SideDrawer global |
+| Store               | Responsabilidade                                                          |
+| ------------------- | ------------------------------------------------------------------------- |
+| `authStore`         | Autenticação, usuário e token (persistido)                                |
+| `contextStore`      | Empresa, filial, obra, competência, período, centro de custo (persistido) |
+| `uiStore`           | Estado da sidebar (open/collapsed)                                        |
+| `filtersStore`      | Filtros por módulo                                                        |
+| `notificationStore` | Fila de notificações/toasts                                               |
+| `drawerStore`       | Estado do SideDrawer global                                               |
 
 ## Layouts
 
@@ -110,12 +132,29 @@ npm install          # Instalar dependências
 npm run dev          # Servidor de desenvolvimento
 npm run build        # Build de produção (tsc + vite)
 npm run lint         # Linting com ESLint
+npm run test         # Testes com Vitest
+npm run test:watch   # Testes em modo watch
 npm run preview      # Preview do build
+npm run format       # Formatação com Prettier
+npm run format:check # Verificar formatação
 ```
+
+## Testes
+
+- **Framework:** Vitest + Testing Library + jsdom
+- **Total:** 10 arquivos, 128 testes
+- **Padrão:** testes co-localizados com o código (`*.test.ts` / `*.test.tsx`)
+- **Cobertura:** cliente HTTP, normalização de services, páginas de lista (loading/erro/dados/vazio)
+
+## Deploy
+
+- **Vercel:** `vercel.json` com SPA rewrite (exclui `/api/`)
+- **Netlify:** `netlify.toml` como alternativa
 
 ## Padrão de Tela
 
 Cada tela principal segue a composição:
+
 1. `PageHeader` — título, subtítulo, ações
 2. `ContextBar` — selects de empresa/filial/obra/competência
 3. `FilterBar` — filtros específicos do módulo
@@ -123,25 +162,10 @@ Cada tela principal segue a composição:
 5. `MainContent` — conteúdo principal (tabelas, formulários)
 6. `SideDrawer` — painel lateral contextual
 
-## Fase Atual
+## Observações sobre o estado atual
 
-**Fase 2** — Layout, navegação, contexto global e consistência visual (completa).
-
-### Entregues na Fase 2
-- AppLayout com Sidebar + Topbar + ContextBar + SideDrawer
-- Sidebar dark com 14 itens em 3 grupos (Geral, Operacional, Gerencial)
-- Sidebar collapsível, auto-close em mobile, active state por rota
-- Topbar com breadcrumbs, busca (placeholder), notificações e dropdown de usuário
-- ContextBar funcional com selects de empresa/filial/obra/competência (mock data)
-- ContextBar responsiva com scroll horizontal em mobile
-- Indicador visual de contexto ativo
-- ModuleLayout simplificado como wrapper pass-through
-- ObraWorkspaceLayout com header, 11 abas e sync automático do contexto
-- Página 404/NotFound com navegação de volta
-- Placeholders visuais para todos os 14 módulos
-- Placeholders para todas as 11 abas da obra
-- 6 Zustand stores globais (auth, context, UI, filters, notification, drawer)
-- Tema JOGAB com cores brand, sidebar dark, tokens semânticos
-- README do frontend substituído
-
-Próxima: **Fase 3** — Dashboard, Obras e RH.
+- Todos os modules usam **dados mock** via services simulados. Services estão preparados para troca por API real sem retrabalho.
+- Services possuem **normalização explícita** para resiliência a payloads parciais.
+- Páginas implementam padrão de **safe-access** com fallback para arrays/objetos vazios.
+- **Backend ainda não implementado** — repositório sem diretório backend.
+- Rotas de lançamento individual de Horas Extras (`/horas-extras/lancamentos`, `/horas-extras/:lancamentoId`) estão pendentes (ver `docs/06-arquitetura-de-telas.md`).

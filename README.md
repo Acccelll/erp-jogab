@@ -22,19 +22,30 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 - Use os arquivos da pasta `prompts/` por fase de implementação.
 - Use `checklists/acceptance-checklist.md` para validar entregas.
 
-## Estratégia recomendada
-1. Estrutura base do frontend
-2. Layout global e navegação
-3. Módulo Obras
-4. RH
-5. Horas Extras
-6. FOPAG
-7. Compras
-8. Fiscal
-9. Financeiro
-10. Estoque
-11. Medições
-12. Documentos, relatórios e administração
+## Estado atual do frontend
+
+Todas as 8 fases do roadmap original estão completas. Os 14 módulos possuem páginas, services, hooks, types e mock data implementados. Detalhes em `docs/08-roadmap.md`.
+
+### Módulos implementados
+
+| Módulo | Rota principal | Telas implementadas |
+|--------|---------------|---------------------|
+| Dashboard | `/dashboard` | Dashboard executivo com KPIs |
+| Obras | `/obras` | Lista, workspace com 11 abas |
+| RH | `/rh/funcionarios` | Lista, workspace do funcionário com 10 abas |
+| Horas Extras | `/horas-extras` | Dashboard, aprovação, fechamento |
+| FOPAG | `/fopag` | Lista de competências, detalhe com 7 abas |
+| Compras | `/compras` | Lista, solicitações, cotações, pedidos, detalhe |
+| Fiscal | `/fiscal` | Lista, entradas, saídas, detalhe do documento |
+| Financeiro | `/financeiro` | Lista, fluxo de caixa, contas a pagar/receber, detalhe |
+| Estoque | `/estoque` | Lista, movimentações, detalhe do item |
+| Medições | `/medicoes` | Lista, detalhe da medição |
+| Documentos | `/documentos` | Lista, detalhe do documento |
+| Relatórios | `/relatorios` | Lista, relatórios por categoria |
+| Administração | `/admin` | Painel, usuários, perfis, permissões, parâmetros, logs, integrações |
+| Perfil | `/perfil` | Página do usuário |
+
+> Rotas completas documentadas em `docs/06-arquitetura-de-telas.md`.
 
 ---
 
@@ -45,34 +56,52 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 - **Config:** `frontend/vitest.config.ts`
 - **Setup:** `frontend/src/test/setup.ts`
 
-### Fluxos cobertos
+### Cobertura atual
 
 | Área | Arquivo de teste | Cenários |
 |------|-----------------|----------|
-| HTTP Client (`shared/lib/api.ts`) | `src/shared/lib/api.test.ts` | unwrapApiResponse (envelope/raw/primitivo), normalizeApiError (JSON, HTML/não-JSON, rede, genérico), shouldFallbackToMock (rede, status 404-504, 400, não-Axios), withApiFallback (sucesso, fallback rede, fallback 502/Vercel, erro 400/500) |
-| Dashboard | `src/modules/dashboard/pages/DashboardPage.test.tsx` | loading, erro com retry, dados com KPIs e seções, ação de refresh |
-| Relatórios | `src/modules/relatorios/pages/RelatoriosListPage.test.tsx` | loading, erro com retry, dados com resumo/categorias/tabela, estado vazio com filtros ativos |
-| Logs de Auditoria | `src/modules/admin/pages/AdminLogsPage.test.tsx` | loading, erro com retry, dados com tabela e preview cards, guarda para data undefined |
+| HTTP Client (`shared/lib/api.ts`) | `api.test.ts` | unwrapApiResponse, normalizeApiError, shouldFallbackToMock, withApiFallback |
+| Normalização de services | `normalization.test.ts` | 56 cenários cobrindo todos os módulos prioritários |
+| Dashboard | `DashboardPage.test.tsx` | loading, erro com retry, dados com KPIs, refresh |
+| Relatórios | `RelatoriosListPage.test.tsx` | loading, erro, dados com categorias/tabela, vazio com filtros |
+| Admin Logs | `AdminLogsPage.test.tsx` | loading, erro, dados com tabela/preview, guarda para data undefined |
+| Compras | `ComprasListPage.test.tsx` | loading, erro, dados, vazio |
+| FOPAG | `FopagListPage.test.tsx` | loading, erro, dados, vazio, payload parcial |
+| RH | `FuncionariosListPage.test.tsx` | loading, erro, dados, vazio, payload parcial |
+| Horas Extras | `HorasExtrasDashboardPage.test.tsx` | loading, erro, dados, vazio |
+| Obras | `ObrasListPage.test.tsx` | loading, erro, dados, vazio, payload parcial |
 
-**Total: 4 arquivos, 34 testes**
+**Total: 10 arquivos, 128 testes**
 
-### Checklist de validação local
+### Comandos
 
 ```bash
 cd frontend
 npm install
-npm run test          # Roda todos os testes (Vitest)
-npm run test:watch    # Modo watch durante desenvolvimento
+npm run test          # Vitest (todos os testes)
+npm run test:watch    # Vitest (modo watch)
 npm run build         # TypeScript + Vite build
 npm run lint          # ESLint
 ```
 
 ### Gaps de cobertura restantes
 
-- **Backend:** Repositório atualmente sem diretório backend — testes de integração de API (logs-auditoria, relatórios, comercial/fiscal) dependem da implementação do backend.
-- **Páginas de módulo:** Obras, RH, Financeiro, Fiscal, Compras, Estoque, Medições, FOPAG, Horas Extras ainda sem testes de página.
-- **Hooks e services:** Hooks de TanStack Query e services de cada módulo ainda sem testes unitários isolados.
-- **Fluxo comercial/fiscal:** Conversão orçamento→pedido→ordem→nota fiscal→estoque requer backend para teste de integração end-to-end.
-- **Componentes compartilhados:** PageHeader, EmptyState, KPISection, FilterBar, StatusBadge ainda sem testes unitários.
-- **Stores Zustand:** authStore, contextStore, filtersStore, drawerStore sem testes unitários.
-- **Validação Zod:** Schemas de filtro e domínio (obras, RH, admin, relatórios) sem testes de validação.
+- **Backend:** Repositório sem diretório backend — testes de integração de API dependem da implementação do backend
+- **Hooks e services:** Hooks de TanStack Query e services de cada módulo sem testes unitários isolados
+- **Componentes compartilhados:** PageHeader, EmptyState, KPISection, FilterBar, StatusBadge sem testes unitários
+- **Stores Zustand:** authStore, contextStore, filtersStore, drawerStore sem testes unitários
+- **Validação Zod:** Schemas de filtro e domínio sem testes de validação
+
+---
+
+## Deploy
+
+### Vercel (principal)
+- **Config:** `frontend/vercel.json`
+- SPA rewrite para `/index.html` (exclui rotas `/api/`)
+- Deploy automático de preview por branch/PR
+
+### Netlify (alternativa)
+- **Config:** `netlify.toml` (raiz do repositório)
+- Build: `npm run build` com base em `frontend/`
+- Redirect SPA para `/index.html`
