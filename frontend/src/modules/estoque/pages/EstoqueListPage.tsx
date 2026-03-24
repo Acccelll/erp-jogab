@@ -1,6 +1,6 @@
 import { ArrowRightLeft, Boxes } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useEstoque, useEstoqueFilters } from '../hooks';
 import { EstoqueFilters, EstoqueItensTable, EstoqueKpiBar, EstoqueResumoCard, EstoqueVisaoGeral } from '../components';
 
@@ -26,8 +26,6 @@ export function EstoqueListPage() {
           </div>
         }
       />
-
-      <ContextBar />
 
       <EstoqueFilters
         search={filters.search ?? ''}

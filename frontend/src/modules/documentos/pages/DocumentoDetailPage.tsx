@@ -1,6 +1,6 @@
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { formatCompetencia } from '@/shared/lib/utils';
 import { DocumentoStatusBadge } from '../components';
 import { useDocumentoDetails } from '../hooks';
@@ -29,8 +29,6 @@ export function DocumentoDetailPage() {
           </Link>
         }
       />
-
-      <ContextBar />
 
       <MainContent className="space-y-6">
         {isLoading && (

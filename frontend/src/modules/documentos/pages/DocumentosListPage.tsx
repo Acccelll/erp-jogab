@@ -1,6 +1,6 @@
 import { FolderOpen, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useDocumentos, useDocumentosFilters } from '../hooks';
 import { DocumentosFilters, DocumentosKpiBar, DocumentosOverview, DocumentosResumoCard, DocumentosTable } from '../components';
 
@@ -37,8 +37,6 @@ export function DocumentosListPage() {
           </div>
         }
       />
-
-      <ContextBar />
 
       <DocumentosFilters
         search={filters.search ?? ''}

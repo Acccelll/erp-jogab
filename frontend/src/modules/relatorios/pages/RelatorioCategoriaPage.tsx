@@ -1,6 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import {
   RelatorioCoberturaCard,
   RelatorioResumoCard,
@@ -49,8 +49,6 @@ export function RelatorioCategoriaPage() {
           </Link>
         }
       />
-
-      <ContextBar />
 
       <RelatoriosFilters
         search={filters.search ?? ''}

@@ -1,6 +1,6 @@
 import { TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { FinanceiroFilters, TitulosFinanceirosTable } from '../components';
 import { useContasReceber, useFinanceiroFilters } from '../hooks';
 
@@ -33,8 +33,6 @@ export function ContasReceberPage() {
           </Link>
         }
       />
-
-      <ContextBar />
 
       <FinanceiroFilters
         search={filters.search ?? ''}

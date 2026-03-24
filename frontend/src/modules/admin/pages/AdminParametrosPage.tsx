@@ -1,6 +1,6 @@
 import { useParametros, useAdminFilters } from '../hooks';
 import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminParametrosPage() {
   const {
@@ -20,8 +20,6 @@ export function AdminParametrosPage() {
         title="Administração · Parâmetros"
         subtitle="Parâmetros globais do ERP com impacto em contexto, workflows e integrações."
       />
-
-      <ContextBar />
 
       <AdminFilters
         search={filters.search ?? ''}

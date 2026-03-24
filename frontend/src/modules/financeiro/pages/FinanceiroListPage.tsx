@@ -1,6 +1,6 @@
 import { Landmark, TrendingDown, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader, StatusBadge } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader, StatusBadge } from '@/shared/components';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { FinanceiroFilters, FinanceiroKpiBar, FinanceiroResumoCard, FinanceiroVisaoStatusTipo, TitulosFinanceirosTable } from '../components';
 import { useFinanceiro, useFinanceiroFilters, useFinanceiroPessoal } from '../hooks';
@@ -48,8 +48,6 @@ export function FinanceiroListPage() {
           </div>
         }
       />
-
-      <ContextBar />
 
       <FinanceiroFilters
         search={filters.search ?? ''}

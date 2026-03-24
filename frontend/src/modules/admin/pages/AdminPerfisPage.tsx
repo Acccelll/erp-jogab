@@ -1,6 +1,6 @@
 import { usePerfis, useAdminFilters } from '../hooks';
 import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminPerfisPage() {
   const {
@@ -20,8 +20,6 @@ export function AdminPerfisPage() {
         title="Administração · Perfis"
         subtitle="Perfis funcionais que estruturam governança, segregação de funções e escopos de acesso."
       />
-
-      <ContextBar />
 
       <AdminFilters
         search={filters.search ?? ''}

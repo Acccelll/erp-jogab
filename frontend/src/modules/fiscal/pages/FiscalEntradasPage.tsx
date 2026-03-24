@@ -1,6 +1,6 @@
 import { Boxes, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useFiscalEntradas, useFiscalFilters } from '../hooks';
 import { FiscalFilters, FiscalKpiBar, FiscalResumoCard, FiscalTable } from '../components';
 
@@ -37,8 +37,6 @@ export function FiscalEntradasPage() {
           </div>
         }
       />
-
-      <ContextBar />
 
       <FiscalFilters
         search={filters.search ?? ''}

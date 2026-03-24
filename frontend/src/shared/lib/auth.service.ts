@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import type { AuthCredentials, AuthSession, PapelUsuario, Permissao, Usuario } from '@/shared/types';
 
 const authCredentialsSchema = z.object({
@@ -161,4 +162,48 @@ export async function fetchMockSession(token: string | null): Promise<AuthSessio
 
 export async function logoutWithMock(): Promise<void> {
   await delay(120);
+}
+
+// ---------------------------------------------------------------------------
+// Funções públicas com fallback (usadas pelo authStore)
+// ---------------------------------------------------------------------------
+
+/**
+ * Realiza login via API com fallback para mock.
+ * Quando a API real estiver disponível, a chamada api.post será atendida;
+ * caso contrário, o fallback mock será utilizado automaticamente.
+ */
+export async function login(credentials: AuthCredentials): Promise<AuthSession> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(AUTH_API_ENDPOINTS.login, credentials);
+      return unwrapApiResponse<AuthSession>(response.data);
+    },
+    () => loginWithMock(credentials),
+  );
+}
+
+/**
+ * Restaura sessão via API (GET /auth/me) com fallback para mock.
+ */
+export async function fetchSession(token: string | null): Promise<AuthSession | null> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(AUTH_API_ENDPOINTS.me);
+      return unwrapApiResponse<AuthSession>(response.data);
+    },
+    () => fetchMockSession(token),
+  );
+}
+
+/**
+ * Realiza logout via API com fallback para mock.
+ */
+export async function logout(): Promise<void> {
+  return withApiFallback(
+    async () => {
+      await api.post(AUTH_API_ENDPOINTS.logout);
+    },
+    () => logoutWithMock(),
+  );
 }

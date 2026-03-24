@@ -1,6 +1,6 @@
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { useDocumentoFiscalDetails } from '../hooks';
 import {
@@ -25,8 +25,6 @@ export function DocumentoFiscalDetailPage() {
           </Link>
         }
       />
-
-      <ContextBar />
 
       <MainContent className="space-y-6">
         {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando detalhe do documento fiscal...</div>}
