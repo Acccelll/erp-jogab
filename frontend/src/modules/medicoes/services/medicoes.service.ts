@@ -1,6 +1,13 @@
+import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { medicoesFiltersSchema } from '../types';
 import type { MedicoesFiltersData } from '../types';
 import { getMockMedicaoById, getMockMedicoes, getMockMedicoesDashboard } from '../data/medicoes.mock';
+
+export const MEDICOES_API_ENDPOINTS = {
+  dashboard: '/medicoes/dashboard',
+  list: '/medicoes',
+  detail: (id: string) => `/medicoes/${id}`,
+} as const;
 
 const NETWORK_DELAY_MS = 180;
 
@@ -12,17 +19,17 @@ function normalizeFilters(filters?: MedicoesFiltersData) {
   return medicoesFiltersSchema.parse(filters ?? {});
 }
 
-export async function fetchMedicoesDashboard(filters?: MedicoesFiltersData) {
+async function fetchMedicoesDashboardMock(filters?: MedicoesFiltersData) {
   await wait();
   return getMockMedicoesDashboard(normalizeFilters(filters));
 }
 
-export async function fetchMedicoes(filters?: MedicoesFiltersData) {
+async function fetchMedicoesMock(filters?: MedicoesFiltersData) {
   await wait();
   return getMockMedicoes(normalizeFilters(filters));
 }
 
-export async function fetchMedicaoById(medicaoId: string) {
+async function fetchMedicaoByIdMock(medicaoId: string) {
   await wait();
   const result = getMockMedicaoById(medicaoId);
 
@@ -31,4 +38,34 @@ export async function fetchMedicaoById(medicaoId: string) {
   }
 
   return result;
+}
+
+export async function fetchMedicoesDashboard(filters?: MedicoesFiltersData) {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(MEDICOES_API_ENDPOINTS.dashboard, { params: filters });
+      return unwrapApiResponse<Awaited<ReturnType<typeof fetchMedicoesDashboardMock>>>(response.data);
+    },
+    () => fetchMedicoesDashboardMock(filters),
+  );
+}
+
+export async function fetchMedicoes(filters?: MedicoesFiltersData) {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(MEDICOES_API_ENDPOINTS.list, { params: filters });
+      return unwrapApiResponse<Awaited<ReturnType<typeof fetchMedicoesMock>>>(response.data);
+    },
+    () => fetchMedicoesMock(filters),
+  );
+}
+
+export async function fetchMedicaoById(medicaoId: string) {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(MEDICOES_API_ENDPOINTS.detail(medicaoId));
+      return unwrapApiResponse<Awaited<ReturnType<typeof fetchMedicaoByIdMock>>>(response.data);
+    },
+    () => fetchMedicaoByIdMock(medicaoId),
+  );
 }
