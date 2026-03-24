@@ -1,6 +1,7 @@
 // Módulo RH — gestão de funcionários do ERP JOGAB
 export { FuncionariosListPage } from './pages/FuncionariosListPage';
 export { FuncionarioDetailPage } from './pages/FuncionarioDetailPage';
+export { FuncionarioVisaoGeralPage } from './pages/FuncionarioVisaoGeralPage';
 export { FuncionarioContratoPage } from './pages/FuncionarioContratoPage';
 export { FuncionarioHistoricoSalarialPage } from './pages/FuncionarioHistoricoSalarialPage';
 export { FuncionarioDocumentosPage } from './pages/FuncionarioDocumentosPage';
