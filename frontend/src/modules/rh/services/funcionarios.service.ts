@@ -4,6 +4,7 @@
  * Usa a camada HTTP compartilhada com fallback controlado para mocks locais.
  * Quando a API estiver estável, basta desligar o fallback por configuração.
  */
+import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { getAlocacaoAtivaByFuncionarioId, getAlocacoesByFuncionarioId, getCentroCustoById, clearFuncionarioAlocacaoAtiva, upsertFuncionarioAlocacaoAtiva } from '@/shared/lib/erpRelations';
 import { mockObras } from '@/modules/obras/data/obras.mock';
 import type {
@@ -146,7 +147,7 @@ export function getFuncionarioFormReferenceData() {
   };
 }
 
-export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
+async function fetchFuncionariosMock(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
   await delay();
 
   let resultado = [...mockFuncionarios];
@@ -195,22 +196,22 @@ export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promi
   return { data, kpis, total: data.length };
 }
 
-export async function fetchFuncionarioById(funcId: string): Promise<Funcionario | null> {
+async function fetchFuncionarioByIdMock(funcId: string): Promise<Funcionario | null> {
   await delay(200);
   return mockFuncionarios.find((f) => f.id === funcId) ?? null;
 }
 
-export async function fetchFuncionarioResumoBlocos(funcId: string): Promise<FuncionarioResumoBloco[]> {
+async function fetchFuncionarioResumoBlocosMock(funcId: string): Promise<FuncionarioResumoBloco[]> {
   await delay(200);
   const func = mockFuncionarios.find((f) => f.id === funcId);
   if (!func) return [];
   return gerarFuncionarioResumoBlocos(func);
 }
 
-export async function fetchFuncionarioDetail(funcId: string): Promise<FuncionarioDetailResponse> {
+async function fetchFuncionarioDetailMock(funcId: string): Promise<FuncionarioDetailResponse> {
   const [funcionario, resumoBlocos] = await Promise.all([
-    fetchFuncionarioById(funcId),
-    fetchFuncionarioResumoBlocos(funcId),
+    fetchFuncionarioByIdMock(funcId),
+    fetchFuncionarioResumoBlocosMock(funcId),
   ]);
 
   return {
@@ -219,7 +220,7 @@ export async function fetchFuncionarioDetail(funcId: string): Promise<Funcionari
   };
 }
 
-export async function createFuncionario(payload: FuncionarioCreatePayload): Promise<FuncionarioMutationResponse> {
+async function createFuncionarioMock(payload: FuncionarioCreatePayload): Promise<FuncionarioMutationResponse> {
   await delay(250);
   validateFuncionarioPayload(payload);
 
@@ -263,7 +264,7 @@ export async function createFuncionario(payload: FuncionarioCreatePayload): Prom
   };
 }
 
-export async function updateFuncionario(payload: FuncionarioUpdatePayload): Promise<FuncionarioMutationResponse> {
+async function updateFuncionarioMock(payload: FuncionarioUpdatePayload): Promise<FuncionarioMutationResponse> {
   await delay(250);
   const funcionario = mockFuncionarios.find((item) => item.id === payload.id);
 
@@ -293,4 +294,64 @@ export async function updateFuncionario(payload: FuncionarioUpdatePayload): Prom
     message: 'Funcionário atualizado com sucesso.',
     funcionario,
   };
+}
+
+export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(RH_API_ENDPOINTS.list, { params: filters });
+      return unwrapApiResponse<FuncionariosListResponse>(response.data);
+    },
+    () => fetchFuncionariosMock(filters),
+  );
+}
+
+export async function fetchFuncionarioById(funcId: string): Promise<Funcionario | null> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(RH_API_ENDPOINTS.detail(funcId));
+      return unwrapApiResponse<Funcionario | null>(response.data);
+    },
+    () => fetchFuncionarioByIdMock(funcId),
+  );
+}
+
+export async function fetchFuncionarioResumoBlocos(funcId: string): Promise<FuncionarioResumoBloco[]> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(`${RH_API_ENDPOINTS.detail(funcId)}/resumo-blocos`);
+      return unwrapApiResponse<FuncionarioResumoBloco[]>(response.data);
+    },
+    () => fetchFuncionarioResumoBlocosMock(funcId),
+  );
+}
+
+export async function fetchFuncionarioDetail(funcId: string): Promise<FuncionarioDetailResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(RH_API_ENDPOINTS.detail(funcId));
+      return unwrapApiResponse<FuncionarioDetailResponse>(response.data);
+    },
+    () => fetchFuncionarioDetailMock(funcId),
+  );
+}
+
+export async function createFuncionario(payload: FuncionarioCreatePayload): Promise<FuncionarioMutationResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(RH_API_ENDPOINTS.create, payload);
+      return unwrapApiResponse<FuncionarioMutationResponse>(response.data);
+    },
+    () => createFuncionarioMock(payload),
+  );
+}
+
+export async function updateFuncionario(payload: FuncionarioUpdatePayload): Promise<FuncionarioMutationResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.put(RH_API_ENDPOINTS.update(payload.id), payload);
+      return unwrapApiResponse<FuncionarioMutationResponse>(response.data);
+    },
+    () => updateFuncionarioMock(payload),
+  );
 }

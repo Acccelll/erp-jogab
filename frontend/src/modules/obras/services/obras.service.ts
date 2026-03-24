@@ -4,6 +4,7 @@
  * Usa a camada HTTP compartilhada com fallback controlado para mocks locais.
  * Quando a API estiver estável, basta desligar o fallback por configuração.
  */
+import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import type {
   Obra,
   ObraCreatePayload,
@@ -106,7 +107,7 @@ export function getObraFormReferenceData() {
   };
 }
 
-export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListResponse> {
+async function fetchObrasMock(filters?: ObraFiltersData): Promise<ObrasListResponse> {
   await delay();
 
   let resultado = [...mockObras];
@@ -143,31 +144,31 @@ export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListRe
   return { data, kpis, total: data.length };
 }
 
-export async function fetchObraById(obraId: string): Promise<Obra | null> {
+async function fetchObraByIdMock(obraId: string): Promise<Obra | null> {
   await delay(200);
   const obra = mockObras.find((o) => o.id === obraId);
   return obra ? normalizeObra(obra) : null;
 }
 
-export async function fetchObraVisaoGeralKpis(obraId: string): Promise<ObraVisaoGeralKpis | null> {
+async function fetchObraVisaoGeralKpisMock(obraId: string): Promise<ObraVisaoGeralKpis | null> {
   await delay(150);
   const obra = mockObras.find((o) => o.id === obraId);
   if (!obra) return null;
   return calcularObraVisaoGeralKpis(normalizeObra(obra));
 }
 
-export async function fetchObraResumoBlocos(obraId: string): Promise<ObraResumoBloco[]> {
+async function fetchObraResumoBlocosMock(obraId: string): Promise<ObraResumoBloco[]> {
   await delay(200);
   const obra = mockObras.find((o) => o.id === obraId);
   if (!obra) return [];
   return gerarResumoBlocos(normalizeObra(obra));
 }
 
-export async function fetchObraDetail(obraId: string): Promise<ObraDetailResponse> {
+async function fetchObraDetailMock(obraId: string): Promise<ObraDetailResponse> {
   const [obra, kpis, resumoBlocos] = await Promise.all([
-    fetchObraById(obraId),
-    fetchObraVisaoGeralKpis(obraId),
-    fetchObraResumoBlocos(obraId),
+    fetchObraByIdMock(obraId),
+    fetchObraVisaoGeralKpisMock(obraId),
+    fetchObraResumoBlocosMock(obraId),
   ]);
 
   return {
@@ -177,7 +178,7 @@ export async function fetchObraDetail(obraId: string): Promise<ObraDetailRespons
   };
 }
 
-export async function createObra(payload: ObraCreatePayload): Promise<ObraMutationResponse> {
+async function createObraMock(payload: ObraCreatePayload): Promise<ObraMutationResponse> {
   await delay(250);
   validateObraPayload(payload);
 
@@ -220,7 +221,7 @@ export async function createObra(payload: ObraCreatePayload): Promise<ObraMutati
   };
 }
 
-export async function updateObra(payload: ObraUpdatePayload): Promise<ObraMutationResponse> {
+async function updateObraMock(payload: ObraUpdatePayload): Promise<ObraMutationResponse> {
   await delay(250);
   const obra = mockObras.find((item) => item.id === payload.id);
 
@@ -244,4 +245,74 @@ export async function updateObra(payload: ObraUpdatePayload): Promise<ObraMutati
     message: 'Obra atualizada com sucesso.',
     obra: normalizeObra(obra),
   };
+}
+
+export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRAS_API_ENDPOINTS.list, { params: filters });
+      return unwrapApiResponse<ObrasListResponse>(response.data);
+    },
+    () => fetchObrasMock(filters),
+  );
+}
+
+export async function fetchObraById(obraId: string): Promise<Obra | null> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRAS_API_ENDPOINTS.detail(obraId));
+      return unwrapApiResponse<Obra | null>(response.data);
+    },
+    () => fetchObraByIdMock(obraId),
+  );
+}
+
+export async function fetchObraVisaoGeralKpis(obraId: string): Promise<ObraVisaoGeralKpis | null> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(`${OBRAS_API_ENDPOINTS.detail(obraId)}/kpis`);
+      return unwrapApiResponse<ObraVisaoGeralKpis | null>(response.data);
+    },
+    () => fetchObraVisaoGeralKpisMock(obraId),
+  );
+}
+
+export async function fetchObraResumoBlocos(obraId: string): Promise<ObraResumoBloco[]> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(`${OBRAS_API_ENDPOINTS.detail(obraId)}/resumo-blocos`);
+      return unwrapApiResponse<ObraResumoBloco[]>(response.data);
+    },
+    () => fetchObraResumoBlocosMock(obraId),
+  );
+}
+
+export async function fetchObraDetail(obraId: string): Promise<ObraDetailResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRAS_API_ENDPOINTS.detail(obraId));
+      return unwrapApiResponse<ObraDetailResponse>(response.data);
+    },
+    () => fetchObraDetailMock(obraId),
+  );
+}
+
+export async function createObra(payload: ObraCreatePayload): Promise<ObraMutationResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(OBRAS_API_ENDPOINTS.create, payload);
+      return unwrapApiResponse<ObraMutationResponse>(response.data);
+    },
+    () => createObraMock(payload),
+  );
+}
+
+export async function updateObra(payload: ObraUpdatePayload): Promise<ObraMutationResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.put(OBRAS_API_ENDPOINTS.update(payload.id), payload);
+      return unwrapApiResponse<ObraMutationResponse>(response.data);
+    },
+    () => updateObraMock(payload),
+  );
 }

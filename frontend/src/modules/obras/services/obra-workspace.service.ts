@@ -1,3 +1,4 @@
+import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import type {
   ObraComprasItem,
   ObraContratoItem,
@@ -23,6 +24,19 @@ import {
   getRiscosWorkspace,
 } from '../data/obra-workspace.mock';
 
+export const OBRA_WORKSPACE_API_ENDPOINTS = {
+  cronograma: (obraId: string) => `/obras/${obraId}/cronograma`,
+  equipe: (obraId: string) => `/obras/${obraId}/equipe`,
+  compras: (obraId: string) => `/obras/${obraId}/compras`,
+  financeiro: (obraId: string) => `/obras/${obraId}/financeiro`,
+  documentos: (obraId: string) => `/obras/${obraId}/documentos`,
+  contratos: (obraId: string) => `/obras/${obraId}/contratos`,
+  estoque: (obraId: string) => `/obras/${obraId}/estoque`,
+  medicoes: (obraId: string) => `/obras/${obraId}/medicoes`,
+  rh: (obraId: string) => `/obras/${obraId}/rh`,
+  riscos: (obraId: string) => `/obras/${obraId}/riscos`,
+} as const;
+
 const MOCK_DELAY_MS = 180;
 
 function delay(ms = MOCK_DELAY_MS): Promise<void> {
@@ -40,59 +54,119 @@ async function resolveObraWorkspace<T>(
 export function fetchObraCronograma(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraCronogramaItem>> {
-  return resolveObraWorkspace(obraId, getCronogramaWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.cronograma(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraCronogramaItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getCronogramaWorkspace),
+  );
 }
 
 export function fetchObraEquipe(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraEquipeItem>> {
-  return resolveObraWorkspace(obraId, getEquipeWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.equipe(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraEquipeItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getEquipeWorkspace),
+  );
 }
 
 export function fetchObraCompras(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraComprasItem>> {
-  return resolveObraWorkspace(obraId, getComprasWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.compras(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraComprasItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getComprasWorkspace),
+  );
 }
 
 export function fetchObraFinanceiro(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraFinanceiroItem>> {
-  return resolveObraWorkspace(obraId, getFinanceiroWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.financeiro(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraFinanceiroItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getFinanceiroWorkspace),
+  );
 }
 
 export function fetchObraDocumentos(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraDocumentoItem>> {
-  return resolveObraWorkspace(obraId, getDocumentosWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.documentos(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraDocumentoItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getDocumentosWorkspace),
+  );
 }
 
 export function fetchObraContratos(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraContratoItem>> {
-  return resolveObraWorkspace(obraId, getContratosWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.contratos(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraContratoItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getContratosWorkspace),
+  );
 }
 
 export function fetchObraEstoque(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraEstoqueItem>> {
-  return resolveObraWorkspace(obraId, getEstoqueWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.estoque(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraEstoqueItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getEstoqueWorkspace),
+  );
 }
 
 export function fetchObraMedicoes(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraMedicaoItem>> {
-  return resolveObraWorkspace(obraId, getMedicoesWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.medicoes(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraMedicaoItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getMedicoesWorkspace),
+  );
 }
 
 export function fetchObraRh(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraEquipeItem>> {
-  return resolveObraWorkspace(obraId, getRhWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.rh(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraEquipeItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getRhWorkspace),
+  );
 }
 
 export function fetchObraRiscos(
   obraId: string,
 ): Promise<ObraWorkspaceTabData<ObraRiscoItem>> {
-  return resolveObraWorkspace(obraId, getRiscosWorkspace);
+  return withApiFallback(
+    async () => {
+      const response = await api.get(OBRA_WORKSPACE_API_ENDPOINTS.riscos(obraId));
+      return unwrapApiResponse<ObraWorkspaceTabData<ObraRiscoItem>>(response.data);
+    },
+    () => resolveObraWorkspace(obraId, getRiscosWorkspace),
+  );
 }
