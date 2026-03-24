@@ -18,16 +18,12 @@ import { useObraFilters } from '../hooks/useObraFilters';
 
 export function ObrasListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setTipo,
-    clearFilters,
-    hasActiveFilters,
-  } = useObraFilters();
+  const { filters, setSearch, setStatus, setTipo, clearFilters, hasActiveFilters } = useObraFilters();
 
   const { data, isLoading, isError } = useObras(filters);
+
+  const obras = data?.data ?? [];
+  const kpis = data?.kpis;
 
   const openCreateDrawer = () => {
     openDrawer({
@@ -73,7 +69,7 @@ export function ObrasListPage() {
         hasActiveFilters={hasActiveFilters}
       />
 
-      {data?.kpis && <ObraKpiBar kpis={data.kpis} />}
+      {kpis && <ObraKpiBar kpis={kpis} />}
 
       <MainContent>
         {isLoading && (
@@ -101,7 +97,7 @@ export function ObrasListPage() {
           />
         )}
 
-        {!isLoading && !isError && data?.data.length === 0 && (
+        {!isLoading && !isError && data && obras.length === 0 && (
           <EmptyState
             title="Nenhuma obra encontrada"
             description={
@@ -132,9 +128,9 @@ export function ObrasListPage() {
           />
         )}
 
-        {!isLoading && !isError && data && data.data.length > 0 && (
+        {!isLoading && !isError && obras.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {data.data.map((obra) => (
+            {obras.map((obra) => (
               <ObraCard key={obra.id} obra={obra} onEdit={openEditDrawer} />
             ))}
           </div>

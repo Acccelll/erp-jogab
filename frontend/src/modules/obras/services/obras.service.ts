@@ -69,7 +69,10 @@ function getClienteNomeById(clienteId: string) {
 }
 
 function getResponsavelNomeById(responsavelId: string) {
-  return mockObras.find((obra) => obra.responsavelId === responsavelId)?.responsavelNome ?? `Responsável ${responsavelId.toUpperCase()}`;
+  return (
+    mockObras.find((obra) => obra.responsavelId === responsavelId)?.responsavelNome ??
+    `Responsável ${responsavelId.toUpperCase()}`
+  );
 }
 
 function getFilialNomeById(filialId: string) {
@@ -237,7 +240,7 @@ async function updateObraMock(payload: ObraUpdatePayload): Promise<ObraMutationR
     responsavelNome: payload.responsavelId ? getResponsavelNomeById(payload.responsavelId) : obra.responsavelNome,
     filialNome: payload.filialId ? getFilialNomeById(payload.filialId) : obra.filialNome,
     empresaId: payload.filialId ? buildEmpresaIdByFilialId(payload.filialId) : obra.empresaId,
-    dataFimReal: payload.status === 'concluida' ? obra.dataFimReal ?? new Date().toISOString().slice(0, 10) : null,
+    dataFimReal: payload.status === 'concluida' ? (obra.dataFimReal ?? new Date().toISOString().slice(0, 10)) : null,
     updatedAt: new Date().toISOString(),
   });
 
@@ -247,11 +250,28 @@ async function updateObraMock(payload: ObraUpdatePayload): Promise<ObraMutationR
   };
 }
 
+/** Ensures the API payload always conforms to a complete ObrasListResponse. */
+export function normalizeObrasListResponse(payload: Partial<ObrasListResponse> | null | undefined): ObrasListResponse {
+  return {
+    data: Array.isArray(payload?.data) ? payload.data : [],
+    kpis: {
+      totalObras: payload?.kpis?.totalObras ?? 0,
+      obrasAtivas: payload?.kpis?.obrasAtivas ?? 0,
+      obrasConcluidas: payload?.kpis?.obrasConcluidas ?? 0,
+      obrasParalisadas: payload?.kpis?.obrasParalisadas ?? 0,
+      orcamentoTotal: payload?.kpis?.orcamentoTotal ?? 0,
+      custoRealizadoTotal: payload?.kpis?.custoRealizadoTotal ?? 0,
+    },
+    total: payload?.total ?? 0,
+  };
+}
+
 export async function fetchObras(filters?: ObraFiltersData): Promise<ObrasListResponse> {
   return withApiFallback(
     async () => {
       const response = await api.get(OBRAS_API_ENDPOINTS.list, { params: filters });
-      return unwrapApiResponse<ObrasListResponse>(response.data);
+      const raw = unwrapApiResponse<ObrasListResponse>(response.data);
+      return normalizeObrasListResponse(raw);
     },
     () => fetchObrasMock(filters),
   );

@@ -25,6 +25,12 @@ export function RelatoriosListPage() {
   } = useRelatoriosFilters();
   const { data, isLoading, isError, refetch } = useRelatorios(filters);
 
+  const itens = data?.itens ?? [];
+  const categorias = data?.categorias ?? [];
+  const resumoCards = data?.resumoCards ?? [];
+  const saidasOperacionais = data?.saidasOperacionais ?? [];
+  const coberturaModulos = data?.coberturaModulos ?? [];
+
   return (
     <div className="flex flex-1 flex-col">
       <PageHeader
@@ -69,9 +75,7 @@ export function RelatoriosListPage() {
 
       <MainContent className="space-y-6">
         {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando catálogo de relatórios...
-          </div>
+          <div className="py-12 text-center text-sm text-gray-500">Carregando catálogo de relatórios...</div>
         )}
 
         {isError && (
@@ -93,18 +97,18 @@ export function RelatoriosListPage() {
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-2">
-              {data.resumoCards.map((card) => (
+              {resumoCards.map((card) => (
                 <RelatorioResumoCard key={card.id} card={card} />
               ))}
             </section>
 
             <section className="grid gap-4 xl:grid-cols-3">
-              {data.categorias.map((item) => (
+              {categorias.map((item) => (
                 <RelatorioCategoriaCard key={item.categoria} item={item} />
               ))}
             </section>
 
-            {data.itens.length === 0 ? (
+            {itens.length === 0 ? (
               <EmptyState
                 title="Nenhum relatório encontrado"
                 description={
@@ -133,7 +137,7 @@ export function RelatoriosListPage() {
                       Catálogo por categoria com disponibilidade, origens de dados e operação de saída.
                     </p>
                   </div>
-                  <RelatoriosTable items={data.itens} />
+                  <RelatoriosTable items={itens} />
                 </section>
 
                 <section className="space-y-4">
@@ -144,7 +148,7 @@ export function RelatoriosListPage() {
                     </p>
                   </div>
                   <div className="grid gap-4 xl:grid-cols-2">
-                    {data.saidasOperacionais.slice(0, 4).map((item) => (
+                    {saidasOperacionais.slice(0, 4).map((item) => (
                       <RelatorioSaidaCard key={item.id} item={item} />
                     ))}
                   </div>
@@ -158,7 +162,7 @@ export function RelatoriosListPage() {
                     </p>
                   </div>
                   <div className="grid gap-4 xl:grid-cols-3">
-                    {data.coberturaModulos.map((item) => (
+                    {coberturaModulos.map((item) => (
                       <RelatorioCoberturaCard key={item.modulo} item={item} />
                     ))}
                   </div>
