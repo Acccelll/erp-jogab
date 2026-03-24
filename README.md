@@ -58,20 +58,17 @@ Todas as 8 fases do roadmap original estão completas. Os 14 módulos possuem p�
 
 ### Cobertura atual
 
-| Área | Arquivo de teste | Cenários |
-|------|-----------------|----------|
-| HTTP Client (`shared/lib/api.ts`) | `api.test.ts` | unwrapApiResponse, normalizeApiError, shouldFallbackToMock, withApiFallback |
-| Normalização de services | `normalization.test.ts` | 56 cenários cobrindo todos os módulos prioritários |
-| Dashboard | `DashboardPage.test.tsx` | loading, erro com retry, dados com KPIs, refresh |
-| Relatórios | `RelatoriosListPage.test.tsx` | loading, erro, dados com categorias/tabela, vazio com filtros |
-| Admin Logs | `AdminLogsPage.test.tsx` | loading, erro, dados com tabela/preview, guarda para data undefined |
-| Compras | `ComprasListPage.test.tsx` | loading, erro, dados, vazio |
-| FOPAG | `FopagListPage.test.tsx` | loading, erro, dados, vazio, payload parcial |
-| RH | `FuncionariosListPage.test.tsx` | loading, erro, dados, vazio, payload parcial |
-| Horas Extras | `HorasExtrasDashboardPage.test.tsx` | loading, erro, dados, vazio |
-| Obras | `ObrasListPage.test.tsx` | loading, erro, dados, vazio, payload parcial |
+| Categoria | Arquivos | Testes | Detalhes |
+|-----------|----------|--------|----------|
+| Normalização de services | 1 | 80 | 80 cenários cobrindo todos os 14 módulos |
+| Validação Zod (schemas) | 4 | 101 | Schemas de Obras, RH, Compras, FOPAG |
+| Páginas | 13 | 58 | Dashboard, Obras, RH, FOPAG, Compras, Horas Extras, Financeiro, Fiscal, Estoque, Medições, Documentos, Relatórios, Admin |
+| Utilitários compartilhados | 2 | 46 | HTTP client (api.ts), helpers (utils.ts) |
+| Stores Zustand | 5 | 39 | contextStore, notificationStore, filtersStore, uiStore, drawerStore |
+| Componentes compartilhados | 5 | 37 | KPISection, StatusBadge, EmptyState, PageHeader, FilterBar |
+| Hooks TanStack Query | 6 | 23 | Dashboard, Obras, RH, FOPAG, Compras, Horas Extras |
 
-**Total: 10 arquivos, 128 testes**
+**Total: 36 arquivos, 384 testes**
 
 ### Comandos
 
@@ -87,10 +84,9 @@ npm run lint          # ESLint
 ### Gaps de cobertura restantes
 
 - **Backend:** Repositório sem diretório backend — testes de integração de API dependem da implementação do backend
-- **Hooks e services:** Hooks de TanStack Query e services de cada módulo sem testes unitários isolados
-- **Componentes compartilhados:** PageHeader, EmptyState, KPISection, FilterBar, StatusBadge sem testes unitários
-- **Stores Zustand:** authStore, contextStore, filtersStore, drawerStore sem testes unitários
-- **Validação Zod:** Schemas de filtro e domínio sem testes de validação
+- **Hooks de módulos secundários:** Hooks de Financeiro, Fiscal, Estoque, Medições, Documentos, Relatórios e Admin sem testes unitários isolados
+- **Componentes específicos de módulo:** Filtros, tabelas e cards internos de cada módulo sem testes dedicados
+- **Testes end-to-end:** Ainda sem testes de integração E2E
 
 ---
 
