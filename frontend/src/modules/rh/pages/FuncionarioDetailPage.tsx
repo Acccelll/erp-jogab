@@ -8,7 +8,7 @@
  *
  * Referência: docs/06-arquitetura-de-telas.md (RH — detalhe do funcionário com abas)
  */
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams, NavLink, Outlet } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
@@ -33,18 +33,24 @@ const funcionarioTabs = [
 export function FuncionarioDetailPage() {
   const { funcId } = useParams<{ funcId: string }>();
   const { funcionario, isLoading } = useFuncionarioDetails(funcId);
-  const { setObra, setCentroCusto, obraId: contextObraId, centroCustoId: contextCentroCustoId } = useContextStore();
 
-  // Sync obra/centro de custo context when funcionario is allocated to an obra
+  // Sync obra/centro de custo context when funcionario is allocated to an obra.
+  // Uses store.setState to batch both values in a single update, avoiding the
+  // intermediate state where setObra clears centroCustoId (which caused cascading re-renders).
+  // Tracks last-synced values in a ref to prevent infinite effect cycles while still
+  // re-syncing when the funcionario data changes (e.g. after an edit).
+  const syncedRef = useRef<{ funcId?: string; obraId?: string; ccId?: string | null }>({});
   useEffect(() => {
-    if (funcionario?.obraAlocadoId && funcionario.obraAlocadoId !== contextObraId) {
-      setObra(funcionario.obraAlocadoId);
-    }
+    const obraAlocado = funcionario?.obraAlocadoId;
+    const ccId = funcionario?.centroCustoId ?? null;
+    if (!obraAlocado) return;
 
-    if (funcionario?.centroCustoId && funcionario.centroCustoId !== contextCentroCustoId) {
-      setCentroCusto(funcionario.centroCustoId);
-    }
-  }, [funcionario?.obraAlocadoId, funcionario?.centroCustoId, contextCentroCustoId, contextObraId, setCentroCusto, setObra]);
+    const prev = syncedRef.current;
+    if (prev.funcId === funcId && prev.obraId === obraAlocado && prev.ccId === ccId) return;
+    syncedRef.current = { funcId, obraId: obraAlocado, ccId };
+
+    useContextStore.setState({ obraId: obraAlocado, centroCustoId: ccId });
+  }, [funcId, funcionario?.obraAlocadoId, funcionario?.centroCustoId]);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
