@@ -1,3 +1,5 @@
+import type { HoraExtraTipo, HoraExtraStatus, HoraExtraOrigem } from './horas-extras.types';
+
 export interface HoraExtraAprovacaoResumoCard {
   id: string;
   titulo: string;
@@ -17,9 +19,9 @@ export interface HoraExtraAprovacaoItem {
   dataLancamento: string;
   quantidadeHoras: number;
   valorCalculado: number;
-  tipo: string;
-  status: string;
-  origem: string;
+  tipo: HoraExtraTipo;
+  status: HoraExtraStatus;
+  origem: HoraExtraOrigem;
   prioridade: 'alta' | 'media' | 'baixa';
   gestorResponsavel: string;
   integracaoDestino: 'fopag' | 'financeiro' | 'obra';
