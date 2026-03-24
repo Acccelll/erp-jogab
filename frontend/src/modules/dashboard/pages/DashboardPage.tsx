@@ -1,10 +1,11 @@
 import { Activity, Building2, BriefcaseBusiness, RefreshCw, Wallet } from 'lucide-react';
+import { useMemo } from 'react';
 import { KPISection, KPICard, MainContent, PageHeader, EmptyState } from '@/shared/components';
 import { formatCurrency, formatCompetencia } from '@/shared/lib/utils';
 import { useContextStore } from '@/shared/stores';
 import { DashboardAlertsPanel, DashboardSectionCard, DashboardSectionGroup } from '../components';
 import { useDashboardSummary } from '../hooks';
-import type { DashboardKpi } from '../types';
+import type { DashboardKpi, DashboardSummary } from '../types';
 
 function formatKpiValue(kpi: DashboardKpi): string | number {
   switch (kpi.format) {
@@ -18,9 +19,36 @@ function formatKpiValue(kpi: DashboardKpi): string | number {
   }
 }
 
+function safeDateString(value: string | undefined): string {
+  if (!value) return '';
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? '' : d.toLocaleString('pt-BR');
+}
+
+const EMPTY_SUMMARY: DashboardSummary = {
+  generatedAt: '',
+  kpis: [],
+  obras: [],
+  rh: [],
+  financeiro: [],
+  alertas: [],
+};
+
 export function DashboardPage() {
   const { competencia, obraId } = useContextStore();
   const { data, isLoading, isError, refetch, isFetching } = useDashboardSummary();
+
+  const safe = useMemo<DashboardSummary>(() => {
+    if (!data) return EMPTY_SUMMARY;
+    return {
+      generatedAt: data.generatedAt ?? '',
+      kpis: Array.isArray(data.kpis) ? data.kpis : [],
+      obras: Array.isArray(data.obras) ? data.obras : [],
+      rh: Array.isArray(data.rh) ? data.rh : [],
+      financeiro: Array.isArray(data.financeiro) ? data.financeiro : [],
+      alertas: Array.isArray(data.alertas) ? data.alertas : [],
+    };
+  }, [data]);
 
   const competenciaLabel = competencia ? formatCompetencia(competencia) : 'competência atual';
   const subtitle = obraId
@@ -74,7 +102,7 @@ export function DashboardPage() {
       {!isLoading && !isError && data && (
         <>
           <KPISection>
-            {data.kpis.map((kpi) => (
+            {safe.kpis.map((kpi) => (
               <KPICard
                 key={kpi.label}
                 label={kpi.label}
@@ -107,7 +135,7 @@ export function DashboardPage() {
                   </div>
                   <div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm">
                     <p className="text-xs uppercase tracking-wide text-white/70">Atualização</p>
-                    <p className="mt-1 text-sm font-semibold">{new Date(data.generatedAt).toLocaleString('pt-BR')}</p>
+                    <p className="mt-1 text-sm font-semibold">{safeDateString(safe.generatedAt)}</p>
                   </div>
                 </div>
               </article>
@@ -140,7 +168,7 @@ export function DashboardPage() {
               title="Resumo de Obras"
               description="Consolidação inicial com foco em avanço, custo e leitura do workspace central da operação."
             >
-              {data.obras.map((section) => (
+              {safe.obras.map((section) => (
                 <DashboardSectionCard key={section.id} section={section} />
               ))}
             </DashboardSectionGroup>
@@ -149,7 +177,7 @@ export function DashboardPage() {
               title="Resumo de RH"
               description="Sinais iniciais de alocação, provisões e pendências trabalhistas que impactam as obras."
             >
-              {data.rh.map((section) => (
+              {safe.rh.map((section) => (
                 <DashboardSectionCard key={section.id} section={section} />
               ))}
             </DashboardSectionGroup>
@@ -158,12 +186,12 @@ export function DashboardPage() {
               title="Resumo Financeiro e Pessoal"
               description="Indicadores executivos de desembolso, FOPAG, Horas Extras e previsto x realizado por obra."
             >
-              {data.financeiro.map((section) => (
+              {safe.financeiro.map((section) => (
                 <DashboardSectionCard key={section.id} section={section} />
               ))}
             </DashboardSectionGroup>
 
-            <DashboardAlertsPanel alerts={data.alertas} />
+            <DashboardAlertsPanel alerts={safe.alertas} />
 
             <section className="grid gap-4 md:grid-cols-3">
               <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
