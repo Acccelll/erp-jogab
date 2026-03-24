@@ -3,6 +3,11 @@ import type {
   FinanceiroDashboardData,
   FinanceiroFiltersData,
   FinanceiroKpis,
+  FinanceiroPessoalCentroCustoResumo,
+  FinanceiroPessoalCompetenciaResumo,
+  FinanceiroPessoalDashboardData,
+  FinanceiroPessoalObraResumo,
+  FinanceiroPessoalPrevistoRealizadoItem,
   FinanceiroResumoCardData,
   FinanceiroStatusResumo,
   FinanceiroTipoResumo,
@@ -303,6 +308,216 @@ export function getMockTitulosFinanceiros(filters?: FinanceiroFiltersData): Titu
   return titulos.filter((item) => matchesFilters(item, filters));
 }
 
+function buildPessoalData(filters?: FinanceiroFiltersData): FinanceiroPessoalDashboardData {
+  const competencia = filters?.competencia ?? '2026-03';
+
+  const competenciaResumo: FinanceiroPessoalCompetenciaResumo = {
+    competencia,
+    totalFuncionarios: 48,
+    totalObras: 4,
+    totalCentrosCusto: 6,
+    valorHorasExtrasPrevisto: 34200,
+    valorHorasExtrasRealizado: 28750,
+    valorFopagPrevisto: 182450.32,
+    valorFopagRealizado: 0,
+    valorPrevisto: 216650.32,
+    valorRealizado: 28750,
+    variacao: -187900.32,
+    statusFechamento: 'parcial',
+  };
+
+  const porObra: FinanceiroPessoalObraResumo[] = [
+    {
+      obraId: 'obra-1',
+      obraNome: 'OBR-001 — Edifício Aurora',
+      totalFuncionarios: 18,
+      totalCentrosCusto: 2,
+      valorHorasExtrasPrevisto: 12800,
+      valorHorasExtrasRealizado: 11200,
+      valorFopagPrevisto: 74500,
+      valorFopagRealizado: 0,
+      valorPrevisto: 87300,
+      valorRealizado: 11200,
+    },
+    {
+      obraId: 'obra-2',
+      obraNome: 'OBR-002 — Residencial Parque',
+      totalFuncionarios: 14,
+      totalCentrosCusto: 2,
+      valorHorasExtrasPrevisto: 9400,
+      valorHorasExtrasRealizado: 8150,
+      valorFopagPrevisto: 52640,
+      valorFopagRealizado: 0,
+      valorPrevisto: 62040,
+      valorRealizado: 8150,
+    },
+    {
+      obraId: 'obra-3',
+      obraNome: 'OBR-003 — Torre Empresarial',
+      totalFuncionarios: 10,
+      totalCentrosCusto: 1,
+      valorHorasExtrasPrevisto: 7200,
+      valorHorasExtrasRealizado: 5800,
+      valorFopagPrevisto: 35310.32,
+      valorFopagRealizado: 0,
+      valorPrevisto: 42510.32,
+      valorRealizado: 5800,
+    },
+    {
+      obraId: 'obra-4',
+      obraNome: 'OBR-004 — Ponte BR-101',
+      totalFuncionarios: 6,
+      totalCentrosCusto: 1,
+      valorHorasExtrasPrevisto: 4800,
+      valorHorasExtrasRealizado: 3600,
+      valorFopagPrevisto: 20000,
+      valorFopagRealizado: 0,
+      valorPrevisto: 24800,
+      valorRealizado: 3600,
+    },
+  ];
+
+  const porCentroCusto: FinanceiroPessoalCentroCustoResumo[] = [
+    {
+      centroCustoId: 'cc-rh-adm',
+      centroCustoNome: 'CC-RH-ADM',
+      obraId: 'obra-1',
+      obraNome: 'OBR-001 — Edifício Aurora',
+      totalFuncionarios: 10,
+      valorHorasExtrasPrevisto: 6400,
+      valorHorasExtrasRealizado: 5600,
+      valorFopagPrevisto: 42000,
+      valorFopagRealizado: 0,
+      valorPrevisto: 48400,
+      valorRealizado: 5600,
+    },
+    {
+      centroCustoId: 'cc-eng-obra1',
+      centroCustoNome: 'CC-ENG-OBR1',
+      obraId: 'obra-1',
+      obraNome: 'OBR-001 — Edifício Aurora',
+      totalFuncionarios: 8,
+      valorHorasExtrasPrevisto: 6400,
+      valorHorasExtrasRealizado: 5600,
+      valorFopagPrevisto: 32500,
+      valorFopagRealizado: 0,
+      valorPrevisto: 38900,
+      valorRealizado: 5600,
+    },
+    {
+      centroCustoId: 'cc-sup-est',
+      centroCustoNome: 'CC-SUP-EST',
+      obraId: 'obra-2',
+      obraNome: 'OBR-002 — Residencial Parque',
+      totalFuncionarios: 14,
+      valorHorasExtrasPrevisto: 9400,
+      valorHorasExtrasRealizado: 8150,
+      valorFopagPrevisto: 52640,
+      valorFopagRealizado: 0,
+      valorPrevisto: 62040,
+      valorRealizado: 8150,
+    },
+    {
+      centroCustoId: 'cc-fis-tri',
+      centroCustoNome: 'CC-FIS-TRI',
+      obraId: 'obra-3',
+      obraNome: 'OBR-003 — Torre Empresarial',
+      totalFuncionarios: 10,
+      valorHorasExtrasPrevisto: 7200,
+      valorHorasExtrasRealizado: 5800,
+      valorFopagPrevisto: 35310.32,
+      valorFopagRealizado: 0,
+      valorPrevisto: 42510.32,
+      valorRealizado: 5800,
+    },
+    {
+      centroCustoId: 'cc-eqp-loc',
+      centroCustoNome: 'CC-EQP-LOC',
+      obraId: 'obra-4',
+      obraNome: 'OBR-004 — Ponte BR-101',
+      totalFuncionarios: 6,
+      valorHorasExtrasPrevisto: 4800,
+      valorHorasExtrasRealizado: 3600,
+      valorFopagPrevisto: 20000,
+      valorFopagRealizado: 0,
+      valorPrevisto: 24800,
+      valorRealizado: 3600,
+    },
+  ];
+
+  const previstoRealizado: FinanceiroPessoalPrevistoRealizadoItem[] = [
+    {
+      id: 'pr-he',
+      categoria: 'horas_extras',
+      label: 'Horas extras',
+      valorPrevisto: 34200,
+      valorRealizado: 28750,
+      variacao: -5450,
+    },
+    {
+      id: 'pr-fopag',
+      categoria: 'fopag',
+      label: 'Folha de pagamento',
+      valorPrevisto: 182450.32,
+      valorRealizado: 0,
+      variacao: -182450.32,
+    },
+    {
+      id: 'pr-total',
+      categoria: 'custo_total',
+      label: 'Custo total de pessoal',
+      valorPrevisto: 216650.32,
+      valorRealizado: 28750,
+      variacao: -187900.32,
+    },
+  ];
+
+  const destaques: FinanceiroResumoCardData[] = [
+    {
+      id: 'pessoal-custo',
+      titulo: 'Custo de pessoal',
+      descricao: 'Consolidação de Horas Extras e FOPAG com rateio por obra e centro de custo.',
+      itens: [
+        { label: 'Previsto total', valor: formatCurrency(competenciaResumo.valorPrevisto) },
+        { label: 'Realizado', valor: formatCurrency(competenciaResumo.valorRealizado), destaque: true },
+        { label: 'Variação', valor: formatCurrency(competenciaResumo.variacao) },
+      ],
+    },
+    {
+      id: 'pessoal-horas-extras',
+      titulo: 'Horas extras',
+      descricao: 'Reflexo financeiro dos lançamentos aprovados e fechados para a competência.',
+      itens: [
+        { label: 'Previsto', valor: formatCurrency(competenciaResumo.valorHorasExtrasPrevisto) },
+        { label: 'Realizado', valor: formatCurrency(competenciaResumo.valorHorasExtrasRealizado), destaque: true },
+        { label: 'Funcionários', valor: String(competenciaResumo.totalFuncionarios) },
+      ],
+    },
+    {
+      id: 'pessoal-fopag',
+      titulo: 'Folha de pagamento',
+      descricao: 'Previsão e execução da folha salarial consolidada pela FOPAG.',
+      itens: [
+        { label: 'Previsto', valor: formatCurrency(competenciaResumo.valorFopagPrevisto) },
+        { label: 'Realizado', valor: formatCurrency(competenciaResumo.valorFopagRealizado) },
+        { label: 'Fechamento', valor: competenciaResumo.statusFechamento === 'fechada' ? 'Fechada' : 'Parcial', destaque: true },
+      ],
+    },
+  ];
+
+  return {
+    competencia: competenciaResumo,
+    porObra,
+    porCentroCusto,
+    previstoRealizado,
+    destaques,
+  };
+}
+
+export function getMockFinanceiroPessoal(filters?: FinanceiroFiltersData): FinanceiroPessoalDashboardData {
+  return buildPessoalData(filters);
+}
+
 export function getMockFinanceiroDashboard(filters?: FinanceiroFiltersData): FinanceiroDashboardData {
   const filtered = getMockTitulosFinanceiros(filters);
 
@@ -312,6 +527,7 @@ export function getMockFinanceiroDashboard(filters?: FinanceiroFiltersData): Fin
     resumoCards: buildResumoCards(filtered),
     statusResumo: buildStatusResumo(filtered),
     tipoResumo: buildTipoResumo(filtered),
+    pessoal: buildPessoalData(filters),
   };
 }
 

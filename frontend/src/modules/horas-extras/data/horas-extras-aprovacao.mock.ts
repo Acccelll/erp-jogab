@@ -100,6 +100,21 @@ function destinoPorStatus(status: string): 'fopag' | 'financeiro' | 'obra' {
   return 'obra';
 }
 
+let historicoCounter = historicoBase.length;
+
+export function registrarHoraExtraHistorico(
+  entry: Omit<HoraExtraHistoricoItem, 'id' | 'dataEvento'>,
+): HoraExtraHistoricoItem {
+  historicoCounter += 1;
+  const item: HoraExtraHistoricoItem = {
+    ...entry,
+    id: `hist-he-${historicoCounter}`,
+    dataEvento: new Date().toISOString(),
+  };
+  historicoBase.push(item);
+  return item;
+}
+
 export function getHorasExtrasAprovacaoData(competencia?: string): HorasExtrasAprovacaoData {
   const base = competencia ? mockHorasExtras.filter((item) => item.competencia === competencia) : mockHorasExtras;
 
