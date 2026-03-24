@@ -6,6 +6,8 @@
 - `/obras/:obraId/...`
 - `/rh/funcionarios`
 - `/horas-extras`
+- `/horas-extras/fechamento`
+- `/horas-extras/aprovacao`
 - `/fopag`
 - `/compras`
 - `/fiscal`

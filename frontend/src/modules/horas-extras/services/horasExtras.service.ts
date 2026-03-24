@@ -146,21 +146,38 @@ async function fecharCompetenciaHorasExtrasMock(competencia: string): Promise<Ho
   return result;
 }
 
-export async function fetchHorasExtras(filters?: HorasExtrasFiltersData): Promise<{
+interface HorasExtrasListResponse {
   data: HoraExtraListItem[];
   kpis: HorasExtrasKpis;
   resumoCards: HoraExtraResumoCard[];
   fechamentoAtual: FechamentoCompetencia | null;
-}> {
+}
+
+/** Ensures the API payload always conforms to a complete HorasExtrasListResponse. */
+function normalizeHorasExtrasListResponse(
+  payload: Partial<HorasExtrasListResponse> | null | undefined,
+): HorasExtrasListResponse {
+  return {
+    data: Array.isArray(payload?.data) ? payload.data : [],
+    kpis: {
+      totalLancamentos: payload?.kpis?.totalLancamentos ?? 0,
+      pendentesAprovacao: payload?.kpis?.pendentesAprovacao ?? 0,
+      aprovadas: payload?.kpis?.aprovadas ?? 0,
+      fechadasParaFopag: payload?.kpis?.fechadasParaFopag ?? 0,
+      horasTotais: payload?.kpis?.horasTotais ?? 0,
+      valorTotal: payload?.kpis?.valorTotal ?? 0,
+    },
+    resumoCards: Array.isArray(payload?.resumoCards) ? payload.resumoCards : [],
+    fechamentoAtual: payload?.fechamentoAtual ?? null,
+  };
+}
+
+export async function fetchHorasExtras(filters?: HorasExtrasFiltersData): Promise<HorasExtrasListResponse> {
   return withApiFallback(
     async () => {
       const response = await api.get(HORAS_EXTRAS_API_ENDPOINTS.list, { params: filters });
-      return unwrapApiResponse<{
-        data: HoraExtraListItem[];
-        kpis: HorasExtrasKpis;
-        resumoCards: HoraExtraResumoCard[];
-        fechamentoAtual: FechamentoCompetencia | null;
-      }>(response.data);
+      const raw = unwrapApiResponse<HorasExtrasListResponse>(response.data);
+      return normalizeHorasExtrasListResponse(raw);
     },
     () => fetchHorasExtrasMock(filters),
   );
