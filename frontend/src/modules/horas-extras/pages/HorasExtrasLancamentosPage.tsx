@@ -157,7 +157,7 @@ export function HorasExtrasLancamentosPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {items.map((item: HoraExtraListItem) => (
+                  {items.map((item) => (
                     <tr key={item.id} className="hover:bg-gray-50">
                       <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900">
                         {item.funcionarioNome}
