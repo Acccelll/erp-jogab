@@ -119,9 +119,11 @@ Todos os services de módulos prioritários possuem funções de normalização 
 - **Padrão de arquivo:** `*.test.ts` / `*.test.tsx` co-localizados com o código testado
 
 ### Cobertura atual
-- 10 arquivos de teste, 128 testes
-- Testes de normalização de services (56 cenários)
+- 36 arquivos de teste, 384 testes
+- Testes de normalização de services (80 cenários cobrindo todos os 14 módulos)
+- Testes de validação Zod (schemas de Obras, RH, Compras, FOPAG)
 - Testes de páginas com estados de loading, erro, dados e vazio
+- Testes de stores Zustand, hooks TanStack Query e utilitários compartilhados
 - Testes do cliente HTTP (unwrapApiResponse, normalizeApiError, shouldFallbackToMock, withApiFallback)
 
 ### Comandos
