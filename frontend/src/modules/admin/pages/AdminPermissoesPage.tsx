@@ -3,15 +3,8 @@ import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminPermissoesPage() {
-  const {
-    filters,
-    setSearch,
-    setCategoria,
-    setStatus,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useAdminFilters();
+  const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
+    useAdminFilters();
   const { data, isLoading, isError, refetch } = usePermissoes(filters);
 
   return (
@@ -35,11 +28,7 @@ export function AdminPermissoesPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando permissões...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando permissões...</div>}
 
         {isError && (
           <EmptyState
@@ -57,31 +46,31 @@ export function AdminPermissoesPage() {
           />
         )}
 
-        {!isLoading && !isError && data && (
-          <>
-            <AdminTable
-              category="permissoes"
-              columns={['Módulo', 'Recurso', 'Nível', 'Perfil', 'Status']}
-              rows={data.map((item) => [
-                item.modulo,
-                item.recurso,
-                item.nivel,
-                item.perfilNome,
-                item.status,
-              ])}
-            />
-
-            <section className="grid gap-4 xl:grid-cols-2">
-              {data.slice(0, 2).map((item) => (
-                <AdminPreviewPlaceholder
-                  key={item.id}
-                  title={`${item.modulo} · ${item.recurso}`}
-                  description={`Perfil ${item.perfilNome} com nível ${item.nivel}.`}
+        {!isLoading &&
+          !isError &&
+          data &&
+          (() => {
+            const items = Array.isArray(data) ? data : [];
+            return (
+              <>
+                <AdminTable
+                  category="permissoes"
+                  columns={['Módulo', 'Recurso', 'Nível', 'Perfil', 'Status']}
+                  rows={items.map((item) => [item.modulo, item.recurso, item.nivel, item.perfilNome, item.status])}
                 />
-              ))}
-            </section>
-          </>
-        )}
+
+                <section className="grid gap-4 xl:grid-cols-2">
+                  {items.slice(0, 2).map((item) => (
+                    <AdminPreviewPlaceholder
+                      key={item.id}
+                      title={`${item.modulo} · ${item.recurso}`}
+                      description={`Perfil ${item.perfilNome} com nível ${item.nivel}.`}
+                    />
+                  ))}
+                </section>
+              </>
+            );
+          })()}
       </MainContent>
     </div>
   );

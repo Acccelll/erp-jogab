@@ -3,15 +3,8 @@ import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminUsuariosPage() {
-  const {
-    filters,
-    setSearch,
-    setCategoria,
-    setStatus,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useAdminFilters();
+  const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
+    useAdminFilters();
   const { data, isLoading, isError, refetch } = useUsuarios(filters);
 
   return (
@@ -35,11 +28,7 @@ export function AdminUsuariosPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando usuários...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando usuários...</div>}
 
         {isError && (
           <EmptyState
@@ -57,32 +46,38 @@ export function AdminUsuariosPage() {
           />
         )}
 
-        {!isLoading && !isError && data && (
-          <>
-            <AdminTable
-              category="usuarios"
-              columns={['Nome', 'Email', 'Perfil', 'Status', 'Escopo', 'Último acesso']}
-              rows={data.map((item) => [
-                item.nome,
-                item.email,
-                item.perfilNome,
-                item.status,
-                item.obraEscopo ?? '—',
-                item.ultimoAcessoEm,
-              ])}
-            />
-
-            <section className="grid gap-4 xl:grid-cols-2">
-              {data.slice(0, 2).map((item) => (
-                <AdminPreviewPlaceholder
-                  key={item.id}
-                  title={item.nome}
-                  description={`Usuário ${item.email} com perfil ${item.perfilNome} e status ${item.status}.`}
+        {!isLoading &&
+          !isError &&
+          data &&
+          (() => {
+            const items = Array.isArray(data) ? data : [];
+            return (
+              <>
+                <AdminTable
+                  category="usuarios"
+                  columns={['Nome', 'Email', 'Perfil', 'Status', 'Escopo', 'Último acesso']}
+                  rows={items.map((item) => [
+                    item.nome,
+                    item.email,
+                    item.perfilNome,
+                    item.status,
+                    item.obraEscopo ?? '—',
+                    item.ultimoAcessoEm,
+                  ])}
                 />
-              ))}
-            </section>
-          </>
-        )}
+
+                <section className="grid gap-4 xl:grid-cols-2">
+                  {items.slice(0, 2).map((item) => (
+                    <AdminPreviewPlaceholder
+                      key={item.id}
+                      title={item.nome}
+                      description={`Usuário ${item.email} com perfil ${item.perfilNome} e status ${item.status}.`}
+                    />
+                  ))}
+                </section>
+              </>
+            );
+          })()}
       </MainContent>
     </div>
   );

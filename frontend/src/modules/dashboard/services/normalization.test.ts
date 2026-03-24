@@ -2,7 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { normalizeHorasExtrasDashboardData } from '@/modules/horas-extras/services/horasExtras.service';
 import { normalizeHorasExtrasAprovacaoData } from '@/modules/horas-extras/services/horasExtrasAprovacao.service';
 import { normalizeComprasDashboardData } from '@/modules/compras/services/compras.service';
-import { normalizeAdminDashboardData } from '@/modules/admin/services/admin.service';
+import {
+  normalizeAdminDashboardData,
+  normalizeAdminUsuarios,
+  normalizeAdminPerfis,
+  normalizeAdminPermissoes,
+  normalizeAdminParametros,
+  normalizeAdminLogs,
+  normalizeAdminIntegracoes,
+} from '@/modules/admin/services/admin.service';
 import { normalizeDashboardSummary } from '@/modules/dashboard/services/dashboard.service';
 import { normalizeFuncionariosListResponse } from '@/modules/rh/services/funcionarios.service';
 import { normalizeFopagCompetenciasResponse } from '@/modules/fopag/services/fopag.service';
@@ -358,5 +366,106 @@ describe('normalizeObrasListResponse', () => {
     expect(result.kpis.obrasAtivas).toBe(5);
     expect(result.data).toEqual([]);
     expect(result.total).toBe(8);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Admin list normalizers
+// ---------------------------------------------------------------------------
+describe('normalizeAdminUsuarios', () => {
+  it('returns [] for null', () => {
+    expect(normalizeAdminUsuarios(null)).toEqual([]);
+  });
+  it('returns [] for undefined', () => {
+    expect(normalizeAdminUsuarios(undefined)).toEqual([]);
+  });
+  it('returns [] for non-array payload', () => {
+    expect(normalizeAdminUsuarios({ foo: 'bar' })).toEqual([]);
+    expect(normalizeAdminUsuarios('string')).toEqual([]);
+    expect(normalizeAdminUsuarios(42)).toEqual([]);
+  });
+  it('preserves valid array', () => {
+    const arr = [{ id: '1', nome: 'Admin' }];
+    expect(normalizeAdminUsuarios(arr)).toBe(arr);
+  });
+});
+
+describe('normalizeAdminPerfis', () => {
+  it('returns [] for null', () => {
+    expect(normalizeAdminPerfis(null)).toEqual([]);
+  });
+  it('returns [] for undefined', () => {
+    expect(normalizeAdminPerfis(undefined)).toEqual([]);
+  });
+  it('returns [] for non-array payload', () => {
+    expect(normalizeAdminPerfis({ foo: 'bar' })).toEqual([]);
+  });
+  it('preserves valid array', () => {
+    const arr = [{ id: '1', nome: 'Gestor' }];
+    expect(normalizeAdminPerfis(arr)).toBe(arr);
+  });
+});
+
+describe('normalizeAdminPermissoes', () => {
+  it('returns [] for null', () => {
+    expect(normalizeAdminPermissoes(null)).toEqual([]);
+  });
+  it('returns [] for undefined', () => {
+    expect(normalizeAdminPermissoes(undefined)).toEqual([]);
+  });
+  it('returns [] for non-array payload', () => {
+    expect(normalizeAdminPermissoes('bad')).toEqual([]);
+  });
+  it('preserves valid array', () => {
+    const arr = [{ id: '1', modulo: 'admin' }];
+    expect(normalizeAdminPermissoes(arr)).toBe(arr);
+  });
+});
+
+describe('normalizeAdminParametros', () => {
+  it('returns [] for null', () => {
+    expect(normalizeAdminParametros(null)).toEqual([]);
+  });
+  it('returns [] for undefined', () => {
+    expect(normalizeAdminParametros(undefined)).toEqual([]);
+  });
+  it('returns [] for non-array payload', () => {
+    expect(normalizeAdminParametros(123)).toEqual([]);
+  });
+  it('preserves valid array', () => {
+    const arr = [{ id: '1', chave: 'PARAM' }];
+    expect(normalizeAdminParametros(arr)).toBe(arr);
+  });
+});
+
+describe('normalizeAdminLogs', () => {
+  it('returns [] for null', () => {
+    expect(normalizeAdminLogs(null)).toEqual([]);
+  });
+  it('returns [] for undefined', () => {
+    expect(normalizeAdminLogs(undefined)).toEqual([]);
+  });
+  it('returns [] for non-array payload', () => {
+    expect(normalizeAdminLogs({ logs: [] })).toEqual([]);
+  });
+  it('preserves valid array', () => {
+    const arr = [{ id: '1', acao: 'login' }];
+    expect(normalizeAdminLogs(arr)).toBe(arr);
+  });
+});
+
+describe('normalizeAdminIntegracoes', () => {
+  it('returns [] for null', () => {
+    expect(normalizeAdminIntegracoes(null)).toEqual([]);
+  });
+  it('returns [] for undefined', () => {
+    expect(normalizeAdminIntegracoes(undefined)).toEqual([]);
+  });
+  it('returns [] for non-array payload', () => {
+    expect(normalizeAdminIntegracoes(true)).toEqual([]);
+  });
+  it('preserves valid array', () => {
+    const arr = [{ id: '1', nome: 'SAP' }];
+    expect(normalizeAdminIntegracoes(arr)).toBe(arr);
   });
 });

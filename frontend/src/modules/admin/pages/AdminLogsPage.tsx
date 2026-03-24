@@ -3,15 +3,8 @@ import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminLogsPage() {
-  const {
-    filters,
-    setSearch,
-    setCategoria,
-    setStatus,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useAdminFilters();
+  const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
+    useAdminFilters();
   const { data, isLoading, isError, refetch } = useLogs(filters);
 
   return (
@@ -35,11 +28,7 @@ export function AdminLogsPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando logs...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando logs...</div>}
 
         {isError && (
           <EmptyState
@@ -57,32 +46,38 @@ export function AdminLogsPage() {
           />
         )}
 
-        {!isLoading && !isError && data && (
-          <>
-            <AdminTable
-              category="logs"
-              columns={['Usuário', 'Ação', 'Módulo', 'Entidade', 'Data', 'Status']}
-              rows={data.map((item) => [
-                item.usuarioNome,
-                item.acao,
-                item.modulo,
-                item.entidade,
-                item.data,
-                item.status,
-              ])}
-            />
-
-            <section className="grid gap-4 xl:grid-cols-2">
-              {data.slice(0, 2).map((item) => (
-                <AdminPreviewPlaceholder
-                  key={item.id}
-                  title={`${item.usuarioNome} · ${item.acao}`}
-                  description={`${item.modulo} em ${item.data}.`}
+        {!isLoading &&
+          !isError &&
+          data &&
+          (() => {
+            const items = Array.isArray(data) ? data : [];
+            return (
+              <>
+                <AdminTable
+                  category="logs"
+                  columns={['Usuário', 'Ação', 'Módulo', 'Entidade', 'Data', 'Status']}
+                  rows={items.map((item) => [
+                    item.usuarioNome,
+                    item.acao,
+                    item.modulo,
+                    item.entidade,
+                    item.data,
+                    item.status,
+                  ])}
                 />
-              ))}
-            </section>
-          </>
-        )}
+
+                <section className="grid gap-4 xl:grid-cols-2">
+                  {items.slice(0, 2).map((item) => (
+                    <AdminPreviewPlaceholder
+                      key={item.id}
+                      title={`${item.usuarioNome} · ${item.acao}`}
+                      description={`${item.modulo} em ${item.data}.`}
+                    />
+                  ))}
+                </section>
+              </>
+            );
+          })()}
       </MainContent>
     </div>
   );

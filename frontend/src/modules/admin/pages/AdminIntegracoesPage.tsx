@@ -3,15 +3,8 @@ import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminIntegracoesPage() {
-  const {
-    filters,
-    setSearch,
-    setCategoria,
-    setStatus,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useAdminFilters();
+  const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
+    useAdminFilters();
   const { data, isLoading, isError, refetch } = useIntegracoes(filters);
 
   return (
@@ -35,11 +28,7 @@ export function AdminIntegracoesPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando integrações...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando integrações...</div>}
 
         {isError && (
           <EmptyState
@@ -57,30 +46,36 @@ export function AdminIntegracoesPage() {
           />
         )}
 
-        {!isLoading && !isError && data && (
-          <>
-            <AdminTable
-              category="integracoes"
-              columns={['Integração', 'Descrição', 'Status', 'Última sincronização']}
-              rows={data.map((item) => [
-                item.nome,
-                item.descricao,
-                item.status,
-                item.ultimaSincronizacaoEm ?? '—',
-              ])}
-            />
-
-            <section className="grid gap-4 xl:grid-cols-2">
-              {data.slice(0, 2).map((item) => (
-                <AdminPreviewPlaceholder
-                  key={item.id}
-                  title={item.nome}
-                  description={`${item.descricao} Status atual: ${item.status}.`}
+        {!isLoading &&
+          !isError &&
+          data &&
+          (() => {
+            const items = Array.isArray(data) ? data : [];
+            return (
+              <>
+                <AdminTable
+                  category="integracoes"
+                  columns={['Integração', 'Descrição', 'Status', 'Última sincronização']}
+                  rows={items.map((item) => [
+                    item.nome,
+                    item.descricao,
+                    item.status,
+                    item.ultimaSincronizacaoEm ?? '—',
+                  ])}
                 />
-              ))}
-            </section>
-          </>
-        )}
+
+                <section className="grid gap-4 xl:grid-cols-2">
+                  {items.slice(0, 2).map((item) => (
+                    <AdminPreviewPlaceholder
+                      key={item.id}
+                      title={item.nome}
+                      description={`${item.descricao} Status atual: ${item.status}.`}
+                    />
+                  ))}
+                </section>
+              </>
+            );
+          })()}
       </MainContent>
     </div>
   );

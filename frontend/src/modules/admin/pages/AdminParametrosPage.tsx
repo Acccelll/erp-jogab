@@ -3,15 +3,8 @@ import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminParametrosPage() {
-  const {
-    filters,
-    setSearch,
-    setCategoria,
-    setStatus,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useAdminFilters();
+  const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
+    useAdminFilters();
   const { data, isLoading, isError, refetch } = useParametros(filters);
 
   return (
@@ -35,11 +28,7 @@ export function AdminParametrosPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando parâmetros...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando parâmetros...</div>}
 
         {isError && (
           <EmptyState
@@ -57,31 +46,31 @@ export function AdminParametrosPage() {
           />
         )}
 
-        {!isLoading && !isError && data && (
-          <>
-            <AdminTable
-              category="parametros"
-              columns={['Chave', 'Descrição', 'Valor atual', 'Escopo', 'Status']}
-              rows={data.map((item) => [
-                item.chave,
-                item.descricao,
-                item.valorAtual,
-                item.escopo,
-                item.status,
-              ])}
-            />
-
-            <section className="grid gap-4 xl:grid-cols-2">
-              {data.slice(0, 2).map((item) => (
-                <AdminPreviewPlaceholder
-                  key={item.id}
-                  title={item.chave}
-                  description={`Escopo ${item.escopo} com valor atual ${item.valorAtual}.`}
+        {!isLoading &&
+          !isError &&
+          data &&
+          (() => {
+            const items = Array.isArray(data) ? data : [];
+            return (
+              <>
+                <AdminTable
+                  category="parametros"
+                  columns={['Chave', 'Descrição', 'Valor atual', 'Escopo', 'Status']}
+                  rows={items.map((item) => [item.chave, item.descricao, item.valorAtual, item.escopo, item.status])}
                 />
-              ))}
-            </section>
-          </>
-        )}
+
+                <section className="grid gap-4 xl:grid-cols-2">
+                  {items.slice(0, 2).map((item) => (
+                    <AdminPreviewPlaceholder
+                      key={item.id}
+                      title={item.chave}
+                      description={`Escopo ${item.escopo} com valor atual ${item.valorAtual}.`}
+                    />
+                  ))}
+                </section>
+              </>
+            );
+          })()}
       </MainContent>
     </div>
   );
