@@ -33,11 +33,7 @@ export function TituloFinanceiroDetailPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando detalhe do título...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando detalhe do título...</div>}
 
         {isError && (
           <EmptyState
@@ -69,15 +65,9 @@ export function TituloFinanceiroDetailPage() {
               <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-sm font-medium text-jogab-600">
-                      {data.titulo.codigo}
-                    </p>
-                    <h2 className="mt-1 text-xl font-semibold text-gray-900">
-                      {data.titulo.descricao}
-                    </h2>
-                    <p className="mt-1 text-sm text-gray-500">
-                      {data.titulo.fornecedorCliente}
-                    </p>
+                    <p className="text-sm font-medium text-jogab-600">{data.titulo.codigo}</p>
+                    <h2 className="mt-1 text-xl font-semibold text-gray-900">{data.titulo.descricao}</h2>
+                    <p className="mt-1 text-sm text-gray-500">{data.titulo.fornecedorCliente}</p>
                   </div>
                   <FinanceiroStatusBadge status={data.titulo.status} />
                 </div>
@@ -85,22 +75,14 @@ export function TituloFinanceiroDetailPage() {
                 <dl className="mt-6 grid gap-4 md:grid-cols-2">
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Obra</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">
-                      {data.titulo.obraNome}
-                    </dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.titulo.obraNome}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">
-                      Centro de custo
-                    </dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">
-                      {data.titulo.centroCusto}
-                    </dd>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">Centro de custo</dt>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.titulo.centroCusto}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">
-                      Competência
-                    </dt>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">Competência</dt>
                     <dd className="mt-1 text-sm font-medium text-gray-900">
                       {formatCompetencia(data.titulo.competencia)}
                     </dd>
@@ -118,41 +100,32 @@ export function TituloFinanceiroDetailPage() {
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">
-                      Documento
-                    </dt>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">Documento</dt>
                     <dd className="mt-1 text-sm font-medium text-gray-900">
                       {data.titulo.documentoNumero ?? 'Sem documento fiscal vinculado'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">
-                      Vencimento
-                    </dt>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">Vencimento</dt>
                     <dd className="mt-1 text-sm font-medium text-gray-900">
                       {new Date(data.titulo.vencimento).toLocaleDateString('pt-BR')}
                     </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Valor</dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900">
-                      {formatCurrency(data.titulo.valor)}
-                    </dd>
+                    <dd className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(data.titulo.valor)}</dd>
                   </div>
                 </dl>
               </article>
 
               <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
-                <h2 className="text-base font-semibold text-gray-900">
-                  Integrações conceituais
-                </h2>
+                <h2 className="text-base font-semibold text-gray-900">Integrações conceituais</h2>
                 <p className="mt-1 text-sm text-gray-500">
-                  Relações preservadas entre Financeiro, Obra, FOPAG, Compras, Fiscal e
-                  demais módulos alimentadores.
+                  Relações preservadas entre Financeiro, Obra, FOPAG, Compras, Fiscal e demais módulos alimentadores.
                 </p>
 
                 <div className="mt-4 space-y-3">
-                  {data.integracoes.map((item) => (
+                  {(data.integracoes ?? []).map((item) => (
                     <div key={item.modulo} className="rounded-lg bg-gray-50 p-3">
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-sm font-semibold text-gray-900">{item.modulo}</p>
@@ -175,12 +148,10 @@ export function TituloFinanceiroDetailPage() {
 
             <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm shadow-gray-100/60">
               <div className="border-b border-gray-200 px-5 py-4">
-                <h2 className="text-base font-semibold text-gray-900">
-                  Timeline financeira
-                </h2>
+                <h2 className="text-base font-semibold text-gray-900">Timeline financeira</h2>
                 <p className="mt-1 text-sm text-gray-500">
-                  Eventos do ciclo do título para apoiar rastreabilidade de previsão,
-                  baixa, conciliação e integração entre módulos.
+                  Eventos do ciclo do título para apoiar rastreabilidade de previsão, baixa, conciliação e integração
+                  entre módulos.
                 </p>
               </div>
 
@@ -188,24 +159,16 @@ export function TituloFinanceiroDetailPage() {
                 <table className="min-w-full divide-y divide-gray-200 text-sm">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-600">
-                        Data
-                      </th>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-600">
-                        Evento
-                      </th>
-                                          </tr>
+                      <th className="px-4 py-3 text-left font-semibold text-gray-600">Data</th>
+                      <th className="px-4 py-3 text-left font-semibold text-gray-600">Evento</th>
+                    </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 bg-white">
-                    {data.timeline.map((item) => (
+                    {(data.timeline ?? []).map((item) => (
                       <tr key={item.id} className="hover:bg-gray-50/70">
-                        <td className="px-4 py-3 text-gray-700">
-                          {new Date(item.data).toLocaleDateString('pt-BR')}
-                        </td>
-                        <td className="px-4 py-3 font-medium text-gray-900">
-                          {item.label}
-                        </td>
-                                              </tr>
+                        <td className="px-4 py-3 text-gray-700">{new Date(item.data).toLocaleDateString('pt-BR')}</td>
+                        <td className="px-4 py-3 font-medium text-gray-900">{item.label}</td>
+                      </tr>
                     ))}
                   </tbody>
                 </table>

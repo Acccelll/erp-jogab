@@ -2,7 +2,13 @@ import { FolderOpen, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useDocumentos, useDocumentosFilters } from '../hooks';
-import { DocumentosFilters, DocumentosKpiBar, DocumentosOverview, DocumentosResumoCard, DocumentosTable } from '../components';
+import {
+  DocumentosFilters,
+  DocumentosKpiBar,
+  DocumentosOverview,
+  DocumentosResumoCard,
+  DocumentosTable,
+} from '../components';
 
 export function DocumentosListPage() {
   const {
@@ -26,11 +32,17 @@ export function DocumentosListPage() {
         subtitle="Gestão documental vinculada a Obras, RH, Fornecedores, Contratos e controle de vencimentos."
         actions={
           <div className="flex items-center gap-2">
-            <Link to="/obras" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <Link
+              to="/obras"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
               <FolderOpen size={16} />
               Obras
             </Link>
-            <Link to="/rh/funcionarios" className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600">
+            <Link
+              to="/rh/funcionarios"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+            >
               <Users size={16} />
               Funcionários
             </Link>
@@ -71,29 +83,56 @@ export function DocumentosListPage() {
           <EmptyState
             title="Erro ao carregar documentos"
             description="Não foi possível montar a visão principal de documentos, status e vencimentos."
-            action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600">Tentar novamente</button>}
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+              >
+                Tentar novamente
+              </button>
+            }
           />
         )}
 
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-3">
-              {data.resumoCards.map((card) => <DocumentosResumoCard key={card.id} card={card} />)}
+              {data.resumoCards.map((card) => (
+                <DocumentosResumoCard key={card.id} card={card} />
+              ))}
             </section>
 
             <DocumentosOverview statusItems={data.statusResumo} vencimentoItems={data.vencimentoResumo} />
 
-            {data.documentos.length === 0 ? (
+            {(data.documentos?.length ?? 0) === 0 ? (
               <EmptyState
                 title="Nenhum documento encontrado"
-                description={hasActiveFilters ? 'Nenhum documento corresponde aos filtros selecionados.' : 'Ainda não há documentos disponíveis para o contexto atual.'}
-                action={hasActiveFilters ? <button type="button" onClick={clearFilters} className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50">Limpar filtros</button> : undefined}
+                description={
+                  hasActiveFilters
+                    ? 'Nenhum documento corresponde aos filtros selecionados.'
+                    : 'Ainda não há documentos disponíveis para o contexto atual.'
+                }
+                action={
+                  hasActiveFilters ? (
+                    <button
+                      type="button"
+                      onClick={clearFilters}
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      Limpar filtros
+                    </button>
+                  ) : undefined
+                }
               />
             ) : (
               <section className="space-y-4">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900">Lista principal de documentos</h2>
-                  <p className="text-sm text-gray-500">Documentos vinculados a obras, funcionários, fornecedores, contratos e empresa com leitura de vencimentos.</p>
+                  <p className="text-sm text-gray-500">
+                    Documentos vinculados a obras, funcionários, fornecedores, contratos e empresa com leitura de
+                    vencimentos.
+                  </p>
                 </div>
                 <DocumentosTable items={data.documentos} />
               </section>

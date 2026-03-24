@@ -26,11 +26,17 @@ export function FiscalEntradasPage() {
         subtitle="Recebimento fiscal de compras e serviços com integração a estoque, obra e contas a pagar."
         actions={
           <div className="flex items-center gap-2">
-            <Link to="/compras" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <Link
+              to="/compras"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
               <ShoppingCart size={16} />
               Compras
             </Link>
-            <Link to="/estoque" className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600">
+            <Link
+              to="/estoque"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+            >
               <Boxes size={16} />
               Estoque
             </Link>
@@ -66,7 +72,15 @@ export function FiscalEntradasPage() {
           <EmptyState
             title="Erro ao carregar entradas fiscais"
             description="Não foi possível carregar as notas de entrada e documentos recebidos."
-            action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600">Tentar novamente</button>}
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+              >
+                Tentar novamente
+              </button>
+            }
           />
         )}
 
@@ -78,16 +92,22 @@ export function FiscalEntradasPage() {
               ))}
             </section>
 
-            {data.documentos.length === 0 ? (
+            {(data.documentos?.length ?? 0) === 0 ? (
               <EmptyState
                 title="Nenhuma entrada fiscal encontrada"
-                description={hasActiveFilters ? 'Nenhuma entrada corresponde aos filtros selecionados.' : 'Ainda não há entradas fiscais para o contexto atual.'}
+                description={
+                  hasActiveFilters
+                    ? 'Nenhuma entrada corresponde aos filtros selecionados.'
+                    : 'Ainda não há entradas fiscais para o contexto atual.'
+                }
               />
             ) : (
               <section className="space-y-4">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900">Entradas fiscais</h2>
-                  <p className="text-sm text-gray-500">Notas de entrada, CT-es e NFS-es de recebimento já vinculados ao ciclo de compras.</p>
+                  <p className="text-sm text-gray-500">
+                    Notas de entrada, CT-es e NFS-es de recebimento já vinculados ao ciclo de compras.
+                  </p>
                 </div>
                 <FiscalTable items={data.documentos} />
               </section>

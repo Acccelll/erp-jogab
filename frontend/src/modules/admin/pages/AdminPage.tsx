@@ -5,15 +5,8 @@ import { useAdmin, useAdminFilters } from '../hooks';
 import { AdminCategoriaCard, AdminFilters, AdminResumoBar } from '../components';
 
 export function AdminPage() {
-  const {
-    filters,
-    setSearch,
-    setCategoria,
-    setStatus,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useAdminFilters();
+  const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
+    useAdminFilters();
   const { data, isLoading, isError, refetch } = useAdmin(filters);
 
   return (
@@ -57,11 +50,7 @@ export function AdminPage() {
       {data?.resumo && <AdminResumoBar resumo={data.resumo} />}
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando administração...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando administração...</div>}
 
         {isError && (
           <EmptyState
@@ -79,8 +68,10 @@ export function AdminPage() {
           />
         )}
 
-        {!isLoading && !isError && data && (
-          data.categorias.length ? (
+        {!isLoading &&
+          !isError &&
+          data &&
+          ((data.categorias?.length ?? 0) ? (
             <section className="grid gap-4 xl:grid-cols-3">
               {data.categorias.map((item) => (
                 <AdminCategoriaCard key={item.categoria} item={item} />
@@ -91,8 +82,7 @@ export function AdminPage() {
               title="Nenhuma categoria encontrada"
               description="Não há categorias de administração disponíveis para os filtros atuais."
             />
-          )
-        )}
+          ))}
       </MainContent>
     </div>
   );

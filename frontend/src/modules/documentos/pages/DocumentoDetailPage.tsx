@@ -4,11 +4,7 @@ import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { formatCompetencia } from '@/shared/lib/utils';
 import { DocumentoStatusBadge } from '../components';
 import { useDocumentoDetails } from '../hooks';
-import {
-  DOCUMENTO_ALERTA_LABELS,
-  DOCUMENTO_ENTIDADE_LABELS,
-  DOCUMENTO_TIPO_LABELS,
-} from '../types';
+import { DOCUMENTO_ALERTA_LABELS, DOCUMENTO_ENTIDADE_LABELS, DOCUMENTO_TIPO_LABELS } from '../types';
 
 export function DocumentoDetailPage() {
   const { documentoId } = useParams<{ documentoId: string }>();
@@ -31,9 +27,7 @@ export function DocumentoDetailPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">Carregando detalhe do documento...</div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando detalhe do documento...</div>}
 
         {isError && (
           <EmptyState
@@ -69,7 +63,9 @@ export function DocumentoDetailPage() {
                 <dl className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Tipo</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{DOCUMENTO_TIPO_LABELS[data.documento.tipo]}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {DOCUMENTO_TIPO_LABELS[data.documento.tipo]}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Versão</dt>
@@ -83,11 +79,15 @@ export function DocumentoDetailPage() {
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Obra</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.documento.obraNome ?? 'Sem obra vinculada'}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {data.documento.obraNome ?? 'Sem obra vinculada'}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Contrato</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.documento.contratoCodigo ?? 'Sem contrato vinculado'}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {data.documento.contratoCodigo ?? 'Sem contrato vinculado'}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Responsável</dt>
@@ -120,7 +120,7 @@ export function DocumentoDetailPage() {
                 <div className="mt-6 rounded-lg bg-gray-50 p-4">
                   <h3 className="text-sm font-semibold text-gray-900">Observações</h3>
                   <ul className="mt-2 space-y-2 text-sm leading-6 text-gray-600">
-                    {data.observacoes.map((observacao) => (
+                    {(data.observacoes ?? []).map((observacao) => (
                       <li key={observacao}>• {observacao}</li>
                     ))}
                   </ul>
@@ -135,7 +135,7 @@ export function DocumentoDetailPage() {
                   </p>
                 </div>
 
-                {data.integracoes.map((integracao) => (
+                {(data.integracoes ?? []).map((integracao) => (
                   <div key={integracao.modulo} className="rounded-lg bg-gray-50 p-4">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-sm font-semibold text-gray-900">{integracao.modulo}</p>
@@ -173,7 +173,7 @@ export function DocumentoDetailPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 bg-white">
-                    {data.historico.map((item) => (
+                    {(data.historico ?? []).map((item) => (
                       <tr key={item.id} className="hover:bg-gray-50/70">
                         <td className="px-4 py-3 font-medium text-gray-900">{item.label}</td>
                         <td className="px-4 py-3 text-gray-700">{item.descricao}</td>
