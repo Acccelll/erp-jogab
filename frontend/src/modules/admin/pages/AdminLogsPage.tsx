@@ -6,6 +6,7 @@ export function AdminLogsPage() {
   const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
     useAdminFilters();
   const { data, isLoading, isError, refetch } = useLogs(filters);
+  const items = Array.isArray(data) ? data : [];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -46,38 +47,32 @@ export function AdminLogsPage() {
           />
         )}
 
-        {!isLoading &&
-          !isError &&
-          data &&
-          (() => {
-            const items = Array.isArray(data) ? data : [];
-            return (
-              <>
-                <AdminTable
-                  category="logs"
-                  columns={['Usuário', 'Ação', 'Módulo', 'Entidade', 'Data', 'Status']}
-                  rows={items.map((item) => [
-                    item.usuarioNome,
-                    item.acao,
-                    item.modulo,
-                    item.entidade,
-                    item.data,
-                    item.status,
-                  ])}
-                />
+        {!isLoading && !isError && data && (
+          <>
+            <AdminTable
+              category="logs"
+              columns={['Usuário', 'Ação', 'Módulo', 'Entidade', 'Data', 'Status']}
+              rows={items.map((item) => [
+                item.usuarioNome,
+                item.acao,
+                item.modulo,
+                item.entidade,
+                item.data,
+                item.status,
+              ])}
+            />
 
-                <section className="grid gap-4 xl:grid-cols-2">
-                  {items.slice(0, 2).map((item) => (
-                    <AdminPreviewPlaceholder
-                      key={item.id}
-                      title={`${item.usuarioNome} · ${item.acao}`}
-                      description={`${item.modulo} em ${item.data}.`}
-                    />
-                  ))}
-                </section>
-              </>
-            );
-          })()}
+            <section className="grid gap-4 xl:grid-cols-2">
+              {items.slice(0, 2).map((item) => (
+                <AdminPreviewPlaceholder
+                  key={item.id}
+                  title={`${item.usuarioNome} · ${item.acao}`}
+                  description={`${item.modulo} em ${item.data}.`}
+                />
+              ))}
+            </section>
+          </>
+        )}
       </MainContent>
     </div>
   );

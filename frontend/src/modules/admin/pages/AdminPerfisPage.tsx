@@ -6,6 +6,7 @@ export function AdminPerfisPage() {
   const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
     useAdminFilters();
   const { data, isLoading, isError, refetch } = usePerfis(filters);
+  const items = Array.isArray(data) ? data : [];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -46,27 +47,21 @@ export function AdminPerfisPage() {
           />
         )}
 
-        {!isLoading &&
-          !isError &&
-          data &&
-          (() => {
-            const items = Array.isArray(data) ? data : [];
-            return (
-              <>
-                <AdminTable
-                  category="perfis"
-                  columns={['Perfil', 'Descrição', 'Usuários', 'Status']}
-                  rows={items.map((item) => [item.nome, item.descricao, String(item.usuarios), item.status])}
-                />
+        {!isLoading && !isError && data && (
+          <>
+            <AdminTable
+              category="perfis"
+              columns={['Perfil', 'Descrição', 'Usuários', 'Status']}
+              rows={items.map((item) => [item.nome, item.descricao, String(item.usuarios), item.status])}
+            />
 
-                <section className="grid gap-4 xl:grid-cols-2">
-                  {items.slice(0, 2).map((item) => (
-                    <AdminPreviewPlaceholder key={item.id} title={item.nome} description={item.descricao} />
-                  ))}
-                </section>
-              </>
-            );
-          })()}
+            <section className="grid gap-4 xl:grid-cols-2">
+              {items.slice(0, 2).map((item) => (
+                <AdminPreviewPlaceholder key={item.id} title={item.nome} description={item.descricao} />
+              ))}
+            </section>
+          </>
+        )}
       </MainContent>
     </div>
   );

@@ -6,6 +6,7 @@ export function AdminParametrosPage() {
   const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
     useAdminFilters();
   const { data, isLoading, isError, refetch } = useParametros(filters);
+  const items = Array.isArray(data) ? data : [];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -46,31 +47,25 @@ export function AdminParametrosPage() {
           />
         )}
 
-        {!isLoading &&
-          !isError &&
-          data &&
-          (() => {
-            const items = Array.isArray(data) ? data : [];
-            return (
-              <>
-                <AdminTable
-                  category="parametros"
-                  columns={['Chave', 'Descrição', 'Valor atual', 'Escopo', 'Status']}
-                  rows={items.map((item) => [item.chave, item.descricao, item.valorAtual, item.escopo, item.status])}
-                />
+        {!isLoading && !isError && data && (
+          <>
+            <AdminTable
+              category="parametros"
+              columns={['Chave', 'Descrição', 'Valor atual', 'Escopo', 'Status']}
+              rows={items.map((item) => [item.chave, item.descricao, item.valorAtual, item.escopo, item.status])}
+            />
 
-                <section className="grid gap-4 xl:grid-cols-2">
-                  {items.slice(0, 2).map((item) => (
-                    <AdminPreviewPlaceholder
-                      key={item.id}
-                      title={item.chave}
-                      description={`Escopo ${item.escopo} com valor atual ${item.valorAtual}.`}
-                    />
-                  ))}
-                </section>
-              </>
-            );
-          })()}
+            <section className="grid gap-4 xl:grid-cols-2">
+              {items.slice(0, 2).map((item) => (
+                <AdminPreviewPlaceholder
+                  key={item.id}
+                  title={item.chave}
+                  description={`Escopo ${item.escopo} com valor atual ${item.valorAtual}.`}
+                />
+              ))}
+            </section>
+          </>
+        )}
       </MainContent>
     </div>
   );

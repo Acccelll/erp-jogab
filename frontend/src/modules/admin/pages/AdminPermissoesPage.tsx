@@ -6,6 +6,7 @@ export function AdminPermissoesPage() {
   const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
     useAdminFilters();
   const { data, isLoading, isError, refetch } = usePermissoes(filters);
+  const items = Array.isArray(data) ? data : [];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -46,31 +47,25 @@ export function AdminPermissoesPage() {
           />
         )}
 
-        {!isLoading &&
-          !isError &&
-          data &&
-          (() => {
-            const items = Array.isArray(data) ? data : [];
-            return (
-              <>
-                <AdminTable
-                  category="permissoes"
-                  columns={['Módulo', 'Recurso', 'Nível', 'Perfil', 'Status']}
-                  rows={items.map((item) => [item.modulo, item.recurso, item.nivel, item.perfilNome, item.status])}
-                />
+        {!isLoading && !isError && data && (
+          <>
+            <AdminTable
+              category="permissoes"
+              columns={['Módulo', 'Recurso', 'Nível', 'Perfil', 'Status']}
+              rows={items.map((item) => [item.modulo, item.recurso, item.nivel, item.perfilNome, item.status])}
+            />
 
-                <section className="grid gap-4 xl:grid-cols-2">
-                  {items.slice(0, 2).map((item) => (
-                    <AdminPreviewPlaceholder
-                      key={item.id}
-                      title={`${item.modulo} · ${item.recurso}`}
-                      description={`Perfil ${item.perfilNome} com nível ${item.nivel}.`}
-                    />
-                  ))}
-                </section>
-              </>
-            );
-          })()}
+            <section className="grid gap-4 xl:grid-cols-2">
+              {items.slice(0, 2).map((item) => (
+                <AdminPreviewPlaceholder
+                  key={item.id}
+                  title={`${item.modulo} · ${item.recurso}`}
+                  description={`Perfil ${item.perfilNome} com nível ${item.nivel}.`}
+                />
+              ))}
+            </section>
+          </>
+        )}
       </MainContent>
     </div>
   );
