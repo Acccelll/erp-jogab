@@ -1,6 +1,14 @@
+import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { getMockDocumentoFiscalById, getMockFiscalDashboard } from '../data/fiscal.mock';
 import { fiscalFiltersSchema } from '../types';
 import type { FiscalFiltersData } from '../types';
+
+export const FISCAL_API_ENDPOINTS = {
+  dashboard: '/fiscal/dashboard',
+  entradas: '/fiscal/entradas',
+  saidas: '/fiscal/saidas',
+  documentoDetail: (id: string) => `/fiscal/documentos/${id}`,
+} as const;
 
 const NETWORK_DELAY_MS = 180;
 
@@ -12,22 +20,22 @@ function normalizeFilters(filters?: FiscalFiltersData) {
   return fiscalFiltersSchema.parse(filters ?? {});
 }
 
-export async function fetchFiscalDashboard(filters?: FiscalFiltersData) {
+async function fetchFiscalDashboardMock(filters?: FiscalFiltersData) {
   await wait();
   return getMockFiscalDashboard(normalizeFilters(filters));
 }
 
-export async function fetchFiscalEntradas(filters?: FiscalFiltersData) {
+async function fetchFiscalEntradasMock(filters?: FiscalFiltersData) {
   await wait();
   return getMockFiscalDashboard({ ...normalizeFilters(filters), tipoOperacao: 'entrada' });
 }
 
-export async function fetchFiscalSaidas(filters?: FiscalFiltersData) {
+async function fetchFiscalSaidasMock(filters?: FiscalFiltersData) {
   await wait();
   return getMockFiscalDashboard({ ...normalizeFilters(filters), tipoOperacao: 'saida' });
 }
 
-export async function fetchDocumentoFiscalById(documentoId: string) {
+async function fetchDocumentoFiscalByIdMock(documentoId: string) {
   await wait();
   const result = getMockDocumentoFiscalById(documentoId);
 
@@ -36,4 +44,44 @@ export async function fetchDocumentoFiscalById(documentoId: string) {
   }
 
   return result;
+}
+
+export async function fetchFiscalDashboard(filters?: FiscalFiltersData) {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(FISCAL_API_ENDPOINTS.dashboard, { params: filters });
+      return unwrapApiResponse<Awaited<ReturnType<typeof fetchFiscalDashboardMock>>>(response.data);
+    },
+    () => fetchFiscalDashboardMock(filters),
+  );
+}
+
+export async function fetchFiscalEntradas(filters?: FiscalFiltersData) {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(FISCAL_API_ENDPOINTS.entradas, { params: filters });
+      return unwrapApiResponse<Awaited<ReturnType<typeof fetchFiscalEntradasMock>>>(response.data);
+    },
+    () => fetchFiscalEntradasMock(filters),
+  );
+}
+
+export async function fetchFiscalSaidas(filters?: FiscalFiltersData) {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(FISCAL_API_ENDPOINTS.saidas, { params: filters });
+      return unwrapApiResponse<Awaited<ReturnType<typeof fetchFiscalSaidasMock>>>(response.data);
+    },
+    () => fetchFiscalSaidasMock(filters),
+  );
+}
+
+export async function fetchDocumentoFiscalById(documentoId: string) {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(FISCAL_API_ENDPOINTS.documentoDetail(documentoId));
+      return unwrapApiResponse<Awaited<ReturnType<typeof fetchDocumentoFiscalByIdMock>>>(response.data);
+    },
+    () => fetchDocumentoFiscalByIdMock(documentoId),
+  );
 }

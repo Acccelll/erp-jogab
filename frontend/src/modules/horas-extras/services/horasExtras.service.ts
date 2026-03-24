@@ -1,3 +1,4 @@
+import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import type {
   FechamentoCompetencia,
   HoraExtraLancamento,
@@ -19,6 +20,15 @@ import {
   toHoraExtraListItem,
 } from '../data/horas-extras.mock';
 import { registrarHoraExtraHistorico } from '../data/horas-extras-aprovacao.mock';
+
+export const HORAS_EXTRAS_API_ENDPOINTS = {
+  list: '/horas-extras',
+  detail: (id: string) => `/horas-extras/${id}`,
+  dashboard: '/horas-extras/dashboard',
+  aprovar: (id: string) => `/horas-extras/${id}/aprovar`,
+  fechamento: '/horas-extras/fechamento',
+  fechamentos: '/horas-extras/fechamentos',
+} as const;
 
 function delay(ms = 250): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -60,7 +70,7 @@ function applyFilters(items: HoraExtraLancamento[], filters?: HorasExtrasFilters
   return result;
 }
 
-export async function fetchHorasExtras(filters?: HorasExtrasFiltersData): Promise<{
+async function fetchHorasExtrasMock(filters?: HorasExtrasFiltersData): Promise<{
   data: HoraExtraListItem[];
   kpis: HorasExtrasKpis;
   resumoCards: HoraExtraResumoCard[];
@@ -80,18 +90,18 @@ export async function fetchHorasExtras(filters?: HorasExtrasFiltersData): Promis
   };
 }
 
-export async function fetchHoraExtraById(id: string): Promise<HoraExtraLancamento | null> {
+async function fetchHoraExtraByIdMock(id: string): Promise<HoraExtraLancamento | null> {
   await delay(180);
   return mockHorasExtras.find((item) => item.id === id) ?? null;
 }
 
-export async function fetchFechamentosCompetencia(): Promise<FechamentoCompetencia[]> {
+async function fetchFechamentosCompetenciaMock(): Promise<FechamentoCompetencia[]> {
   await delay(180);
   return [...new Set(mockHorasExtras.map((item) => item.competencia))].map((competencia) => syncFechamentoCompetencia(competencia));
 }
 
-export async function fetchHorasExtrasDashboard(filters?: HorasExtrasFiltersData): Promise<HorasExtrasDashboardData> {
-  const response = await fetchHorasExtras(filters);
+async function fetchHorasExtrasDashboardMock(filters?: HorasExtrasFiltersData): Promise<HorasExtrasDashboardData> {
+  const response = await fetchHorasExtrasMock(filters);
   return {
     list: response.data,
     kpis: response.kpis,
@@ -100,7 +110,7 @@ export async function fetchHorasExtrasDashboard(filters?: HorasExtrasFiltersData
   };
 }
 
-export async function approveHoraExtra(id: string): Promise<HoraExtraMutationResponse> {
+async function approveHoraExtraServiceMock(id: string): Promise<HoraExtraMutationResponse> {
   await delay(180);
   const result = approveHoraExtraMock(id);
   registrarHoraExtraHistorico({
@@ -116,7 +126,7 @@ export async function approveHoraExtra(id: string): Promise<HoraExtraMutationRes
   return result;
 }
 
-export async function fecharCompetenciaHorasExtras(competencia: string): Promise<HorasExtrasFechamentoResponse> {
+async function fecharCompetenciaHorasExtrasMock(competencia: string): Promise<HorasExtrasFechamentoResponse> {
   await delay(220);
   const result = fecharCompetenciaMock(competencia);
   mockHorasExtras
@@ -134,4 +144,74 @@ export async function fecharCompetenciaHorasExtras(competencia: string): Promise
       });
     });
   return result;
+}
+
+export async function fetchHorasExtras(filters?: HorasExtrasFiltersData): Promise<{
+  data: HoraExtraListItem[];
+  kpis: HorasExtrasKpis;
+  resumoCards: HoraExtraResumoCard[];
+  fechamentoAtual: FechamentoCompetencia | null;
+}> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(HORAS_EXTRAS_API_ENDPOINTS.list, { params: filters });
+      return unwrapApiResponse<{
+        data: HoraExtraListItem[];
+        kpis: HorasExtrasKpis;
+        resumoCards: HoraExtraResumoCard[];
+        fechamentoAtual: FechamentoCompetencia | null;
+      }>(response.data);
+    },
+    () => fetchHorasExtrasMock(filters),
+  );
+}
+
+export async function fetchHoraExtraById(id: string): Promise<HoraExtraLancamento | null> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(HORAS_EXTRAS_API_ENDPOINTS.detail(id));
+      return unwrapApiResponse<HoraExtraLancamento | null>(response.data);
+    },
+    () => fetchHoraExtraByIdMock(id),
+  );
+}
+
+export async function fetchFechamentosCompetencia(): Promise<FechamentoCompetencia[]> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(HORAS_EXTRAS_API_ENDPOINTS.fechamentos);
+      return unwrapApiResponse<FechamentoCompetencia[]>(response.data);
+    },
+    () => fetchFechamentosCompetenciaMock(),
+  );
+}
+
+export async function fetchHorasExtrasDashboard(filters?: HorasExtrasFiltersData): Promise<HorasExtrasDashboardData> {
+  return withApiFallback(
+    async () => {
+      const response = await api.get(HORAS_EXTRAS_API_ENDPOINTS.dashboard, { params: filters });
+      return unwrapApiResponse<HorasExtrasDashboardData>(response.data);
+    },
+    () => fetchHorasExtrasDashboardMock(filters),
+  );
+}
+
+export async function approveHoraExtra(id: string): Promise<HoraExtraMutationResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(HORAS_EXTRAS_API_ENDPOINTS.aprovar(id));
+      return unwrapApiResponse<HoraExtraMutationResponse>(response.data);
+    },
+    () => approveHoraExtraServiceMock(id),
+  );
+}
+
+export async function fecharCompetenciaHorasExtras(competencia: string): Promise<HorasExtrasFechamentoResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(HORAS_EXTRAS_API_ENDPOINTS.fechamento, { competencia });
+      return unwrapApiResponse<HorasExtrasFechamentoResponse>(response.data);
+    },
+    () => fecharCompetenciaHorasExtrasMock(competencia),
+  );
 }
