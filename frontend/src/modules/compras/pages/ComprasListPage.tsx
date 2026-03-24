@@ -12,16 +12,8 @@ import {
 } from '../components';
 
 export function ComprasListPage() {
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setCategoria,
-    setPrioridade,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useCompraFilters();
+  const { filters, setSearch, setStatus, setCategoria, setPrioridade, setCompetencia, clearFilters, hasActiveFilters } =
+    useCompraFilters();
 
   const { data, isLoading, isError, refetch } = useCompras(filters);
 
@@ -103,7 +95,7 @@ export function ComprasListPage() {
 
             <ComprasStatusOverview items={data.statusResumo} />
 
-            {data.solicitacoes.length === 0 && data.pedidos.length === 0 ? (
+            {(data.solicitacoes?.length ?? 0) === 0 && (data.pedidos?.length ?? 0) === 0 ? (
               <EmptyState
                 title="Nenhuma compra encontrada"
                 description={
@@ -131,7 +123,10 @@ export function ComprasListPage() {
                       <h2 className="text-lg font-semibold text-gray-900">Solicitações recentes</h2>
                       <p className="text-sm text-gray-500">Demandas originadas nas obras e nas áreas de apoio.</p>
                     </div>
-                    <Link to="/compras/solicitacoes" className="text-sm font-medium text-jogab-600 hover:text-jogab-700">
+                    <Link
+                      to="/compras/solicitacoes"
+                      className="text-sm font-medium text-jogab-600 hover:text-jogab-700"
+                    >
                       Ver todas
                     </Link>
                   </div>
@@ -159,7 +154,9 @@ export function ComprasListPage() {
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div>
                         <h2 className="text-lg font-semibold text-gray-900">Pedidos em destaque</h2>
-                        <p className="text-sm text-gray-500">Pedidos já emitidos com impacto direto em custo comprometido da obra.</p>
+                        <p className="text-sm text-gray-500">
+                          Pedidos já emitidos com impacto direto em custo comprometido da obra.
+                        </p>
                       </div>
                       <Link to="/compras/pedidos" className="text-sm font-medium text-jogab-600 hover:text-jogab-700">
                         Ver todos

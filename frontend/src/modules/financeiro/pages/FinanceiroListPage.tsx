@@ -2,7 +2,13 @@ import { Landmark, TrendingDown, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { EmptyState, MainContent, PageHeader, StatusBadge } from '@/shared/components';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
-import { FinanceiroFilters, FinanceiroKpiBar, FinanceiroResumoCard, FinanceiroVisaoStatusTipo, TitulosFinanceirosTable } from '../components';
+import {
+  FinanceiroFilters,
+  FinanceiroKpiBar,
+  FinanceiroResumoCard,
+  FinanceiroVisaoStatusTipo,
+  TitulosFinanceirosTable,
+} from '../components';
 import { useFinanceiro, useFinanceiroFilters, useFinanceiroPessoal } from '../hooks';
 
 const FECHAMENTO_VARIANTS = {
@@ -12,16 +18,8 @@ const FECHAMENTO_VARIANTS = {
 } as const;
 
 export function FinanceiroListPage() {
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setTipo,
-    setOrigem,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useFinanceiroFilters();
+  const { filters, setSearch, setStatus, setTipo, setOrigem, setCompetencia, clearFilters, hasActiveFilters } =
+    useFinanceiroFilters();
 
   const { data, isLoading, isError, refetch } = useFinanceiro(filters);
   const { data: pessoal } = useFinanceiroPessoal(filters);
@@ -33,15 +31,24 @@ export function FinanceiroListPage() {
         subtitle="Programação financeira com integração conceitual entre Obra, FOPAG, Horas Extras, Compras, Fiscal e Medições."
         actions={
           <div className="flex items-center gap-2">
-            <Link to="/financeiro/fluxo" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <Link
+              to="/financeiro/fluxo"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
               <Landmark size={16} />
               Fluxo de caixa
             </Link>
-            <Link to="/financeiro/contas-pagar" className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600">
+            <Link
+              to="/financeiro/contas-pagar"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+            >
               <TrendingDown size={16} />
               Contas a pagar
             </Link>
-            <Link to="/financeiro/contas-receber" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <Link
+              to="/financeiro/contas-receber"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
               <TrendingUp size={16} />
               Contas a receber
             </Link>
@@ -112,17 +119,43 @@ export function FinanceiroListPage() {
                   <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h2 className="text-base font-semibold text-gray-900">Custo de pessoal por competência e obra</h2>
-                        <p className="mt-1 text-sm text-gray-500">Reflexo consolidado do fluxo Horas Extras → FOPAG → Financeiro, preservando Obra e centro de custo.</p>
+                        <h2 className="text-base font-semibold text-gray-900">
+                          Custo de pessoal por competência e obra
+                        </h2>
+                        <p className="mt-1 text-sm text-gray-500">
+                          Reflexo consolidado do fluxo Horas Extras → FOPAG → Financeiro, preservando Obra e centro de
+                          custo.
+                        </p>
                       </div>
-                      <StatusBadge label={pessoal.competencia.statusFechamento} variant={FECHAMENTO_VARIANTS[pessoal.competencia.statusFechamento]} />
+                      <StatusBadge
+                        label={pessoal.competencia.statusFechamento}
+                        variant={FECHAMENTO_VARIANTS[pessoal.competencia.statusFechamento]}
+                      />
                     </div>
 
                     <div className="mt-4 grid gap-3 md:grid-cols-4">
-                      <div className="rounded-lg bg-gray-50 px-3 py-2"><p className="text-xs uppercase tracking-wide text-gray-400">Competência</p><p className="mt-1 text-sm font-semibold text-gray-900">{formatCompetencia(pessoal.competencia.competencia)}</p></div>
-                      <div className="rounded-lg bg-gray-50 px-3 py-2"><p className="text-xs uppercase tracking-wide text-gray-400">Funcionários</p><p className="mt-1 text-sm font-semibold text-gray-900">{pessoal.competencia.totalFuncionarios}</p></div>
-                      <div className="rounded-lg bg-gray-50 px-3 py-2"><p className="text-xs uppercase tracking-wide text-gray-400">Obras</p><p className="mt-1 text-sm font-semibold text-gray-900">{pessoal.competencia.totalObras}</p></div>
-                      <div className="rounded-lg bg-gray-50 px-3 py-2"><p className="text-xs uppercase tracking-wide text-gray-400">Centros de custo</p><p className="mt-1 text-sm font-semibold text-gray-900">{pessoal.competencia.totalCentrosCusto}</p></div>
+                      <div className="rounded-lg bg-gray-50 px-3 py-2">
+                        <p className="text-xs uppercase tracking-wide text-gray-400">Competência</p>
+                        <p className="mt-1 text-sm font-semibold text-gray-900">
+                          {formatCompetencia(pessoal.competencia.competencia)}
+                        </p>
+                      </div>
+                      <div className="rounded-lg bg-gray-50 px-3 py-2">
+                        <p className="text-xs uppercase tracking-wide text-gray-400">Funcionários</p>
+                        <p className="mt-1 text-sm font-semibold text-gray-900">
+                          {pessoal.competencia.totalFuncionarios}
+                        </p>
+                      </div>
+                      <div className="rounded-lg bg-gray-50 px-3 py-2">
+                        <p className="text-xs uppercase tracking-wide text-gray-400">Obras</p>
+                        <p className="mt-1 text-sm font-semibold text-gray-900">{pessoal.competencia.totalObras}</p>
+                      </div>
+                      <div className="rounded-lg bg-gray-50 px-3 py-2">
+                        <p className="text-xs uppercase tracking-wide text-gray-400">Centros de custo</p>
+                        <p className="mt-1 text-sm font-semibold text-gray-900">
+                          {pessoal.competencia.totalCentrosCusto}
+                        </p>
+                      </div>
                     </div>
 
                     <div className="mt-4 overflow-x-auto">
@@ -139,11 +172,24 @@ export function FinanceiroListPage() {
                         <tbody className="divide-y divide-gray-100 bg-white">
                           {pessoal.porObra.map((item) => (
                             <tr key={item.obraId} className="hover:bg-gray-50/70">
-                              <td className="px-4 py-3 align-top"><div className="font-medium text-gray-900">{item.obraNome}</div><div className="text-xs text-gray-500">{item.totalFuncionarios} funcionário(s) · {item.totalCentrosCusto} centro(s)</div></td>
-                              <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.valorHorasExtrasPrevisto)}</td>
-                              <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.valorFopagPrevisto)}</td>
-                              <td className="px-4 py-3 text-right font-medium text-gray-900">{formatCurrency(item.valorPrevisto)}</td>
-                              <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.valorRealizado)}</td>
+                              <td className="px-4 py-3 align-top">
+                                <div className="font-medium text-gray-900">{item.obraNome}</div>
+                                <div className="text-xs text-gray-500">
+                                  {item.totalFuncionarios} funcionário(s) · {item.totalCentrosCusto} centro(s)
+                                </div>
+                              </td>
+                              <td className="px-4 py-3 text-right text-gray-700">
+                                {formatCurrency(item.valorHorasExtrasPrevisto)}
+                              </td>
+                              <td className="px-4 py-3 text-right text-gray-700">
+                                {formatCurrency(item.valorFopagPrevisto)}
+                              </td>
+                              <td className="px-4 py-3 text-right font-medium text-gray-900">
+                                {formatCurrency(item.valorPrevisto)}
+                              </td>
+                              <td className="px-4 py-3 text-right text-gray-700">
+                                {formatCurrency(item.valorRealizado)}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -153,7 +199,9 @@ export function FinanceiroListPage() {
 
                   <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
                     <h2 className="text-base font-semibold text-gray-900">Previsto x realizado de pessoal</h2>
-                    <p className="mt-1 text-sm text-gray-500">Leitura gerencial mínima para apoiar relatórios e comparativos financeiros futuros.</p>
+                    <p className="mt-1 text-sm text-gray-500">
+                      Leitura gerencial mínima para apoiar relatórios e comparativos financeiros futuros.
+                    </p>
                     <div className="mt-4 space-y-3">
                       {pessoal.previstoRealizado.map((item) => (
                         <div key={item.id} className="rounded-lg bg-gray-50 p-3">
@@ -162,8 +210,18 @@ export function FinanceiroListPage() {
                             <span className="text-xs text-gray-500">Δ {formatCurrency(item.variacao)}</span>
                           </div>
                           <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                            <div><p className="text-xs uppercase tracking-wide text-gray-400">Previsto</p><p className="mt-1 text-sm font-medium text-gray-900">{formatCurrency(item.valorPrevisto)}</p></div>
-                            <div><p className="text-xs uppercase tracking-wide text-gray-400">Realizado</p><p className="mt-1 text-sm font-medium text-gray-900">{formatCurrency(item.valorRealizado)}</p></div>
+                            <div>
+                              <p className="text-xs uppercase tracking-wide text-gray-400">Previsto</p>
+                              <p className="mt-1 text-sm font-medium text-gray-900">
+                                {formatCurrency(item.valorPrevisto)}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs uppercase tracking-wide text-gray-400">Realizado</p>
+                              <p className="mt-1 text-sm font-medium text-gray-900">
+                                {formatCurrency(item.valorRealizado)}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -182,7 +240,9 @@ export function FinanceiroListPage() {
                             <tr key={item.centroCustoId} className="hover:bg-gray-50/70">
                               <td className="px-4 py-3 font-medium text-gray-900">{item.centroCustoNome}</td>
                               <td className="px-4 py-3 text-gray-700">{item.obraNome}</td>
-                              <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.valorPrevisto)}</td>
+                              <td className="px-4 py-3 text-right text-gray-700">
+                                {formatCurrency(item.valorPrevisto)}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -195,7 +255,7 @@ export function FinanceiroListPage() {
 
             <FinanceiroVisaoStatusTipo statusItems={data.statusResumo} tipoItems={data.tipoResumo} />
 
-            {data.titulos.length === 0 ? (
+            {(data.titulos?.length ?? 0) === 0 ? (
               <EmptyState
                 title="Nenhum título encontrado"
                 description={
@@ -220,7 +280,9 @@ export function FinanceiroListPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-900">Títulos financeiros</h2>
-                    <p className="text-sm text-gray-500">Leitura consolidada dos títulos com vínculo de obra, competência, origem e status.</p>
+                    <p className="text-sm text-gray-500">
+                      Leitura consolidada dos títulos com vínculo de obra, competência, origem e status.
+                    </p>
                   </div>
                   <Link to="/financeiro/fluxo" className="text-sm font-medium text-jogab-600 hover:text-jogab-700">
                     Ver fluxo projetado

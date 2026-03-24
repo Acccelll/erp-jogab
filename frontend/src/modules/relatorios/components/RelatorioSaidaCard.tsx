@@ -26,7 +26,9 @@ export function RelatorioSaidaCard({ item }: RelatorioSaidaCardProps) {
           <h3 className="text-base font-semibold text-gray-900">{item.titulo}</h3>
           <p className="mt-1 text-sm text-gray-500">{item.descricao}</p>
         </div>
-        <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${getDisponibilidadeClass(item.disponibilidade)}`}>
+        <span
+          className={`rounded-full px-2.5 py-1 text-xs font-medium ${getDisponibilidadeClass(item.disponibilidade)}`}
+        >
           {RELATORIO_DISPONIBILIDADE_LABELS[item.disponibilidade]}
         </span>
       </div>
@@ -56,7 +58,7 @@ export function RelatorioSaidaCard({ item }: RelatorioSaidaCardProps) {
           <FileDown size={12} />
           {RELATORIO_FORMATO_LABELS[item.formatoPrincipal]}
         </span>
-        {item.formatosSecundarios.map((formato) => (
+        {(item.formatosSecundarios ?? []).map((formato) => (
           <span key={formato} className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
             {RELATORIO_FORMATO_LABELS[formato]}
           </span>

@@ -26,11 +26,17 @@ export function FiscalSaidasPage() {
         subtitle="Faturamento e obrigações fiscais de saída com vínculo a medições, contratos e contas a receber."
         actions={
           <div className="flex items-center gap-2">
-            <Link to="/medicoes" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <Link
+              to="/medicoes"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
               <ReceiptText size={16} />
               Medições
             </Link>
-            <Link to="/financeiro/contas-receber" className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600">
+            <Link
+              to="/financeiro/contas-receber"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+            >
               <Wallet size={16} />
               Contas a receber
             </Link>
@@ -66,7 +72,15 @@ export function FiscalSaidasPage() {
           <EmptyState
             title="Erro ao carregar saídas fiscais"
             description="Não foi possível carregar os documentos emitidos e obrigações de saída."
-            action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600">Tentar novamente</button>}
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+              >
+                Tentar novamente
+              </button>
+            }
           />
         )}
 
@@ -78,16 +92,22 @@ export function FiscalSaidasPage() {
               ))}
             </section>
 
-            {data.documentos.length === 0 ? (
+            {(data.documentos?.length ?? 0) === 0 ? (
               <EmptyState
                 title="Nenhuma saída fiscal encontrada"
-                description={hasActiveFilters ? 'Nenhuma saída corresponde aos filtros selecionados.' : 'Ainda não há saídas fiscais para o contexto atual.'}
+                description={
+                  hasActiveFilters
+                    ? 'Nenhuma saída corresponde aos filtros selecionados.'
+                    : 'Ainda não há saídas fiscais para o contexto atual.'
+                }
               />
             ) : (
               <section className="space-y-4">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900">Saídas fiscais</h2>
-                  <p className="text-sm text-gray-500">NF-es, NFS-es e guias ligadas ao faturamento, retenções e reflexos em contas a receber.</p>
+                  <p className="text-sm text-gray-500">
+                    NF-es, NFS-es e guias ligadas ao faturamento, retenções e reflexos em contas a receber.
+                  </p>
                 </div>
                 <FiscalTable items={data.documentos} />
               </section>

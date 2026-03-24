@@ -30,7 +30,13 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Detect HTML returned with 200 status (e.g. SPA rewrite on /api routes)
+    if (isHtmlPayload(response.data)) {
+      return Promise.reject(new HtmlResponseError());
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
@@ -48,7 +54,30 @@ function isApiEnvelope<T>(value: unknown): value is ApiEnvelope<T> {
   return typeof value === 'object' && value !== null && 'data' in value;
 }
 
+/**
+ * Detects if a value looks like an HTML page instead of a valid API JSON payload.
+ * This happens when Vercel (or another reverse proxy) returns the SPA index.html
+ * for an `/api/…` route with status 200.
+ */
+export function isHtmlPayload(value: unknown): boolean {
+  if (typeof value === 'string') {
+    const trimmed = value.trimStart().toLowerCase();
+    return trimmed.startsWith('<!doctype html') || trimmed.startsWith('<html');
+  }
+  return false;
+}
+
+export class HtmlResponseError extends Error {
+  constructor() {
+    super('A resposta da API retornou HTML em vez de JSON. Possível problema de roteamento.');
+    this.name = 'HtmlResponseError';
+  }
+}
+
 export function unwrapApiResponse<T>(payload: T | ApiEnvelope<T>): T {
+  if (isHtmlPayload(payload)) {
+    throw new HtmlResponseError();
+  }
   return isApiEnvelope<T>(payload) ? payload.data : payload;
 }
 
@@ -65,14 +94,36 @@ export function normalizeApiError(error: unknown): Error {
 }
 
 export function shouldFallbackToMock(error: unknown): boolean {
-  if (!API_FALLBACK_ENABLED || !axios.isAxiosError(error)) {
+  if (!API_FALLBACK_ENABLED) {
+    return false;
+  }
+
+  // HTML returned instead of JSON (e.g. SPA rewrite on /api routes) → fallback to mock
+  if (error instanceof HtmlResponseError) {
+    return true;
+  }
+
+  if (!axios.isAxiosError(error)) {
     return false;
   }
 
   const status = error.response?.status;
   const hasNoResponse = !error.response;
 
-  return hasNoResponse || status === 404 || status === 405 || status === 501 || status === 502 || status === 503 || status === 504;
+  // Also detect HTML content in Axios error responses (e.g. proxy returning HTML with error status)
+  if (isHtmlPayload(error.response?.data)) {
+    return true;
+  }
+
+  return (
+    hasNoResponse ||
+    status === 404 ||
+    status === 405 ||
+    status === 501 ||
+    status === 502 ||
+    status === 503 ||
+    status === 504
+  );
 }
 
 export async function withApiFallback<T>(apiCall: () => Promise<T>, fallback: () => Promise<T>): Promise<T> {

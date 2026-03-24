@@ -3,10 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { useDocumentoFiscalDetails } from '../hooks';
-import {
-  FISCAL_DOCUMENTO_TIPO_LABELS,
-  FISCAL_TIPO_OPERACAO_LABELS,
-} from '../types';
+import { FISCAL_DOCUMENTO_TIPO_LABELS, FISCAL_TIPO_OPERACAO_LABELS } from '../types';
 import { FiscalImpostosBloco, FiscalStatusBadge, FiscalVinculosBloco } from '../components';
 
 export function DocumentoFiscalDetailPage() {
@@ -19,7 +16,10 @@ export function DocumentoFiscalDetailPage() {
         title={data?.documento.codigo ?? 'Documento Fiscal'}
         subtitle="Detalhe fiscal com rastreabilidade de impostos, vínculos de compra, obra, estoque e financeiro."
         actions={
-          <Link to="/fiscal" className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Link
+            to="/fiscal"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
             <ArrowLeft size={16} />
             Voltar ao Fiscal
           </Link>
@@ -27,13 +27,23 @@ export function DocumentoFiscalDetailPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando detalhe do documento fiscal...</div>}
+        {isLoading && (
+          <div className="py-12 text-center text-sm text-gray-500">Carregando detalhe do documento fiscal...</div>
+        )}
 
         {isError && (
           <EmptyState
             title="Erro ao carregar documento fiscal"
             description="Não foi possível carregar o detalhe do documento solicitado."
-            action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600">Tentar novamente</button>}
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+              >
+                Tentar novamente
+              </button>
+            }
           />
         )}
 
@@ -55,19 +65,28 @@ export function DocumentoFiscalDetailPage() {
                 <dl className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Operação</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{FISCAL_TIPO_OPERACAO_LABELS[data.documento.tipoOperacao]}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {FISCAL_TIPO_OPERACAO_LABELS[data.documento.tipoOperacao]}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Tipo</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{FISCAL_DOCUMENTO_TIPO_LABELS[data.documento.documentoTipo]}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {FISCAL_DOCUMENTO_TIPO_LABELS[data.documento.documentoTipo]}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Número / série</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.documento.numero}{data.documento.serie ? ` · Série ${data.documento.serie}` : ''}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {data.documento.numero}
+                      {data.documento.serie ? ` · Série ${data.documento.serie}` : ''}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Competência</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{formatCompetencia(data.documento.competencia)}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {formatCompetencia(data.documento.competencia)}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Emissão</dt>
@@ -79,15 +98,21 @@ export function DocumentoFiscalDetailPage() {
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Vencimento</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.documento.vencimento ?? 'Sem vencimento'}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {data.documento.vencimento ?? 'Sem vencimento'}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Obra</dt>
-                    <dd className="mt-1 text-sm font-medium text-gray-900">{data.documento.obraNome ?? 'Sem obra vinculada'}</dd>
+                    <dd className="mt-1 text-sm font-medium text-gray-900">
+                      {data.documento.obraNome ?? 'Sem obra vinculada'}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">Valor do documento</dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(data.documento.valorDocumento)}</dd>
+                    <dd className="mt-1 text-sm font-semibold text-gray-900">
+                      {formatCurrency(data.documento.valorDocumento)}
+                    </dd>
                   </div>
                 </dl>
 
@@ -108,7 +133,7 @@ export function DocumentoFiscalDetailPage() {
               <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
                 <h2 className="text-base font-semibold text-gray-900">Linha do tempo</h2>
                 <div className="mt-4 space-y-4">
-                  {data.timeline.map((item) => (
+                  {(data.timeline ?? []).map((item) => (
                     <div key={item.id} className="flex gap-3">
                       <div className="mt-1 h-2.5 w-2.5 rounded-full bg-jogab-500" />
                       <div>
@@ -126,14 +151,17 @@ export function DocumentoFiscalDetailPage() {
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-base font-semibold text-gray-900">Observações operacionais</h2>
                 {data.documento.vinculos.tituloFinanceiroHref ? (
-                  <Link to={data.documento.vinculos.tituloFinanceiroHref} className="inline-flex items-center gap-1 text-xs font-medium text-jogab-600 hover:text-jogab-700">
+                  <Link
+                    to={data.documento.vinculos.tituloFinanceiroHref}
+                    className="inline-flex items-center gap-1 text-xs font-medium text-jogab-600 hover:text-jogab-700"
+                  >
                     Ver reflexo financeiro
                     <ExternalLink size={12} />
                   </Link>
                 ) : null}
               </div>
               <ul className="mt-4 space-y-3 text-sm text-gray-600">
-                {data.observacoes.map((observacao) => (
+                {(data.observacoes ?? []).map((observacao) => (
                   <li key={observacao} className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2">
                     {observacao}
                   </li>

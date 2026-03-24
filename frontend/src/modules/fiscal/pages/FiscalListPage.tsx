@@ -72,7 +72,15 @@ export function FiscalListPage() {
           <EmptyState
             title="Erro ao carregar fiscal"
             description="Não foi possível montar a visão principal de documentos fiscais."
-            action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600">Tentar novamente</button>}
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+              >
+                Tentar novamente
+              </button>
+            }
           />
         )}
 
@@ -84,17 +92,33 @@ export function FiscalListPage() {
               ))}
             </section>
 
-            {data.documentos.length === 0 ? (
+            {(data.documentos?.length ?? 0) === 0 ? (
               <EmptyState
                 title="Nenhum documento fiscal encontrado"
-                description={hasActiveFilters ? 'Nenhum documento fiscal corresponde aos filtros selecionados.' : 'Ainda não há documentos fiscais disponíveis para o contexto atual.'}
-                action={hasActiveFilters ? <button type="button" onClick={clearFilters} className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50">Limpar filtros</button> : undefined}
+                description={
+                  hasActiveFilters
+                    ? 'Nenhum documento fiscal corresponde aos filtros selecionados.'
+                    : 'Ainda não há documentos fiscais disponíveis para o contexto atual.'
+                }
+                action={
+                  hasActiveFilters ? (
+                    <button
+                      type="button"
+                      onClick={clearFilters}
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      Limpar filtros
+                    </button>
+                  ) : undefined
+                }
               />
             ) : (
               <section className="space-y-4">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900">Lista principal de documentos fiscais</h2>
-                  <p className="text-sm text-gray-500">Rastreabilidade operacional entre documento, compra, obra, estoque e reflexo financeiro.</p>
+                  <p className="text-sm text-gray-500">
+                    Rastreabilidade operacional entre documento, compra, obra, estoque e reflexo financeiro.
+                  </p>
                 </div>
                 <FiscalTable items={data.documentos} />
               </section>
