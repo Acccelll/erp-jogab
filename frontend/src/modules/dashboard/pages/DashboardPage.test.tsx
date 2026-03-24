@@ -148,6 +148,34 @@ describe('DashboardPage', () => {
     expect(screen.getByText('Resumo Financeiro e Pessoal')).toBeInTheDocument();
   });
 
+  it('renders without crashing when API returns partial payload', () => {
+    const partialSummary = {
+      generatedAt: new Date().toISOString(),
+      kpis: [
+        { label: 'Custo pessoal previsto', value: 50000, format: 'currency' as const, subtitle: 'Parcial', trend: 'neutral' as const },
+      ],
+    } as DashboardSummary;
+
+    mockUseDashboardSummary.mockReturnValue({
+      data: partialSummary,
+      isLoading: false,
+      isError: false,
+      isFetching: false,
+      refetch: refetchMock,
+    } as ReturnType<typeof useDashboardSummary>);
+
+    render(<DashboardPage />);
+
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Custo pessoal previsto')).toBeInTheDocument();
+    // Section groups should still render (with empty content)
+    expect(screen.getByText('Resumo de Obras')).toBeInTheDocument();
+    expect(screen.getByText('Resumo de RH')).toBeInTheDocument();
+    expect(screen.getByText('Resumo Financeiro e Pessoal')).toBeInTheDocument();
+    // Alerts panel should render with 0 alerts
+    expect(screen.getByTestId('alerts-panel')).toHaveTextContent('0 alertas');
+  });
+
   it('renders refresh button and triggers refetch', async () => {
     const user = userEvent.setup();
     mockUseDashboardSummary.mockReturnValue({
