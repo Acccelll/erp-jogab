@@ -18,16 +18,12 @@ import { useFuncionarioFilters } from '../hooks/useFuncionarioFilters';
 
 export function FuncionariosListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setTipoContrato,
-    clearFilters,
-    hasActiveFilters,
-  } = useFuncionarioFilters();
+  const { filters, setSearch, setStatus, setTipoContrato, clearFilters, hasActiveFilters } = useFuncionarioFilters();
 
   const { data, isLoading, isError } = useFuncionarios(filters);
+
+  const funcionarios = data?.data ?? [];
+  const kpis = data?.kpis;
 
   const openCreateDrawer = () => {
     openDrawer({
@@ -73,7 +69,7 @@ export function FuncionariosListPage() {
         hasActiveFilters={hasActiveFilters}
       />
 
-      {data?.kpis && <FuncionarioKpiBar kpis={data.kpis} />}
+      {kpis && <FuncionarioKpiBar kpis={kpis} />}
 
       <MainContent>
         {isLoading && (
@@ -101,7 +97,7 @@ export function FuncionariosListPage() {
           />
         )}
 
-        {!isLoading && !isError && data?.data.length === 0 && (
+        {!isLoading && !isError && data && funcionarios.length === 0 && (
           <EmptyState
             title="Nenhum funcionário encontrado"
             description={
@@ -132,9 +128,9 @@ export function FuncionariosListPage() {
           />
         )}
 
-        {!isLoading && !isError && data && data.data.length > 0 && (
+        {!isLoading && !isError && funcionarios.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {data.data.map((func) => (
+            {funcionarios.map((func) => (
               <FuncionarioCard key={func.id} funcionario={func} onEdit={openEditDrawer} />
             ))}
           </div>

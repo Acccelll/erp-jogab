@@ -9,10 +9,7 @@ import {
   RelatoriosTable,
 } from '../components';
 import { useRelatorioCategoria, useRelatoriosFilters } from '../hooks';
-import {
-  RELATORIO_CATEGORIA_DESCRICOES,
-  RELATORIO_CATEGORIA_LABELS,
-} from '../types';
+import { RELATORIO_CATEGORIA_DESCRICOES, RELATORIO_CATEGORIA_LABELS } from '../types';
 import type { RelatorioCategoria } from '../types';
 
 export function RelatorioCategoriaPage() {
@@ -29,6 +26,11 @@ export function RelatorioCategoriaPage() {
     hasActiveFilters,
   } = useRelatoriosFilters();
   const { data, isLoading, isError, refetch } = useRelatorioCategoria(categoriaKey, filters);
+
+  const itens = data?.itens ?? [];
+  const resumoCards = data?.resumoCards ?? [];
+  const saidasOperacionais = data?.saidasOperacionais ?? [];
+  const coberturaModulos = data?.coberturaModulos ?? [];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -68,9 +70,7 @@ export function RelatorioCategoriaPage() {
 
       <MainContent className="space-y-6">
         {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando relatórios da categoria...
-          </div>
+          <div className="py-12 text-center text-sm text-gray-500">Carregando relatórios da categoria...</div>
         )}
 
         {isError && (
@@ -89,10 +89,10 @@ export function RelatorioCategoriaPage() {
           />
         )}
 
-        {!isLoading && !isError && data && data.itens.length > 0 && (
+        {!isLoading && !isError && data && itens.length > 0 && (
           <>
             <section className="grid gap-4 xl:grid-cols-2">
-              {data.resumoCards.map((card) => (
+              {resumoCards.map((card) => (
                 <RelatorioResumoCard key={card.id} card={card} />
               ))}
             </section>
@@ -104,7 +104,7 @@ export function RelatorioCategoriaPage() {
                   Lista operacional com origem dos dados, disponibilidade e formato principal.
                 </p>
               </div>
-              <RelatoriosTable items={data.itens} />
+              <RelatoriosTable items={itens} />
             </section>
 
             <section className="space-y-4">
@@ -115,7 +115,7 @@ export function RelatorioCategoriaPage() {
                 </p>
               </div>
               <div className="grid gap-4 xl:grid-cols-2">
-                {data.saidasOperacionais.map((item) => (
+                {saidasOperacionais.map((item) => (
                   <RelatorioSaidaCard key={item.id} item={item} />
                 ))}
               </div>
@@ -129,7 +129,7 @@ export function RelatorioCategoriaPage() {
                 </p>
               </div>
               <div className="grid gap-4 xl:grid-cols-3">
-                {data.coberturaModulos.map((item) => (
+                {coberturaModulos.map((item) => (
                   <RelatorioCoberturaCard key={item.modulo} item={item} />
                 ))}
               </div>
@@ -137,7 +137,7 @@ export function RelatorioCategoriaPage() {
           </>
         )}
 
-        {!isLoading && !isError && data && data.itens.length === 0 && (
+        {!isLoading && !isError && data && itens.length === 0 && (
           <EmptyState
             title="Nenhum relatório nesta categoria"
             description={

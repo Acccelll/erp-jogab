@@ -2,12 +2,12 @@ import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { relatoriosFiltersSchema } from '../types';
 import type {
   RelatorioCategoria,
+  RelatorioCategoriaData,
+  RelatoriosDashboardData,
   RelatoriosFiltersData,
+  RelatoriosResumoExecutivo,
 } from '../types';
-import {
-  getMockRelatorioCategoria,
-  getMockRelatoriosDashboard,
-} from '../data/relatorios.mock';
+import { getMockRelatorioCategoria, getMockRelatoriosDashboard } from '../data/relatorios.mock';
 
 export const RELATORIOS_API_ENDPOINTS = {
   dashboard: '/relatorios/dashboard',
@@ -29,32 +29,67 @@ async function fetchRelatoriosDashboardMock(filters?: RelatoriosFiltersData) {
   return getMockRelatoriosDashboard(normalizeFilters(filters));
 }
 
-async function fetchRelatorioCategoriasMock(
-  categoria: RelatorioCategoria,
-  filters?: RelatoriosFiltersData,
-) {
+async function fetchRelatorioCategoriasMock(categoria: RelatorioCategoria, filters?: RelatoriosFiltersData) {
   await wait();
   return getMockRelatorioCategoria(categoria, normalizeFilters(filters));
+}
+
+const EMPTY_RESUMO: RelatoriosResumoExecutivo = {
+  totalRelatorios: 0,
+  categoriasAtivas: 0,
+  disponiveis: 0,
+  planejados: 0,
+  exportaveis: 0,
+};
+
+/** Ensures the API payload always conforms to a complete RelatoriosDashboardData. */
+export function normalizeRelatoriosDashboardData(
+  payload: Partial<RelatoriosDashboardData> | null | undefined,
+): RelatoriosDashboardData {
+  return {
+    itens: Array.isArray(payload?.itens) ? payload.itens : [],
+    categorias: Array.isArray(payload?.categorias) ? payload.categorias : [],
+    resumo: payload?.resumo ? { ...EMPTY_RESUMO, ...payload.resumo } : EMPTY_RESUMO,
+    resumoCards: Array.isArray(payload?.resumoCards) ? payload.resumoCards : [],
+    saidasOperacionais: Array.isArray(payload?.saidasOperacionais) ? payload.saidasOperacionais : [],
+    coberturaModulos: Array.isArray(payload?.coberturaModulos) ? payload.coberturaModulos : [],
+  };
 }
 
 export async function fetchRelatoriosDashboard(filters?: RelatoriosFiltersData) {
   return withApiFallback(
     async () => {
       const response = await api.get(RELATORIOS_API_ENDPOINTS.dashboard, { params: filters });
-      return unwrapApiResponse<Awaited<ReturnType<typeof fetchRelatoriosDashboardMock>>>(response.data);
+      const raw = unwrapApiResponse<RelatoriosDashboardData>(response.data);
+      return normalizeRelatoriosDashboardData(raw);
     },
     () => fetchRelatoriosDashboardMock(filters),
   );
 }
 
+/** Ensures the API payload always conforms to a complete RelatorioCategoriaData. */
+export function normalizeRelatorioCategoriaData(
+  payload: Partial<RelatorioCategoriaData> | null | undefined,
+  categoria: RelatorioCategoria,
+): RelatorioCategoriaData {
+  return {
+    categoria: payload?.categoria ?? categoria,
+    itens: Array.isArray(payload?.itens) ? payload.itens : [],
+    resumoCards: Array.isArray(payload?.resumoCards) ? payload.resumoCards : [],
+    saidasOperacionais: Array.isArray(payload?.saidasOperacionais) ? payload.saidasOperacionais : [],
+    coberturaModulos: Array.isArray(payload?.coberturaModulos) ? payload.coberturaModulos : [],
+  };
+}
+
 export async function fetchRelatorioCategoria(
   categoria: RelatorioCategoria,
   filters?: RelatoriosFiltersData,
-) {
+): Promise<RelatorioCategoriaData> {
   return withApiFallback(
     async () => {
       const response = await api.get(RELATORIOS_API_ENDPOINTS.categoria(categoria), { params: filters });
-      return unwrapApiResponse<Awaited<ReturnType<typeof fetchRelatorioCategoriasMock>>>(response.data);
+      const raw = unwrapApiResponse<RelatorioCategoriaData>(response.data);
+      return normalizeRelatorioCategoriaData(raw, categoria);
     },
     () => fetchRelatorioCategoriasMock(categoria, filters),
   );

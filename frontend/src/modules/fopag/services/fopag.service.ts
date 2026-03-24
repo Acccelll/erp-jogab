@@ -1,7 +1,11 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import type { FopagCompetenciaDetalhe, FopagCompetenciaListItem, FopagCompetenciasKpis } from '../types';
 import type { FopagFiltersData } from '../types';
-import { calcularFopagCompetenciasKpis, getFopagCompetenciaDetalheMock, getFopagCompetenciasMock } from '../data/fopag.mock';
+import {
+  calcularFopagCompetenciasKpis,
+  getFopagCompetenciaDetalheMock,
+  getFopagCompetenciasMock,
+} from '../data/fopag.mock';
 
 export const FOPAG_API_ENDPOINTS = {
   competencias: '/fopag/competencias',
@@ -31,7 +35,9 @@ function applyFilters(items: FopagCompetenciaListItem[], filters?: FopagFiltersD
   return result;
 }
 
-async function fetchFopagCompetenciasMock(filters?: FopagFiltersData): Promise<{ data: FopagCompetenciaListItem[]; kpis: FopagCompetenciasKpis }> {
+async function fetchFopagCompetenciasMock(
+  filters?: FopagFiltersData,
+): Promise<{ data: FopagCompetenciaListItem[]; kpis: FopagCompetenciasKpis }> {
   await delay();
   const filtered = applyFilters(getFopagCompetenciasMock(), filters);
   return { data: filtered, kpis: calcularFopagCompetenciasKpis(filtered) };
@@ -42,11 +48,30 @@ async function fetchFopagCompetenciaDetailsMock(competenciaId: string): Promise<
   return getFopagCompetenciaDetalheMock(competenciaId);
 }
 
-export async function fetchFopagCompetencias(filters?: FopagFiltersData): Promise<{ data: FopagCompetenciaListItem[]; kpis: FopagCompetenciasKpis }> {
+/** Ensures the API payload always conforms to a complete FOPAG competências response. */
+export function normalizeFopagCompetenciasResponse(
+  payload: Partial<{ data: FopagCompetenciaListItem[]; kpis: FopagCompetenciasKpis }> | null | undefined,
+): { data: FopagCompetenciaListItem[]; kpis: FopagCompetenciasKpis } {
+  return {
+    data: Array.isArray(payload?.data) ? payload.data : [],
+    kpis: {
+      totalCompetencias: payload?.kpis?.totalCompetencias ?? 0,
+      emConsolidacao: payload?.kpis?.emConsolidacao ?? 0,
+      prontasParaRateio: payload?.kpis?.prontasParaRateio ?? 0,
+      valorPrevistoTotal: payload?.kpis?.valorPrevistoTotal ?? 0,
+      valorRealizadoTotal: payload?.kpis?.valorRealizadoTotal ?? 0,
+    },
+  };
+}
+
+export async function fetchFopagCompetencias(
+  filters?: FopagFiltersData,
+): Promise<{ data: FopagCompetenciaListItem[]; kpis: FopagCompetenciasKpis }> {
   return withApiFallback(
     async () => {
       const response = await api.get(FOPAG_API_ENDPOINTS.competencias, { params: filters });
-      return unwrapApiResponse<{ data: FopagCompetenciaListItem[]; kpis: FopagCompetenciasKpis }>(response.data);
+      const raw = unwrapApiResponse<{ data: FopagCompetenciaListItem[]; kpis: FopagCompetenciasKpis }>(response.data);
+      return normalizeFopagCompetenciasResponse(raw);
     },
     () => fetchFopagCompetenciasMock(filters),
   );

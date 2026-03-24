@@ -5,7 +5,13 @@
  * Quando a API estiver estável, basta desligar o fallback por configuração.
  */
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
-import { getAlocacaoAtivaByFuncionarioId, getAlocacoesByFuncionarioId, getCentroCustoById, clearFuncionarioAlocacaoAtiva, upsertFuncionarioAlocacaoAtiva } from '@/shared/lib/erpRelations';
+import {
+  getAlocacaoAtivaByFuncionarioId,
+  getAlocacoesByFuncionarioId,
+  getCentroCustoById,
+  clearFuncionarioAlocacaoAtiva,
+  upsertFuncionarioAlocacaoAtiva,
+} from '@/shared/lib/erpRelations';
 import { mockObras } from '@/modules/obras/data/obras.mock';
 import type {
   Funcionario,
@@ -64,7 +70,10 @@ function dedupeBy<T extends string>(items: T[]) {
 }
 
 function getFilialNomeById(filialId: string) {
-  return mockFuncionarios.find((funcionario) => funcionario.filialId === filialId)?.filialNome ?? `Filial ${filialId.toUpperCase()}`;
+  return (
+    mockFuncionarios.find((funcionario) => funcionario.filialId === filialId)?.filialNome ??
+    `Filial ${filialId.toUpperCase()}`
+  );
 }
 
 function getEmpresaIdByFilialId(filialId: string) {
@@ -73,11 +82,13 @@ function getEmpresaIdByFilialId(filialId: string) {
 
 function getGestorNomeById(gestorId: string | null | undefined) {
   if (!gestorId) return null;
-  return mockFuncionarios.find((funcionario) => funcionario.id === gestorId)?.nome ?? `Gestor ${gestorId.toUpperCase()}`;
+  return (
+    mockFuncionarios.find((funcionario) => funcionario.id === gestorId)?.nome ?? `Gestor ${gestorId.toUpperCase()}`
+  );
 }
 
 function getObraById(obraId: string | null | undefined) {
-  return obraId ? mockObras.find((obra) => obra.id === obraId) ?? null : null;
+  return obraId ? (mockObras.find((obra) => obra.id === obraId) ?? null) : null;
 }
 
 function syncFuncionarioAllocation(funcionario: Funcionario) {
@@ -116,7 +127,8 @@ function syncFuncionarioAllocation(funcionario: Funcionario) {
 
 function validateFuncionarioPayload(payload: FuncionarioCreatePayload | FuncionarioUpdatePayload, currentId?: string) {
   const duplicateMatricula = mockFuncionarios.find(
-    (funcionario) => funcionario.matricula.toLowerCase() === payload.matricula?.toLowerCase() && funcionario.id !== currentId,
+    (funcionario) =>
+      funcionario.matricula.toLowerCase() === payload.matricula?.toLowerCase() && funcionario.id !== currentId,
   );
 
   if (duplicateMatricula) {
@@ -176,7 +188,9 @@ async function fetchFuncionariosMock(filters?: FuncionarioFiltersData): Promise<
   }
 
   if (filters?.obraId) {
-    resultado = resultado.filter((f) => getAlocacoesByFuncionarioId(f.id).some((alocacao) => alocacao.obraId === filters.obraId));
+    resultado = resultado.filter((f) =>
+      getAlocacoesByFuncionarioId(f.id).some((alocacao) => alocacao.obraId === filters.obraId),
+    );
   }
 
   if (filters?.centroCustoId) {
@@ -281,7 +295,7 @@ async function updateFuncionarioMock(payload: FuncionarioUpdatePayload): Promise
     gestorNome: payload.gestorId !== undefined ? getGestorNomeById(payload.gestorId) : funcionario.gestorNome,
     dataDesligamento:
       payload.status === 'desligado'
-        ? funcionario.dataDesligamento ?? new Date().toISOString().slice(0, 10)
+        ? (funcionario.dataDesligamento ?? new Date().toISOString().slice(0, 10))
         : payload.status
           ? null
           : funcionario.dataDesligamento,
@@ -296,11 +310,30 @@ async function updateFuncionarioMock(payload: FuncionarioUpdatePayload): Promise
   };
 }
 
+/** Ensures the API payload always conforms to a complete FuncionariosListResponse. */
+export function normalizeFuncionariosListResponse(
+  payload: Partial<FuncionariosListResponse> | null | undefined,
+): FuncionariosListResponse {
+  return {
+    data: Array.isArray(payload?.data) ? payload.data : [],
+    kpis: {
+      totalFuncionarios: payload?.kpis?.totalFuncionarios ?? 0,
+      ativos: payload?.kpis?.ativos ?? 0,
+      afastados: payload?.kpis?.afastados ?? 0,
+      ferias: payload?.kpis?.ferias ?? 0,
+      desligados: payload?.kpis?.desligados ?? 0,
+      custoFolhaEstimado: payload?.kpis?.custoFolhaEstimado ?? 0,
+    },
+    total: payload?.total ?? 0,
+  };
+}
+
 export async function fetchFuncionarios(filters?: FuncionarioFiltersData): Promise<FuncionariosListResponse> {
   return withApiFallback(
     async () => {
       const response = await api.get(RH_API_ENDPOINTS.list, { params: filters });
-      return unwrapApiResponse<FuncionariosListResponse>(response.data);
+      const raw = unwrapApiResponse<FuncionariosListResponse>(response.data);
+      return normalizeFuncionariosListResponse(raw);
     },
     () => fetchFuncionariosMock(filters),
   );

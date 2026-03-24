@@ -5,16 +5,12 @@ import { useFopagCompetencias, useFopagFilters } from '../hooks';
 import { FopagCompetenciaCard, FopagFilters, FopagKpiBar } from '../components';
 
 export function FopagListPage() {
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useFopagFilters();
+  const { filters, setSearch, setStatus, setCompetencia, clearFilters, hasActiveFilters } = useFopagFilters();
 
   const { data, isLoading, isError, refetch } = useFopagCompetencias(filters);
+
+  const competencias = data?.data ?? [];
+  const kpis = data?.kpis;
 
   return (
     <div className="flex flex-1 flex-col">
@@ -43,7 +39,7 @@ export function FopagListPage() {
         hasActiveFilters={hasActiveFilters}
       />
 
-      {data?.kpis && <FopagKpiBar kpis={data.kpis} />}
+      {kpis && <FopagKpiBar kpis={kpis} />}
 
       <MainContent>
         {isLoading && (
@@ -71,7 +67,7 @@ export function FopagListPage() {
           />
         )}
 
-        {!isLoading && !isError && data && data.data.length === 0 && (
+        {!isLoading && !isError && data && competencias.length === 0 && (
           <EmptyState
             title="Nenhuma competência encontrada"
             description={
@@ -93,9 +89,9 @@ export function FopagListPage() {
           />
         )}
 
-        {!isLoading && !isError && data && data.data.length > 0 && (
+        {!isLoading && !isError && competencias.length > 0 && (
           <div className="grid gap-4 xl:grid-cols-2">
-            {data.data.map((competencia) => (
+            {competencias.map((competencia) => (
               <FopagCompetenciaCard key={competencia.id} competencia={competencia} />
             ))}
           </div>
