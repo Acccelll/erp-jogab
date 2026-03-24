@@ -10,3 +10,5 @@ export { useFuncionarioDecimoTerceiro } from './useFuncionarioDecimoTerceiro';
 export { useFuncionarioProvisoes } from './useFuncionarioProvisoes';
 export { useFuncionarioHorasExtras } from './useFuncionarioHorasExtras';
 export { useFuncionarioFopag } from './useFuncionarioFopag';
+export { useCreateAlocacao, useUpdateAlocacao, useEncerrarAlocacao } from './useAlocacaoMutations';
+export { useCreateFuncionario, useUpdateFuncionario } from './useFuncionarioMutations';

@@ -1,10 +1,14 @@
 import { formatCurrency } from '@/shared/lib/utils';
 import type {
   ObraComprasItem,
+  ObraContratoItem,
   ObraCronogramaItem,
   ObraDocumentoItem,
   ObraEquipeItem,
+  ObraEstoqueItem,
   ObraFinanceiroItem,
+  ObraMedicaoItem,
+  ObraRiscoItem,
   ObraWorkspaceTabData,
 } from '../types';
 
@@ -22,13 +26,13 @@ const cronogramaPorObra: Record<string, ObraCronogramaItem[]> = {
 
 const equipePorObra: Record<string, ObraEquipeItem[]> = {
   'obra-1': [
-    { id: 'eq-1', nome: 'Paulo Mendes', funcao: 'Mestre de Obras', equipe: 'Campo', status: 'alocado', jornada: '44h semanais' },
-    { id: 'eq-2', nome: 'Renata Gomes', funcao: 'Engenheira Civil', equipe: 'Planejamento', status: 'alocado', jornada: '44h semanais' },
-    { id: 'eq-3', nome: 'Thiago Silva', funcao: 'Armador', equipe: 'Estrutura', status: 'ferias', jornada: '44h semanais' },
+    { id: 'eq-1', nome: 'Paulo Mendes', funcao: 'Mestre de Obras', equipe: 'Campo', status: 'alocado', jornada: '44h semanais', funcionarioId: 'func-1', funcionarioNome: 'Paulo Mendes', centroCustoNome: 'CC Obra Residencial', percentual: 100 },
+    { id: 'eq-2', nome: 'Renata Gomes', funcao: 'Engenheira Civil', equipe: 'Planejamento', status: 'alocado', jornada: '44h semanais', funcionarioId: 'func-2', funcionarioNome: 'Renata Gomes', centroCustoNome: 'CC Obra Residencial', percentual: 80 },
+    { id: 'eq-3', nome: 'Thiago Silva', funcao: 'Armador', equipe: 'Estrutura', status: 'ferias', jornada: '44h semanais', funcionarioId: 'func-3', funcionarioNome: 'Thiago Silva', centroCustoNome: 'CC Estrutura', percentual: 100 },
   ],
   'obra-4': [
-    { id: 'eq-4', nome: 'Marcos Santos', funcao: 'Coordenador de Obra', equipe: 'Gestão', status: 'alocado', jornada: '44h semanais' },
-    { id: 'eq-5', nome: 'Luan Ferreira', funcao: 'Operador de Equipamentos', equipe: 'Infraestrutura', status: 'desmobilizando', jornada: '12x36' },
+    { id: 'eq-4', nome: 'Marcos Santos', funcao: 'Coordenador de Obra', equipe: 'Gestão', status: 'alocado', jornada: '44h semanais', funcionarioId: 'func-4', funcionarioNome: 'Marcos Santos', centroCustoNome: 'CC Infraestrutura', percentual: 100 },
+    { id: 'eq-5', nome: 'Luan Ferreira', funcao: 'Operador de Equipamentos', equipe: 'Infraestrutura', status: 'desmobilizando', jornada: '12x36', funcionarioId: 'func-5', funcionarioNome: 'Luan Ferreira', centroCustoNome: 'CC Infraestrutura', percentual: 60 },
   ],
 };
 
@@ -168,4 +172,144 @@ export function getDocumentosWorkspace(obraId: string): ObraWorkspaceTabData<Obr
       },
     ],
   };
+}
+
+/* ── Contratos ── */
+
+const contratosPorObra: Record<string, ObraContratoItem[]> = {
+  'obra-1': [
+    { id: 'ctr-1', codigo: 'CTR-2026-001', objeto: 'Execução da estrutura de concreto', contratado: 'Construtora Alfa', tipo: 'fornecedor', valorContrato: 1_250_000, valorAditivos: 78_000, dataInicio: '2026-01-10', dataFim: '2026-08-30', status: 'ativo' },
+    { id: 'ctr-2', codigo: 'CTR-2026-002', objeto: 'Fornecimento de esquadrias', contratado: 'Alumax Ind.', tipo: 'fornecedor', valorContrato: 320_000, valorAditivos: 0, dataInicio: '2026-03-01', dataFim: '2026-06-15', status: 'em_negociacao' },
+    { id: 'ctr-3', codigo: 'CTR-2026-003', objeto: 'Contrato de empreitada do cliente', contratado: 'Incorporadora XYZ', tipo: 'cliente', valorContrato: 4_500_000, valorAditivos: 150_000, dataInicio: '2025-06-01', dataFim: '2027-12-31', status: 'ativo' },
+  ],
+  'obra-2': [
+    { id: 'ctr-4', codigo: 'CTR-2026-010', objeto: 'Subcontrato de terraplanagem', contratado: 'TerraMove', tipo: 'subcontrato', valorContrato: 580_000, valorAditivos: 22_000, dataInicio: '2026-01-15', dataFim: '2026-04-30', status: 'ativo' },
+  ],
+};
+
+export function getContratosWorkspace(obraId: string): ObraWorkspaceTabData<ObraContratoItem> {
+  const items = fallback(contratosPorObra, obraId);
+  const valorTotal = items.reduce((acc, item) => acc + item.valorContrato + item.valorAditivos, 0);
+
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'contratos-resumo',
+        titulo: 'Contratos da obra',
+        descricao: 'Panorama dos contratos vigentes, valores acumulados e aditivos.',
+        itens: [
+          { label: 'Contratos ativos', valor: String(items.filter((item) => item.status === 'ativo').length), destaque: true },
+          { label: 'Em negociação', valor: String(items.filter((item) => item.status === 'em_negociacao').length) },
+          { label: 'Valor total', valor: formatCurrency(valorTotal) },
+        ],
+      },
+    ],
+  };
+}
+
+/* ── Estoque ── */
+
+const estoquePorObra: Record<string, ObraEstoqueItem[]> = {
+  'obra-1': [
+    { id: 'est-1', codigo: 'MAT-001', descricao: 'Cimento CP-II 50 kg', unidade: 'saco', saldoAtual: 320, consumoMes: 140, status: 'disponivel', almoxarife: 'José Almeida' },
+    { id: 'est-2', codigo: 'MAT-002', descricao: 'Vergalhão CA-50 10mm', unidade: 'barra', saldoAtual: 18, consumoMes: 55, status: 'critico', almoxarife: 'José Almeida' },
+    { id: 'est-3', codigo: 'MAT-003', descricao: 'Areia média lavada', unidade: 'm³', saldoAtual: 0, consumoMes: 30, status: 'esgotado', almoxarife: 'José Almeida' },
+  ],
+  'obra-2': [
+    { id: 'est-4', codigo: 'MAT-010', descricao: 'Brita nº 1', unidade: 'm³', saldoAtual: 85, consumoMes: 40, status: 'disponivel', almoxarife: 'Marta Souza' },
+  ],
+};
+
+export function getEstoqueWorkspace(obraId: string): ObraWorkspaceTabData<ObraEstoqueItem> {
+  const items = fallback(estoquePorObra, obraId);
+
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'estoque-resumo',
+        titulo: 'Estoque da obra',
+        descricao: 'Saldos e consumo mensal dos materiais alocados ao almoxarifado da obra.',
+        itens: [
+          { label: 'Itens cadastrados', valor: String(items.length) },
+          { label: 'Críticos / esgotados', valor: String(items.filter((item) => item.status === 'critico' || item.status === 'esgotado').length), destaque: true },
+          { label: 'Disponíveis', valor: String(items.filter((item) => item.status === 'disponivel').length) },
+        ],
+      },
+    ],
+  };
+}
+
+/* ── Medições ── */
+
+const medicoesPorObra: Record<string, ObraMedicaoItem[]> = {
+  'obra-1': [
+    { id: 'med-1', codigo: 'MED-2026-001', descricao: 'Medição de estrutura — bloco A', competencia: '2026-03', percentualMedido: 68, valorMedido: 850_000, responsavel: 'Renata Gomes', status: 'aprovada' },
+    { id: 'med-2', codigo: 'MED-2026-002', descricao: 'Medição elétrica — 1ª etapa', competencia: '2026-03', percentualMedido: 31, valorMedido: 124_600, responsavel: 'Eng. Fernanda Lima', status: 'em_apuracao' },
+  ],
+  'obra-2': [
+    { id: 'med-3', codigo: 'MED-2026-005', descricao: 'Medição de terraplanagem', competencia: '2026-02', percentualMedido: 82, valorMedido: 475_600, responsavel: 'Ana Souza', status: 'faturada' },
+    { id: 'med-4', codigo: 'MED-2026-006', descricao: 'Medição de drenagem', competencia: '2026-03', percentualMedido: 47, valorMedido: 189_300, responsavel: 'Marcelo Dias', status: 'prevista' },
+  ],
+};
+
+export function getMedicoesWorkspace(obraId: string): ObraWorkspaceTabData<ObraMedicaoItem> {
+  const items = fallback(medicoesPorObra, obraId);
+  const valorTotal = items.reduce((acc, item) => acc + item.valorMedido, 0);
+
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'medicoes-resumo',
+        titulo: 'Medições da obra',
+        descricao: 'Acompanhamento de medições contratuais, aprovações e faturamento.',
+        itens: [
+          { label: 'Medições no período', valor: String(items.length) },
+          { label: 'Aprovadas', valor: String(items.filter((item) => item.status === 'aprovada').length), destaque: true },
+          { label: 'Valor medido', valor: formatCurrency(valorTotal) },
+        ],
+      },
+    ],
+  };
+}
+
+/* ── Riscos ── */
+
+const riscosPorObra: Record<string, ObraRiscoItem[]> = {
+  'obra-1': [
+    { id: 'rsk-1', codigo: 'RSK-001', titulo: 'Atraso na entrega de aço', categoria: 'Suprimentos', probabilidade: 'alta', impacto: 'alto', responsavel: 'Carlos Oliveira', status: 'em_mitigacao' },
+    { id: 'rsk-2', codigo: 'RSK-002', titulo: 'Chuvas intensas no período de concretagem', categoria: 'Clima', probabilidade: 'media', impacto: 'medio', responsavel: 'Renata Gomes', status: 'identificado' },
+    { id: 'rsk-3', codigo: 'RSK-003', titulo: 'Falta de mão de obra qualificada', categoria: 'RH', probabilidade: 'baixa', impacto: 'alto', responsavel: 'Paulo Mendes', status: 'mitigado' },
+  ],
+  'obra-2': [
+    { id: 'rsk-4', codigo: 'RSK-010', titulo: 'Interferência com rede de drenagem existente', categoria: 'Projeto', probabilidade: 'media', impacto: 'alto', responsavel: 'Marcelo Dias', status: 'identificado' },
+  ],
+};
+
+export function getRiscosWorkspace(obraId: string): ObraWorkspaceTabData<ObraRiscoItem> {
+  const items = fallback(riscosPorObra, obraId);
+
+  return {
+    items,
+    resumoCards: [
+      {
+        id: 'riscos-resumo',
+        titulo: 'Matriz de riscos',
+        descricao: 'Riscos e oportunidades com priorização por probabilidade e impacto.',
+        itens: [
+          { label: 'Riscos ativos', valor: String(items.filter((item) => item.status !== 'mitigado').length), destaque: true },
+          { label: 'Em mitigação', valor: String(items.filter((item) => item.status === 'em_mitigacao').length) },
+          { label: 'Mitigados', valor: String(items.filter((item) => item.status === 'mitigado').length) },
+        ],
+      },
+    ],
+  };
+}
+
+/* ── RH (alias de Equipe com dados estendidos) ── */
+
+export function getRhWorkspace(obraId: string): ObraWorkspaceTabData<ObraEquipeItem> {
+  return getEquipeWorkspace(obraId);
 }

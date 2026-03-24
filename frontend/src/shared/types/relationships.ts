@@ -23,7 +23,7 @@ export interface AlocacaoResumo {
   percentual: number;
   departamento: string;
   periodoInicio: string;
-  periodoFim?: string;
+  periodoFim?: string | null;
   status: AlocacaoStatus;
 }
 
@@ -43,7 +43,7 @@ export interface AlocacaoCreatePayload {
   percentual: number;
   departamento: string;
   periodoInicio: string;
-  periodoFim?: string;
+  periodoFim?: string | null;
   status?: AlocacaoStatus;
 }
 
@@ -58,7 +58,7 @@ export interface AlocacaoUpdatePayload {
   percentual: number;
   departamento: string;
   periodoInicio: string;
-  periodoFim?: string;
+  periodoFim?: string | null;
   status?: AlocacaoStatus;
 }
 
