@@ -1,5 +1,17 @@
-import { fetchFuncionarioAlocacoesWorkspace } from './alocacoes.service';
+import type {
+  FuncionarioAlocacaoItem,
+  FuncionarioContratoData,
+  FuncionarioDecimoTerceiroItem,
+  FuncionarioDocumentoItem,
+  FuncionarioFeriasItem,
+  FuncionarioFopagItem,
+  FuncionarioHistoricoSalarialItem,
+  FuncionarioHorasExtrasItem,
+  FuncionarioProvisaoItem,
+  FuncionarioWorkspaceTabData,
+} from '../types';
 import {
+  getFuncionarioAlocacoesWorkspace,
   getFuncionarioContratoWorkspace,
   getFuncionarioDecimoTerceiroWorkspace,
   getFuncionarioDocumentosWorkspace,
@@ -10,50 +22,77 @@ import {
   getFuncionarioProvisoesWorkspace,
 } from '../data/funcionario-workspace.mock';
 
-function delay(ms = 180): Promise<void> {
+const MOCK_DELAY_MS = 180;
+
+function delay(ms = MOCK_DELAY_MS): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function fetchFuncionarioContrato(funcId: string) {
+async function resolveFuncionarioWorkspace<T>(
+  funcId: string,
+  resolver: (currentFuncId: string) => FuncionarioWorkspaceTabData<T>,
+): Promise<FuncionarioWorkspaceTabData<T>> {
+  await delay();
+  return resolver(funcId);
+}
+
+async function resolveFuncionarioContrato(
+  funcId: string,
+): Promise<FuncionarioContratoData | null> {
   await delay();
   return getFuncionarioContratoWorkspace(funcId);
 }
 
-export async function fetchFuncionarioAlocacoes(funcId: string) {
-  return fetchFuncionarioAlocacoesWorkspace(funcId);
+export function fetchFuncionarioContrato(
+  funcId: string,
+): Promise<FuncionarioContratoData | null> {
+  return resolveFuncionarioContrato(funcId);
 }
 
-export async function fetchFuncionarioProvisoes(funcId: string) {
-  await delay();
-  return getFuncionarioProvisoesWorkspace(funcId);
+export function fetchFuncionarioAlocacoes(
+  funcId: string,
+): Promise<FuncionarioWorkspaceTabData<FuncionarioAlocacaoItem>> {
+  return resolveFuncionarioWorkspace(funcId, getFuncionarioAlocacoesWorkspace);
 }
 
-export async function fetchFuncionarioHorasExtras(funcId: string) {
-  await delay();
-  return getFuncionarioHorasExtrasWorkspace(funcId);
+export function fetchFuncionarioProvisoes(
+  funcId: string,
+): Promise<FuncionarioWorkspaceTabData<FuncionarioProvisaoItem>> {
+  return resolveFuncionarioWorkspace(funcId, getFuncionarioProvisoesWorkspace);
 }
 
-export async function fetchFuncionarioFopag(funcId: string) {
-  await delay();
-  return getFuncionarioFopagWorkspace(funcId);
+export function fetchFuncionarioHorasExtras(
+  funcId: string,
+): Promise<FuncionarioWorkspaceTabData<FuncionarioHorasExtrasItem>> {
+  return resolveFuncionarioWorkspace(funcId, getFuncionarioHorasExtrasWorkspace);
 }
 
-export async function fetchFuncionarioHistoricoSalarial(funcId: string) {
-  await delay();
-  return getFuncionarioHistoricoSalarialWorkspace(funcId);
+export function fetchFuncionarioFopag(
+  funcId: string,
+): Promise<FuncionarioWorkspaceTabData<FuncionarioFopagItem>> {
+  return resolveFuncionarioWorkspace(funcId, getFuncionarioFopagWorkspace);
 }
 
-export async function fetchFuncionarioDocumentos(funcId: string) {
-  await delay();
-  return getFuncionarioDocumentosWorkspace(funcId);
+export function fetchFuncionarioHistoricoSalarial(
+  funcId: string,
+): Promise<FuncionarioWorkspaceTabData<FuncionarioHistoricoSalarialItem>> {
+  return resolveFuncionarioWorkspace(funcId, getFuncionarioHistoricoSalarialWorkspace);
 }
 
-export async function fetchFuncionarioFerias(funcId: string) {
-  await delay();
-  return getFuncionarioFeriasWorkspace(funcId);
+export function fetchFuncionarioDocumentos(
+  funcId: string,
+): Promise<FuncionarioWorkspaceTabData<FuncionarioDocumentoItem>> {
+  return resolveFuncionarioWorkspace(funcId, getFuncionarioDocumentosWorkspace);
 }
 
-export async function fetchFuncionarioDecimoTerceiro(funcId: string) {
-  await delay();
-  return getFuncionarioDecimoTerceiroWorkspace(funcId);
+export function fetchFuncionarioFerias(
+  funcId: string,
+): Promise<FuncionarioWorkspaceTabData<FuncionarioFeriasItem>> {
+  return resolveFuncionarioWorkspace(funcId, getFuncionarioFeriasWorkspace);
+}
+
+export function fetchFuncionarioDecimoTerceiro(
+  funcId: string,
+): Promise<FuncionarioWorkspaceTabData<FuncionarioDecimoTerceiroItem>> {
+  return resolveFuncionarioWorkspace(funcId, getFuncionarioDecimoTerceiroWorkspace);
 }
