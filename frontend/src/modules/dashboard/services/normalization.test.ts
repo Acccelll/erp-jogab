@@ -16,6 +16,12 @@ import { normalizeFuncionariosListResponse } from '@/modules/rh/services/funcion
 import { normalizeFopagCompetenciasResponse } from '@/modules/fopag/services/fopag.service';
 import { normalizeRelatoriosDashboardData } from '@/modules/relatorios/services/relatorios.service';
 import { normalizeObrasListResponse } from '@/modules/obras/services/obras.service';
+import { normalizeRelatorioCategoriaData } from '@/modules/relatorios/services/relatorios.service';
+import { normalizeFinanceiroDashboardData } from '@/modules/financeiro/services/financeiro.service';
+import { normalizeFiscalDashboardData } from '@/modules/fiscal/services/fiscal.service';
+import { normalizeEstoqueDashboardData } from '@/modules/estoque/services/estoque.service';
+import { normalizeMedicoesDashboardData } from '@/modules/medicoes/services/medicoes.service';
+import { normalizeDocumentosDashboardData } from '@/modules/documentos/services/documentos.service';
 
 // ---------------------------------------------------------------------------
 // Dashboard normalization
@@ -467,5 +473,302 @@ describe('normalizeAdminIntegracoes', () => {
   it('preserves valid array', () => {
     const arr = [{ id: '1', nome: 'SAP' }];
     expect(normalizeAdminIntegracoes(arr)).toBe(arr);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Relatórios categoria normalization (was previously untested)
+// ---------------------------------------------------------------------------
+describe('normalizeRelatorioCategoriaData', () => {
+  it('returns safe defaults for null payload', () => {
+    const result = normalizeRelatorioCategoriaData(null, 'obra');
+    expect(result.categoria).toBe('obra');
+    expect(result.itens).toEqual([]);
+    expect(result.resumoCards).toEqual([]);
+    expect(result.saidasOperacionais).toEqual([]);
+    expect(result.coberturaModulos).toEqual([]);
+  });
+
+  it('returns safe defaults for undefined payload', () => {
+    const result = normalizeRelatorioCategoriaData(undefined, 'financeiro');
+    expect(result.categoria).toBe('financeiro');
+    expect(result.itens).toEqual([]);
+  });
+
+  it('returns safe defaults for empty object payload', () => {
+    const result = normalizeRelatorioCategoriaData({}, 'rh');
+    expect(result.categoria).toBe('rh');
+    expect(result.itens).toEqual([]);
+  });
+
+  it('preserves existing data in partial payload', () => {
+    const result = normalizeRelatorioCategoriaData(
+      {
+        categoria: 'obra',
+        itens: [
+          {
+            id: '1',
+            titulo: 'Rel',
+            descricao: '',
+            categoria: 'obra',
+            modulo: 'obras',
+            tipo: 'listagem',
+            formato: 'pdf',
+            disponivel: true,
+          },
+        ],
+      },
+      'obra',
+    );
+    expect(result.itens).toHaveLength(1);
+    expect(result.resumoCards).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Financeiro dashboard normalization
+// ---------------------------------------------------------------------------
+describe('normalizeFinanceiroDashboardData', () => {
+  it('returns safe defaults for null payload', () => {
+    const result = normalizeFinanceiroDashboardData(null);
+    expect(result.titulos).toEqual([]);
+    expect(result.kpis.totalTitulos).toBe(0);
+    expect(result.kpis.totalPagar).toBe(0);
+    expect(result.kpis.totalReceber).toBe(0);
+    expect(result.kpis.valorPagar).toBe(0);
+    expect(result.kpis.valorReceber).toBe(0);
+    expect(result.kpis.valorVencido).toBe(0);
+    expect(result.kpis.saldoProjetado).toBe(0);
+    expect(result.resumoCards).toEqual([]);
+    expect(result.statusResumo).toEqual([]);
+    expect(result.tipoResumo).toEqual([]);
+    expect(result.pessoal.porObra).toEqual([]);
+    expect(result.pessoal.porCentroCusto).toEqual([]);
+    expect(result.pessoal.previstoRealizado).toEqual([]);
+    expect(result.pessoal.destaques).toEqual([]);
+  });
+
+  it('returns safe defaults for undefined payload', () => {
+    const result = normalizeFinanceiroDashboardData(undefined);
+    expect(result.titulos).toEqual([]);
+    expect(result.kpis.totalTitulos).toBe(0);
+  });
+
+  it('returns safe defaults for empty object payload', () => {
+    const result = normalizeFinanceiroDashboardData({});
+    expect(result.titulos).toEqual([]);
+    expect(result.resumoCards).toEqual([]);
+  });
+
+  it('preserves existing data in partial payload', () => {
+    const result = normalizeFinanceiroDashboardData({
+      kpis: {
+        totalTitulos: 20,
+        totalPagar: 10,
+        totalReceber: 10,
+        valorPagar: 50000,
+        valorReceber: 60000,
+        valorVencido: 5000,
+        saldoProjetado: 10000,
+      },
+    });
+    expect(result.kpis.totalTitulos).toBe(20);
+    expect(result.kpis.valorPagar).toBe(50000);
+    expect(result.titulos).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Fiscal dashboard normalization
+// ---------------------------------------------------------------------------
+describe('normalizeFiscalDashboardData', () => {
+  it('returns safe defaults for null payload', () => {
+    const result = normalizeFiscalDashboardData(null);
+    expect(result.documentos).toEqual([]);
+    expect(result.kpis.totalDocumentos).toBe(0);
+    expect(result.kpis.totalEntradas).toBe(0);
+    expect(result.kpis.totalSaidas).toBe(0);
+    expect(result.kpis.valorEntradas).toBe(0);
+    expect(result.kpis.valorSaidas).toBe(0);
+    expect(result.kpis.validando).toBe(0);
+    expect(result.kpis.comErro).toBe(0);
+    expect(result.resumoCards).toEqual([]);
+    expect(result.statusResumo).toEqual([]);
+  });
+
+  it('returns safe defaults for undefined payload', () => {
+    const result = normalizeFiscalDashboardData(undefined);
+    expect(result.documentos).toEqual([]);
+    expect(result.kpis.totalDocumentos).toBe(0);
+  });
+
+  it('returns safe defaults for empty object payload', () => {
+    const result = normalizeFiscalDashboardData({});
+    expect(result.documentos).toEqual([]);
+    expect(result.resumoCards).toEqual([]);
+  });
+
+  it('preserves existing data in partial payload', () => {
+    const result = normalizeFiscalDashboardData({
+      kpis: {
+        totalDocumentos: 30,
+        totalEntradas: 18,
+        totalSaidas: 12,
+        valorEntradas: 100000,
+        valorSaidas: 80000,
+        validando: 2,
+        comErro: 1,
+      },
+    });
+    expect(result.kpis.totalDocumentos).toBe(30);
+    expect(result.kpis.valorEntradas).toBe(100000);
+    expect(result.documentos).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Estoque dashboard normalization
+// ---------------------------------------------------------------------------
+describe('normalizeEstoqueDashboardData', () => {
+  it('returns safe defaults for null payload', () => {
+    const result = normalizeEstoqueDashboardData(null);
+    expect(result.itens).toEqual([]);
+    expect(result.movimentacoes).toEqual([]);
+    expect(result.kpis.totalItens).toBe(0);
+    expect(result.kpis.itensCriticos).toBe(0);
+    expect(result.kpis.locaisAtivos).toBe(0);
+    expect(result.kpis.valorEstocado).toBe(0);
+    expect(result.kpis.valorReservado).toBe(0);
+    expect(result.kpis.consumoMensal).toBe(0);
+    expect(result.kpis.entradasPendentes).toBe(0);
+    expect(result.resumoCards).toEqual([]);
+    expect(result.statusResumo).toEqual([]);
+    expect(result.localResumo).toEqual([]);
+    expect(result.tipoResumo).toEqual([]);
+  });
+
+  it('returns safe defaults for undefined payload', () => {
+    const result = normalizeEstoqueDashboardData(undefined);
+    expect(result.itens).toEqual([]);
+    expect(result.kpis.totalItens).toBe(0);
+  });
+
+  it('returns safe defaults for empty object payload', () => {
+    const result = normalizeEstoqueDashboardData({});
+    expect(result.itens).toEqual([]);
+    expect(result.movimentacoes).toEqual([]);
+    expect(result.localResumo).toEqual([]);
+  });
+
+  it('preserves existing data in partial payload', () => {
+    const result = normalizeEstoqueDashboardData({
+      kpis: {
+        totalItens: 50,
+        itensCriticos: 3,
+        locaisAtivos: 4,
+        valorEstocado: 200000,
+        valorReservado: 30000,
+        consumoMensal: 15000,
+        entradasPendentes: 5,
+      },
+    });
+    expect(result.kpis.totalItens).toBe(50);
+    expect(result.kpis.valorEstocado).toBe(200000);
+    expect(result.itens).toEqual([]);
+    expect(result.tipoResumo).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Medições dashboard normalization
+// ---------------------------------------------------------------------------
+describe('normalizeMedicoesDashboardData', () => {
+  it('returns safe defaults for null payload', () => {
+    const result = normalizeMedicoesDashboardData(null);
+    expect(result.medicoes).toEqual([]);
+    expect(result.kpis.totalMedicoes).toBe(0);
+    expect(result.kpis.medicoesEmAprovacao).toBe(0);
+    expect(result.kpis.medicoesAprovadas).toBe(0);
+    expect(result.kpis.valorMedido).toBe(0);
+    expect(result.kpis.valorFaturado).toBe(0);
+    expect(result.kpis.valorReceber).toBe(0);
+    expect(result.resumoCards).toEqual([]);
+    expect(result.statusResumo).toEqual([]);
+    expect(result.competenciaResumo).toEqual([]);
+  });
+
+  it('returns safe defaults for undefined payload', () => {
+    const result = normalizeMedicoesDashboardData(undefined);
+    expect(result.medicoes).toEqual([]);
+    expect(result.kpis.totalMedicoes).toBe(0);
+  });
+
+  it('returns safe defaults for empty object payload', () => {
+    const result = normalizeMedicoesDashboardData({});
+    expect(result.medicoes).toEqual([]);
+    expect(result.competenciaResumo).toEqual([]);
+  });
+
+  it('preserves existing data in partial payload', () => {
+    const result = normalizeMedicoesDashboardData({
+      kpis: {
+        totalMedicoes: 15,
+        medicoesEmAprovacao: 4,
+        medicoesAprovadas: 8,
+        valorMedido: 500000,
+        valorFaturado: 350000,
+        valorReceber: 150000,
+      },
+    });
+    expect(result.kpis.totalMedicoes).toBe(15);
+    expect(result.kpis.valorMedido).toBe(500000);
+    expect(result.medicoes).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Documentos dashboard normalization
+// ---------------------------------------------------------------------------
+describe('normalizeDocumentosDashboardData', () => {
+  it('returns safe defaults for null payload', () => {
+    const result = normalizeDocumentosDashboardData(null);
+    expect(result.documentos).toEqual([]);
+    expect(result.kpis.totalDocumentos).toBe(0);
+    expect(result.kpis.vigentes).toBe(0);
+    expect(result.kpis.aVencer).toBe(0);
+    expect(result.kpis.vencidos).toBe(0);
+    expect(result.kpis.entidadesCobertas).toBe(0);
+    expect(result.kpis.alertasCriticos).toBe(0);
+    expect(result.resumoCards).toEqual([]);
+    expect(result.statusResumo).toEqual([]);
+    expect(result.vencimentoResumo).toEqual([]);
+  });
+
+  it('returns safe defaults for undefined payload', () => {
+    const result = normalizeDocumentosDashboardData(undefined);
+    expect(result.documentos).toEqual([]);
+    expect(result.kpis.totalDocumentos).toBe(0);
+  });
+
+  it('returns safe defaults for empty object payload', () => {
+    const result = normalizeDocumentosDashboardData({});
+    expect(result.documentos).toEqual([]);
+    expect(result.vencimentoResumo).toEqual([]);
+  });
+
+  it('preserves existing data in partial payload', () => {
+    const result = normalizeDocumentosDashboardData({
+      kpis: {
+        totalDocumentos: 40,
+        vigentes: 30,
+        aVencer: 5,
+        vencidos: 5,
+        entidadesCobertas: 15,
+        alertasCriticos: 3,
+      },
+    });
+    expect(result.kpis.totalDocumentos).toBe(40);
+    expect(result.kpis.vigentes).toBe(30);
+    expect(result.documentos).toEqual([]);
   });
 });

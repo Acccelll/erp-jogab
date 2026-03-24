@@ -1,7 +1,7 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { getMockDocumentoFiscalById, getMockFiscalDashboard } from '../data/fiscal.mock';
 import { fiscalFiltersSchema } from '../types';
-import type { FiscalFiltersData } from '../types';
+import type { FiscalDashboardData, FiscalFiltersData } from '../types';
 
 export const FISCAL_API_ENDPOINTS = {
   dashboard: '/fiscal/dashboard',
@@ -18,6 +18,27 @@ function wait() {
 
 function normalizeFilters(filters?: FiscalFiltersData) {
   return fiscalFiltersSchema.parse(filters ?? {});
+}
+
+export function normalizeFiscalDashboardData(
+  payload: Partial<FiscalDashboardData> | null | undefined,
+): FiscalDashboardData {
+  const safe = payload ?? {};
+  return {
+    documentos: Array.isArray(safe.documentos) ? safe.documentos : [],
+    kpis: {
+      totalDocumentos: 0,
+      totalEntradas: 0,
+      totalSaidas: 0,
+      valorEntradas: 0,
+      valorSaidas: 0,
+      validando: 0,
+      comErro: 0,
+      ...safe.kpis,
+    },
+    resumoCards: Array.isArray(safe.resumoCards) ? safe.resumoCards : [],
+    statusResumo: Array.isArray(safe.statusResumo) ? safe.statusResumo : [],
+  };
 }
 
 async function fetchFiscalDashboardMock(filters?: FiscalFiltersData) {

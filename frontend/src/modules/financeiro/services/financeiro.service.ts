@@ -7,7 +7,12 @@ import {
   getMockTitulosFinanceiros,
 } from '../data/financeiro.mock';
 import { financeiroFiltersSchema } from '../types';
-import type { FinanceiroFiltersData } from '../types';
+import type {
+  FinanceiroDashboardData,
+  FinanceiroFiltersData,
+  FinanceiroKpis,
+  FinanceiroPessoalDashboardData,
+} from '../types';
 
 export const FINANCEIRO_API_ENDPOINTS = {
   dashboard: '/financeiro/dashboard',
@@ -28,6 +33,64 @@ function wait() {
 
 function normalizeFilters(filters?: FinanceiroFiltersData) {
   return financeiroFiltersSchema.parse(filters ?? {});
+}
+
+const EMPTY_FINANCEIRO_KPIS: FinanceiroKpis = {
+  totalTitulos: 0,
+  totalPagar: 0,
+  totalReceber: 0,
+  valorPagar: 0,
+  valorReceber: 0,
+  valorVencido: 0,
+  saldoProjetado: 0,
+};
+
+const EMPTY_FINANCEIRO_PESSOAL: FinanceiroPessoalDashboardData = {
+  competencia: {
+    competencia: '',
+    totalFuncionarios: 0,
+    totalObras: 0,
+    totalCentrosCusto: 0,
+    valorHorasExtrasPrevisto: 0,
+    valorHorasExtrasRealizado: 0,
+    valorFopagPrevisto: 0,
+    valorFopagRealizado: 0,
+    valorPrevisto: 0,
+    valorRealizado: 0,
+    variacao: 0,
+    statusFechamento: 'aberta',
+  },
+  porObra: [],
+  porCentroCusto: [],
+  previstoRealizado: [],
+  destaques: [],
+};
+
+/** Ensures the API payload always conforms to a complete FinanceiroDashboardData. */
+export function normalizeFinanceiroDashboardData(
+  payload: Partial<FinanceiroDashboardData> | null | undefined,
+): FinanceiroDashboardData {
+  return {
+    titulos: Array.isArray(payload?.titulos) ? payload.titulos : [],
+    kpis: payload?.kpis ? { ...EMPTY_FINANCEIRO_KPIS, ...payload.kpis } : EMPTY_FINANCEIRO_KPIS,
+    resumoCards: Array.isArray(payload?.resumoCards) ? payload.resumoCards : [],
+    statusResumo: Array.isArray(payload?.statusResumo) ? payload.statusResumo : [],
+    tipoResumo: Array.isArray(payload?.tipoResumo) ? payload.tipoResumo : [],
+    pessoal: payload?.pessoal
+      ? {
+          ...EMPTY_FINANCEIRO_PESSOAL,
+          ...payload.pessoal,
+          competencia: {
+            ...EMPTY_FINANCEIRO_PESSOAL.competencia,
+            ...payload.pessoal.competencia,
+          },
+          porObra: Array.isArray(payload.pessoal.porObra) ? payload.pessoal.porObra : [],
+          porCentroCusto: Array.isArray(payload.pessoal.porCentroCusto) ? payload.pessoal.porCentroCusto : [],
+          previstoRealizado: Array.isArray(payload.pessoal.previstoRealizado) ? payload.pessoal.previstoRealizado : [],
+          destaques: Array.isArray(payload.pessoal.destaques) ? payload.pessoal.destaques : [],
+        }
+      : EMPTY_FINANCEIRO_PESSOAL,
+  };
 }
 
 async function fetchFinanceiroDashboardMock(filters?: FinanceiroFiltersData) {

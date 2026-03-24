@@ -1,6 +1,6 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { documentosFiltersSchema } from '../types';
-import type { DocumentosFiltersData } from '../types';
+import type { DocumentosDashboardData, DocumentosFiltersData } from '../types';
 import { getMockDocumentoById, getMockDocumentosDashboard } from '../data/documentos.mock';
 
 export const DOCUMENTOS_API_ENDPOINTS = {
@@ -16,6 +16,27 @@ function wait() {
 
 function normalizeFilters(filters?: DocumentosFiltersData) {
   return documentosFiltersSchema.parse(filters ?? {});
+}
+
+export function normalizeDocumentosDashboardData(
+  payload: Partial<DocumentosDashboardData> | null | undefined,
+): DocumentosDashboardData {
+  const safe = payload ?? {};
+  return {
+    documentos: Array.isArray(safe.documentos) ? safe.documentos : [],
+    kpis: {
+      totalDocumentos: 0,
+      vigentes: 0,
+      aVencer: 0,
+      vencidos: 0,
+      entidadesCobertas: 0,
+      alertasCriticos: 0,
+      ...safe.kpis,
+    },
+    resumoCards: Array.isArray(safe.resumoCards) ? safe.resumoCards : [],
+    statusResumo: Array.isArray(safe.statusResumo) ? safe.statusResumo : [],
+    vencimentoResumo: Array.isArray(safe.vencimentoResumo) ? safe.vencimentoResumo : [],
+  };
 }
 
 async function fetchDocumentosDashboardMock(filters?: DocumentosFiltersData) {

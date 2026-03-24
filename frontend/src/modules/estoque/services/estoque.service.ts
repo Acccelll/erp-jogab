@@ -1,6 +1,6 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { estoqueFiltersSchema } from '../types';
-import type { EstoqueFiltersData } from '../types';
+import type { EstoqueDashboardData, EstoqueFiltersData } from '../types';
 import { getMockEstoqueDashboard, getMockItemEstoqueById, getMockMovimentacoesEstoque } from '../data/estoque.mock';
 
 export const ESTOQUE_API_ENDPOINTS = {
@@ -17,6 +17,30 @@ function wait() {
 
 function normalizeFilters(filters?: EstoqueFiltersData) {
   return estoqueFiltersSchema.parse(filters ?? {});
+}
+
+export function normalizeEstoqueDashboardData(
+  payload: Partial<EstoqueDashboardData> | null | undefined,
+): EstoqueDashboardData {
+  const safe = payload ?? {};
+  return {
+    itens: Array.isArray(safe.itens) ? safe.itens : [],
+    movimentacoes: Array.isArray(safe.movimentacoes) ? safe.movimentacoes : [],
+    kpis: {
+      totalItens: 0,
+      itensCriticos: 0,
+      locaisAtivos: 0,
+      valorEstocado: 0,
+      valorReservado: 0,
+      consumoMensal: 0,
+      entradasPendentes: 0,
+      ...safe.kpis,
+    },
+    resumoCards: Array.isArray(safe.resumoCards) ? safe.resumoCards : [],
+    statusResumo: Array.isArray(safe.statusResumo) ? safe.statusResumo : [],
+    localResumo: Array.isArray(safe.localResumo) ? safe.localResumo : [],
+    tipoResumo: Array.isArray(safe.tipoResumo) ? safe.tipoResumo : [],
+  };
 }
 
 async function fetchEstoqueDashboardMock(filters?: EstoqueFiltersData) {

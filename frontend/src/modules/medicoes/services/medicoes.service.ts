@@ -1,6 +1,6 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { medicoesFiltersSchema } from '../types';
-import type { MedicoesFiltersData } from '../types';
+import type { MedicoesDashboardData, MedicoesFiltersData } from '../types';
 import { getMockMedicaoById, getMockMedicoes, getMockMedicoesDashboard } from '../data/medicoes.mock';
 
 export const MEDICOES_API_ENDPOINTS = {
@@ -17,6 +17,27 @@ function wait() {
 
 function normalizeFilters(filters?: MedicoesFiltersData) {
   return medicoesFiltersSchema.parse(filters ?? {});
+}
+
+export function normalizeMedicoesDashboardData(
+  payload: Partial<MedicoesDashboardData> | null | undefined,
+): MedicoesDashboardData {
+  const safe = payload ?? {};
+  return {
+    medicoes: Array.isArray(safe.medicoes) ? safe.medicoes : [],
+    kpis: {
+      totalMedicoes: 0,
+      medicoesEmAprovacao: 0,
+      medicoesAprovadas: 0,
+      valorMedido: 0,
+      valorFaturado: 0,
+      valorReceber: 0,
+      ...safe.kpis,
+    },
+    resumoCards: Array.isArray(safe.resumoCards) ? safe.resumoCards : [],
+    statusResumo: Array.isArray(safe.statusResumo) ? safe.statusResumo : [],
+    competenciaResumo: Array.isArray(safe.competenciaResumo) ? safe.competenciaResumo : [],
+  };
 }
 
 async function fetchMedicoesDashboardMock(filters?: MedicoesFiltersData) {
