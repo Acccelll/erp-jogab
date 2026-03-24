@@ -638,3 +638,54 @@ O backend deve respeitar esses tipos para garantir compatibilidade zero-config.
 | Total de endpoints PUT     | 3          |
 | Total de endpoints PATCH   | 1          |
 | **Total geral de endpoints** | **75**   |
+
+---
+
+## Fase 4 — Preparação para integração progressiva
+
+### Camada HTTP reforçada
+
+A Fase 4 adicionou classificação de erros estruturada à camada HTTP:
+
+```typescript
+type ApiErrorType = 'network' | 'timeout' | 'http' | 'html' | 'payload' | 'unknown';
+
+class ApiError extends Error {
+  readonly type: ApiErrorType;
+  readonly status?: number;
+}
+```
+
+`normalizeApiError()` agora retorna `ApiError` com tipo classificado, permitindo tratamento diferenciado no frontend (ex: mensagens específicas para timeout vs erro de validação).
+
+`classifyError()` mapeia qualquer erro capturado para um `ApiErrorType`:
+- `network` — sem resposta (rede indisponível)
+- `timeout` — requisição excedeu o limite (ECONNABORTED)
+- `http` — erro HTTP com status (400, 403, 500, etc.)
+- `html` — resposta HTML em vez de JSON (SPA rewrite)
+- `unknown` — erro não classificável
+
+### Timeout configurável
+
+A instância Axios agora respeita `VITE_API_TIMEOUT` (default: 15000ms). Timeout (ECONNABORTED) é tratado como fallback-eligible, igual a erros de rede.
+
+### Variáveis de ambiente
+
+| Variável | Descrição | Default |
+|----------|-----------|---------|
+| `VITE_API_URL` | URL base da API | `/api` |
+| `VITE_API_FALLBACK` | Habilitar fallback para mock | `true` |
+| `VITE_API_TIMEOUT` | Timeout de requisição em ms | `15000` |
+
+### Registry de readiness
+
+O arquivo `shared/lib/integration.ts` centraliza o mapeamento de readiness por módulo. Consulte `docs/10-readiness-modulos.md` para a documentação completa.
+
+### Estratégia de migração mock → API real
+
+1. **Implementar o endpoint no backend** seguindo o contrato documentado
+2. **Configurar `VITE_API_URL`** para apontar ao backend real
+3. **Manter `VITE_API_FALLBACK=true`** durante desenvolvimento
+4. **Testar com fallback desabilitado** (`VITE_API_FALLBACK=false`) para validar integração
+5. **Monitorar `ApiError.type`** para identificar problemas de integração (timeout, html, etc.)
+6. **Quando estável**, remover o mock do service (opcional — mocks podem coexistir indefinidamente)

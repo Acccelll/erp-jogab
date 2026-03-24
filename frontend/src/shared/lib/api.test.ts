@@ -7,6 +7,8 @@ import {
   withApiFallback,
   isHtmlPayload,
   HtmlResponseError,
+  ApiError,
+  classifyError,
 } from '@/shared/lib/api';
 
 // ---------------------------------------------------------------------------
@@ -107,15 +109,19 @@ describe('normalizeApiError', () => {
     expect(normalized.message).toBe('Falha ao comunicar com a API.');
   });
 
-  it('returns the original Error when given a non-Axios error', () => {
+  it('wraps non-Axios Error in an ApiError preserving the message', () => {
     const err = new TypeError('Cannot read property of undefined');
-    expect(normalizeApiError(err)).toBe(err);
+    const normalized = normalizeApiError(err);
+    expect(normalized).toBeInstanceOf(ApiError);
+    expect(normalized.message).toBe('Cannot read property of undefined');
+    expect(normalized.type).toBe('unknown');
   });
 
-  it('wraps non-Error values in a generic Error', () => {
+  it('wraps non-Error values in a generic ApiError', () => {
     const normalized = normalizeApiError('string error');
-    expect(normalized).toBeInstanceOf(Error);
+    expect(normalized).toBeInstanceOf(ApiError);
     expect(normalized.message).toBe('Falha inesperada na integração com a API.');
+    expect(normalized.type).toBe('unknown');
   });
 });
 
@@ -166,6 +172,11 @@ describe('shouldFallbackToMock', () => {
       headers: {},
       config: { headers: new AxiosHeaders() },
     });
+    expect(shouldFallbackToMock(axiosErr)).toBe(true);
+  });
+
+  it('returns true for timeout error (ECONNABORTED)', () => {
+    const axiosErr = new AxiosError('timeout of 15000ms exceeded', 'ECONNABORTED');
     expect(shouldFallbackToMock(axiosErr)).toBe(true);
   });
 });
@@ -247,5 +258,125 @@ describe('withApiFallback', () => {
     const result = await withApiFallback(apiCall, fallback);
     expect(result).toEqual({ id: 'mock-fallback' });
     expect(fallback).toHaveBeenCalled();
+  });
+
+  it('falls back to mock when API call times out (ECONNABORTED)', async () => {
+    const timeoutErr = new AxiosError('timeout of 15000ms exceeded', 'ECONNABORTED');
+    const apiCall = vi.fn().mockRejectedValue(timeoutErr);
+    const fallback = vi.fn().mockResolvedValue({ id: 'timeout-fallback' });
+
+    const result = await withApiFallback(apiCall, fallback);
+    expect(result).toEqual({ id: 'timeout-fallback' });
+    expect(fallback).toHaveBeenCalled();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// classifyError
+// ---------------------------------------------------------------------------
+describe('classifyError', () => {
+  it('classifies HtmlResponseError as "html"', () => {
+    expect(classifyError(new HtmlResponseError())).toBe('html');
+  });
+
+  it('classifies ECONNABORTED as "timeout"', () => {
+    expect(classifyError(new AxiosError('timeout', 'ECONNABORTED'))).toBe('timeout');
+  });
+
+  it('classifies network error (no response) as "network"', () => {
+    expect(classifyError(new AxiosError('Network Error', 'ERR_NETWORK'))).toBe('network');
+  });
+
+  it('classifies Axios error with HTML response data as "html"', () => {
+    const axiosErr = new AxiosError('fail', '200', undefined, undefined, {
+      status: 200,
+      statusText: 'OK',
+      data: '<!DOCTYPE html><html></html>',
+      headers: {},
+      config: { headers: new AxiosHeaders() },
+    });
+    expect(classifyError(axiosErr)).toBe('html');
+  });
+
+  it('classifies Axios error with HTTP status as "http"', () => {
+    const axiosErr = new AxiosError('fail', '400', undefined, undefined, {
+      status: 400,
+      statusText: 'Bad Request',
+      data: { message: 'validation error' },
+      headers: {},
+      config: { headers: new AxiosHeaders() },
+    });
+    expect(classifyError(axiosErr)).toBe('http');
+  });
+
+  it('classifies generic Error as "unknown"', () => {
+    expect(classifyError(new Error('generic'))).toBe('unknown');
+  });
+
+  it('classifies non-Error values as "unknown"', () => {
+    expect(classifyError('string')).toBe('unknown');
+    expect(classifyError(42)).toBe('unknown');
+    expect(classifyError(null)).toBe('unknown');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ApiError
+// ---------------------------------------------------------------------------
+describe('ApiError', () => {
+  it('preserves message, type, and status', () => {
+    const err = new ApiError('test error', 'http', 400);
+    expect(err.message).toBe('test error');
+    expect(err.type).toBe('http');
+    expect(err.status).toBe(400);
+    expect(err.name).toBe('ApiError');
+  });
+
+  it('is an instance of Error', () => {
+    const err = new ApiError('test', 'network');
+    expect(err).toBeInstanceOf(Error);
+    expect(err).toBeInstanceOf(ApiError);
+  });
+
+  it('status is undefined when not provided', () => {
+    const err = new ApiError('test', 'unknown');
+    expect(err.status).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// normalizeApiError — type classification
+// ---------------------------------------------------------------------------
+describe('normalizeApiError — type classification', () => {
+  it('classifies network errors', () => {
+    const axiosErr = new AxiosError('Network Error', 'ERR_NETWORK');
+    const normalized = normalizeApiError(axiosErr);
+    expect(normalized.type).toBe('network');
+    expect(normalized.status).toBeUndefined();
+  });
+
+  it('classifies timeout errors', () => {
+    const axiosErr = new AxiosError('timeout', 'ECONNABORTED');
+    const normalized = normalizeApiError(axiosErr);
+    expect(normalized.type).toBe('timeout');
+  });
+
+  it('classifies HTTP errors with status', () => {
+    const axiosErr = new AxiosError('fail', '400', undefined, undefined, {
+      status: 400,
+      statusText: 'Bad Request',
+      data: { message: 'Erro de validação' },
+      headers: {},
+      config: { headers: new AxiosHeaders() },
+    });
+    const normalized = normalizeApiError(axiosErr);
+    expect(normalized.type).toBe('http');
+    expect(normalized.status).toBe(400);
+    expect(normalized.message).toBe('Erro de validação');
+  });
+
+  it('classifies HtmlResponseError', () => {
+    const normalized = normalizeApiError(new HtmlResponseError());
+    expect(normalized.type).toBe('html');
   });
 });

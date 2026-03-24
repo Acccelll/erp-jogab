@@ -1,0 +1,203 @@
+/**
+ * Configuração de integração — Fase 4
+ * Centraliza controle de feature flags, readiness por módulo e configuração de ambiente.
+ */
+
+/** Tipo de fonte de dados: API real ou mock local */
+export type DataSource = 'api' | 'mock';
+
+/** Status de readiness de um endpoint */
+export type EndpointReadiness = 'ready' | 'partial' | 'mock-only';
+
+/** Configuração de um endpoint do módulo */
+export interface EndpointConfig {
+  path: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  readiness: EndpointReadiness;
+  description: string;
+}
+
+/** Readiness de um módulo inteiro */
+export interface ModuleReadiness {
+  module: string;
+  status: EndpointReadiness;
+  endpoints: EndpointConfig[];
+  notes?: string;
+}
+
+/** Configuração de integração do ambiente */
+export interface IntegrationConfig {
+  apiBaseUrl: string;
+  fallbackEnabled: boolean;
+  timeoutMs: number;
+}
+
+/** Retorna a configuração de integração baseada nas variáveis de ambiente */
+export function getIntegrationConfig(): IntegrationConfig {
+  return {
+    apiBaseUrl: import.meta.env.VITE_API_URL ?? '/api',
+    fallbackEnabled: import.meta.env.VITE_API_FALLBACK !== 'false',
+    timeoutMs: Number(import.meta.env.VITE_API_TIMEOUT) || 15000,
+  };
+}
+
+/**
+ * Registry de readiness por módulo.
+ * Documenta quais endpoints estão prontos para integração real.
+ */
+export const MODULE_READINESS: ModuleReadiness[] = [
+  {
+    module: 'dashboard',
+    status: 'ready',
+    endpoints: [
+      { path: '/dashboard/summary', method: 'GET', readiness: 'ready', description: 'Resumo executivo com KPIs' },
+    ],
+    notes: 'Contrato estável, normalizador completo, pronto para API real.',
+  },
+  {
+    module: 'obras',
+    status: 'ready',
+    endpoints: [
+      { path: '/obras', method: 'GET', readiness: 'ready', description: 'Listagem de obras com filtros' },
+      { path: '/obras/:id', method: 'GET', readiness: 'ready', description: 'Detalhe da obra' },
+      { path: '/obras', method: 'POST', readiness: 'ready', description: 'Criar obra' },
+      { path: '/obras/:id', method: 'PUT', readiness: 'ready', description: 'Atualizar obra' },
+    ],
+    notes: 'Módulo central. Contrato CRUD estável com validação Zod.',
+  },
+  {
+    module: 'rh',
+    status: 'ready',
+    endpoints: [
+      { path: '/rh/funcionarios', method: 'GET', readiness: 'ready', description: 'Listagem de funcionários' },
+      { path: '/rh/funcionarios/:id', method: 'GET', readiness: 'ready', description: 'Detalhe do funcionário' },
+      { path: '/rh/funcionarios', method: 'POST', readiness: 'ready', description: 'Criar funcionário' },
+      { path: '/rh/funcionarios/:id', method: 'PUT', readiness: 'ready', description: 'Atualizar funcionário' },
+    ],
+    notes: 'Contrato CRUD com validação Zod e normalizadores prontos.',
+  },
+  {
+    module: 'horas-extras',
+    status: 'ready',
+    endpoints: [
+      { path: '/horas-extras', method: 'GET', readiness: 'ready', description: 'Listagem de horas extras' },
+      { path: '/horas-extras/:id', method: 'GET', readiness: 'ready', description: 'Detalhe da hora extra' },
+      { path: '/horas-extras/dashboard', method: 'GET', readiness: 'ready', description: 'Dashboard de horas extras' },
+      { path: '/horas-extras/:id/aprovar', method: 'POST', readiness: 'ready', description: 'Aprovar hora extra' },
+      { path: '/horas-extras/fechamento', method: 'POST', readiness: 'ready', description: 'Fechar competência' },
+    ],
+    notes: 'Fluxo de aprovação e fechamento com normalizadores completos.',
+  },
+  {
+    module: 'fopag',
+    status: 'ready',
+    endpoints: [
+      { path: '/fopag/competencias', method: 'GET', readiness: 'ready', description: 'Listagem de competências FOPAG' },
+      { path: '/fopag/competencias/:id', method: 'GET', readiness: 'ready', description: 'Detalhe da competência' },
+    ],
+    notes: 'Contrato de leitura estável com validação Zod.',
+  },
+  {
+    module: 'compras',
+    status: 'ready',
+    endpoints: [
+      { path: '/compras/solicitacoes', method: 'GET', readiness: 'ready', description: 'Listagem de solicitações' },
+      { path: '/compras/cotacoes', method: 'GET', readiness: 'ready', description: 'Listagem de cotações' },
+      { path: '/compras/pedidos', method: 'GET', readiness: 'ready', description: 'Listagem de pedidos' },
+      { path: '/compras/pedidos/:id', method: 'GET', readiness: 'ready', description: 'Detalhe do pedido' },
+      { path: '/compras/dashboard', method: 'GET', readiness: 'ready', description: 'Dashboard de compras' },
+    ],
+    notes: 'Fluxo de 3 etapas com normalizadores e contratos estáveis.',
+  },
+  {
+    module: 'financeiro',
+    status: 'ready',
+    endpoints: [
+      { path: '/financeiro/dashboard', method: 'GET', readiness: 'ready', description: 'Dashboard financeiro' },
+      { path: '/financeiro/fluxo-caixa', method: 'GET', readiness: 'ready', description: 'Fluxo de caixa' },
+      { path: '/financeiro/pessoal', method: 'GET', readiness: 'ready', description: 'Custos de pessoal' },
+      { path: '/financeiro/contas-pagar', method: 'GET', readiness: 'ready', description: 'Contas a pagar' },
+      { path: '/financeiro/contas-receber', method: 'GET', readiness: 'ready', description: 'Contas a receber' },
+      { path: '/financeiro/titulos/:id', method: 'GET', readiness: 'ready', description: 'Detalhe de título' },
+    ],
+    notes: 'Módulo de leitura com normalizadores para todas as views.',
+  },
+  {
+    module: 'fiscal',
+    status: 'ready',
+    endpoints: [
+      { path: '/fiscal/dashboard', method: 'GET', readiness: 'ready', description: 'Dashboard fiscal' },
+      { path: '/fiscal/entradas', method: 'GET', readiness: 'ready', description: 'Documentos de entrada' },
+      { path: '/fiscal/saidas', method: 'GET', readiness: 'ready', description: 'Documentos de saída' },
+      { path: '/fiscal/documentos/:id', method: 'GET', readiness: 'ready', description: 'Detalhe de documento fiscal' },
+    ],
+    notes: 'Módulo de leitura com normalizadores completos.',
+  },
+  {
+    module: 'estoque',
+    status: 'partial',
+    endpoints: [
+      { path: '/estoque/dashboard', method: 'GET', readiness: 'ready', description: 'Dashboard de estoque' },
+      { path: '/estoque/movimentacoes', method: 'GET', readiness: 'ready', description: 'Movimentações' },
+      { path: '/estoque/itens/:id', method: 'GET', readiness: 'partial', description: 'Detalhe de item' },
+    ],
+    notes: 'Dashboard e listagem prontos. Detalhe de item ainda parcial.',
+  },
+  {
+    module: 'medicoes',
+    status: 'partial',
+    endpoints: [
+      { path: '/medicoes/dashboard', method: 'GET', readiness: 'ready', description: 'Dashboard de medições' },
+      { path: '/medicoes', method: 'GET', readiness: 'ready', description: 'Listagem de medições' },
+      { path: '/medicoes/:id', method: 'GET', readiness: 'partial', description: 'Detalhe da medição' },
+    ],
+    notes: 'Dashboard e listagem prontos. Detalhe parcial.',
+  },
+  {
+    module: 'documentos',
+    status: 'partial',
+    endpoints: [
+      { path: '/documentos/dashboard', method: 'GET', readiness: 'ready', description: 'Dashboard de documentos' },
+      { path: '/documentos/:id', method: 'GET', readiness: 'partial', description: 'Detalhe do documento' },
+    ],
+    notes: 'Dashboard pronto. Upload e gestão de documentos pendentes.',
+  },
+  {
+    module: 'relatorios',
+    status: 'ready',
+    endpoints: [
+      { path: '/relatorios/dashboard', method: 'GET', readiness: 'ready', description: 'Dashboard de relatórios' },
+      {
+        path: '/relatorios/categorias/:categoria',
+        method: 'GET',
+        readiness: 'ready',
+        description: 'Relatórios por categoria',
+      },
+    ],
+    notes: 'Contrato de leitura estável com normalizadores.',
+  },
+  {
+    module: 'admin',
+    status: 'partial',
+    endpoints: [
+      { path: '/admin/dashboard', method: 'GET', readiness: 'ready', description: 'Dashboard administrativo' },
+      { path: '/admin/usuarios', method: 'GET', readiness: 'ready', description: 'Listagem de usuários' },
+      { path: '/admin/perfis', method: 'GET', readiness: 'ready', description: 'Listagem de perfis' },
+      { path: '/admin/permissoes', method: 'GET', readiness: 'ready', description: 'Listagem de permissões' },
+      { path: '/admin/parametros', method: 'GET', readiness: 'ready', description: 'Parâmetros do sistema' },
+      { path: '/admin/logs', method: 'GET', readiness: 'ready', description: 'Logs de auditoria' },
+      { path: '/admin/integracoes', method: 'GET', readiness: 'ready', description: 'Integrações' },
+    ],
+    notes: 'Leituras prontas. CRUD de usuários/perfis/permissões pendente.',
+  },
+];
+
+/** Retorna readiness de um módulo específico */
+export function getModuleReadiness(moduleName: string): ModuleReadiness | undefined {
+  return MODULE_READINESS.find((m) => m.module === moduleName);
+}
+
+/** Retorna todos os módulos prontos para integração imediata */
+export function getReadyModules(): ModuleReadiness[] {
+  return MODULE_READINESS.filter((m) => m.status === 'ready');
+}

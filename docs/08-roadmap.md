@@ -64,9 +64,21 @@
 - Testes de utilitários compartilhados (cn, formatCompetencia, formatCurrency)
 - Total: 384 testes em 36 arquivos
 
+## Fase de preparação para integração (Fase 4 de alinhamento) ✅
+- Camada HTTP reforçada: ApiError tipado, classifyError, timeout configurável
+- Módulo de configuração de integração centralizado (integration.ts)
+- Registry de readiness por módulo com endpoints mapeados
+- Fallback controlado para timeout (ECONNABORTED)
+- Variáveis de ambiente documentadas (VITE_API_URL, VITE_API_FALLBACK, VITE_API_TIMEOUT)
+- Documentação de readiness por módulo (docs/10-readiness-modulos.md)
+- 9 módulos prontos para integração imediata, 4 parcialmente prontos
+- Total: 410 testes em 37 arquivos
+
 ## Próximos passos
-- Integração com API real (substituir services mock)
+- Implementar backend real começando por autenticação e contexto
+- Conectar primeiro módulo (Dashboard) à API real
+- Desabilitar fallback gradualmente por módulo (`VITE_API_FALLBACK=false`)
 - Code-splitting com React.lazy para reduzir bundle size
-- Testes de integração end-to-end
+- Testes de integração end-to-end com API real
 - Rotas pendentes: `/horas-extras/lancamentos`, `/horas-extras/:lancamentoId`
-- Backend: repositório ainda sem implementação
+- Completar contratos parciais: estoque detalhe, medições detalhe, documentos gestão, admin CRUD
