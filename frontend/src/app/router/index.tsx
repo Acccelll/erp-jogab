@@ -88,6 +88,7 @@ import {
   ObraVisaoGeralPage,
 } from '@/modules/obras';
 import { ObraTabPlaceholder } from '@/modules/obras/components';
+import { LoginPage } from '@/app/pages/LoginPage';
 import { PerfilPage } from '@/modules/perfil';
 import { RelatorioCategoriaPage, RelatoriosListPage } from '@/modules/relatorios';
 import {
@@ -102,6 +103,7 @@ import {
   FuncionarioHistoricoSalarialPage,
   FuncionarioHorasExtrasPage,
   FuncionarioProvisoesPage,
+  FuncionarioVisaoGeralPage,
 } from '@/modules/rh';
 import { FuncionarioTabPlaceholder } from '@/modules/rh/components';
 import { NotFoundPage } from '@/shared/components';
@@ -349,6 +351,7 @@ const appRoutes: RouteObject[] = [
         path: 'funcionarios/:funcId',
         element: <FuncionarioDetailPage />,
         children: [
+          { index: true, element: <FuncionarioVisaoGeralPage /> },
           { path: 'contrato', element: <FuncionarioContratoPage /> },
           {
             path: 'historico-salarial',
@@ -496,11 +499,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/login',
-        element: (
-          <div className="text-center text-sm text-gray-500">
-            Tela de login — em desenvolvimento
-          </div>
-        ),
+        element: <LoginPage />,
       },
     ],
   },

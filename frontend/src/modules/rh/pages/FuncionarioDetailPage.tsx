@@ -3,29 +3,18 @@
  *
  * Funciona como workspace do funcionário, similar ao ObraWorkspaceLayout.
  * Exibe header com dados do funcionário e abas para cada domínio.
+ * O conteúdo de cada aba (incluindo "Visão Geral") é renderizado via <Outlet />,
+ * com a "Visão Geral" mapeada como index route no router.
  *
  * Referência: docs/06-arquitetura-de-telas.md (RH — detalhe do funcionário com abas)
  */
 import { useEffect } from 'react';
-import { useParams, NavLink, Outlet, useLocation } from 'react-router-dom';
-import {
-  FileSignature,
-  DollarSign,
-  FolderOpen,
-  Building2,
-  Palmtree,
-  Gift,
-  Wallet,
-  Clock,
-  Receipt,
-  ArrowLeft,
-} from 'lucide-react';
+import { useParams, NavLink, Outlet } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { MainContent } from '@/shared/components';
 import { FuncionarioHeader } from '../components/FuncionarioHeader';
 import { useFuncionarioDetails } from '../hooks/useFuncionarioDetails';
 import { useContextStore } from '@/shared/stores';
-import type { FuncionarioResumoBloco } from '../types';
 
 /** Abas do detalhe do funcionário */
 const funcionarioTabs = [
@@ -43,7 +32,6 @@ const funcionarioTabs = [
 
 export function FuncionarioDetailPage() {
   const { funcId } = useParams<{ funcId: string }>();
-  const location = useLocation();
   const { funcionario, isLoading } = useFuncionarioDetails(funcId);
   const { setObra, setCentroCusto, obraId: contextObraId, centroCustoId: contextCentroCustoId } = useContextStore();
 
@@ -57,9 +45,6 @@ export function FuncionarioDetailPage() {
       setCentroCusto(funcionario.centroCustoId);
     }
   }, [funcionario?.obraAlocadoId, funcionario?.centroCustoId, contextCentroCustoId, contextObraId, setCentroCusto, setObra]);
-
-  // Check if we're on the base route (visão geral) — Outlet will be empty
-  const isBaseRoute = location.pathname === `/rh/funcionarios/${funcId}`;
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -121,88 +106,10 @@ export function FuncionarioDetailPage() {
         </nav>
       </div>
 
-      {/* Tab content */}
+      {/* Tab content — always via Outlet (index route = Visão Geral) */}
       <div className="flex-1 overflow-auto">
-        {isBaseRoute ? (
-          <FuncionarioVisaoGeral funcId={funcId} />
-        ) : (
-          <Outlet />
-        )}
+        <Outlet />
       </div>
-    </div>
-  );
-}
-
-/**
- * Visão geral inline do funcionário (aba padrão).
- * Exibe blocos de resumo: contrato, alocação, provisões, horas extras, documentos, FOPAG.
- */
-function FuncionarioVisaoGeral({ funcId }: { funcId: string | undefined }) {
-  const { funcionario, resumoBlocos, isLoading, isError } = useFuncionarioDetails(funcId);
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-1 items-center justify-center py-12">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-          <p className="text-sm text-gray-500">Carregando visão geral...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (isError || !funcionario) {
-    return (
-      <div className="flex flex-1 items-center justify-center py-12">
-        <p className="text-sm text-gray-500">Erro ao carregar dados do funcionário.</p>
-      </div>
-    );
-  }
-
-  return (
-    <MainContent>
-      {/* Resumo por domínio — blocos */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {resumoBlocos.map((bloco) => (
-          <ResumoBlocoCard key={bloco.titulo} bloco={bloco} />
-        ))}
-      </div>
-    </MainContent>
-  );
-}
-
-/** Card de bloco de resumo (contrato, alocação, provisões, etc.) */
-function ResumoBlocoCard({ bloco }: { bloco: FuncionarioResumoBloco }) {
-  const iconMap: Record<string, React.ReactNode> = {
-    Contrato: <FileSignature size={16} />,
-    Alocação: <Building2 size={16} />,
-    Provisões: <Wallet size={16} />,
-    'Horas Extras': <Clock size={16} />,
-    Documentos: <FolderOpen size={16} />,
-    FOPAG: <Receipt size={16} />,
-    Férias: <Palmtree size={16} />,
-    '13º': <Gift size={16} />,
-    'Histórico Salarial': <DollarSign size={16} />,
-  };
-
-  return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <div className="mb-3 flex items-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-jogab-50 text-jogab-600">
-          {iconMap[bloco.titulo] ?? <FileSignature size={16} />}
-        </div>
-        <h3 className="text-sm font-semibold text-gray-900">{bloco.titulo}</h3>
-      </div>
-      <ul className="space-y-2">
-        {bloco.itens.map((item) => (
-          <li key={item.label} className="flex items-center justify-between text-xs">
-            <span className="text-gray-500">{item.label}</span>
-            <span className={item.destaque ? 'font-semibold text-jogab-600' : 'font-medium text-gray-700'}>
-              {item.valor}
-            </span>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
