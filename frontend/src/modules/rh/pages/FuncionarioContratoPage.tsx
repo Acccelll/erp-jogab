@@ -1,7 +1,11 @@
 import { useParams } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
 import { useFuncionarioContrato } from '../hooks';
-import { FuncionarioWorkspaceResumoCard, FuncionarioWorkspaceSectionHeader, FuncionarioWorkspaceTable } from '../components';
+import {
+  FuncionarioWorkspaceResumoCard,
+  FuncionarioWorkspaceSectionHeader,
+  FuncionarioWorkspaceTable,
+} from '../components';
 
 const SITUACAO_LABELS = {
   ativo: 'Ativo',
@@ -30,17 +34,38 @@ export function FuncionarioContratoPage() {
           actionHref={data?.obraPrincipal ? `/obras/${data.obraPrincipal.id}` : undefined}
         />
 
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando contrato do funcionário...</div>}
-        {isError && <EmptyState title="Erro ao carregar contrato" description="Não foi possível carregar o vínculo contratual deste funcionário." action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white">Tentar novamente</button>} />}
+        {isLoading && (
+          <div className="py-12 text-center text-sm text-gray-500">Carregando contrato do funcionário...</div>
+        )}
+        {isError && (
+          <EmptyState
+            title="Erro ao carregar contrato"
+            description="Não foi possível carregar o vínculo contratual deste funcionário."
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+              >
+                Tentar novamente
+              </button>
+            }
+          />
+        )}
 
         {!isLoading && !isError && !data && (
-          <EmptyState title="Contrato não encontrado" description="Não há dados contratuais disponíveis para este funcionário." />
+          <EmptyState
+            title="Contrato não encontrado"
+            description="Não há dados contratuais disponíveis para este funcionário."
+          />
         )}
 
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-2">
-              {data.resumoCards.map((card) => <FuncionarioWorkspaceResumoCard key={card.id} card={card} />)}
+              {data.resumoCards.map((card) => (
+                <FuncionarioWorkspaceResumoCard key={card.id} card={card} />
+              ))}
             </section>
 
             <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
@@ -52,12 +77,20 @@ export function FuncionarioContratoPage() {
               </div>
             </section>
 
-            {data.historico.length === 0 ? (
-              <EmptyState title="Sem movimentações contratuais" description="Ainda não há histórico contratual complementar para este vínculo." />
+            {(data.historico?.length ?? 0) === 0 ? (
+              <EmptyState
+                title="Sem movimentações contratuais"
+                description="Ainda não há histórico contratual complementar para este vínculo."
+              />
             ) : (
               <FuncionarioWorkspaceTable
                 columns={['Data', 'Tipo', 'Descrição', 'Responsável']}
-                rows={data.historico.map((item) => [item.data, HISTORICO_TIPO_LABELS[item.tipo], item.descricao, item.responsavel])}
+                rows={data.historico.map((item) => [
+                  item.data,
+                  HISTORICO_TIPO_LABELS[item.tipo],
+                  item.descricao,
+                  item.responsavel,
+                ])}
               />
             )}
           </>
