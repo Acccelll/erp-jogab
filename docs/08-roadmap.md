@@ -46,7 +46,7 @@
 
 ## Fase de saneamento (Fase 1 de alinhamento) ✅
 - Normalização de services para resiliência a payload parcial
-- Testes automatizados com Vitest (128 testes, 10 arquivos)
+- Testes automatizados iniciais com Vitest (base expandida na Fase 3 de alinhamento)
 - Proteção contra HTML responses no cliente HTTP
 - Safe-access pattern em todas as páginas de lista
 
