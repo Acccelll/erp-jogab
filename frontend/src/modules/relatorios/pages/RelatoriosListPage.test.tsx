@@ -43,6 +43,15 @@ vi.mock('../components', () => ({
   RelatorioCategoriaCard: ({ item }: { item: { categoria: string } }) => (
     <div data-testid={`cat-card-${item.categoria}`}>{item.categoria}</div>
   ),
+  RelatorioResumoCard: ({ card }: { card: { id: string; titulo: string } }) => (
+    <div data-testid={`resumo-card-${card.id}`}>{card.titulo}</div>
+  ),
+  RelatorioSaidaCard: ({ item }: { item: { id: string; titulo: string } }) => (
+    <div data-testid={`saida-card-${item.id}`}>{item.titulo}</div>
+  ),
+  RelatorioCoberturaCard: ({ item }: { item: { modulo: string } }) => (
+    <div data-testid={`cobertura-card-${item.modulo}`}>{item.modulo}</div>
+  ),
   RelatoriosFilters: () => <div data-testid="relatorios-filters" />,
   RelatoriosResumoBar: ({ resumo }: { resumo: { totalRelatorios: number } }) => (
     <div data-testid="resumo-bar">{resumo.totalRelatorios} relatórios</div>
@@ -80,7 +89,7 @@ const mockDashboardData: RelatoriosDashboardData = {
     exportaveis: 6,
   },
   categorias: [
-    { categoria: 'obras' as const, titulo: 'Obras', descricao: 'Desc', quantidade: 3, disponiveis: 2 },
+    { categoria: 'obras' as const, titulo: 'Obras', descricao: 'Desc', quantidade: 3, disponiveis: 2, formatos: ['pdf' as const], modulosRelacionados: ['obras'] },
   ],
   itens: [
     {
@@ -91,17 +100,34 @@ const mockDashboardData: RelatoriosDashboardData = {
       disponibilidade: 'disponivel' as const,
       descricao: 'Relatório detalhado',
       origemDados: ['Obras'],
-      output: { formatos: ['pdf' as const], agendavel: false, permiteComparativo: false },
+      output: { formatos: ['pdf' as const], agendavel: false, permiteComparativo: false, formatoPrincipal: 'pdf' as const, tempoEstimado: '5min', recorrenciaSugerida: 'mensal' },
       ultimaAtualizacaoEm: '2026-03-01',
     },
   ],
-  destaques: [
+  resumoCards: [
     {
-      id: 'd1',
-      titulo: 'Destaque Obras',
-      descricao: 'Consolidação',
+      id: 'rc1',
+      titulo: 'Visão Geral',
+      descricao: 'Consolidação geral',
       itens: [{ label: 'Total', valor: '10' }],
     },
+  ],
+  saidasOperacionais: [
+    {
+      id: 'so1',
+      relatorioId: 'r1',
+      titulo: 'Exportação PDF',
+      descricao: 'Exportação padrão',
+      formatoPrincipal: 'pdf' as const,
+      formatosSecundarios: [],
+      destinoPadrao: 'Download',
+      tempoEstimado: '5min',
+      agendamento: 'Manual',
+      disponibilidade: 'disponivel' as const,
+    },
+  ],
+  coberturaModulos: [
+    { modulo: 'Obras', descricao: 'Módulo de obras', quantidadeRelatorios: 3, status: 'coberto' as const },
   ],
 };
 
