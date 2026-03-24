@@ -35,18 +35,21 @@ export function FuncionarioDetailPage() {
   const { funcionario, isLoading } = useFuncionarioDetails(funcId);
 
   // Sync obra/centro de custo context when funcionario is allocated to an obra.
-  // Use a ref to track whether we already synced for this funcionario to avoid cascading
-  // re-renders caused by setObra resetting centroCustoId to null.
-  const syncedFuncIdRef = useRef<string | undefined>(undefined);
+  // Uses store.setState to batch both values in a single update, avoiding the
+  // intermediate state where setObra clears centroCustoId (which caused cascading re-renders).
+  // Tracks last-synced values in a ref to prevent infinite effect cycles while still
+  // re-syncing when the funcionario data changes (e.g. after an edit).
+  const syncedRef = useRef<{ funcId?: string; obraId?: string; ccId?: string | null }>({});
   useEffect(() => {
     const obraAlocado = funcionario?.obraAlocadoId;
-    const ccId = funcionario?.centroCustoId;
-    if (!obraAlocado || syncedFuncIdRef.current === funcId) return;
-    syncedFuncIdRef.current = funcId;
+    const ccId = funcionario?.centroCustoId ?? null;
+    if (!obraAlocado) return;
 
-    // Use store.setState directly to batch both values in a single update,
-    // avoiding the intermediate state where setObra clears centroCustoId.
-    useContextStore.setState({ obraId: obraAlocado, centroCustoId: ccId ?? null });
+    const prev = syncedRef.current;
+    if (prev.funcId === funcId && prev.obraId === obraAlocado && prev.ccId === ccId) return;
+    syncedRef.current = { funcId, obraId: obraAlocado, ccId };
+
+    useContextStore.setState({ obraId: obraAlocado, centroCustoId: ccId });
   }, [funcId, funcionario?.obraAlocadoId, funcionario?.centroCustoId]);
 
   return (
