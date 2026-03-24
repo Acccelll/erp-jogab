@@ -162,4 +162,10 @@ export type Permissao =
 /** Papel do usuário no sistema */
 export type PapelUsuario = 'admin' | 'gestor' | 'operador' | 'visualizador';
 
+/** Resultado de uma chamada com informação de fonte */
+export interface DataResult<T> {
+  data: T;
+  source: 'api' | 'mock';
+}
+
 export * from './relationships';
