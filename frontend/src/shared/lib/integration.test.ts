@@ -20,7 +20,7 @@ describe('getIntegrationConfig', () => {
 // MODULE_READINESS registry
 // ---------------------------------------------------------------------------
 describe('MODULE_READINESS', () => {
-  it('contains all 14 priority modules', () => {
+  it('contains all 13 official modules', () => {
     const moduleNames = MODULE_READINESS.map((m) => m.module);
     expect(moduleNames).toContain('dashboard');
     expect(moduleNames).toContain('obras');
@@ -94,7 +94,7 @@ describe('getReadyModules', () => {
     }
   });
 
-  it('includes the 8 priority modules that are ready', () => {
+  it('includes the 9 modules that are ready', () => {
     const readyNames = getReadyModules().map((m) => m.module);
     expect(readyNames).toContain('dashboard');
     expect(readyNames).toContain('obras');
@@ -104,6 +104,7 @@ describe('getReadyModules', () => {
     expect(readyNames).toContain('compras');
     expect(readyNames).toContain('financeiro');
     expect(readyNames).toContain('fiscal');
+    expect(readyNames).toContain('relatorios');
   });
 
   it('does not include partial modules', () => {
