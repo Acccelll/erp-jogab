@@ -168,4 +168,4 @@ Cada tela principal segue a composição:
 - Services possuem **normalização explícita** para resiliência a payloads parciais.
 - Páginas implementam padrão de **safe-access** com fallback para arrays/objetos vazios.
 - **Backend ainda não implementado** — repositório sem diretório backend.
-- Rotas de lançamento individual de Horas Extras (`/horas-extras/lancamentos`, `/horas-extras/:lancamentoId`) estão pendentes.
+- Rotas de lançamento individual de Horas Extras (`/horas-extras/lancamentos`, `/horas-extras/:lancamentoId`) estão pendentes (ver `docs/06-arquitetura-de-telas.md`).
