@@ -21,42 +21,10 @@ import {
 } from 'lucide-react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AuthGuard } from '@/app/guards';
-import { LoginPage } from '@/app/pages/LoginPage';
 import { AppLayout } from '@/app/layouts/AppLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { ModuleLayout } from '@/app/layouts/ModuleLayout';
 import { ObraWorkspaceLayout } from '@/app/layouts/ObraWorkspaceLayout';
-import { DashboardPage } from '@/modules/dashboard';
-import { NotFoundPage } from '@/shared/components/NotFoundPage';
-import {
-  ObraComprasPage,
-  ObraContratosPage,
-  ObraCronogramaPage,
-  ObraDocumentosPage,
-  ObraEquipePage,
-  ObraEstoquePage,
-  ObraFinanceiroPage,
-  ObraMedicoesPage,
-  ObrasListPage,
-  ObraRhPage,
-  ObraRiscosPage,
-  ObraVisaoGeralPage,
-} from '@/modules/obras';
-import { ObraTabPlaceholder } from '@/modules/obras/components';
-import {
-  FuncionarioAlocacoesPage,
-  FuncionarioContratoPage,
-  FuncionarioDecimoTerceiroPage,
-  FuncionarioDetailPage,
-  FuncionarioDocumentosPage,
-  FuncionarioFeriasPage,
-  FuncionarioFopagPage,
-  FuncionarioHistoricoSalarialPage,
-  FuncionarioHorasExtrasPage,
-  FuncionarioProvisoesPage,
-  FuncionariosListPage,
-} from '@/modules/rh';
-import { FuncionarioTabPlaceholder } from '@/modules/rh/components';
 import {
   AdminIntegracoesPage,
   AdminLogsPage,
@@ -73,8 +41,13 @@ import {
   ComprasSolicitacoesPage,
   PedidoCompraDetailPage,
 } from '@/modules/compras';
+import { DashboardPage } from '@/modules/dashboard';
 import { DocumentoDetailPage, DocumentosListPage } from '@/modules/documentos';
-import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
+import {
+  EstoqueItemDetailPage,
+  EstoqueListPage,
+  EstoqueMovimentacoesPage,
+} from '@/modules/estoque';
 import {
   ContasPagarPage,
   ContasReceberPage,
@@ -105,8 +78,33 @@ import {
   HorasExtrasFechamentoPage,
 } from '@/modules/horas-extras';
 import { MedicaoDetailPage, MedicoesListPage } from '@/modules/medicoes';
+import {
+  ObraComprasPage,
+  ObraCronogramaPage,
+  ObraDocumentosPage,
+  ObraEquipePage,
+  ObraFinanceiroPage,
+  ObrasListPage,
+  ObraVisaoGeralPage,
+} from '@/modules/obras';
+import { ObraTabPlaceholder } from '@/modules/obras/components';
 import { PerfilPage } from '@/modules/perfil';
 import { RelatorioCategoriaPage, RelatoriosListPage } from '@/modules/relatorios';
+import {
+  FuncionarioAlocacoesPage,
+  FuncionarioContratoPage,
+  FuncionarioDecimoTerceiroPage,
+  FuncionarioDetailPage,
+  FuncionarioDocumentosPage,
+  FuncionarioFeriasPage,
+  FuncionarioFopagPage,
+  FuncionariosListPage,
+  FuncionarioHistoricoSalarialPage,
+  FuncionarioHorasExtrasPage,
+  FuncionarioProvisoesPage,
+} from '@/modules/rh';
+import { FuncionarioTabPlaceholder } from '@/modules/rh/components';
+import { NotFoundPage } from '@/shared/components';
 
 interface PlaceholderTabConfig {
   description: string;
@@ -256,15 +254,10 @@ const funcionarioDetailTabs: PlaceholderTabConfig[] = [
 
 const obraImplementedTabs = new Set([
   'cronograma',
-  'contratos',
   'equipe',
-  'rh',
   'compras',
   'financeiro',
-  'estoque',
-  'medicoes',
   'documentos',
-  'riscos',
 ]);
 
 const funcionarioImplementedTabs = new Set([
@@ -337,15 +330,10 @@ const appRoutes: RouteObject[] = [
         children: [
           { index: true, element: <ObraVisaoGeralPage /> },
           { path: 'cronograma', element: <ObraCronogramaPage /> },
-          { path: 'contratos', element: <ObraContratosPage /> },
           { path: 'equipe', element: <ObraEquipePage /> },
-          { path: 'rh', element: <ObraRhPage /> },
           { path: 'compras', element: <ObraComprasPage /> },
           { path: 'financeiro', element: <ObraFinanceiroPage /> },
-          { path: 'estoque', element: <ObraEstoquePage /> },
-          { path: 'medicoes', element: <ObraMedicoesPage /> },
           { path: 'documentos', element: <ObraDocumentosPage /> },
-          { path: 'riscos', element: <ObraRiscosPage /> },
           ...obraPlaceholderRoutes,
         ],
       },
@@ -362,11 +350,17 @@ const appRoutes: RouteObject[] = [
         element: <FuncionarioDetailPage />,
         children: [
           { path: 'contrato', element: <FuncionarioContratoPage /> },
-          { path: 'historico-salarial', element: <FuncionarioHistoricoSalarialPage /> },
+          {
+            path: 'historico-salarial',
+            element: <FuncionarioHistoricoSalarialPage />,
+          },
           { path: 'documentos', element: <FuncionarioDocumentosPage /> },
           { path: 'alocacoes', element: <FuncionarioAlocacoesPage /> },
           { path: 'ferias', element: <FuncionarioFeriasPage /> },
-          { path: 'decimo-terceiro', element: <FuncionarioDecimoTerceiroPage /> },
+          {
+            path: 'decimo-terceiro',
+            element: <FuncionarioDecimoTerceiroPage />,
+          },
           { path: 'provisoes', element: <FuncionarioProvisoesPage /> },
           { path: 'horas-extras', element: <FuncionarioHorasExtrasPage /> },
           { path: 'fopag', element: <FuncionarioFopagPage /> },
@@ -399,7 +393,10 @@ const appRoutes: RouteObject[] = [
           { path: 'eventos', element: <FopagCompetenciaEventosPage /> },
           { path: 'rateio', element: <FopagCompetenciaRateioPage /> },
           { path: 'financeiro', element: <FopagCompetenciaFinanceiroPage /> },
-          { path: 'previsto-realizado', element: <FopagCompetenciaPrevistoRealizadoPage /> },
+          {
+            path: 'previsto-realizado',
+            element: <FopagCompetenciaPrevistoRealizadoPage />,
+          },
         ],
       },
     ],
@@ -499,7 +496,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/login',
-        element: <LoginPage />,
+        element: (
+          <div className="text-center text-sm text-gray-500">
+            Tela de login — em desenvolvimento
+          </div>
+        ),
       },
     ],
   },

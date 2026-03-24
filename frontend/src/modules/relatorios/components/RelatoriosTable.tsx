@@ -1,5 +1,9 @@
 import { Link } from 'react-router-dom';
-import { RELATORIO_CATEGORIA_LABELS, RELATORIO_DISPONIBILIDADE_LABELS } from '../types';
+import {
+  RELATORIO_CATEGORIA_LABELS,
+  RELATORIO_DISPONIBILIDADE_LABELS,
+  RELATORIO_FORMATO_LABELS,
+} from '../types';
 import type { RelatorioItem } from '../types';
 
 interface RelatoriosTableProps {
@@ -17,7 +21,8 @@ export function RelatoriosTable({ items }: RelatoriosTableProps) {
               <th className="px-4 py-3 text-left font-semibold text-gray-600">Categoria</th>
               <th className="px-4 py-3 text-left font-semibold text-gray-600">Origens</th>
               <th className="px-4 py-3 text-left font-semibold text-gray-600">Disponibilidade</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Saídas</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600">Saída principal</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600">Tempo</th>
               <th className="px-4 py-3 text-right font-semibold text-gray-600">Ações</th>
             </tr>
           </thead>
@@ -32,9 +37,17 @@ export function RelatoriosTable({ items }: RelatoriosTableProps) {
                 <td className="px-4 py-3 text-gray-700">{RELATORIO_CATEGORIA_LABELS[item.categoria]}</td>
                 <td className="px-4 py-3 text-gray-700">{item.origemDados.join(', ')}</td>
                 <td className="px-4 py-3 text-gray-700">{RELATORIO_DISPONIBILIDADE_LABELS[item.disponibilidade]}</td>
-                <td className="px-4 py-3 text-gray-700">{item.output.formatos.join(', ')}</td>
+                <td className="px-4 py-3 text-gray-700">
+                  {RELATORIO_FORMATO_LABELS[item.output.formatoPrincipal]}
+                </td>
+                <td className="px-4 py-3 text-gray-700">{item.output.tempoEstimado}</td>
                 <td className="px-4 py-3 text-right">
-                  <Link to={`/relatorios/${item.categoria}`} className="text-sm font-medium text-jogab-600 hover:text-jogab-700">Ver categoria</Link>
+                  <Link
+                    to={`/relatorios/${item.categoria}`}
+                    className="text-sm font-medium text-jogab-600 hover:text-jogab-700"
+                  >
+                    Ver categoria
+                  </Link>
                 </td>
               </tr>
             ))}

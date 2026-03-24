@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
 import { useObraEquipe } from '../hooks';
 import {
@@ -10,9 +10,9 @@ import {
 } from '../components';
 
 const STATUS_OPTIONS = [
-  { value: 'ativa', label: 'Ativa' },
-  { value: 'planejada', label: 'Planejada' },
-  { value: 'encerrada', label: 'Encerrada' },
+  { value: 'alocado', label: 'Alocado' },
+  { value: 'ferias', label: 'Férias' },
+  { value: 'desmobilizando', label: 'Desmobilizando' },
 ];
 
 export function ObraEquipePage() {
@@ -24,7 +24,7 @@ export function ObraEquipePage() {
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
     return items.filter((item) => {
-      const matchesSearch = !search.trim() || `${item.funcionarioNome} ${item.funcao} ${item.equipe} ${item.centroCustoNome}`.toLowerCase().includes(search.trim().toLowerCase());
+      const matchesSearch = !search.trim() || `${item.nome} ${item.funcao} ${item.equipe}`.toLowerCase().includes(search.trim().toLowerCase());
       const matchesStatus = !status || item.status === status;
       return matchesSearch && matchesStatus;
     });
@@ -35,7 +35,7 @@ export function ObraEquipePage() {
       <MainContent className="space-y-6">
         <ObraWorkspaceSectionHeader
           title="Equipe da Obra"
-          description="Pessoas-chave, alocações e centros de custo vinculados à obra para leitura cruzada com RH."
+          description="Pessoas-chave, alocação operacional e leitura rápida de disponibilidade da equipe no canteiro."
           actionLabel="Ir para RH"
           actionHref="/rh/funcionarios"
         />
@@ -65,14 +65,13 @@ export function ObraEquipePage() {
               <EmptyState title="Nenhum membro encontrado" description="Não há pessoas correspondentes ao filtro atual nesta obra." />
             ) : (
               <ObraWorkspaceTable
-                columns={['Funcionário', 'Função', 'Equipe', 'Centro de custo', 'Rateio', 'Status']}
+                columns={['Nome', 'Função', 'Equipe', 'Status', 'Jornada']}
                 rows={filtered.map((item) => [
-                  <Link key={`${item.id}-func`} to={`/rh/funcionarios/${item.funcionarioId}`} className="font-medium text-jogab-700 hover:underline">{item.funcionarioNome}</Link>,
+                  item.nome,
                   item.funcao,
                   item.equipe,
-                  item.centroCustoNome,
-                  `${item.percentual}%`,
                   STATUS_OPTIONS.find((option) => option.value === item.status)?.label ?? item.status,
+                  item.jornada,
                 ])}
               />
             )}

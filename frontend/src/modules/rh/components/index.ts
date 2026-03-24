@@ -8,5 +8,3 @@ export { FuncionarioWorkspaceSectionHeader } from './FuncionarioWorkspaceSection
 export { FuncionarioWorkspaceResumoCard } from './FuncionarioWorkspaceResumoCard';
 export { FuncionarioWorkspaceFilters } from './FuncionarioWorkspaceFilters';
 export { FuncionarioWorkspaceTable } from './FuncionarioWorkspaceTable';
-
-export { AlocacaoMutationDrawerForm } from './AlocacaoMutationDrawerForm';

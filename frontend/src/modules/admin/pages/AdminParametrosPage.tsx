@@ -1,4 +1,90 @@
 import { useParametros, useAdminFilters } from '../hooks';
 import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components';
 import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
-export function AdminParametrosPage() { const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } = useAdminFilters(); const { data, isLoading, isError, refetch } = useParametros(filters); return <div className="flex flex-1 flex-col"><PageHeader title="Administração · Parâmetros" subtitle="Parâmetros globais do ERP com impacto em contexto, workflows e integrações."/><ContextBar/><AdminFilters search={filters.search ?? ''} categoria="parametros" status={filters.status} competencia={filters.competencia} hasActiveFilters={hasActiveFilters} onSearchChange={setSearch} onCategoriaChange={setCategoria} onStatusChange={setStatus} onCompetenciaChange={setCompetencia} onClear={clearFilters}/><MainContent className="space-y-6">{isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando parâmetros...</div>}{isError && <EmptyState title="Erro ao carregar parâmetros" description="Não foi possível carregar os parâmetros administrativos." action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white">Tentar novamente</button>} />}{!isLoading && !isError && data && <><AdminTable category="parametros" columns={['Chave','Descrição','Valor atual','Escopo','Status']} rows={data.map((i) => [i.chave, i.descricao, i.valorAtual, i.escopo, i.status])}/><section className="grid gap-4 xl:grid-cols-2">{data.slice(0,2).map((i) => <AdminPreviewPlaceholder key={i.id} title={i.chave} description={`Escopo ${i.escopo} com valor atual ${i.valorAtual}.`} />)}</section></>}</MainContent></div>; }
+
+export function AdminParametrosPage() {
+  const {
+    filters,
+    setSearch,
+    setCategoria,
+    setStatus,
+    setCompetencia,
+    clearFilters,
+    hasActiveFilters,
+  } = useAdminFilters();
+  const { data, isLoading, isError, refetch } = useParametros(filters);
+
+  return (
+    <div className="flex flex-1 flex-col">
+      <PageHeader
+        title="Administração · Parâmetros"
+        subtitle="Parâmetros globais do ERP com impacto em contexto, workflows e integrações."
+      />
+
+      <ContextBar />
+
+      <AdminFilters
+        search={filters.search ?? ''}
+        categoria="parametros"
+        status={filters.status}
+        competencia={filters.competencia}
+        hasActiveFilters={hasActiveFilters}
+        onSearchChange={setSearch}
+        onCategoriaChange={setCategoria}
+        onStatusChange={setStatus}
+        onCompetenciaChange={setCompetencia}
+        onClear={clearFilters}
+      />
+
+      <MainContent className="space-y-6">
+        {isLoading && (
+          <div className="py-12 text-center text-sm text-gray-500">
+            Carregando parâmetros...
+          </div>
+        )}
+
+        {isError && (
+          <EmptyState
+            title="Erro ao carregar parâmetros"
+            description="Não foi possível carregar os parâmetros administrativos."
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+              >
+                Tentar novamente
+              </button>
+            }
+          />
+        )}
+
+        {!isLoading && !isError && data && (
+          <>
+            <AdminTable
+              category="parametros"
+              columns={['Chave', 'Descrição', 'Valor atual', 'Escopo', 'Status']}
+              rows={data.map((item) => [
+                item.chave,
+                item.descricao,
+                item.valorAtual,
+                item.escopo,
+                item.status,
+              ])}
+            />
+
+            <section className="grid gap-4 xl:grid-cols-2">
+              {data.slice(0, 2).map((item) => (
+                <AdminPreviewPlaceholder
+                  key={item.id}
+                  title={item.chave}
+                  description={`Escopo ${item.escopo} com valor atual ${item.valorAtual}.`}
+                />
+              ))}
+            </section>
+          </>
+        )}
+      </MainContent>
+    </div>
+  );
+}

@@ -7,6 +7,9 @@ export interface RelatorioOutputConfig {
   formatos: RelatorioSaida[];
   agendavel: boolean;
   permiteComparativo: boolean;
+  formatoPrincipal: RelatorioSaida;
+  tempoEstimado: string;
+  recorrenciaSugerida: string;
 }
 
 export interface RelatorioItem {
@@ -27,6 +30,8 @@ export interface RelatorioCategoriaResumo {
   descricao: string;
   quantidade: number;
   disponiveis: number;
+  formatos: RelatorioSaida[];
+  modulosRelacionados: string[];
 }
 
 export interface RelatoriosResumoExecutivo {
@@ -37,39 +42,52 @@ export interface RelatoriosResumoExecutivo {
   exportaveis: number;
 }
 
+export interface RelatorioResumoCardData {
+  id: string;
+  titulo: string;
+  descricao: string;
+  itens: Array<{
+    label: string;
+    valor: string;
+    destaque?: boolean;
+  }>;
+}
+
+export interface RelatorioSaidaOperacional {
+  id: string;
+  relatorioId: string;
+  titulo: string;
+  descricao: string;
+  formatoPrincipal: RelatorioSaida;
+  formatosSecundarios: RelatorioSaida[];
+  destinoPadrao: string;
+  tempoEstimado: string;
+  agendamento: string;
+  disponibilidade: RelatorioDisponibilidade;
+}
+
+export interface RelatorioCoberturaModulo {
+  modulo: string;
+  descricao: string;
+  quantidadeRelatorios: number;
+  status: 'coberto' | 'parcial' | 'planejado';
+}
+
 export interface RelatoriosDashboardData {
   itens: RelatorioItem[];
   categorias: RelatorioCategoriaResumo[];
   resumo: RelatoriosResumoExecutivo;
-  destaques: RelatorioGerencialCard[];
-}
-
-
-export interface RelatorioGerencialCard {
-  id: string;
-  titulo: string;
-  descricao: string;
-  itens: { label: string; valor: string; destaque?: boolean }[];
-}
-
-export interface RelatorioGerencialLinha {
-  id: string;
-  label: string;
-  obraNome?: string;
-  centroCustoNome?: string;
-  funcionarioNome?: string;
-  competencia?: string;
-  previsto?: number;
-  realizado?: number;
-  valor?: number;
-  quantidade?: number;
-  descricao?: string;
+  resumoCards: RelatorioResumoCardData[];
+  saidasOperacionais: RelatorioSaidaOperacional[];
+  coberturaModulos: RelatorioCoberturaModulo[];
 }
 
 export interface RelatorioCategoriaData {
+  categoria: RelatorioCategoria;
   itens: RelatorioItem[];
-  resumoCards: RelatorioGerencialCard[];
-  linhas: RelatorioGerencialLinha[];
+  resumoCards: RelatorioResumoCardData[];
+  saidasOperacionais: RelatorioSaidaOperacional[];
+  coberturaModulos: RelatorioCoberturaModulo[];
 }
 
 export const RELATORIO_CATEGORIA_LABELS: Record<RelatorioCategoria, string> = {
@@ -102,4 +120,20 @@ export const RELATORIO_DISPONIBILIDADE_LABELS: Record<RelatorioDisponibilidade, 
   disponivel: 'Disponível',
   em_preparacao: 'Em preparação',
   planejado: 'Planejado',
+};
+
+export const RELATORIO_DISPONIBILIDADE_VARIANTS: Record<
+  RelatorioDisponibilidade,
+  'success' | 'warning' | 'default'
+> = {
+  disponivel: 'success',
+  em_preparacao: 'warning',
+  planejado: 'default',
+};
+
+export const RELATORIO_FORMATO_LABELS: Record<RelatorioSaida, string> = {
+  pdf: 'PDF',
+  xlsx: 'Excel',
+  csv: 'CSV',
+  dashboard: 'Dashboard',
 };

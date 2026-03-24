@@ -16,8 +16,6 @@ const STATUS_OPTIONS = [
   { value: 'pago', label: 'Pago' },
   { value: 'recebido', label: 'Recebido' },
   { value: 'vencido', label: 'Vencido' },
-  { value: 'aguardando_documentos', label: 'Aguardando documentos' },
-  { value: 'em_aprovacao', label: 'Em aprovação' },
 ];
 
 export function ObraFinanceiroPage() {
@@ -29,7 +27,7 @@ export function ObraFinanceiroPage() {
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
     return items.filter((item) => {
-      const matchesSearch = !search.trim() || `${item.codigo} ${item.descricao} ${item.tipo} ${item.origem ?? ''}`.toLowerCase().includes(search.trim().toLowerCase());
+      const matchesSearch = !search.trim() || `${item.codigo} ${item.descricao} ${item.tipo}`.toLowerCase().includes(search.trim().toLowerCase());
       const matchesStatus = !status || item.status === status;
       return matchesSearch && matchesStatus;
     });
@@ -70,12 +68,11 @@ export function ObraFinanceiroPage() {
               <EmptyState title="Nenhum título encontrado" description="Não há títulos desta obra para o filtro atual." />
             ) : (
               <ObraWorkspaceTable
-                columns={['Código', 'Descrição', 'Tipo', 'Origem', 'Status', 'Competência', 'Valor']}
+                columns={['Código', 'Descrição', 'Tipo', 'Status', 'Competência', 'Valor']}
                 rows={filtered.map((item) => [
                   item.codigo,
                   item.descricao,
                   item.tipo === 'pagar' ? 'A pagar' : 'A receber',
-                  item.origem ? item.origem.replaceAll('_', ' ') : '—',
                   STATUS_OPTIONS.find((option) => option.value === item.status)?.label ?? item.status,
                   formatCompetencia(item.competencia),
                   formatCurrency(item.valor),

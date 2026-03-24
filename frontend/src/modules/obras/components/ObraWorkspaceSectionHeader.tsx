@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 interface ObraWorkspaceSectionHeaderProps {
@@ -6,7 +5,6 @@ interface ObraWorkspaceSectionHeaderProps {
   description: string;
   actionLabel?: string;
   actionHref?: string;
-  action?: ReactNode;
 }
 
 export function ObraWorkspaceSectionHeader({
@@ -14,7 +12,6 @@ export function ObraWorkspaceSectionHeader({
   description,
   actionLabel,
   actionHref,
-  action,
 }: ObraWorkspaceSectionHeaderProps) {
   return (
     <div className="flex items-start justify-between gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
@@ -23,14 +20,14 @@ export function ObraWorkspaceSectionHeader({
         <p className="mt-1 text-sm text-gray-500">{description}</p>
       </div>
 
-      {action ?? (actionLabel && actionHref ? (
+      {actionLabel && actionHref ? (
         <Link
           to={actionHref}
           className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           {actionLabel}
         </Link>
-      ) : null)}
+      ) : null}
     </div>
   );
 }

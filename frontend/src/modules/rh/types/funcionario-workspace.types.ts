@@ -1,5 +1,3 @@
-import type { AlocacaoResumo } from '@/shared/types';
-
 export interface FuncionarioContratoHistoricoItem {
   id: string;
   data: string;
@@ -21,7 +19,17 @@ export interface FuncionarioContratoData {
   historico: FuncionarioContratoHistoricoItem[];
 }
 
-export type FuncionarioAlocacaoItem = AlocacaoResumo;
+export interface FuncionarioAlocacaoItem {
+  id: string;
+  obraId: string;
+  obraNome: string;
+  funcao: string;
+  periodoInicio: string;
+  periodoFim?: string;
+  percentual: number;
+  centroCusto: string;
+  status: 'ativa' | 'planejada' | 'encerrada';
+}
 
 export interface FuncionarioProvisaoItem {
   id: string;
@@ -53,24 +61,12 @@ export interface FuncionarioFopagItem {
   valor: number;
 }
 
-export interface FuncionarioWorkspaceResumoCard {
-  id: string;
-  titulo: string;
-  descricao: string;
-  itens: { label: string; valor: string; destaque?: boolean }[];
-}
-
-export interface FuncionarioWorkspaceTabData<T> {
-  resumoCards: FuncionarioWorkspaceResumoCard[];
-  items: T[];
-}
-
 export interface FuncionarioHistoricoSalarialItem {
   id: string;
   vigencia: string;
+  salario: number;
   motivo: 'admissao' | 'reajuste' | 'promocao' | 'reenquadramento';
   cargo: string;
-  salario: number;
   responsavel: string;
 }
 
@@ -87,10 +83,10 @@ export interface FuncionarioDocumentoItem {
 export interface FuncionarioFeriasItem {
   id: string;
   periodoAquisitivo: string;
-  status: 'planejada' | 'em_gozo' | 'concluida';
+  saldoDias: number;
   inicioGozo?: string;
   fimGozo?: string;
-  saldoDias: number;
+  status: 'planejada' | 'em_gozo' | 'concluida';
   abono: boolean;
 }
 
@@ -99,6 +95,18 @@ export interface FuncionarioDecimoTerceiroItem {
   competencia: string;
   etapa: 'adiantamento' | 'parcela_final' | 'encargos';
   status: 'previsto' | 'provisionado' | 'pago';
-  origem: 'folha' | 'provisao' | 'financeiro';
   valor: number;
+  origem: 'folha' | 'provisao' | 'financeiro';
+}
+
+export interface FuncionarioWorkspaceResumoCard {
+  id: string;
+  titulo: string;
+  descricao: string;
+  itens: { label: string; valor: string; destaque?: boolean }[];
+}
+
+export interface FuncionarioWorkspaceTabData<T> {
+  resumoCards: FuncionarioWorkspaceResumoCard[];
+  items: T[];
 }

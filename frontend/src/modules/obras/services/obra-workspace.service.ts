@@ -1,61 +1,59 @@
-import { fetchObraAlocacoesWorkspace } from '@/modules/rh/services/alocacoes.service';
+import type {
+  ObraComprasItem,
+  ObraCronogramaItem,
+  ObraDocumentoItem,
+  ObraEquipeItem,
+  ObraFinanceiroItem,
+  ObraWorkspaceTabData,
+} from '../types';
 import {
   getComprasWorkspace,
-  getContratosWorkspace,
   getCronogramaWorkspace,
   getDocumentosWorkspace,
-  getEstoqueWorkspace,
+  getEquipeWorkspace,
   getFinanceiroWorkspace,
-  getMedicoesWorkspace,
-  getRiscosWorkspace,
 } from '../data/obra-workspace.mock';
 
-function delay(ms = 180): Promise<void> {
+const MOCK_DELAY_MS = 180;
+
+function delay(ms = MOCK_DELAY_MS): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function fetchObraCronograma(obraId: string) {
+async function resolveObraWorkspace<T>(
+  obraId: string,
+  resolver: (currentObraId: string) => ObraWorkspaceTabData<T>,
+): Promise<ObraWorkspaceTabData<T>> {
   await delay();
-  return getCronogramaWorkspace(obraId);
+  return resolver(obraId);
 }
 
-export async function fetchObraContratos(obraId: string) {
-  await delay();
-  return getContratosWorkspace(obraId);
+export function fetchObraCronograma(
+  obraId: string,
+): Promise<ObraWorkspaceTabData<ObraCronogramaItem>> {
+  return resolveObraWorkspace(obraId, getCronogramaWorkspace);
 }
 
-export async function fetchObraEquipe(obraId: string) {
-  return fetchObraAlocacoesWorkspace(obraId);
+export function fetchObraEquipe(
+  obraId: string,
+): Promise<ObraWorkspaceTabData<ObraEquipeItem>> {
+  return resolveObraWorkspace(obraId, getEquipeWorkspace);
 }
 
-export const fetchObraRh = fetchObraEquipe;
-
-export async function fetchObraCompras(obraId: string) {
-  await delay();
-  return getComprasWorkspace(obraId);
+export function fetchObraCompras(
+  obraId: string,
+): Promise<ObraWorkspaceTabData<ObraComprasItem>> {
+  return resolveObraWorkspace(obraId, getComprasWorkspace);
 }
 
-export async function fetchObraFinanceiro(obraId: string) {
-  await delay();
-  return getFinanceiroWorkspace(obraId);
+export function fetchObraFinanceiro(
+  obraId: string,
+): Promise<ObraWorkspaceTabData<ObraFinanceiroItem>> {
+  return resolveObraWorkspace(obraId, getFinanceiroWorkspace);
 }
 
-export async function fetchObraEstoque(obraId: string) {
-  await delay();
-  return getEstoqueWorkspace(obraId);
-}
-
-export async function fetchObraMedicoes(obraId: string) {
-  await delay();
-  return getMedicoesWorkspace(obraId);
-}
-
-export async function fetchObraDocumentos(obraId: string) {
-  await delay();
-  return getDocumentosWorkspace(obraId);
-}
-
-export async function fetchObraRiscos(obraId: string) {
-  await delay();
-  return getRiscosWorkspace(obraId);
+export function fetchObraDocumentos(
+  obraId: string,
+): Promise<ObraWorkspaceTabData<ObraDocumentoItem>> {
+  return resolveObraWorkspace(obraId, getDocumentosWorkspace);
 }
