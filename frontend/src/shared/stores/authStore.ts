@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { fetchMockSession, loginWithMock, logoutWithMock } from '@/shared/lib/auth.service';
+import { login, fetchSession, logout as logoutService } from '@/shared/lib/auth.service';
 import { useContextStore } from '@/shared/stores/contextStore';
 import type { AuthCredentials, Usuario } from '@/shared/types';
 
@@ -34,7 +34,7 @@ export const useAuthStore = create<AuthState>()(
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          const session = await loginWithMock(credentials);
+          const session = await login(credentials);
           set({
             usuario: session.usuario,
             token: session.token,
@@ -58,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true });
         try {
           const token = useAuthStore.getState().token;
-          const session = await fetchMockSession(token);
+          const session = await fetchSession(token);
           set({
             usuario: session?.usuario ?? null,
             token: session?.token ?? null,
@@ -80,7 +80,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: async () => {
-        await logoutWithMock();
+        await logoutService();
         useContextStore.getState().resetContext();
         set({
           usuario: null,
