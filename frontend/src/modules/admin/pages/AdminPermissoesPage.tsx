@@ -1,6 +1,6 @@
 import { usePermissoes, useAdminFilters } from '../hooks';
 import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminPermissoesPage() {
   const {
@@ -20,8 +20,6 @@ export function AdminPermissoesPage() {
         title="Administração · Permissões"
         subtitle="Matriz de acesso por módulo, recurso e nível de autorização."
       />
-
-      <ContextBar />
 
       <AdminFilters
         search={filters.search ?? ''}

@@ -1,6 +1,6 @@
 import { ReceiptText, Wallet } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useMedicoes, useMedicoesFilters } from '../hooks';
 import { MedicoesFilters, MedicoesKpiBar, MedicoesOverview, MedicoesResumoCard, MedicoesTable } from '../components';
 
@@ -36,8 +36,6 @@ export function MedicoesListPage() {
           </div>
         }
       />
-
-      <ContextBar />
 
       <MedicoesFilters
         search={filters.search ?? ''}

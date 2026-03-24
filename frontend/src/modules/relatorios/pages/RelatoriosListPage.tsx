@@ -1,6 +1,6 @@
 import { BarChart3, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import {
   RelatorioCategoriaCard,
   RelatorioCoberturaCard,
@@ -49,8 +49,6 @@ export function RelatoriosListPage() {
           </div>
         }
       />
-
-      <ContextBar />
 
       <RelatoriosFilters
         search={filters.search ?? ''}

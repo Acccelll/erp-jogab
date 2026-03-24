@@ -1,6 +1,6 @@
 import { ArrowLeft, ExternalLink, Wallet } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { useMedicaoDetails } from '../hooks';
 import {
@@ -26,8 +26,6 @@ export function MedicaoDetailPage() {
           </Link>
         }
       />
-
-      <ContextBar />
 
       <MainContent className="space-y-6">
         {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando detalhe da medição...</div>}

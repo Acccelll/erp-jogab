@@ -1,6 +1,5 @@
 import { AlertTriangle, Landmark } from 'lucide-react';
 import {
-  ContextBar,
   EmptyState,
   MainContent,
   PageHeader,
@@ -43,8 +42,6 @@ export function FluxoCaixaPage() {
         title="Financeiro · Fluxo de caixa"
         subtitle="Projeção de entradas e saídas conectando programação financeira, faturamento, compras e folha."
       />
-
-      <ContextBar />
 
       <FinanceiroFilters
         search={filters.search ?? ''}

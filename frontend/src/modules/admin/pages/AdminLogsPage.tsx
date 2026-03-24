@@ -1,6 +1,6 @@
 import { useLogs, useAdminFilters } from '../hooks';
 import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminLogsPage() {
   const {
@@ -20,8 +20,6 @@ export function AdminLogsPage() {
         title="Administração · Logs"
         subtitle="Rastreabilidade e auditoria de eventos administrativos e integrações do ERP."
       />
-
-      <ContextBar />
 
       <AdminFilters
         search={filters.search ?? ''}

@@ -1,6 +1,6 @@
 import { useUsuarios, useAdminFilters } from '../hooks';
 import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminUsuariosPage() {
   const {
@@ -20,8 +20,6 @@ export function AdminUsuariosPage() {
         title="Administração · Usuários"
         subtitle="Gestão de acesso administrativo com escopo, último acesso e governança por perfil."
       />
-
-      <ContextBar />
 
       <AdminFilters
         search={filters.search ?? ''}

@@ -1,6 +1,6 @@
 import { Boxes, Wallet } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useEstoqueFilters, useMovimentacoesEstoque } from '../hooks';
 import { EstoqueFilters, EstoqueMovimentacoesTable } from '../components';
 
@@ -26,8 +26,6 @@ export function EstoqueMovimentacoesPage() {
           </div>
         }
       />
-
-      <ContextBar />
 
       <EstoqueFilters
         search={filters.search ?? ''}

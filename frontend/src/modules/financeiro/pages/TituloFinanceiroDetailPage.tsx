@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeftRight, ExternalLink, ReceiptText } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { FinanceiroStatusBadge } from '../components';
 import { fetchTituloFinanceiroById } from '../services/financeiro.service';
@@ -31,8 +31,6 @@ export function TituloFinanceiroDetailPage() {
           </Link>
         }
       />
-
-      <ContextBar />
 
       <MainContent className="space-y-6">
         {isLoading && (

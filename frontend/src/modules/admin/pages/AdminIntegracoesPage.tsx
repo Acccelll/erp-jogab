@@ -1,6 +1,6 @@
 import { useIntegracoes, useAdminFilters } from '../hooks';
 import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminIntegracoesPage() {
   const {
@@ -20,8 +20,6 @@ export function AdminIntegracoesPage() {
         title="Administração · Integrações"
         subtitle="Saúde das integrações sistêmicas com foco em autenticação, sincronização e governança."
       />
-
-      <ContextBar />
 
       <AdminFilters
         search={filters.search ?? ''}

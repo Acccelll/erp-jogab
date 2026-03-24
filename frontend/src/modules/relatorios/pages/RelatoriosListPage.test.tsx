@@ -27,7 +27,6 @@ vi.mock('react-router-dom', () => ({
 }));
 
 vi.mock('@/shared/components', () => ({
-  ContextBar: () => <div data-testid="context-bar" />,
   EmptyState: ({ title, description, action }: { title: string; description?: string; action?: React.ReactNode }) => (
     <div data-testid="empty-state">
       <h3>{title}</h3>

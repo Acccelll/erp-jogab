@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { KeyRound, Users } from 'lucide-react';
-import { ContextBar, EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useAdmin, useAdminFilters } from '../hooks';
 import { AdminCategoriaCard, AdminFilters, AdminResumoBar } from '../components';
 
@@ -40,8 +40,6 @@ export function AdminPage() {
           </div>
         }
       />
-
-      <ContextBar />
 
       <AdminFilters
         search={filters.search ?? ''}
