@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Plus, FileCheck2, CalendarRange, Clock3 } from 'lucide-react';
+import { Plus, FileCheck2, CalendarRange, Clock3, List } from 'lucide-react';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useHorasExtras, useHorasExtrasFilters } from '../hooks';
 import {
@@ -11,15 +11,8 @@ import {
 } from '../components';
 
 export function HorasExtrasDashboardPage() {
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setTipo,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useHorasExtrasFilters();
+  const { filters, setSearch, setStatus, setTipo, setCompetencia, clearFilters, hasActiveFilters } =
+    useHorasExtrasFilters();
 
   const { data, isLoading, isError, refetch } = useHorasExtras(filters);
 
@@ -30,6 +23,13 @@ export function HorasExtrasDashboardPage() {
         subtitle="Lançamentos operacionais, aprovação e preparação do fechamento por competência com reflexo em RH, FOPAG e custo da obra."
         actions={
           <div className="flex items-center gap-2">
+            <Link
+              to="/horas-extras/lancamentos"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              <List size={16} />
+              Ver lançamentos
+            </Link>
             <Link
               to="/horas-extras/fechamento"
               className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
@@ -134,7 +134,11 @@ export function HorasExtrasDashboardPage() {
             {data.data.length === 0 ? (
               <EmptyState
                 title="Nenhum lançamento encontrado"
-                description={hasActiveFilters ? 'Nenhum lançamento corresponde aos filtros selecionados.' : 'Cadastre o primeiro lançamento de horas extras para iniciar o processo operacional.'}
+                description={
+                  hasActiveFilters
+                    ? 'Nenhum lançamento corresponde aos filtros selecionados.'
+                    : 'Cadastre o primeiro lançamento de horas extras para iniciar o processo operacional.'
+                }
                 action={
                   hasActiveFilters ? (
                     <button
@@ -151,7 +155,9 @@ export function HorasExtrasDashboardPage() {
               <section className="space-y-4">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900">Lançamentos</h2>
-                  <p className="text-sm text-gray-500">Lista inicial dos eventos operacionais que alimentarão aprovação, fechamento e FOPAG.</p>
+                  <p className="text-sm text-gray-500">
+                    Lista inicial dos eventos operacionais que alimentarão aprovação, fechamento e FOPAG.
+                  </p>
                 </div>
                 <HorasExtrasTable items={data.data} />
               </section>

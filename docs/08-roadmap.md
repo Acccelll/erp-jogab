@@ -24,7 +24,7 @@
 - RH (lista de funcionários, workspace com 10 abas, hooks, services, mock data)
 
 ## Fase 4 ✅
-- Horas Extras (dashboard, aprovação, fechamento, hooks, services, mock data)
+- Horas Extras (dashboard, aprovação, fechamento, lançamentos, detalhe de lançamento, hooks, services, mock data)
 
 ## Fase 5 ✅
 - FOPAG (lista de competências, detalhe com 7 abas, hooks, services, mock data)
@@ -80,5 +80,22 @@
 - Desabilitar fallback gradualmente por módulo (`VITE_API_FALLBACK=false`)
 - Code-splitting com React.lazy para reduzir bundle size
 - Testes de integração end-to-end com API real
-- Rotas pendentes: `/horas-extras/lancamentos`, `/horas-extras/:lancamentoId`
 - Completar contratos parciais: estoque detalhe, medições detalhe, documentos gestão, admin CRUD
+
+## Estado atual (2026-03-24)
+
+**Resultado dos comandos de validação:**
+- `npm run build`: 0 erros TypeScript, build completo com sucesso
+- `npm run lint`: 0 erros
+- `npm run test`: 37 arquivos de teste, 410 testes passando
+- `npm audit`: 0 vulnerabilidades
+
+**Testes encontrados vs declarados:**
+- Arquivos de teste no repositório: 37 (13 `.test.ts` + 24 `.test.tsx`)
+- Testes executados pelo Vitest: 410 em 37 arquivos — todos passando
+- Padrão de include: `src/**/*.test.{ts,tsx}` — correto e abrangente
+
+**Rotas implementadas:**
+- `/horas-extras/lancamentos` — lista de lançamentos (adicionada nesta atualização)
+- `/horas-extras/:lancamentoId` — detalhe do lançamento (adicionada nesta atualização)
+- Todas as demais rotas documentadas em `docs/06-arquitetura-de-telas.md` estão presentes

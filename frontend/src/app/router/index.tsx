@@ -43,11 +43,7 @@ import {
 } from '@/modules/compras';
 import { DashboardPage } from '@/modules/dashboard';
 import { DocumentoDetailPage, DocumentosListPage } from '@/modules/documentos';
-import {
-  EstoqueItemDetailPage,
-  EstoqueListPage,
-  EstoqueMovimentacoesPage,
-} from '@/modules/estoque';
+import { EstoqueItemDetailPage, EstoqueListPage, EstoqueMovimentacoesPage } from '@/modules/estoque';
 import {
   ContasPagarPage,
   ContasReceberPage,
@@ -55,12 +51,7 @@ import {
   FluxoCaixaPage,
   TituloFinanceiroDetailPage,
 } from '@/modules/financeiro';
-import {
-  DocumentoFiscalDetailPage,
-  FiscalEntradasPage,
-  FiscalListPage,
-  FiscalSaidasPage,
-} from '@/modules/fiscal';
+import { DocumentoFiscalDetailPage, FiscalEntradasPage, FiscalListPage, FiscalSaidasPage } from '@/modules/fiscal';
 import {
   FopagCompetenciaDetailPage,
   FopagCompetenciaEventosPage,
@@ -75,7 +66,9 @@ import {
 import {
   HorasExtrasAprovacaoPage,
   HorasExtrasDashboardPage,
+  HorasExtrasDetailPage,
   HorasExtrasFechamentoPage,
+  HorasExtrasLancamentosPage,
 } from '@/modules/horas-extras';
 import { MedicaoDetailPage, MedicoesListPage } from '@/modules/medicoes';
 import {
@@ -120,71 +113,61 @@ const obraWorkspaceTabs: PlaceholderTabConfig[] = [
     path: 'cronograma',
     icon: CalendarDays,
     title: 'Cronograma',
-    description:
-      'Cronograma físico-financeiro da obra com etapas, marcos e percentual de avanço.',
+    description: 'Cronograma físico-financeiro da obra com etapas, marcos e percentual de avanço.',
   },
   {
     path: 'contratos',
     icon: FileSignature,
     title: 'Contratos',
-    description:
-      'Contratos da obra com clientes e fornecedores, aditivos e medições vinculadas.',
+    description: 'Contratos da obra com clientes e fornecedores, aditivos e medições vinculadas.',
   },
   {
     path: 'equipe',
     icon: UsersRound,
     title: 'Equipe',
-    description:
-      'Equipe alocada na obra com cargos, funções, jornadas e período de atuação.',
+    description: 'Equipe alocada na obra com cargos, funções, jornadas e período de atuação.',
   },
   {
     path: 'rh',
     icon: Users,
     title: 'RH da Obra',
-    description:
-      'Dados de RH dos funcionários alocados na obra com vínculo de centro de custo.',
+    description: 'Dados de RH dos funcionários alocados na obra com vínculo de centro de custo.',
   },
   {
     path: 'compras',
     icon: ShoppingCart,
     title: 'Compras da Obra',
-    description:
-      'Solicitações, cotações e pedidos de compra vinculados à execução da obra.',
+    description: 'Solicitações, cotações e pedidos de compra vinculados à execução da obra.',
   },
   {
     path: 'financeiro',
     icon: DollarSign,
     title: 'Financeiro da Obra',
-    description:
-      'Visão financeira da obra com títulos, previsões de desembolso e custos realizados.',
+    description: 'Visão financeira da obra com títulos, previsões de desembolso e custos realizados.',
   },
   {
     path: 'estoque',
     icon: Package,
     title: 'Estoque da Obra',
-    description:
-      'Movimentações de estoque, consumo de materiais e saldos por obra.',
+    description: 'Movimentações de estoque, consumo de materiais e saldos por obra.',
   },
   {
     path: 'medicoes',
     icon: Ruler,
     title: 'Medições da Obra',
-    description:
-      'Medições contratuais, faturamento e acompanhamento da produção executada.',
+    description: 'Medições contratuais, faturamento e acompanhamento da produção executada.',
   },
   {
     path: 'documentos',
     icon: FolderOpen,
     title: 'Documentos da Obra',
-    description:
-      'Documentos vinculados à obra com controle de vencimentos, responsáveis e status.',
+    description: 'Documentos vinculados à obra com controle de vencimentos, responsáveis e status.',
   },
   {
     path: 'riscos',
     icon: AlertTriangle,
     title: 'Riscos da Obra',
-    description:
-      'Matriz de riscos e oportunidades identificados ao longo da execução da obra.',
+    description: 'Matriz de riscos e oportunidades identificados ao longo da execução da obra.',
   },
 ];
 
@@ -193,74 +176,59 @@ const funcionarioDetailTabs: PlaceholderTabConfig[] = [
     path: 'contrato',
     icon: FileSignature,
     title: 'Contrato',
-    description:
-      'Dados contratuais do funcionário com tipo, vigência, cláusulas e aditivos.',
+    description: 'Dados contratuais do funcionário com tipo, vigência, cláusulas e aditivos.',
   },
   {
     path: 'historico-salarial',
     icon: DollarSign,
     title: 'Histórico Salarial',
-    description:
-      'Histórico de reajustes, promoções e alterações salariais por vigência.',
+    description: 'Histórico de reajustes, promoções e alterações salariais por vigência.',
   },
   {
     path: 'documentos',
     icon: FolderOpen,
     title: 'Documentos',
-    description:
-      'ASOs, certificados, contratos, identificações e demais documentos do colaborador.',
+    description: 'ASOs, certificados, contratos, identificações e demais documentos do colaborador.',
   },
   {
     path: 'alocacoes',
     icon: Building2,
     title: 'Alocações',
-    description:
-      'Histórico de alocações por obra, função e centro de custo do funcionário.',
+    description: 'Histórico de alocações por obra, função e centro de custo do funcionário.',
   },
   {
     path: 'ferias',
     icon: Palmtree,
     title: 'Férias',
-    description:
-      'Períodos aquisitivos, programação, saldo e histórico de gozo de férias.',
+    description: 'Períodos aquisitivos, programação, saldo e histórico de gozo de férias.',
   },
   {
     path: 'decimo-terceiro',
     icon: Gift,
     title: '13º Salário',
-    description:
-      'Cálculo, provisão e histórico de pagamentos do décimo terceiro salário.',
+    description: 'Cálculo, provisão e histórico de pagamentos do décimo terceiro salário.',
   },
   {
     path: 'provisoes',
     icon: Wallet,
     title: 'Provisões',
-    description:
-      'Provisões trabalhistas de férias, 13º, FGTS e rescisão do colaborador.',
+    description: 'Provisões trabalhistas de férias, 13º, FGTS e rescisão do colaborador.',
   },
   {
     path: 'horas-extras',
     icon: Clock,
     title: 'Horas Extras',
-    description:
-      'Lançamentos, aprovação, banco de horas e reflexos de horas extras.',
+    description: 'Lançamentos, aprovação, banco de horas e reflexos de horas extras.',
   },
   {
     path: 'fopag',
     icon: Receipt,
     title: 'FOPAG',
-    description:
-      'Participação do funcionário na folha por competência e eventos consolidados.',
+    description: 'Participação do funcionário na folha por competência e eventos consolidados.',
   },
 ];
 
-const obraImplementedTabs = new Set([
-  'cronograma',
-  'equipe',
-  'compras',
-  'financeiro',
-  'documentos',
-]);
+const obraImplementedTabs = new Set(['cronograma', 'equipe', 'compras', 'financeiro', 'documentos']);
 
 const funcionarioImplementedTabs = new Set([
   'contrato',
@@ -287,28 +255,14 @@ function createPlaceholderRoutes(
     }));
 }
 
-const obraPlaceholderRoutes = createPlaceholderRoutes(
-  obraWorkspaceTabs,
-  obraImplementedTabs,
-  (tab) => (
-    <ObraTabPlaceholder
-      icon={tab.icon}
-      title={tab.title}
-      description={tab.description}
-    />
-  ),
-);
+const obraPlaceholderRoutes = createPlaceholderRoutes(obraWorkspaceTabs, obraImplementedTabs, (tab) => (
+  <ObraTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />
+));
 
 const funcionarioPlaceholderRoutes = createPlaceholderRoutes(
   funcionarioDetailTabs,
   funcionarioImplementedTabs,
-  (tab) => (
-    <FuncionarioTabPlaceholder
-      icon={tab.icon}
-      title={tab.title}
-      description={tab.description}
-    />
-  ),
+  (tab) => <FuncionarioTabPlaceholder icon={tab.icon} title={tab.title} description={tab.description} />,
 );
 
 const appRoutes: RouteObject[] = [
@@ -377,8 +331,10 @@ const appRoutes: RouteObject[] = [
     element: <ModuleLayout />,
     children: [
       { index: true, element: <HorasExtrasDashboardPage /> },
+      { path: 'lancamentos', element: <HorasExtrasLancamentosPage /> },
       { path: 'fechamento', element: <HorasExtrasFechamentoPage /> },
       { path: 'aprovacao', element: <HorasExtrasAprovacaoPage /> },
+      { path: ':lancamentoId', element: <HorasExtrasDetailPage /> },
     ],
   },
   {
