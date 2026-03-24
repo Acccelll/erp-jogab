@@ -67,6 +67,36 @@ export function normalizeAdminDashboardData(
   };
 }
 
+/** Ensures payload is always a valid AdminUsuario[]. */
+export function normalizeAdminUsuarios(payload: unknown): AdminUsuario[] {
+  return Array.isArray(payload) ? payload : [];
+}
+
+/** Ensures payload is always a valid AdminPerfil[]. */
+export function normalizeAdminPerfis(payload: unknown): AdminPerfil[] {
+  return Array.isArray(payload) ? payload : [];
+}
+
+/** Ensures payload is always a valid AdminPermissao[]. */
+export function normalizeAdminPermissoes(payload: unknown): AdminPermissao[] {
+  return Array.isArray(payload) ? payload : [];
+}
+
+/** Ensures payload is always a valid AdminParametro[]. */
+export function normalizeAdminParametros(payload: unknown): AdminParametro[] {
+  return Array.isArray(payload) ? payload : [];
+}
+
+/** Ensures payload is always a valid AdminLog[]. */
+export function normalizeAdminLogs(payload: unknown): AdminLog[] {
+  return Array.isArray(payload) ? payload : [];
+}
+
+/** Ensures payload is always a valid AdminIntegracao[]. */
+export function normalizeAdminIntegracoes(payload: unknown): AdminIntegracao[] {
+  return Array.isArray(payload) ? payload : [];
+}
+
 async function fetchAdminDashboardMock(filters?: AdminFiltersData) {
   await wait();
   return getMockAdminDashboard(normalizeFilters(filters));
@@ -83,11 +113,7 @@ async function fetchUsuariosMock(filters?: AdminFiltersData) {
 
 async function fetchPerfisMock(filters?: AdminFiltersData) {
   await wait();
-  return filterByAdmin(
-    adminPerfis,
-    normalizeFilters(filters),
-    (item) => `${item.nome} ${item.descricao}`,
-  );
+  return filterByAdmin(adminPerfis, normalizeFilters(filters), (item) => `${item.nome} ${item.descricao}`);
 }
 
 async function fetchPermissoesMock(filters?: AdminFiltersData) {
@@ -119,11 +145,7 @@ async function fetchLogsMock(filters?: AdminFiltersData) {
 
 async function fetchIntegracoesMock(filters?: AdminFiltersData) {
   await wait();
-  return filterByAdmin(
-    adminIntegracoes,
-    normalizeFilters(filters),
-    (item) => `${item.nome} ${item.descricao}`,
-  );
+  return filterByAdmin(adminIntegracoes, normalizeFilters(filters), (item) => `${item.nome} ${item.descricao}`);
 }
 
 export async function fetchAdminDashboard(filters?: AdminFiltersData): Promise<AdminDashboardData> {
@@ -141,7 +163,7 @@ export async function fetchUsuarios(filters?: AdminFiltersData): Promise<AdminUs
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.usuarios, { params: filters });
-      return unwrapApiResponse<AdminUsuario[]>(response.data);
+      return normalizeAdminUsuarios(unwrapApiResponse<AdminUsuario[]>(response.data));
     },
     () => fetchUsuariosMock(filters),
   );
@@ -151,7 +173,7 @@ export async function fetchPerfis(filters?: AdminFiltersData): Promise<AdminPerf
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.perfis, { params: filters });
-      return unwrapApiResponse<AdminPerfil[]>(response.data);
+      return normalizeAdminPerfis(unwrapApiResponse<AdminPerfil[]>(response.data));
     },
     () => fetchPerfisMock(filters),
   );
@@ -161,7 +183,7 @@ export async function fetchPermissoes(filters?: AdminFiltersData): Promise<Admin
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.permissoes, { params: filters });
-      return unwrapApiResponse<AdminPermissao[]>(response.data);
+      return normalizeAdminPermissoes(unwrapApiResponse<AdminPermissao[]>(response.data));
     },
     () => fetchPermissoesMock(filters),
   );
@@ -171,7 +193,7 @@ export async function fetchParametros(filters?: AdminFiltersData): Promise<Admin
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.parametros, { params: filters });
-      return unwrapApiResponse<AdminParametro[]>(response.data);
+      return normalizeAdminParametros(unwrapApiResponse<AdminParametro[]>(response.data));
     },
     () => fetchParametrosMock(filters),
   );
@@ -181,7 +203,7 @@ export async function fetchLogs(filters?: AdminFiltersData): Promise<AdminLog[]>
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.logs, { params: filters });
-      return unwrapApiResponse<AdminLog[]>(response.data);
+      return normalizeAdminLogs(unwrapApiResponse<AdminLog[]>(response.data));
     },
     () => fetchLogsMock(filters),
   );
@@ -191,7 +213,7 @@ export async function fetchIntegracoes(filters?: AdminFiltersData): Promise<Admi
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.integracoes, { params: filters });
-      return unwrapApiResponse<AdminIntegracao[]>(response.data);
+      return normalizeAdminIntegracoes(unwrapApiResponse<AdminIntegracao[]>(response.data));
     },
     () => fetchIntegracoesMock(filters),
   );

@@ -3,16 +3,10 @@ import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminUsuariosPage() {
-  const {
-    filters,
-    setSearch,
-    setCategoria,
-    setStatus,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useAdminFilters();
+  const { filters, setSearch, setCategoria, setStatus, setCompetencia, clearFilters, hasActiveFilters } =
+    useAdminFilters();
   const { data, isLoading, isError, refetch } = useUsuarios(filters);
+  const items = Array.isArray(data) ? data : [];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -35,11 +29,7 @@ export function AdminUsuariosPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando usuários...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando usuários...</div>}
 
         {isError && (
           <EmptyState
@@ -62,7 +52,7 @@ export function AdminUsuariosPage() {
             <AdminTable
               category="usuarios"
               columns={['Nome', 'Email', 'Perfil', 'Status', 'Escopo', 'Último acesso']}
-              rows={data.map((item) => [
+              rows={items.map((item) => [
                 item.nome,
                 item.email,
                 item.perfilNome,
@@ -73,7 +63,7 @@ export function AdminUsuariosPage() {
             />
 
             <section className="grid gap-4 xl:grid-cols-2">
-              {data.slice(0, 2).map((item) => (
+              {items.slice(0, 2).map((item) => (
                 <AdminPreviewPlaceholder
                   key={item.id}
                   title={item.nome}

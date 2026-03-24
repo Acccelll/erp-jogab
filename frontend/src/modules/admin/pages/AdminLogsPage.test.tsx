@@ -33,9 +33,7 @@ vi.mock('@/shared/components', () => ({
 
 vi.mock('../components', () => ({
   AdminFilters: () => <div data-testid="admin-filters" />,
-  AdminPreviewPlaceholder: ({ title }: { title: string }) => (
-    <div data-testid="admin-preview">{title}</div>
-  ),
+  AdminPreviewPlaceholder: ({ title }: { title: string }) => <div data-testid="admin-preview">{title}</div>,
   AdminTable: ({ category, rows }: { category: string; rows: string[][] }) => (
     <div data-testid={`admin-table-${category}`}>{rows.length} linhas</div>
   ),
@@ -154,5 +152,34 @@ describe('AdminLogsPage', () => {
     expect(screen.queryByTestId('admin-table-logs')).not.toBeInTheDocument();
     expect(screen.queryByText(/carregando/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/erro/i)).not.toBeInTheDocument();
+  });
+
+  it('does not break when data is a non-array partial payload', () => {
+    mockUseLogs.mockReturnValue({
+      data: { unexpected: 'shape' } as unknown as AdminLog[],
+      isLoading: false,
+      isError: false,
+      refetch: refetchMock,
+    } as ReturnType<typeof useLogs>);
+
+    render(<AdminLogsPage />);
+
+    // Page renders without crashing, table shows 0 rows
+    expect(screen.getByText('Administração · Logs')).toBeInTheDocument();
+    expect(screen.getByTestId('admin-table-logs')).toHaveTextContent('0 linhas');
+  });
+
+  it('handles empty array data correctly', () => {
+    mockUseLogs.mockReturnValue({
+      data: [] as AdminLog[],
+      isLoading: false,
+      isError: false,
+      refetch: refetchMock,
+    } as ReturnType<typeof useLogs>);
+
+    render(<AdminLogsPage />);
+
+    expect(screen.getByTestId('admin-table-logs')).toHaveTextContent('0 linhas');
+    expect(screen.queryByTestId('admin-preview')).not.toBeInTheDocument();
   });
 });
