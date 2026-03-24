@@ -186,11 +186,31 @@ export async function fetchFechamentosCompetencia(): Promise<FechamentoCompetenc
   );
 }
 
+/** Ensures the API payload always conforms to a complete HorasExtrasDashboardData. */
+export function normalizeHorasExtrasDashboardData(
+  payload: Partial<HorasExtrasDashboardData> | null | undefined,
+): HorasExtrasDashboardData {
+  return {
+    list: Array.isArray(payload?.list) ? payload.list : [],
+    kpis: {
+      totalLancamentos: payload?.kpis?.totalLancamentos ?? 0,
+      pendentesAprovacao: payload?.kpis?.pendentesAprovacao ?? 0,
+      aprovadas: payload?.kpis?.aprovadas ?? 0,
+      fechadasParaFopag: payload?.kpis?.fechadasParaFopag ?? 0,
+      horasTotais: payload?.kpis?.horasTotais ?? 0,
+      valorTotal: payload?.kpis?.valorTotal ?? 0,
+    },
+    resumoCards: Array.isArray(payload?.resumoCards) ? payload.resumoCards : [],
+    fechamentoAtual: payload?.fechamentoAtual ?? null,
+  };
+}
+
 export async function fetchHorasExtrasDashboard(filters?: HorasExtrasFiltersData): Promise<HorasExtrasDashboardData> {
   return withApiFallback(
     async () => {
       const response = await api.get(HORAS_EXTRAS_API_ENDPOINTS.dashboard, { params: filters });
-      return unwrapApiResponse<HorasExtrasDashboardData>(response.data);
+      const raw = unwrapApiResponse<HorasExtrasDashboardData>(response.data);
+      return normalizeHorasExtrasDashboardData(raw);
     },
     () => fetchHorasExtrasDashboardMock(filters),
   );

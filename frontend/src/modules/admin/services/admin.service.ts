@@ -1,6 +1,16 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { adminFiltersSchema } from '../types';
-import type { AdminFiltersData } from '../types';
+import type {
+  AdminDashboardData,
+  AdminFiltersData,
+  AdminIntegracao,
+  AdminLog,
+  AdminParametro,
+  AdminPerfil,
+  AdminPermissao,
+  AdminResumoExecutivo,
+  AdminUsuario,
+} from '../types';
 import {
   adminIntegracoes,
   adminLogs,
@@ -30,6 +40,31 @@ function wait() {
 
 function normalizeFilters(filters?: AdminFiltersData) {
   return adminFiltersSchema.parse(filters ?? {});
+}
+
+const EMPTY_RESUMO: AdminResumoExecutivo = {
+  totalUsuarios: 0,
+  totalPerfis: 0,
+  totalPermissoes: 0,
+  parametrosAtivos: 0,
+  logsRecentes: 0,
+  integracoesAtivas: 0,
+};
+
+/** Ensures the API payload always conforms to a complete AdminDashboardData. */
+export function normalizeAdminDashboardData(
+  payload: Partial<AdminDashboardData> | null | undefined,
+): AdminDashboardData {
+  return {
+    resumo: payload?.resumo ? { ...EMPTY_RESUMO, ...payload.resumo } : EMPTY_RESUMO,
+    categorias: Array.isArray(payload?.categorias) ? payload.categorias : [],
+    usuarios: Array.isArray(payload?.usuarios) ? payload.usuarios : [],
+    perfis: Array.isArray(payload?.perfis) ? payload.perfis : [],
+    permissoes: Array.isArray(payload?.permissoes) ? payload.permissoes : [],
+    parametros: Array.isArray(payload?.parametros) ? payload.parametros : [],
+    logs: Array.isArray(payload?.logs) ? payload.logs : [],
+    integracoes: Array.isArray(payload?.integracoes) ? payload.integracoes : [],
+  };
 }
 
 async function fetchAdminDashboardMock(filters?: AdminFiltersData) {
@@ -91,71 +126,72 @@ async function fetchIntegracoesMock(filters?: AdminFiltersData) {
   );
 }
 
-export async function fetchAdminDashboard(filters?: AdminFiltersData) {
+export async function fetchAdminDashboard(filters?: AdminFiltersData): Promise<AdminDashboardData> {
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.dashboard, { params: filters });
-      return unwrapApiResponse<Awaited<ReturnType<typeof fetchAdminDashboardMock>>>(response.data);
+      const raw = unwrapApiResponse<AdminDashboardData>(response.data);
+      return normalizeAdminDashboardData(raw);
     },
     () => fetchAdminDashboardMock(filters),
   );
 }
 
-export async function fetchUsuarios(filters?: AdminFiltersData) {
+export async function fetchUsuarios(filters?: AdminFiltersData): Promise<AdminUsuario[]> {
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.usuarios, { params: filters });
-      return unwrapApiResponse<Awaited<ReturnType<typeof fetchUsuariosMock>>>(response.data);
+      return unwrapApiResponse<AdminUsuario[]>(response.data);
     },
     () => fetchUsuariosMock(filters),
   );
 }
 
-export async function fetchPerfis(filters?: AdminFiltersData) {
+export async function fetchPerfis(filters?: AdminFiltersData): Promise<AdminPerfil[]> {
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.perfis, { params: filters });
-      return unwrapApiResponse<Awaited<ReturnType<typeof fetchPerfisMock>>>(response.data);
+      return unwrapApiResponse<AdminPerfil[]>(response.data);
     },
     () => fetchPerfisMock(filters),
   );
 }
 
-export async function fetchPermissoes(filters?: AdminFiltersData) {
+export async function fetchPermissoes(filters?: AdminFiltersData): Promise<AdminPermissao[]> {
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.permissoes, { params: filters });
-      return unwrapApiResponse<Awaited<ReturnType<typeof fetchPermissoesMock>>>(response.data);
+      return unwrapApiResponse<AdminPermissao[]>(response.data);
     },
     () => fetchPermissoesMock(filters),
   );
 }
 
-export async function fetchParametros(filters?: AdminFiltersData) {
+export async function fetchParametros(filters?: AdminFiltersData): Promise<AdminParametro[]> {
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.parametros, { params: filters });
-      return unwrapApiResponse<Awaited<ReturnType<typeof fetchParametrosMock>>>(response.data);
+      return unwrapApiResponse<AdminParametro[]>(response.data);
     },
     () => fetchParametrosMock(filters),
   );
 }
 
-export async function fetchLogs(filters?: AdminFiltersData) {
+export async function fetchLogs(filters?: AdminFiltersData): Promise<AdminLog[]> {
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.logs, { params: filters });
-      return unwrapApiResponse<Awaited<ReturnType<typeof fetchLogsMock>>>(response.data);
+      return unwrapApiResponse<AdminLog[]>(response.data);
     },
     () => fetchLogsMock(filters),
   );
 }
 
-export async function fetchIntegracoes(filters?: AdminFiltersData) {
+export async function fetchIntegracoes(filters?: AdminFiltersData): Promise<AdminIntegracao[]> {
   return withApiFallback(
     async () => {
       const response = await api.get(ADMIN_API_ENDPOINTS.integracoes, { params: filters });
-      return unwrapApiResponse<Awaited<ReturnType<typeof fetchIntegracoesMock>>>(response.data);
+      return unwrapApiResponse<AdminIntegracao[]>(response.data);
     },
     () => fetchIntegracoesMock(filters),
   );

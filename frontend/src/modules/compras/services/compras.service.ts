@@ -2,6 +2,7 @@ import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import type {
   CompraFiltersData,
   ComprasDashboardData,
+  ComprasKpis,
   CotacaoCompra,
   PedidoCompra,
   PedidoCompraDetalhe,
@@ -28,6 +29,29 @@ export const COMPRAS_API_ENDPOINTS = {
 
 function delay(ms = 250): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const EMPTY_KPIS: ComprasKpis = {
+  totalSolicitacoes: 0,
+  solicitacoesPendentes: 0,
+  cotacoesEmAberto: 0,
+  pedidosEmitidos: 0,
+  valorComprometido: 0,
+  valorAguardandoFiscal: 0,
+};
+
+/** Ensures the API payload always conforms to a complete ComprasDashboardData. */
+export function normalizeComprasDashboardData(
+  payload: Partial<ComprasDashboardData> | null | undefined,
+): ComprasDashboardData {
+  return {
+    solicitacoes: Array.isArray(payload?.solicitacoes) ? payload.solicitacoes : [],
+    cotacoes: Array.isArray(payload?.cotacoes) ? payload.cotacoes : [],
+    pedidos: Array.isArray(payload?.pedidos) ? payload.pedidos : [],
+    kpis: payload?.kpis ? { ...EMPTY_KPIS, ...payload.kpis } : EMPTY_KPIS,
+    resumoCards: Array.isArray(payload?.resumoCards) ? payload.resumoCards : [],
+    statusResumo: Array.isArray(payload?.statusResumo) ? payload.statusResumo : [],
+  };
 }
 
 async function fetchSolicitacoesCompraMock(filters?: CompraFiltersData): Promise<SolicitacaoCompra[]> {
@@ -111,7 +135,8 @@ export async function fetchComprasDashboard(filters?: CompraFiltersData): Promis
   return withApiFallback(
     async () => {
       const response = await api.get(COMPRAS_API_ENDPOINTS.dashboard, { params: filters });
-      return unwrapApiResponse<ComprasDashboardData>(response.data);
+      const raw = unwrapApiResponse<ComprasDashboardData>(response.data);
+      return normalizeComprasDashboardData(raw);
     },
     () => fetchComprasDashboardMock(filters),
   );
