@@ -27,40 +27,33 @@ function buildFuncionarioFilters(
   };
 }
 
-function hasNonContextFilter(
-  filters: FuncionarioFiltersData,
-  contextDefaults: ContextDefaults,
-): boolean {
+function hasNonContextFilter(filters: FuncionarioFiltersData, contextDefaults: ContextDefaults): boolean {
   return Boolean(
     filters.search ||
-      filters.status ||
-      filters.tipoContrato ||
-      filters.departamento ||
-      (filters.filialId && filters.filialId !== contextDefaults.filialId) ||
-      (filters.obraId && filters.obraId !== contextDefaults.obraId) ||
-      (filters.centroCustoId && filters.centroCustoId !== contextDefaults.centroCustoId),
+    filters.status ||
+    filters.tipoContrato ||
+    filters.departamento ||
+    (filters.filialId && filters.filialId !== contextDefaults.filialId) ||
+    (filters.obraId && filters.obraId !== contextDefaults.obraId) ||
+    (filters.centroCustoId && filters.centroCustoId !== contextDefaults.centroCustoId),
   );
 }
 
 export function useFuncionarioFilters() {
   const { getModuleFilters, setFilter, clearModuleFilters } = useFiltersStore();
-  const contextDefaults = useContextStore(
-    useCallback(
-      ({ filialId, obraId, centroCustoId }) => ({ filialId, obraId, centroCustoId }),
-      [],
-    ),
+  // Read primitive values individually to avoid new-object reference on every render
+  const ctxFilialId = useContextStore((s) => s.filialId);
+  const ctxObraId = useContextStore((s) => s.obraId);
+  const ctxCentroCustoId = useContextStore((s) => s.centroCustoId);
+  const contextDefaults = useMemo<ContextDefaults>(
+    () => ({ filialId: ctxFilialId, obraId: ctxObraId, centroCustoId: ctxCentroCustoId }),
+    [ctxFilialId, ctxObraId, ctxCentroCustoId],
   );
   const raw = getModuleFilters(MODULE_KEY);
 
-  const filters = useMemo(
-    () => buildFuncionarioFilters(raw, contextDefaults),
-    [contextDefaults, raw],
-  );
+  const filters = useMemo(() => buildFuncionarioFilters(raw, contextDefaults), [contextDefaults, raw]);
 
-  const setSearch = useCallback(
-    (value: string) => setFilter(MODULE_KEY, 'search', value || undefined),
-    [setFilter],
-  );
+  const setSearch = useCallback((value: string) => setFilter(MODULE_KEY, 'search', value || undefined), [setFilter]);
 
   const setStatus = useCallback(
     (value: FuncionarioStatus | undefined) => setFilter(MODULE_KEY, 'status', value),
@@ -72,15 +65,9 @@ export function useFuncionarioFilters() {
     [setFilter],
   );
 
-  const setFilialId = useCallback(
-    (value: string | undefined) => setFilter(MODULE_KEY, 'filialId', value),
-    [setFilter],
-  );
+  const setFilialId = useCallback((value: string | undefined) => setFilter(MODULE_KEY, 'filialId', value), [setFilter]);
 
-  const setObraId = useCallback(
-    (value: string | undefined) => setFilter(MODULE_KEY, 'obraId', value),
-    [setFilter],
-  );
+  const setObraId = useCallback((value: string | undefined) => setFilter(MODULE_KEY, 'obraId', value), [setFilter]);
 
   const setCentroCustoId = useCallback(
     (value: string | undefined) => setFilter(MODULE_KEY, 'centroCustoId', value),
@@ -94,10 +81,7 @@ export function useFuncionarioFilters() {
 
   const clearFilters = useCallback(() => clearModuleFilters(MODULE_KEY), [clearModuleFilters]);
 
-  const hasActiveFilters = useMemo(
-    () => hasNonContextFilter(filters, contextDefaults),
-    [contextDefaults, filters],
-  );
+  const hasActiveFilters = useMemo(() => hasNonContextFilter(filters, contextDefaults), [contextDefaults, filters]);
 
   return {
     filters,

@@ -38,7 +38,10 @@ function toFormValues(data?: Partial<FuncionarioFormData>): FuncionarioFormData 
 
 export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMutationDrawerFormProps) {
   const closeDrawer = useDrawerStore((state) => state.closeDrawer);
-  const { filialId: contextFilialId, obraId: contextObraId, centroCustoId: contextCentroCustoId } = useContextStore();
+  // Read primitive values individually to avoid re-render on unrelated store changes
+  const contextFilialId = useContextStore((s) => s.filialId);
+  const contextObraId = useContextStore((s) => s.obraId);
+  const contextCentroCustoId = useContextStore((s) => s.centroCustoId);
   const { funcionario, isLoading } = useFuncionarioDetails(funcionarioId);
   const createMutation = useCreateFuncionario();
   const updateMutation = useUpdateFuncionario();
@@ -66,10 +69,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
   });
 
   const obraAlocadoId = useWatch({ control, name: 'obraAlocadoId' });
-  const centrosCusto = useMemo(
-    () => (obraAlocadoId ? getCentrosCustoByObraId(obraAlocadoId) : []),
-    [obraAlocadoId],
-  );
+  const centrosCusto = useMemo(() => (obraAlocadoId ? getCentrosCustoByObraId(obraAlocadoId) : []), [obraAlocadoId]);
 
   useEffect(() => {
     if (centrosCusto.length === 0) {
@@ -207,41 +207,70 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Filial</span>
           <select {...register('filialId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
-            {referenceData.filiais.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+            {referenceData.filiais.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
           </select>
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Obra</span>
           <select {...register('obraAlocadoId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Sem vínculo</option>
-            {referenceData.obras.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+            {referenceData.obras.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
           </select>
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Centro de custo</span>
           <select {...register('centroCustoId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Sem vínculo</option>
-            {centrosCusto.map((item) => <option key={item.id} value={item.id}>{item.codigo} — {item.nome}</option>)}
+            {centrosCusto.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.codigo} — {item.nome}
+              </option>
+            ))}
           </select>
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Gestor</span>
           <select {...register('gestorId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Sem gestor</option>
-            {referenceData.gestores.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+            {referenceData.gestores.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
           </select>
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Data de admissão</span>
-          <input type="date" {...register('dataAdmissao')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input
+            type="date"
+            {...register('dataAdmissao')}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Salário base</span>
-          <input type="number" step="0.01" {...register('salarioBase', { valueAsNumber: true })} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input
+            type="number"
+            step="0.01"
+            {...register('salarioBase', { valueAsNumber: true })}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
         </label>
         <label className="text-sm text-gray-700 md:col-span-2">
           <span className="mb-1 block font-medium">E-mail</span>
-          <input type="email" {...register('email')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input
+            type="email"
+            {...register('email')}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Telefone</span>
@@ -253,7 +282,11 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">UF</span>
-          <input maxLength={2} {...register('uf')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm uppercase" />
+          <input
+            maxLength={2}
+            {...register('uf')}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm uppercase"
+          />
         </label>
       </div>
 
@@ -264,10 +297,18 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
       )}
 
       <div className="flex items-center justify-end gap-2 border-t border-gray-200 pt-4">
-        <button type="button" onClick={closeDrawer} className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
+        <button
+          type="button"
+          onClick={closeDrawer}
+          className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700"
+        >
           Cancelar
         </button>
-        <button type="submit" disabled={isPending} className="inline-flex items-center gap-2 rounded-md bg-jogab-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
+        <button
+          type="submit"
+          disabled={isPending}
+          className="inline-flex items-center gap-2 rounded-md bg-jogab-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+        >
           {isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           {isEdit ? 'Salvar funcionário' : 'Criar funcionário'}
         </button>

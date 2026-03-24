@@ -13,26 +13,32 @@ interface AlocacaoMutationDrawerFormProps {
   alocacaoId?: string;
 }
 
-const alocacaoFormSchema = z.object({
-  obraId: z.string().min(1, 'Selecione a obra.'),
-  centroCustoId: z.string().min(1, 'Selecione o centro de custo.'),
-  funcao: z.string().min(2, 'Informe a função.'),
-  equipe: z.string().min(2, 'Informe a equipe.'),
-  jornada: z.string().min(2, 'Informe a jornada.'),
-  percentual: z.number().min(1, 'Informe um percentual válido.').max(100, 'O percentual máximo é 100%.'),
-  departamento: z.string().min(2, 'Informe o departamento.'),
-  periodoInicio: z.string().min(1, 'Informe a vigência inicial.'),
-  periodoFim: z.string().optional().nullable(),
-  status: z.enum(['ativa', 'planejada', 'encerrada']),
-}).superRefine((data, ctx) => {
-  if (data.periodoFim && data.periodoFim < data.periodoInicio) {
-    ctx.addIssue({ code: 'custom', path: ['periodoFim'], message: 'A vigência final não pode ser anterior ao início.' });
-  }
+const alocacaoFormSchema = z
+  .object({
+    obraId: z.string().min(1, 'Selecione a obra.'),
+    centroCustoId: z.string().min(1, 'Selecione o centro de custo.'),
+    funcao: z.string().min(2, 'Informe a função.'),
+    equipe: z.string().min(2, 'Informe a equipe.'),
+    jornada: z.string().min(2, 'Informe a jornada.'),
+    percentual: z.number().min(1, 'Informe um percentual válido.').max(100, 'O percentual máximo é 100%.'),
+    departamento: z.string().min(2, 'Informe o departamento.'),
+    periodoInicio: z.string().min(1, 'Informe a vigência inicial.'),
+    periodoFim: z.string().optional().nullable(),
+    status: z.enum(['ativa', 'planejada', 'encerrada']),
+  })
+  .superRefine((data, ctx) => {
+    if (data.periodoFim && data.periodoFim < data.periodoInicio) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['periodoFim'],
+        message: 'A vigência final não pode ser anterior ao início.',
+      });
+    }
 
-  if (data.status === 'encerrada' && !data.periodoFim) {
-    ctx.addIssue({ code: 'custom', path: ['periodoFim'], message: 'Informe a data final para encerrar a alocação.' });
-  }
-});
+    if (data.status === 'encerrada' && !data.periodoFim) {
+      ctx.addIssue({ code: 'custom', path: ['periodoFim'], message: 'Informe a data final para encerrar a alocação.' });
+    }
+  });
 
 type AlocacaoFormData = z.infer<typeof alocacaoFormSchema>;
 
@@ -53,7 +59,9 @@ function toFormValues(data?: Partial<AlocacaoFormData>): AlocacaoFormData {
 
 export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: AlocacaoMutationDrawerFormProps) {
   const closeDrawer = useDrawerStore((state) => state.closeDrawer);
-  const { obraId: contextObraId, centroCustoId: contextCentroCustoId } = useContextStore();
+  // Read primitive values individually to avoid re-render on unrelated store changes
+  const contextObraId = useContextStore((s) => s.obraId);
+  const contextCentroCustoId = useContextStore((s) => s.centroCustoId);
   const createMutation = useCreateAlocacao();
   const updateMutation = useUpdateAlocacao();
   const endMutation = useEncerrarAlocacao();
@@ -88,7 +96,10 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
   const obraId = useWatch({ control, name: 'obraId' });
   const status = useWatch({ control, name: 'status' });
   const centrosCusto = useMemo(() => (obraId ? getCentrosCustoByObraId(obraId) : []), [obraId]);
-  const obraOptions = useMemo(() => mockObras.map((obra) => ({ value: obra.id, label: `${obra.codigo} — ${obra.nome}` })), []);
+  const obraOptions = useMemo(
+    () => mockObras.map((obra) => ({ value: obra.id, label: `${obra.codigo} — ${obra.nome}` })),
+    [],
+  );
 
   useEffect(() => {
     if (!isEdit) {
@@ -146,7 +157,11 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
 
     try {
       if (isEdit && alocacaoId) {
-        await updateMutation.mutateAsync({ id: alocacaoId, funcionarioId, ...parsed.data } satisfies AlocacaoUpdatePayload);
+        await updateMutation.mutateAsync({
+          id: alocacaoId,
+          funcionarioId,
+          ...parsed.data,
+        } satisfies AlocacaoUpdatePayload);
       } else {
         await createMutation.mutateAsync({ funcionarioId, ...parsed.data } satisfies AlocacaoCreatePayload);
       }
@@ -175,7 +190,9 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
           <select {...register('obraId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Selecione</option>
             {obraOptions.map((item) => (
-              <option key={item.value} value={item.value}>{item.label}</option>
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
             ))}
           </select>
           {errors.obraId && <span className="text-xs text-red-600">{errors.obraId.message}</span>}
@@ -185,7 +202,9 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
           <select {...register('centroCustoId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Selecione</option>
             {centrosCusto.map((item) => (
-              <option key={item.id} value={item.id}>{item.codigo} — {item.nome}</option>
+              <option key={item.id} value={item.id}>
+                {item.codigo} — {item.nome}
+              </option>
             ))}
           </select>
           {errors.centroCustoId && <span className="text-xs text-red-600">{errors.centroCustoId.message}</span>}
@@ -212,7 +231,12 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Percentual</span>
-          <input type="number" step="1" {...register('percentual', { valueAsNumber: true })} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input
+            type="number"
+            step="1"
+            {...register('percentual', { valueAsNumber: true })}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
           {errors.percentual && <span className="text-xs text-red-600">{errors.percentual.message}</span>}
         </label>
         <label className="text-sm text-gray-700">
@@ -225,12 +249,20 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Início da vigência</span>
-          <input type="date" {...register('periodoInicio')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input
+            type="date"
+            {...register('periodoInicio')}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
           {errors.periodoInicio && <span className="text-xs text-red-600">{errors.periodoInicio.message}</span>}
         </label>
         <label className="text-sm text-gray-700">
           <span className="mb-1 block font-medium">Fim da vigência</span>
-          <input type="date" {...register('periodoFim')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input
+            type="date"
+            {...register('periodoFim')}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
           {errors.periodoFim && <span className="text-xs text-red-600">{errors.periodoFim.message}</span>}
         </label>
       </div>
@@ -262,10 +294,18 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
           )}
         </div>
         <div className="flex items-center gap-2">
-          <button type="button" onClick={closeDrawer} className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
+          <button
+            type="button"
+            onClick={closeDrawer}
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700"
+          >
             Cancelar
           </button>
-          <button type="submit" disabled={isPending} className="inline-flex items-center gap-2 rounded-md bg-jogab-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
+          <button
+            type="submit"
+            disabled={isPending}
+            className="inline-flex items-center gap-2 rounded-md bg-jogab-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+          >
             {isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             {isEdit ? 'Salvar alocação' : 'Criar alocação'}
           </button>

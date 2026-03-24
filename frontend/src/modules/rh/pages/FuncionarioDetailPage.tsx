@@ -8,7 +8,7 @@
  *
  * Referência: docs/06-arquitetura-de-telas.md (RH — detalhe do funcionário com abas)
  */
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams, NavLink, Outlet } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
@@ -33,18 +33,21 @@ const funcionarioTabs = [
 export function FuncionarioDetailPage() {
   const { funcId } = useParams<{ funcId: string }>();
   const { funcionario, isLoading } = useFuncionarioDetails(funcId);
-  const { setObra, setCentroCusto, obraId: contextObraId, centroCustoId: contextCentroCustoId } = useContextStore();
 
-  // Sync obra/centro de custo context when funcionario is allocated to an obra
+  // Sync obra/centro de custo context when funcionario is allocated to an obra.
+  // Use a ref to track whether we already synced for this funcionario to avoid cascading
+  // re-renders caused by setObra resetting centroCustoId to null.
+  const syncedFuncIdRef = useRef<string | undefined>(undefined);
   useEffect(() => {
-    if (funcionario?.obraAlocadoId && funcionario.obraAlocadoId !== contextObraId) {
-      setObra(funcionario.obraAlocadoId);
-    }
+    const obraAlocado = funcionario?.obraAlocadoId;
+    const ccId = funcionario?.centroCustoId;
+    if (!obraAlocado || syncedFuncIdRef.current === funcId) return;
+    syncedFuncIdRef.current = funcId;
 
-    if (funcionario?.centroCustoId && funcionario.centroCustoId !== contextCentroCustoId) {
-      setCentroCusto(funcionario.centroCustoId);
-    }
-  }, [funcionario?.obraAlocadoId, funcionario?.centroCustoId, contextCentroCustoId, contextObraId, setCentroCusto, setObra]);
+    // Use store.setState directly to batch both values in a single update,
+    // avoiding the intermediate state where setObra clears centroCustoId.
+    useContextStore.setState({ obraId: obraAlocado, centroCustoId: ccId ?? null });
+  }, [funcId, funcionario?.obraAlocadoId, funcionario?.centroCustoId]);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
