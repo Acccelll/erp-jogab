@@ -1,6 +1,6 @@
 /**
- * ObraHeader — header do workspace da obra.
- * Exibe código, nome, status, cliente, progresso e dados essenciais.
+ * ObraHeader — header compacto do workspace da obra.
+ * Exibe código, nome, status, metadados essenciais em layout denso.
  */
 import { HardHat, MapPin, Users, Calendar, Building2 } from 'lucide-react';
 import { ObraStatusBadge } from './ObraStatusBadge';
@@ -13,47 +13,46 @@ interface ObraHeaderProps {
 
 export function ObraHeader({ obra }: ObraHeaderProps) {
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-      <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-jogab-50 text-jogab-600">
-          <HardHat size={22} />
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-2.5">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-jogab-50 text-jogab-600">
+          <HardHat size={18} />
         </div>
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-gray-400">{obra.codigo}</span>
-            <h2 className="text-lg font-semibold text-gray-900">{obra.nome}</h2>
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[11px] font-medium text-gray-400">{obra.codigo}</span>
+            <h2 className="text-sm font-semibold text-gray-900">{obra.nome}</h2>
             <ObraStatusBadge status={obra.status} />
           </div>
-          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-gray-500">
             <span className="flex items-center gap-1">
-              <Building2 size={12} />
+              <Building2 size={11} />
               {obra.clienteNome}
             </span>
             <span className="flex items-center gap-1">
-              <MapPin size={12} />
+              <MapPin size={11} />
               {obra.cidade}/{obra.uf}
             </span>
             <span className="flex items-center gap-1">
-              <Users size={12} />
-              {obra.totalFuncionarios} funcionários
+              <Users size={11} />
+              {obra.totalFuncionarios}
             </span>
             <span className="flex items-center gap-1">
-              <Calendar size={12} />
-              {new Date(obra.dataInicio).toLocaleDateString('pt-BR')} — {new Date(obra.dataPrevisaoFim).toLocaleDateString('pt-BR')}
+              <Calendar size={11} />
+              {new Date(obra.dataInicio).toLocaleDateString('pt-BR')} —{' '}
+              {new Date(obra.dataPrevisaoFim).toLocaleDateString('pt-BR')}
+            </span>
+            <span className="text-gray-400">
+              {OBRA_TIPO_LABELS[obra.tipo]} · {obra.filialNome}
             </span>
           </div>
-          <p className="mt-0.5 text-xs text-gray-400">
-            {OBRA_TIPO_LABELS[obra.tipo]} · {obra.filialNome} · Resp: {obra.responsavelNome}
-          </p>
         </div>
       </div>
 
-      {/* Progress indicator */}
-      <div className="flex items-center gap-3 sm:flex-col sm:items-end">
-        <div className="text-right">
-          <p className="text-2xl font-bold text-jogab-600">{obra.percentualConcluido}%</p>
-          <p className="text-[10px] text-gray-400">concluído</p>
-        </div>
+      {/* Compact progress */}
+      <div className="shrink-0 text-right">
+        <p className="text-lg font-bold text-jogab-600">{obra.percentualConcluido}%</p>
+        <p className="text-[10px] text-gray-400">concluído</p>
       </div>
     </div>
   );

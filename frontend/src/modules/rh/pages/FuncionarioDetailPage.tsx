@@ -55,9 +55,9 @@ export function FuncionarioDetailPage() {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header */}
-      <div className="border-b border-gray-200/60 bg-surface px-4 pt-2.5 pb-0">
+      <div className="border-b border-gray-200/60 bg-surface px-4 pt-2 pb-0">
         {/* Back link */}
-        <div className="mb-1.5">
+        <div className="mb-1">
           <NavLink
             to="/rh/funcionarios"
             className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600"
@@ -69,23 +69,23 @@ export function FuncionarioDetailPage() {
 
         {/* Dynamic header from funcionario data */}
         {isLoading && (
-          <div className="mb-2 flex items-center gap-3">
+          <div className="mb-1.5 flex items-center gap-2.5">
             <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
-            <div className="space-y-1.5">
-              <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
-              <div className="h-3 w-32 animate-pulse rounded bg-gray-200" />
+            <div className="space-y-1">
+              <div className="h-3.5 w-48 animate-pulse rounded bg-gray-200" />
+              <div className="h-2.5 w-32 animate-pulse rounded bg-gray-200" />
             </div>
           </div>
         )}
 
         {!isLoading && funcionario && (
-          <div className="mb-2">
+          <div className="mb-1.5">
             <FuncionarioHeader funcionario={funcionario} />
           </div>
         )}
 
         {!isLoading && !funcionario && (
-          <div className="mb-2">
+          <div className="mb-1.5">
             <p className="text-sm text-gray-500">Funcionário não encontrado (ID: {funcId})</p>
           </div>
         )}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FileStack, PackageCheck, ShoppingBag, Search, SlidersHorizontal } from 'lucide-react';
 import { EmptyState, MainContent, QuickFilterChips } from '@/shared/components';
 import { useCompraFilters, useCompras } from '../hooks';
-import { ComprasResumoCard, ComprasStatusOverview, PedidosCompraTable, SolicitacoesCompraTable } from '../components';
+import { PedidosCompraTable, SolicitacoesCompraTable } from '../components';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
 export function ComprasListPage() {
@@ -132,14 +132,6 @@ export function ComprasListPage() {
 
         {!isLoading && !isError && data && (
           <>
-            <section className="grid gap-4 xl:grid-cols-3">
-              {data.resumoCards.map((card) => (
-                <ComprasResumoCard key={card.id} card={card} />
-              ))}
-            </section>
-
-            <ComprasStatusOverview items={data.statusResumo} />
-
             {(data.solicitacoes?.length ?? 0) === 0 && (data.pedidos?.length ?? 0) === 0 ? (
               <EmptyState
                 title="Nenhuma compra encontrada"
@@ -164,10 +156,7 @@ export function ComprasListPage() {
               <section className="grid gap-6 xl:grid-cols-[1.2fr,1fr]">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h2 className="text-sm font-medium text-gray-900">Solicitações recentes</h2>
-                      <p className="text-xs text-gray-500">Demandas originadas nas obras e nas áreas de apoio.</p>
-                    </div>
+                    <h2 className="text-sm font-medium text-gray-900">Solicitações recentes</h2>
                     <Link
                       to="/compras/solicitacoes"
                       className="text-xs font-medium text-jogab-600 hover:text-jogab-700"
@@ -179,36 +168,22 @@ export function ComprasListPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <div className="rounded-lg border border-jogab-100 bg-jogab-50/70 p-3">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-jogab-600">
-                        <PackageCheck size={16} />
-                      </div>
-                      <div>
-                        <h2 className="text-sm font-medium text-gray-900">Integração com Fiscal e Financeiro</h2>
-                        <p className="text-xs text-gray-600">
-                          {data.kpis.valorAguardandoFiscal > 0
-                            ? 'Existem pedidos que ainda dependem de documentação fiscal.'
-                            : 'Os pedidos atuais já estão prontos para avançar no fluxo fiscal-financeiro.'}
-                        </p>
-                      </div>
+                  {data.kpis.valorAguardandoFiscal > 0 && (
+                    <div className="flex items-start gap-2.5 rounded-md border border-jogab-100 bg-jogab-50/50 p-2.5">
+                      <PackageCheck size={14} className="mt-0.5 shrink-0 text-jogab-600" />
+                      <p className="text-xs text-gray-600">
+                        Existem pedidos que ainda dependem de documentação fiscal.
+                      </p>
                     </div>
-                  </div>
+                  )}
 
-                  <div>
-                    <div className="mb-2 flex items-center justify-between gap-3">
-                      <div>
-                        <h2 className="text-sm font-medium text-gray-900">Pedidos em destaque</h2>
-                        <p className="text-xs text-gray-500">
-                          Pedidos já emitidos com impacto direto em custo comprometido da obra.
-                        </p>
-                      </div>
-                      <Link to="/compras/pedidos" className="text-xs font-medium text-jogab-600 hover:text-jogab-700">
-                        Ver todos
-                      </Link>
-                    </div>
-                    <PedidosCompraTable items={data.pedidos.slice(0, 3)} />
+                  <div className="flex items-center justify-between gap-3">
+                    <h2 className="text-sm font-medium text-gray-900">Pedidos em destaque</h2>
+                    <Link to="/compras/pedidos" className="text-xs font-medium text-jogab-600 hover:text-jogab-700">
+                      Ver todos
+                    </Link>
                   </div>
+                  <PedidosCompraTable items={data.pedidos.slice(0, 3)} />
                 </div>
               </section>
             )}

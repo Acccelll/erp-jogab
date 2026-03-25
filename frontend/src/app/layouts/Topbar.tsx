@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Menu, Bell, LogOut, User, Search, ChevronDown, HardHat, Calendar } from 'lucide-react';
 import { useUIStore, useAuthStore, useContextStore } from '@/shared/stores';
@@ -24,13 +24,70 @@ const routeLabels: Record<string, string> = {
   relatorios: 'Relatórios',
   admin: 'Administração',
   perfil: 'Perfil',
+  lancamentos: 'Lançamentos',
+  solicitacoes: 'Solicitações',
+  cotacoes: 'Cotações',
+  pedidos: 'Pedidos',
+  fechamento: 'Fechamento',
+  aprovacao: 'Aprovação',
+  fluxo: 'Fluxo de Caixa',
+  'contas-pagar': 'Contas a Pagar',
+  'contas-receber': 'Contas a Receber',
+  cronograma: 'Cronograma',
+  equipe: 'Equipe',
+  contrato: 'Contrato',
+  alocacoes: 'Alocações',
+  'historico-salarial': 'Histórico Salarial',
+  ferias: 'Férias',
+  'decimo-terceiro': '13º',
+  provisoes: 'Provisões',
 };
 
+/** Segments that are likely dynamic entity IDs */
+function isIdSegment(seg: string): boolean {
+  // UUID-like or numeric IDs
+  return /^[0-9a-f-]{8,}$/i.test(seg) || /^\d+$/.test(seg);
+}
+
+/**
+ * Smart breadcrumb hook — resolves entity names from context/store
+ * when navigating into detail pages (e.g., /obras/:obraId).
+ */
 function useBreadcrumbs() {
   const location = useLocation();
   const segments = location.pathname.split('/').filter(Boolean);
+  const contextOptions = useContextStore((s) => s.options);
+  const obras = contextOptions?.obras ?? [];
 
-  return segments.map((seg) => routeLabels[seg] ?? seg).slice(0, 3);
+  return useMemo(() => {
+    const crumbs: string[] = [];
+
+    for (let i = 0; i < segments.length && crumbs.length < 3; i++) {
+      const seg = segments[i];
+      const known = routeLabels[seg];
+
+      if (known) {
+        crumbs.push(known);
+      } else if (isIdSegment(seg)) {
+        // Try to resolve a friendly name from context
+        const parentSeg = segments[i - 1];
+
+        if (parentSeg === 'obras' || (parentSeg === undefined && segments[0] === 'obras')) {
+          const obra = obras.find((o) => o.value === seg);
+          crumbs.push(obra?.label ?? `#${seg.slice(0, 6)}`);
+        } else if (parentSeg === 'funcionarios') {
+          // Funcionario name is not in context options — show short ID as fallback
+          crumbs.push(`#${seg.slice(0, 6)}`);
+        } else {
+          crumbs.push(`#${seg.slice(0, 6)}`);
+        }
+      } else {
+        crumbs.push(seg);
+      }
+    }
+
+    return crumbs;
+  }, [segments, obras]);
 }
 
 /** Compact context selector for Topbar */
