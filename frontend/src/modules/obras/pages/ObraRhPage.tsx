@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
-import { useObraEquipe } from '../hooks';
+import { useObraRh } from '../hooks';
 import {
   ObraWorkspaceFilters,
   ObraWorkspaceResumoCard,
@@ -17,7 +17,7 @@ const STATUS_OPTIONS = [
 
 export function ObraRhPage() {
   const { obraId } = useParams<{ obraId: string }>();
-  const { data, isLoading, isError, refetch } = useObraEquipe(obraId);
+  const { data, isLoading, isError, refetch } = useObraRh(obraId);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<string | undefined>(undefined);
 

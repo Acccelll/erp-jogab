@@ -53,47 +53,37 @@ function isIdSegment(seg: string): boolean {
  * Smart breadcrumb hook — resolves entity names from context/store
  * when navigating into detail pages (e.g., /obras/:obraId).
  */
-interface Breadcrumb {
-  label: string;
-  href: string;
-  isLast: boolean;
-}
-
-function useBreadcrumbs(): Breadcrumb[] {
+function useBreadcrumbs() {
   const location = useLocation();
   const segments = location.pathname.split('/').filter(Boolean);
   const contextOptions = useContextStore((s) => s.options);
 
   return useMemo(() => {
-    const crumbs: Breadcrumb[] = [];
-    let pathSoFar = '';
+    const obras = contextOptions?.obras ?? [];
+    const crumbs: string[] = [];
 
     for (let i = 0; i < segments.length && crumbs.length < 3; i++) {
       const seg = segments[i];
-      pathSoFar += `/${seg}`;
       const known = routeLabels[seg];
 
-      let label: string;
       if (known) {
-        label = known;
+        crumbs.push(known);
       } else if (isIdSegment(seg)) {
+        // Try to resolve a friendly name from context
         const parentSeg = segments[i - 1];
+
         if (parentSeg === 'obras' || (parentSeg === undefined && segments[0] === 'obras')) {
           const obra = obras.find((o) => o.value === seg);
-          label = obra?.label ?? `#${seg.slice(0, 6)}`;
+          crumbs.push(obra?.label ?? `#${seg.slice(0, 6)}`);
+        } else if (parentSeg === 'funcionarios') {
+          // Funcionario name is not in context options — show short ID as fallback
+          crumbs.push(`#${seg.slice(0, 6)}`);
         } else {
-          label = `#${seg.slice(0, 6)}`;
+          crumbs.push(`#${seg.slice(0, 6)}`);
         }
       } else {
-        label = seg;
+        crumbs.push(seg);
       }
-
-      crumbs.push({ label, href: pathSoFar, isLast: false });
-    }
-
-    // Mark last crumb
-    if (crumbs.length > 0) {
-      crumbs[crumbs.length - 1] = { ...crumbs[crumbs.length - 1], isLast: true };
     }
 
     return crumbs;
