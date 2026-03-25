@@ -39,6 +39,9 @@
 - Medições (lista, detalhe da medição)
 
 ## Fase 8 ✅
+- Integração FOPAG (lista de competências, detalhe com 7 abas) via `withApiFallback`
+- Integração Financeiro (dashboard, fluxo de caixa, contas a pagar, contas a receber, detalhe de título) via `withApiFallback`
+- Cadeia de dados HE → FOPAG → Financeiro validada visualmente
 - Documentos (lista, detalhe do documento)
 - Relatórios (lista, relatórios por categoria)
 - Administração (painel, usuários, perfis, permissões, parâmetros, logs, integrações)
@@ -111,28 +114,27 @@
 - Total: 553 testes em 46 arquivos
 
 ## Próximos passos
-- Integrar FOPAG como próximo módulo (recebe dados de Horas Extras fechadas)
-- Conectar Financeiro (fluxo FOPAG → Financeiro)
-- Seguir fluxo crítico: FOPAG → Financeiro → Compras
+- Integrar Compras (solicitações, cotações, pedidos) como próximo módulo
+- Integrar Fiscal (entradas, saídas, detalhe do documento)
 - Desabilitar fallback gradualmente por módulo (`VITE_API_FALLBACK=false`)
 - Code-splitting com React.lazy para reduzir bundle size
 - Testes de integração end-to-end com API real
 - Completar contratos parciais: estoque detalhe, medições detalhe, documentos gestão, admin CRUD
 
-## Estado atual (2026-03-25)
+## Estado atual (2026-03-26)
 
 **Resultado dos comandos de validação:**
 - `npm run build`: 0 erros TypeScript, build completo com sucesso
 - `npm run lint`: 0 erros
-- `npm run test`: 46 arquivos de teste, 553 testes passando
+- `npm run test`: 48 arquivos de teste, 555 testes passando
 - `npm audit`: 0 vulnerabilidades
 
 **Testes encontrados vs declarados:**
-- Arquivos de teste no repositório: 46 (19 `.test.ts` + 27 `.test.tsx`)
-- Testes executados pelo Vitest: 553 em 46 arquivos — todos passando
+- Arquivos de teste no repositório: 48 (21 `.test.ts` + 27 `.test.tsx`)
+- Testes executados pelo Vitest: 555 em 48 arquivos — todos passando
 - Padrão de include: `src/**/*.test.{ts,tsx}` — correto e abrangente
 
-**Endpoints efetivamente integrados (Fase 5 + 6 + 7):**
+**Endpoints efetivamente integrados (Fase 5 + 6 + 7 + 8):**
 - `POST /auth/login` — login real com fallback mock
 - `GET /auth/me` — restauração de sessão com fallback mock
 - `POST /auth/logout` — logout com fallback mock
@@ -153,9 +155,17 @@
 - `POST /horas-extras/:id/aprovar` — aprovação de hora extra com fallback mock
 - `POST /horas-extras/fechamento` — fechamento de competência com fallback mock
 - `GET /horas-extras/aprovacao` — dados de aprovação com fallback mock
+- `GET /fopag/competencias` — listagem de competências FOPAG
+- `GET /fopag/competencias/:id` — detalhe da competência FOPAG
+- `GET /financeiro/dashboard` — dashboard financeiro principal
+- `GET /financeiro/fluxo-caixa` — fluxo de caixa
+- `GET /financeiro/pessoal` — custos de pessoal (integrado FOPAG)
+- `GET /financeiro/contas-pagar` — contas a pagar
+- `GET /financeiro/contas-receber` — contas a receber
+- `GET /financeiro/titulos/:id` — detalhe de título financeiro
 
 **Módulos que continuam apenas preparados:**
-- FOPAG, Compras, Financeiro, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback)
+- Compras, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback)
 - Estoque, Medições, Documentos, Admin (parcialmente prontos)
 
 **Rotas implementadas:**
