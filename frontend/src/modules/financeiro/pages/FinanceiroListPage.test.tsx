@@ -26,10 +26,6 @@ vi.mock('@/modules/financeiro/hooks', () => ({
 }));
 
 vi.mock('../components', () => ({
-  FinanceiroResumoCard: ({ card }: { card: { id: string; titulo: string } }) => (
-    <div data-testid={`resumo-card-${card.id}`}>{card.titulo}</div>
-  ),
-  FinanceiroVisaoStatusTipo: () => <div data-testid="visao-status-tipo" />,
   TitulosFinanceirosTable: ({ items }: { items: unknown[] }) => (
     <div data-testid="titulos-table">{items.length} títulos</div>
   ),

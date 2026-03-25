@@ -24,10 +24,6 @@ vi.mock('@/modules/horas-extras/hooks', () => ({
 }));
 
 vi.mock('../components', () => ({
-  HorasExtrasResumoCard: ({ card }: { card: { id: string; titulo: string } }) => (
-    <div data-testid={`resumo-card-${card.id}`}>{card.titulo}</div>
-  ),
-  HorasExtrasSectionHeader: ({ title }: { title: string }) => <div data-testid="section-header">{title}</div>,
   HorasExtrasTable: ({ items }: { items: unknown[] }) => <div data-testid="he-table">{items.length} items</div>,
 }));
 
@@ -87,7 +83,7 @@ describe('HorasExtrasDashboardPage', () => {
     expect(refetchMock).toHaveBeenCalled();
   });
 
-  it('renders data state with table and section header', () => {
+  it('renders data state with table and approval link', () => {
     mockUseHorasExtras.mockReturnValue({
       data: {
         data: [
@@ -125,7 +121,7 @@ describe('HorasExtrasDashboardPage', () => {
     renderWithRouter();
     expect(screen.getByRole('heading', { name: 'Lançamentos' })).toBeInTheDocument();
     expect(screen.getByTestId('he-table')).toHaveTextContent('1 items');
-    expect(screen.getByTestId('section-header')).toHaveTextContent('Aprovação e histórico');
+    expect(screen.getByRole('link', { name: /abrir aprovação/i })).toHaveAttribute('href', '/horas-extras/aprovacao');
   });
 
   it('renders without crashing when data has empty arrays', () => {
