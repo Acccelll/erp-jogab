@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface UIState {
   /** Whether sidebar is collapsed (icon-only mode on desktop, hidden on mobile) */
@@ -10,13 +11,24 @@ interface UIState {
   toggleSidebar: () => void;
 }
 
-export const useUIStore = create<UIState>()((set) => ({
-  sidebarCollapsed: true,
-  sidebarPinned: false,
+export const useUIStore = create<UIState>()(
+  persist(
+    (set) => ({
+      sidebarCollapsed: true,
+      sidebarPinned: false,
 
-  setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
+      setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
 
-  setSidebarPinned: (pinned) => set({ sidebarPinned: pinned, sidebarCollapsed: !pinned }),
+      setSidebarPinned: (pinned) => set({ sidebarPinned: pinned, sidebarCollapsed: !pinned }),
 
-  toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
-}));
+      toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
+    }),
+    {
+      name: 'erp-jogab-ui',
+      partialize: (state) => ({
+        sidebarPinned: state.sidebarPinned,
+        sidebarCollapsed: state.sidebarCollapsed,
+      }),
+    },
+  ),
+);
