@@ -24,19 +24,11 @@ vi.mock('@/modules/horas-extras/hooks', () => ({
 }));
 
 vi.mock('../components', () => ({
-  HorasExtrasFilters: () => <div data-testid="he-filters" />,
-  HorasExtrasKpiBar: ({ kpis }: { kpis: { totalLancamentos: number } }) => (
-    <div data-testid="he-kpi-bar">{kpis.totalLancamentos} lançamentos</div>
-  ),
   HorasExtrasResumoCard: ({ card }: { card: { id: string; titulo: string } }) => (
     <div data-testid={`resumo-card-${card.id}`}>{card.titulo}</div>
   ),
-  HorasExtrasSectionHeader: ({ title }: { title: string }) => (
-    <div data-testid="section-header">{title}</div>
-  ),
-  HorasExtrasTable: ({ items }: { items: unknown[] }) => (
-    <div data-testid="he-table">{items.length} items</div>
-  ),
+  HorasExtrasSectionHeader: ({ title }: { title: string }) => <div data-testid="section-header">{title}</div>,
+  HorasExtrasTable: ({ items }: { items: unknown[] }) => <div data-testid="he-table">{items.length} items</div>,
 }));
 
 import { useHorasExtras } from '@/modules/horas-extras/hooks';
@@ -72,8 +64,9 @@ describe('HorasExtrasDashboardPage', () => {
       refetch: refetchMock,
     } as ReturnType<typeof useHorasExtras>);
 
-    renderWithRouter();
-    expect(screen.getByText('Carregando horas extras...')).toBeInTheDocument();
+    const { container } = renderWithRouter();
+    const skeletons = container.querySelectorAll('.animate-pulse');
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it('renders error state with retry button', async () => {
@@ -94,13 +87,32 @@ describe('HorasExtrasDashboardPage', () => {
     expect(refetchMock).toHaveBeenCalled();
   });
 
-  it('renders data state with KPIs and section header', () => {
+  it('renders data state with table and section header', () => {
     mockUseHorasExtras.mockReturnValue({
       data: {
         data: [
-          { id: 'he-1', funcionarioNome: 'Lucas', matricula: '001', obraNome: 'Obra 1', competencia: '2026-03', dataLancamento: '2026-03-18', quantidadeHoras: 2, valorCalculado: 200, tipo: 'he_50' as const, status: 'pendente_aprovacao' as const, origem: 'obra' as const },
+          {
+            id: 'he-1',
+            funcionarioNome: 'Lucas',
+            matricula: '001',
+            obraNome: 'Obra 1',
+            competencia: '2026-03',
+            dataLancamento: '2026-03-18',
+            quantidadeHoras: 2,
+            valorCalculado: 200,
+            tipo: 'he_50' as const,
+            status: 'pendente_aprovacao' as const,
+            origem: 'obra' as const,
+          },
         ],
-        kpis: { totalLancamentos: 1, pendentesAprovacao: 1, aprovadas: 0, fechadasParaFopag: 0, horasTotais: 2, valorTotal: 200 },
+        kpis: {
+          totalLancamentos: 1,
+          pendentesAprovacao: 1,
+          aprovadas: 0,
+          fechadasParaFopag: 0,
+          horasTotais: 2,
+          valorTotal: 200,
+        },
         resumoCards: [{ id: 'card-1', titulo: 'Resumo', descricao: 'Desc', itens: [] }],
         fechamentoAtual: null,
       },
@@ -111,8 +123,7 @@ describe('HorasExtrasDashboardPage', () => {
     } as ReturnType<typeof useHorasExtras>);
 
     renderWithRouter();
-    expect(screen.getByText('Horas Extras')).toBeInTheDocument();
-    expect(screen.getByTestId('he-kpi-bar')).toHaveTextContent('1 lançamentos');
+    expect(screen.getByRole('heading', { name: 'Lançamentos' })).toBeInTheDocument();
     expect(screen.getByTestId('he-table')).toHaveTextContent('1 items');
     expect(screen.getByTestId('section-header')).toHaveTextContent('Aprovação e histórico');
   });
@@ -121,7 +132,14 @@ describe('HorasExtrasDashboardPage', () => {
     mockUseHorasExtras.mockReturnValue({
       data: {
         data: [],
-        kpis: { totalLancamentos: 0, pendentesAprovacao: 0, aprovadas: 0, fechadasParaFopag: 0, horasTotais: 0, valorTotal: 0 },
+        kpis: {
+          totalLancamentos: 0,
+          pendentesAprovacao: 0,
+          aprovadas: 0,
+          fechadasParaFopag: 0,
+          horasTotais: 0,
+          valorTotal: 0,
+        },
         resumoCards: [],
         fechamentoAtual: null,
       },
