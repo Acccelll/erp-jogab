@@ -1,3 +1,4 @@
+import { useCallback, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -7,15 +8,14 @@ import {
   Receipt,
   ShoppingCart,
   FileText,
-  DollarSign,
+  Banknote,
   Package,
   Ruler,
   FolderOpen,
-  BarChart3,
+  BarChart2,
   Settings,
-  User,
-  ChevronsLeft,
-  ChevronsRight,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { useUIStore } from '@/shared/stores';
 import { cn } from '@/shared/lib/utils';
@@ -27,131 +27,160 @@ interface SidebarNavItem {
   icon: LucideIcon;
 }
 
-interface NavGroup {
-  title: string;
-  items: SidebarNavItem[];
-}
-
-const navGroups: NavGroup[] = [
-  {
-    title: 'Geral',
-    items: [
-      { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-      { label: 'Obras', path: '/obras', icon: Building2 },
-    ],
-  },
-  {
-    title: 'Operacional',
-    items: [
-      { label: 'RH', path: '/rh', icon: Users },
-      { label: 'Horas Extras', path: '/horas-extras', icon: Clock },
-      { label: 'FOPAG', path: '/fopag', icon: Receipt },
-      { label: 'Compras', path: '/compras', icon: ShoppingCart },
-      { label: 'Fiscal', path: '/fiscal', icon: FileText },
-      { label: 'Financeiro', path: '/financeiro', icon: DollarSign },
-      { label: 'Estoque', path: '/estoque', icon: Package },
-      { label: 'Medições', path: '/medicoes', icon: Ruler },
-      { label: 'Documentos', path: '/documentos', icon: FolderOpen },
-    ],
-  },
-  {
-    title: 'Gerencial',
-    items: [
-      { label: 'Relatórios', path: '/relatorios', icon: BarChart3 },
-      { label: 'Administração', path: '/admin', icon: Settings },
-      { label: 'Perfil', path: '/perfil', icon: User },
-    ],
-  },
+/** Grupo 1 — Core */
+const coreItems: SidebarNavItem[] = [
+  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { label: 'Obras', path: '/obras', icon: Building2 },
 ];
 
-export function Sidebar() {
-  const { sidebarCollapsed, setSidebarCollapsed } = useUIStore();
-  const location = useLocation();
+/** Grupo 2 — Pessoas */
+const pessoasItems: SidebarNavItem[] = [
+  { label: 'Funcionários', path: '/rh/funcionarios', icon: Users },
+  { label: 'Horas Extras', path: '/horas-extras', icon: Clock },
+  { label: 'FOPAG', path: '/fopag', icon: Receipt },
+];
 
-  /** On mobile (< lg), close the sidebar after navigation */
-  function handleNavClick() {
-    if (window.innerWidth < 1024) {
-      setSidebarCollapsed(true);
-    }
-  }
+/** Grupo 3 — Operacional */
+const operacionalItems: SidebarNavItem[] = [
+  { label: 'Compras', path: '/compras', icon: ShoppingCart },
+  { label: 'Fiscal', path: '/fiscal', icon: FileText },
+  { label: 'Financeiro', path: '/financeiro', icon: Banknote },
+  { label: 'Estoque', path: '/estoque', icon: Package },
+  { label: 'Medições', path: '/medicoes', icon: Ruler },
+  { label: 'Documentos', path: '/documentos', icon: FolderOpen },
+];
+
+/** Rodapé */
+const footerItems: SidebarNavItem[] = [
+  { label: 'Relatórios', path: '/relatorios', icon: BarChart2 },
+  { label: 'Administração', path: '/admin', icon: Settings },
+];
+
+function Divider() {
+  return <div className="mx-2 my-1.5 h-px bg-sidebar-border" />;
+}
+
+function NavItem({ item, collapsed }: { item: SidebarNavItem; collapsed: boolean }) {
+  const location = useLocation();
+  const { icon: Icon, label, path } = item;
+  const isActive = location.pathname === path || location.pathname.startsWith(`${path}/`);
+
+  return (
+    <li>
+      <NavLink
+        to={path}
+        className={cn(
+          'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors',
+          isActive
+            ? 'bg-sidebar-active text-sidebar-text-active'
+            : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
+          collapsed && 'justify-center px-0',
+        )}
+        title={label}
+      >
+        <Icon size={20} className="shrink-0" />
+        {!collapsed && (
+          <span className="truncate font-medium opacity-100 transition-opacity duration-150">{label}</span>
+        )}
+      </NavLink>
+    </li>
+  );
+}
+
+export function Sidebar() {
+  const { sidebarCollapsed, sidebarPinned, setSidebarCollapsed, setSidebarPinned } = useUIStore();
+  const enterTimer = useRef<ReturnType<typeof setTimeout>>(null);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout>>(null);
+
+  const handleMouseEnter = useCallback(() => {
+    if (sidebarPinned) return;
+    if (leaveTimer.current) clearTimeout(leaveTimer.current);
+    enterTimer.current = setTimeout(() => setSidebarCollapsed(false), 150);
+  }, [sidebarPinned, setSidebarCollapsed]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (sidebarPinned) return;
+    if (enterTimer.current) clearTimeout(enterTimer.current);
+    leaveTimer.current = setTimeout(() => setSidebarCollapsed(true), 200);
+  }, [sidebarPinned, setSidebarCollapsed]);
+
+  const togglePin = useCallback(() => {
+    setSidebarPinned(!sidebarPinned);
+  }, [sidebarPinned, setSidebarPinned]);
+
+  const collapsed = sidebarCollapsed;
 
   return (
     <aside
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={cn(
-        'flex h-full flex-col bg-sidebar-bg transition-all duration-200',
-        sidebarCollapsed ? 'w-[68px]' : 'w-60',
+        'flex h-full flex-col bg-sidebar-bg transition-[width] duration-200 ease-in-out',
+        collapsed ? 'w-[52px]' : 'w-[220px]',
       )}
     >
       {/* Logo / Brand */}
-      <div className="flex h-16 items-center justify-between px-4">
+      <div className="flex h-11 items-center px-3">
         <div className="flex items-center gap-2 overflow-hidden">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-jogab-500 text-sm font-bold text-white">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-jogab-500 text-xs font-bold text-white">
             J
           </div>
-          {!sidebarCollapsed && (
-            <span className="whitespace-nowrap text-base font-semibold text-white">
-              ERP JOGAB
-            </span>
-          )}
+          {!collapsed && <span className="whitespace-nowrap text-sm font-medium text-white">ERP JOGAB</span>}
         </div>
-        <button
-          type="button"
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="hidden rounded p-1 text-sidebar-text hover:bg-sidebar-hover hover:text-white lg:block"
-          title={sidebarCollapsed ? 'Expandir menu' : 'Recolher menu'}
-        >
-          {sidebarCollapsed ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}
-        </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-2 py-2">
-        {navGroups.map((group) => (
-          <div key={group.title} className="mb-4">
-            {!sidebarCollapsed && (
-              <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-sidebar-group">
-                {group.title}
-              </p>
-            )}
-            <ul className="space-y-0.5">
-              {group.items.map(({ label, path, icon: Icon }) => {
-                const isActive =
-                  location.pathname === path || location.pathname.startsWith(`${path}/`);
+      <nav className="flex flex-1 flex-col overflow-y-auto px-1.5 py-1">
+        {/* Grupo 1 — Core */}
+        <ul className="space-y-0.5">
+          {coreItems.map((item) => (
+            <NavItem key={item.path} item={item} collapsed={collapsed} />
+          ))}
+        </ul>
 
-                return (
-                  <li key={path}>
-                    <NavLink
-                      to={path}
-                      onClick={handleNavClick}
-                      className={cn(
-                        'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                        isActive
-                          ? 'bg-sidebar-active text-sidebar-text-active'
-                          : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
-                        sidebarCollapsed && 'justify-center px-2',
-                      )}
-                      title={label}
-                    >
-                      <Icon size={20} className="shrink-0" />
-                      {!sidebarCollapsed && <span>{label}</span>}
-                    </NavLink>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+        <Divider />
+
+        {/* Grupo 2 — Pessoas */}
+        <ul className="space-y-0.5">
+          {pessoasItems.map((item) => (
+            <NavItem key={item.path} item={item} collapsed={collapsed} />
+          ))}
+        </ul>
+
+        <Divider />
+
+        {/* Grupo 3 — Operacional */}
+        <ul className="space-y-0.5">
+          {operacionalItems.map((item) => (
+            <NavItem key={item.path} item={item} collapsed={collapsed} />
+          ))}
+        </ul>
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Rodapé — Relatórios e Admin */}
+        <ul className="space-y-0.5">
+          {footerItems.map((item) => (
+            <NavItem key={item.path} item={item} collapsed={collapsed} />
+          ))}
+        </ul>
       </nav>
 
-      {/* Footer / Version */}
-      <div className="border-t border-sidebar-border px-3 py-3">
-        {!sidebarCollapsed ? (
-          <p className="text-[11px] text-sidebar-group">
-            ERP JOGAB v0.2.0 — Fase 2
-          </p>
-        ) : (
-          <p className="text-center text-[10px] text-sidebar-group">v0.2</p>
-        )}
+      {/* Toggle pin button */}
+      <div className="border-t border-sidebar-border px-1.5 py-1.5">
+        <button
+          type="button"
+          onClick={togglePin}
+          className={cn(
+            'flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm text-sidebar-text transition-colors hover:bg-sidebar-hover hover:text-white',
+            collapsed && 'justify-center px-0',
+          )}
+          title={sidebarPinned ? 'Recolher menu' : 'Fixar menu'}
+        >
+          {sidebarPinned ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          {!collapsed && <span className="text-xs font-medium">{sidebarPinned ? 'Recolher' : 'Fixar menu'}</span>}
+        </button>
       </div>
     </aside>
   );

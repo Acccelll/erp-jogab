@@ -8,3 +8,6 @@ export { EmptyState } from './EmptyState';
 export { StatusBadge } from './StatusBadge';
 export { ModulePlaceholder } from './ModulePlaceholder';
 export { NotFoundPage } from './NotFoundPage';
+export { QuickFilterChips } from './QuickFilterChips';
+export { OverflowTabs } from './OverflowTabs';
+export { TableCellStack } from './TableCellStack';
