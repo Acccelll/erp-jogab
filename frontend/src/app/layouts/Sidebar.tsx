@@ -63,7 +63,7 @@ function Divider() {
 function GroupLabel({ label, collapsed }: { label: string; collapsed: boolean }) {
   if (collapsed) return null;
   return (
-    <p className="px-2.5 pb-0.5 pt-2 text-[10px] font-medium uppercase tracking-widest text-sidebar-group/60">
+    <p className="mt-3 px-2.5 pb-0.5 pt-2 text-[10px] font-medium uppercase tracking-widest text-sidebar-group/30">
       {label}
     </p>
   );
@@ -93,9 +93,9 @@ function NavItem({
           isActive
             ? 'bg-sidebar-active text-sidebar-text-active'
             : tier === 'utility'
-              ? 'text-sidebar-text/50 hover:bg-sidebar-hover hover:text-white'
+              ? 'text-sidebar-text/35 hover:bg-sidebar-hover hover:text-white'
               : tier === 'secondary'
-                ? 'text-sidebar-text/60 hover:bg-sidebar-hover hover:text-white'
+                ? 'text-sidebar-text/45 hover:bg-sidebar-hover hover:text-white'
                 : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
           collapsed && 'justify-center px-0',
         )}
@@ -106,7 +106,8 @@ function NavItem({
           <span
             className={cn(
               'truncate font-medium opacity-100 transition-opacity duration-150',
-              tier !== 'primary' && 'text-[13px]',
+              tier === 'secondary' && 'text-[13px]',
+              tier === 'utility' && 'text-[12px]',
             )}
           >
             {label}
