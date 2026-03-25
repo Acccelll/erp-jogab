@@ -16,51 +16,76 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-## Módulos prontos para integração imediata (Ready)
+## Módulos integrados com API real
 
-### 1. Dashboard
+### 1. Auth (Fase 5)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
-| `/dashboard/summary` | GET | ✅ | Resumo executivo com KPIs, alertas, obras, RH e financeiro |
+| `/auth/login` | POST | ✅ Integrado | Login com credenciais |
+| `/auth/me` | GET | ✅ Integrado | Restaurar sessão |
+| `/auth/logout` | POST | ✅ Integrado | Logout |
+
+**Notas:** Integrado na Fase 5. Usa withApiFallback com mock controlado.
+
+---
+
+### 2. Context (Fase 5)
+
+| Endpoint | Método | Status | Descrição |
+|----------|--------|--------|-----------|
+| `/context/bootstrap` | GET | ✅ Integrado | Bootstrap de contexto global |
+| `/context/options` | GET | ✅ Integrado | Opções de contexto (empresas, filiais, obras, etc.) |
+
+**Notas:** Integrado na Fase 5. Normaliza payload parcial, fallback mock controlado.
+
+---
+
+### 3. Dashboard (Fase 5)
+
+| Endpoint | Método | Status | Descrição |
+|----------|--------|--------|-----------|
+| `/dashboard/summary` | GET | ✅ Integrado | Resumo executivo com KPIs, alertas, obras, RH e financeiro |
 
 **Normalizador:** `normalizeDashboardSummary` — arrays default `[]`, generatedAt fallback.
 **Validação Zod:** Não (payload dinâmico).
-**Notas:** Contrato simples e estável. Primeiro candidato para integração.
+**Notas:** Integrado na Fase 5. Contrato simples e estável.
 
 ---
 
-### 2. Obras (módulo central)
+### 4. Obras — módulo central (Fase 6)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
-| `/obras` | GET | ✅ | Listagem com filtros (status, filial, busca) |
-| `/obras/:id` | GET | ✅ | Detalhe completo da obra |
-| `/obras` | POST | ✅ | Criar obra com validação de código duplicado |
-| `/obras/:id` | PUT | ✅ | Atualizar obra |
+| `/obras` | GET | ✅ Integrado | Listagem com filtros (status, filial, busca) |
+| `/obras/:id` | GET | ✅ Integrado | Detalhe completo da obra |
+| `/obras` | POST | ✅ Integrado | Criar obra com validação de código duplicado |
+| `/obras/:id` | PUT | ✅ Integrado | Atualizar obra |
 
 **Normalizador:** `normalizeObrasListResponse` — arrays `[]`, KPIs com defaults numéricos.
-**Validação Zod:** `obraSchema`, `obraCreateSchema`, `obraUpdateSchema`.
-**Notas:** Módulo pivô do sistema. CRUD completo preparado.
+**Validação Zod:** `obraFormSchema`, `obraStatusSchema`, `obraTipoSchema`, `obraFiltersSchema`.
+**Notas:** Integrado na Fase 6. CRUD completo com withApiFallback, normalizador e validação Zod.
 
 ---
 
-### 3. RH — Funcionários
+### 5. RH — Funcionários (Fase 6 — leitura)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
-| `/rh/funcionarios` | GET | ✅ | Listagem com KPIs (ativos, afastados, férias, desligados) |
-| `/rh/funcionarios/:id` | GET | ✅ | Detalhe com alocações e vínculo |
-| `/rh/funcionarios` | POST | ✅ | Criar funcionário com validação de matrícula/CPF |
-| `/rh/funcionarios/:id` | PUT | ✅ | Atualizar funcionário |
+| `/rh/funcionarios` | GET | ✅ Integrado | Listagem com KPIs (ativos, afastados, férias, desligados) |
+| `/rh/funcionarios/:id` | GET | ✅ Integrado | Detalhe com alocações e vínculo |
+| `/rh/funcionarios` | POST | 🔵 Ready | Criar funcionário com validação de matrícula/CPF |
+| `/rh/funcionarios/:id` | PUT | 🔵 Ready | Atualizar funcionário |
 
 **Normalizador:** `normalizeFuncionariosListResponse` — arrays `[]`, KPIs defaults `0`.
 **Validação Zod:** `funcionarioSchema`, `funcionarioCreateSchema`.
-**Notas:** Segundo módulo prioritário. Validações de duplicidade preparadas.
+**Notas:** Leitura integrada na Fase 6. Mutações (POST/PUT) aguardam Fase 7.
 
 ---
 
-### 4. Horas Extras
+## Módulos prontos para integração imediata (Ready)
+
+### 6. Horas Extras
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -75,7 +100,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 5. FOPAG
+### 7. FOPAG
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -88,7 +113,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 6. Compras
+### 8. Compras
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -104,7 +129,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 7. Financeiro
+### 9. Financeiro
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -120,7 +145,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 8. Fiscal
+### 10. Fiscal
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -134,7 +159,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 9. Relatórios
+### 11. Relatórios
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -148,7 +173,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ## Módulos parcialmente prontos (Partial)
 
-### 10. Estoque
+### 12. Estoque
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -160,7 +185,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 11. Medições
+### 13. Medições
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -172,7 +197,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 12. Documentos
+### 14. Documentos
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -183,7 +208,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 13. Admin
+### 15. Admin
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -201,33 +226,35 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ## Resumo de readiness
 
-| Módulo | Status | Endpoints Ready | Total Endpoints |
-|--------|--------|-----------------|-----------------|
-| Dashboard | ✅ Ready | 1 | 1 |
-| Obras | ✅ Ready | 4 | 4 |
-| RH | ✅ Ready | 4 | 4 |
-| Horas Extras | ✅ Ready | 5 | 5 |
-| FOPAG | ✅ Ready | 2 | 2 |
-| Compras | ✅ Ready | 5 | 5 |
-| Financeiro | ✅ Ready | 6 | 6 |
-| Fiscal | ✅ Ready | 4 | 4 |
-| Relatórios | ✅ Ready | 2 | 2 |
-| Estoque | 🟡 Partial | 2 | 3 |
-| Medições | 🟡 Partial | 2 | 3 |
-| Documentos | 🟡 Partial | 1 | 2 |
-| Admin | 🟡 Partial | 7 | 7 |
+| Módulo | Status | Endpoints Integrados | Endpoints Ready | Total Endpoints |
+|--------|--------|---------------------|-----------------|-----------------|
+| Auth | ✅ Integrado | 3 | 3 | 3 |
+| Context | ✅ Integrado | 2 | 2 | 2 |
+| Dashboard | ✅ Integrado | 1 | 1 | 1 |
+| Obras | ✅ Integrado | 4 | 4 | 4 |
+| RH | ✅ Integrado (parcial) | 2 | 4 | 4 |
+| Horas Extras | 🔵 Ready | 0 | 5 | 5 |
+| FOPAG | 🔵 Ready | 0 | 2 | 2 |
+| Compras | 🔵 Ready | 0 | 5 | 5 |
+| Financeiro | 🔵 Ready | 0 | 6 | 6 |
+| Fiscal | 🔵 Ready | 0 | 4 | 4 |
+| Relatórios | 🔵 Ready | 0 | 2 | 2 |
+| Estoque | 🟡 Partial | 0 | 2 | 3 |
+| Medições | 🟡 Partial | 0 | 2 | 3 |
+| Documentos | 🟡 Partial | 0 | 1 | 2 |
+| Admin | 🟡 Partial | 0 | 7 | 7 |
 
-**Total:** 45 endpoints prontos de 48 mapeados.
+**Total:** 12 endpoints integrados, 50 endpoints ready de 53 mapeados.
 
 ---
 
 ## Ordem recomendada de implementação no backend
 
-1. **Autenticação** — `POST /auth/login`, `GET /auth/me`, `POST /auth/logout`
-2. **Contexto** — `GET /context/bootstrap`, `GET /context/options`
-3. **Dashboard** — 1 endpoint, contrato simples
-4. **Obras** — Módulo central, CRUD completo
-5. **RH** — CRUD + alocações
+1. ~~**Autenticação**~~ — ✅ Integrado (Fase 5)
+2. ~~**Contexto**~~ — ✅ Integrado (Fase 5)
+3. ~~**Dashboard**~~ — ✅ Integrado (Fase 5)
+4. ~~**Obras**~~ — ✅ Integrado (Fase 6)
+5. **RH** — Leitura integrada (Fase 6), mutações aguardam Fase 7
 6. **Horas Extras → FOPAG → Financeiro** — Fluxo crítico de negócio
 7. **Compras** — Fluxo de 3 etapas
 8. **Fiscal** — Módulo de leitura
