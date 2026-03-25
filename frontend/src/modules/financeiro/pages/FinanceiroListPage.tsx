@@ -137,13 +137,12 @@ export function FinanceiroListPage() {
         {!isLoading && !isError && data && (
           <>
             {pessoal && (
-              <section className="space-y-3">
+              <section className="rounded-lg border border-border-default bg-surface-card p-4 space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-sm font-medium text-text-strong">Custo de pessoal por obra</h2>
-                    <p className="text-xs text-text-muted">
-                      Reflexo consolidado do fluxo Horas Extras → FOPAG → Financeiro.
-                    </p>
+                    <h2 className="text-xs font-semibold uppercase tracking-wider text-text-subtle">
+                      Custo de pessoal por obra
+                    </h2>
                   </div>
                   <StatusBadge
                     label={pessoal.competencia.statusFechamento}
@@ -219,16 +218,13 @@ export function FinanceiroListPage() {
                 }
               />
             ) : (
-              <section className="space-y-3">
+              <section className="space-y-2">
                 <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <h2 className="text-sm font-medium text-text-strong">Títulos financeiros</h2>
-                    <p className="text-xs text-text-muted">
-                      Leitura consolidada dos títulos com vínculo de obra, competência, origem e status.
-                    </p>
-                  </div>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-text-subtle">
+                    Títulos financeiros
+                  </h2>
                   <Link to="/financeiro/fluxo" className="text-xs font-medium text-accent-600 hover:text-accent-700">
-                    Ver fluxo projetado
+                    Ver fluxo projetado →
                   </Link>
                 </div>
                 <TitulosFinanceirosTable items={data.titulos} />

@@ -2,18 +2,18 @@ import type { ReactNode } from 'react';
 
 interface DashboardSectionGroupProps {
   title: string;
-  description: string;
+  description?: string;
   children: ReactNode;
 }
 
-export function DashboardSectionGroup({ title, description, children }: DashboardSectionGroupProps) {
+export function DashboardSectionGroup({ title, children }: DashboardSectionGroupProps) {
   return (
     <section>
-      <div className="mb-4 flex flex-col gap-1">
-        <h2 className="text-lg font-semibold text-text-strong">{title}</h2>
-        <p className="text-sm text-text-muted">{description}</p>
+      <div className="mb-3 flex items-center gap-2">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-text-subtle">{title}</h2>
+        <div className="h-px flex-1 bg-border-light" />
       </div>
-      <div className="grid gap-4 xl:grid-cols-2">{children}</div>
+      <div className="grid gap-3 xl:grid-cols-2">{children}</div>
     </section>
   );
 }

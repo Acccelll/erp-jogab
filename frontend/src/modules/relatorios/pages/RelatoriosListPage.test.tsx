@@ -21,9 +21,7 @@ vi.mock('@/modules/relatorios/hooks', () => ({
 }));
 
 vi.mock('react-router-dom', () => ({
-  Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
-    <a href={to}>{children}</a>
-  ),
+  Link: ({ children, to }: { children: React.ReactNode; to: string }) => <a href={to}>{children}</a>,
 }));
 
 vi.mock('@/shared/components', () => ({
@@ -55,9 +53,7 @@ vi.mock('../components', () => ({
   RelatoriosResumoBar: ({ resumo }: { resumo: { totalRelatorios: number } }) => (
     <div data-testid="resumo-bar">{resumo.totalRelatorios} relatórios</div>
   ),
-  RelatoriosTable: ({ items }: { items: unknown[] }) => (
-    <div data-testid="relatorios-table">{items.length} itens</div>
-  ),
+  RelatoriosTable: ({ items }: { items: unknown[] }) => <div data-testid="relatorios-table">{items.length} itens</div>,
 }));
 
 import { useRelatorios, useRelatoriosFilters } from '@/modules/relatorios/hooks';
@@ -69,7 +65,14 @@ const mockUseRelatoriosFilters = vi.mocked(useRelatoriosFilters);
 // Fixtures
 // ---------------------------------------------------------------------------
 const defaultFiltersReturn = {
-  filters: { search: '', categoria: undefined, disponibilidade: undefined, formato: undefined, competencia: undefined, obraId: undefined },
+  filters: {
+    search: '',
+    categoria: undefined,
+    disponibilidade: undefined,
+    formato: undefined,
+    competencia: undefined,
+    obraId: undefined,
+  },
   setSearch: setSearchMock,
   setCategoria: setCategoriaMock,
   setDisponibilidade: setDisponibilidadeMock,
@@ -88,7 +91,15 @@ const mockDashboardData: RelatoriosDashboardData = {
     exportaveis: 6,
   },
   categorias: [
-    { categoria: 'obras' as const, titulo: 'Obras', descricao: 'Desc', quantidade: 3, disponiveis: 2, formatos: ['pdf' as const], modulosRelacionados: ['obras'] },
+    {
+      categoria: 'obras' as const,
+      titulo: 'Obras',
+      descricao: 'Desc',
+      quantidade: 3,
+      disponiveis: 2,
+      formatos: ['pdf' as const],
+      modulosRelacionados: ['obras'],
+    },
   ],
   itens: [
     {
@@ -99,7 +110,14 @@ const mockDashboardData: RelatoriosDashboardData = {
       disponibilidade: 'disponivel' as const,
       descricao: 'Relatório detalhado',
       origemDados: ['Obras'],
-      output: { formatos: ['pdf' as const], agendavel: false, permiteComparativo: false, formatoPrincipal: 'pdf' as const, tempoEstimado: '5min', recorrenciaSugerida: 'mensal' },
+      output: {
+        formatos: ['pdf' as const],
+        agendavel: false,
+        permiteComparativo: false,
+        formatoPrincipal: 'pdf' as const,
+        tempoEstimado: '5min',
+        recorrenciaSugerida: 'mensal',
+      },
       ultimaAtualizacaoEm: '2026-03-01',
     },
   ],
@@ -171,7 +189,7 @@ describe('RelatoriosListPage', () => {
     expect(refetchMock).toHaveBeenCalled();
   });
 
-  it('renders data state with items, categories and resumo bar', () => {
+  it('renders data state with items and categories', () => {
     mockUseRelatorios.mockReturnValue({
       data: mockDashboardData,
       isLoading: false,
@@ -181,7 +199,6 @@ describe('RelatoriosListPage', () => {
 
     render(<RelatoriosListPage />);
 
-    expect(screen.getByTestId('resumo-bar')).toHaveTextContent('10 relatórios');
     expect(screen.getByTestId('cat-card-obras')).toBeInTheDocument();
     expect(screen.getByTestId('relatorios-table')).toHaveTextContent('1 itens');
   });

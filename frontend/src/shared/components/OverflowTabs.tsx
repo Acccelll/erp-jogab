@@ -56,14 +56,14 @@ export function OverflowTabs({ tabs, maxVisible = 5, basePath }: OverflowTabsPro
           <button
             type="button"
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-1 whitespace-nowrap border-b-2 border-transparent px-2 py-2 text-xs text-text-subtle transition-colors hover:text-text-muted"
+            className="flex items-center gap-1 whitespace-nowrap border-b-2 border-transparent px-2 py-2 text-xs font-medium text-text-subtle transition-colors hover:text-text-muted"
           >
-            +{hiddenTabs.length}
+            Mais
             <ChevronDown className="h-3 w-3" />
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-md border border-border-default bg-surface py-1 shadow-lg">
+            <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-md border border-border-default bg-surface py-1 shadow-elevated">
               {hiddenTabs.map((tab) => (
                 <NavLink
                   key={tab.path}

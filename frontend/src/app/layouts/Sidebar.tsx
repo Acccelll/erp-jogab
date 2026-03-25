@@ -67,7 +67,7 @@ function GroupLabel({ label, collapsed }: { label: string; collapsed: boolean })
   );
 }
 
-function NavItem({ item, collapsed }: { item: SidebarNavItem; collapsed: boolean }) {
+function NavItem({ item, collapsed, muted = false }: { item: SidebarNavItem; collapsed: boolean; muted?: boolean }) {
   const location = useLocation();
   const { icon: Icon, label, path } = item;
   const isActive = location.pathname === path || location.pathname.startsWith(`${path}/`);
@@ -80,14 +80,20 @@ function NavItem({ item, collapsed }: { item: SidebarNavItem; collapsed: boolean
           'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors',
           isActive
             ? 'bg-sidebar-active text-sidebar-text-active'
-            : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
+            : muted
+              ? 'text-sidebar-text/70 hover:bg-sidebar-hover hover:text-white'
+              : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
           collapsed && 'justify-center px-0',
         )}
         title={label}
       >
-        <Icon size={20} className="shrink-0" />
+        <Icon size={muted ? 18 : 20} className="shrink-0" />
         {!collapsed && (
-          <span className="truncate font-medium opacity-100 transition-opacity duration-150">{label}</span>
+          <span
+            className={cn('truncate font-medium opacity-100 transition-opacity duration-150', muted && 'text-[13px]')}
+          >
+            {label}
+          </span>
         )}
       </NavLink>
     </li>
@@ -165,7 +171,7 @@ export function Sidebar() {
         <GroupLabel label="Operacional" collapsed={collapsed} />
         <ul className="space-y-0.5">
           {operacionalItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} />
+            <NavItem key={item.path} item={item} collapsed={collapsed} muted />
           ))}
         </ul>
 
