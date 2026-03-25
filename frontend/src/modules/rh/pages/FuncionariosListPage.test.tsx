@@ -26,24 +26,12 @@ vi.mock('../hooks/useFuncionarioFilters', () => ({
   }),
 }));
 
-vi.mock('../components/FuncionarioKpiBar', () => ({
-  FuncionarioKpiBar: ({ kpis }: { kpis: { totalFuncionarios: number } }) => (
-    <div data-testid="kpi-bar">{kpis.totalFuncionarios} funcionários</div>
-  ),
-}));
-
-vi.mock('../components/FuncionarioFilters', () => ({
-  FuncionarioFilters: () => <div data-testid="filters" />,
-}));
-
-vi.mock('../components/FuncionarioCard', () => ({
-  FuncionarioCard: ({ funcionario }: { funcionario: { id: string; nome: string } }) => (
-    <div data-testid={`card-${funcionario.id}`}>{funcionario.nome}</div>
-  ),
-}));
-
 vi.mock('../components/FuncionarioMutationDrawerForm', () => ({
   FuncionarioMutationDrawerForm: () => <div data-testid="mutation-drawer" />,
+}));
+
+vi.mock('../components/FuncionarioStatusBadge', () => ({
+  FuncionarioStatusBadge: ({ status }: { status: string }) => <span>{status}</span>,
 }));
 
 import { useFuncionarios } from '../hooks/useFuncionarios';
@@ -70,15 +58,16 @@ describe('FuncionariosListPage', () => {
     vi.clearAllMocks();
   });
 
-  it('renders loading state', () => {
+  it('renders loading state with skeletons', () => {
     mockUseFuncionarios.mockReturnValue({
       data: undefined,
       isLoading: true,
       isError: false,
     } as ReturnType<typeof useFuncionarios>);
 
-    renderWithRouter();
-    expect(screen.getByText('Carregando funcionários...')).toBeInTheDocument();
+    const { container } = renderWithRouter();
+    const skeletons = container.querySelectorAll('.animate-pulse');
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it('renders error state', () => {
@@ -92,7 +81,7 @@ describe('FuncionariosListPage', () => {
     expect(screen.getByText('Erro ao carregar funcionários')).toBeInTheDocument();
   });
 
-  it('renders data state with KPIs and cards', () => {
+  it('renders data state with table and quick filter chips', () => {
     mockUseFuncionarios.mockReturnValue({
       data: {
         data: [
@@ -120,8 +109,7 @@ describe('FuncionariosListPage', () => {
     } as ReturnType<typeof useFuncionarios>);
 
     renderWithRouter();
-    expect(screen.getByTestId('kpi-bar')).toHaveTextContent('1 funcionários');
-    expect(screen.getByTestId('card-func-1')).toHaveTextContent('João Silva');
+    expect(screen.getByText('João Silva')).toBeInTheDocument();
   });
 
   it('renders empty state', () => {

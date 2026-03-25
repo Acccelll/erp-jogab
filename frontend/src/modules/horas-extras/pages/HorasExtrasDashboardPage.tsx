@@ -1,75 +1,105 @@
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, FileCheck2, CalendarRange, Clock3, List } from 'lucide-react';
-import { EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { Plus, FileCheck2, CalendarRange, Clock3, Search, SlidersHorizontal } from 'lucide-react';
+import { EmptyState, MainContent, QuickFilterChips } from '@/shared/components';
 import { useHorasExtras, useHorasExtrasFilters } from '../hooks';
-import {
-  HorasExtrasFilters,
-  HorasExtrasKpiBar,
-  HorasExtrasResumoCard,
-  HorasExtrasSectionHeader,
-  HorasExtrasTable,
-} from '../components';
+import { HorasExtrasResumoCard, HorasExtrasSectionHeader, HorasExtrasTable } from '../components';
+import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
 export function HorasExtrasDashboardPage() {
-  const { filters, setSearch, setStatus, setTipo, setCompetencia, clearFilters, hasActiveFilters } =
-    useHorasExtrasFilters();
+  const { filters, setSearch, setStatus, setTipo, clearFilters, hasActiveFilters } = useHorasExtrasFilters();
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const { data, isLoading, isError, refetch } = useHorasExtras(filters);
 
+  const statusChips = useMemo<QuickFilterChip[]>(() => {
+    if (!data?.kpis) return [];
+    const kpis = data.kpis;
+    return [
+      { label: 'Todos', value: null, count: kpis.totalLancamentos },
+      { label: 'Pendentes', value: 'pendente_aprovacao', count: kpis.pendentesAprovacao, variant: 'warning' },
+      { label: 'Aprovadas', value: 'aprovada', count: kpis.aprovadas, variant: 'success' },
+      { label: 'Fechadas', value: 'fechada_para_fopag', count: kpis.fechadasParaFopag, variant: 'info' },
+    ];
+  }, [data?.kpis]);
+
   return (
     <div className="flex flex-1 flex-col">
-      <PageHeader
-        title="Horas Extras"
-        subtitle="Lançamentos operacionais, aprovação e preparação do fechamento por competência com reflexo em RH, FOPAG e custo da obra."
-        actions={
-          <div className="flex items-center gap-2">
-            <Link
-              to="/horas-extras/lancamentos"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              <List size={16} />
-              Ver lançamentos
-            </Link>
-            <Link
-              to="/horas-extras/fechamento"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              <CalendarRange size={16} />
-              Fechamento
-            </Link>
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-600"
-            >
-              <Plus size={16} />
-              Novo lançamento
-            </button>
+      {/* Filter bar */}
+      <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-2.5">
+        <QuickFilterChips
+          chips={statusChips}
+          value={filters.status ?? null}
+          onChange={(v) => setStatus(v as typeof filters.status)}
+        />
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm">
+            <Search size={14} className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar..."
+              value={filters.search ?? ''}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-gray-400"
+            />
           </div>
-        }
-      />
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          >
+            <SlidersHorizontal size={16} />
+          </button>
+          <Link
+            to="/horas-extras/lancamentos"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Lançamentos
+          </Link>
+          <button
+            type="button"
+            className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+          >
+            <Plus size={14} />
+            Novo lançamento
+          </button>
+        </div>
+      </div>
 
-      <HorasExtrasFilters
-        search={filters.search ?? ''}
-        status={filters.status}
-        tipo={filters.tipo}
-        competencia={filters.competencia}
-        onSearchChange={setSearch}
-        onStatusChange={setStatus}
-        onTipoChange={setTipo}
-        onCompetenciaChange={setCompetencia}
-        onClear={clearFilters}
-        hasActiveFilters={hasActiveFilters}
-      />
-
-      {data?.kpis && <HorasExtrasKpiBar kpis={data.kpis} />}
+      {/* Advanced filters */}
+      {showAdvanced && (
+        <div className="flex items-center gap-2 border-b border-gray-200/60 bg-gray-50/30 px-4 py-2">
+          <select
+            value={filters.tipo ?? ''}
+            onChange={(e) => setTipo((e.target.value || undefined) as typeof filters.tipo)}
+            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+          >
+            <option value="">Tipo</option>
+            <option value="he_50">HE 50%</option>
+            <option value="he_100">HE 100%</option>
+            <option value="he_noturna">HE Noturna</option>
+            <option value="domingo">Domingo</option>
+            <option value="feriado">Feriado</option>
+          </select>
+          {hasActiveFilters && (
+            <button type="button" onClick={clearFilters} className="text-sm text-gray-500 hover:text-gray-700">
+              Limpar
+            </button>
+          )}
+        </div>
+      )}
 
       <MainContent className="space-y-6">
         {isLoading && (
-          <div className="flex flex-1 items-center justify-center py-12">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando horas extras...</p>
-            </div>
+          <div className="space-y-0">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex gap-4 border-b border-gray-100/60 px-4 py-3">
+                <div className="h-4 w-2/5 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/4 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+              </div>
+            ))}
           </div>
         )}
 
@@ -98,15 +128,15 @@ export function HorasExtrasDashboardPage() {
             </section>
 
             {data.fechamentoAtual && (
-              <section className="rounded-xl border border-jogab-100 bg-jogab-50/70 p-4">
+              <section className="rounded-lg border border-jogab-100 bg-jogab-50/70 p-4">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-jogab-600">
-                      <Clock3 size={18} />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-jogab-600">
+                      <Clock3 size={16} />
                     </div>
                     <div>
-                      <h2 className="text-base font-semibold text-gray-900">Fechamento da competência em andamento</h2>
-                      <p className="text-sm text-gray-600">
+                      <h2 className="text-sm font-medium text-gray-900">Fechamento da competência em andamento</h2>
+                      <p className="text-xs text-gray-600">
                         Há {data.fechamentoAtual.pendentesAprovacao} pendência(s) antes do envio para FOPAG.
                       </p>
                     </div>
@@ -114,16 +144,16 @@ export function HorasExtrasDashboardPage() {
                   <div className="flex gap-2">
                     <Link
                       to="/horas-extras/aprovacao"
-                      className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50"
                     >
-                      <FileCheck2 size={16} />
+                      <FileCheck2 size={14} />
                       Aprovação
                     </Link>
                     <Link
                       to="/horas-extras/fechamento"
-                      className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-600"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1 text-sm font-medium text-white hover:bg-jogab-600"
                     >
-                      <CalendarRange size={16} />
+                      <CalendarRange size={14} />
                       Ver fechamento
                     </Link>
                   </div>
@@ -152,11 +182,11 @@ export function HorasExtrasDashboardPage() {
                 }
               />
             ) : (
-              <section className="space-y-4">
+              <section className="space-y-3">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Lançamentos</h2>
-                  <p className="text-sm text-gray-500">
-                    Lista inicial dos eventos operacionais que alimentarão aprovação, fechamento e FOPAG.
+                  <h2 className="text-sm font-medium text-gray-900">Lançamentos</h2>
+                  <p className="text-xs text-gray-500">
+                    Lista dos eventos operacionais que alimentarão aprovação, fechamento e FOPAG.
                   </p>
                 </div>
                 <HorasExtrasTable items={data.data} />

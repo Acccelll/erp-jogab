@@ -1,15 +1,11 @@
-import { Landmark, TrendingDown, TrendingUp } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Landmark, TrendingDown, Search, SlidersHorizontal } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { EmptyState, MainContent, PageHeader, StatusBadge } from '@/shared/components';
+import { EmptyState, MainContent, StatusBadge, QuickFilterChips } from '@/shared/components';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
-import {
-  FinanceiroFilters,
-  FinanceiroKpiBar,
-  FinanceiroResumoCard,
-  FinanceiroVisaoStatusTipo,
-  TitulosFinanceirosTable,
-} from '../components';
+import { FinanceiroResumoCard, FinanceiroVisaoStatusTipo, TitulosFinanceirosTable } from '../components';
 import { useFinanceiro, useFinanceiroFilters, useFinanceiroPessoal } from '../hooks';
+import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
 const FECHAMENTO_VARIANTS = {
   aberta: 'warning',
@@ -18,68 +14,107 @@ const FECHAMENTO_VARIANTS = {
 } as const;
 
 export function FinanceiroListPage() {
-  const { filters, setSearch, setStatus, setTipo, setOrigem, setCompetencia, clearFilters, hasActiveFilters } =
-    useFinanceiroFilters();
+  const { filters, setSearch, setStatus, setTipo, setOrigem, clearFilters, hasActiveFilters } = useFinanceiroFilters();
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const { data, isLoading, isError, refetch } = useFinanceiro(filters);
   const { data: pessoal } = useFinanceiroPessoal(filters);
 
+  const statusChips = useMemo<QuickFilterChip[]>(() => {
+    return [
+      { label: 'Todos', value: null },
+      { label: 'A vencer', value: 'a_vencer', variant: 'warning' },
+      { label: 'Vencidos', value: 'vencido', variant: 'danger' },
+      { label: 'Pagos', value: 'pago', variant: 'success' },
+    ];
+  }, []);
+
   return (
     <div className="flex flex-1 flex-col">
-      <PageHeader
-        title="Financeiro"
-        subtitle="Programação financeira com integração conceitual entre Obra, FOPAG, Horas Extras, Compras, Fiscal e Medições."
-        actions={
-          <div className="flex items-center gap-2">
-            <Link
-              to="/financeiro/fluxo"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              <Landmark size={16} />
-              Fluxo de caixa
-            </Link>
-            <Link
-              to="/financeiro/contas-pagar"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
-            >
-              <TrendingDown size={16} />
-              Contas a pagar
-            </Link>
-            <Link
-              to="/financeiro/contas-receber"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              <TrendingUp size={16} />
-              Contas a receber
-            </Link>
+      {/* Filter bar */}
+      <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-2.5">
+        <QuickFilterChips
+          chips={statusChips}
+          value={filters.status ?? null}
+          onChange={(v) => setStatus(v as typeof filters.status)}
+        />
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm">
+            <Search size={14} className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar..."
+              value={filters.search ?? ''}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-gray-400"
+            />
           </div>
-        }
-      />
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          >
+            <SlidersHorizontal size={16} />
+          </button>
+          <Link
+            to="/financeiro/fluxo"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            <Landmark size={14} />
+            Fluxo de caixa
+          </Link>
+          <Link
+            to="/financeiro/contas-pagar"
+            className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+          >
+            <TrendingDown size={14} />
+            Contas a pagar
+          </Link>
+        </div>
+      </div>
 
-      <FinanceiroFilters
-        search={filters.search ?? ''}
-        status={filters.status}
-        tipo={filters.tipo}
-        origem={filters.origem}
-        competencia={filters.competencia}
-        onSearchChange={setSearch}
-        onStatusChange={setStatus}
-        onTipoChange={setTipo}
-        onOrigemChange={setOrigem}
-        onCompetenciaChange={setCompetencia}
-        onClear={clearFilters}
-        hasActiveFilters={hasActiveFilters}
-      />
-
-      {data?.kpis && <FinanceiroKpiBar kpis={data.kpis} />}
+      {/* Advanced filters */}
+      {showAdvanced && (
+        <div className="flex items-center gap-2 border-b border-gray-200/60 bg-gray-50/30 px-4 py-2">
+          <select
+            value={filters.tipo ?? ''}
+            onChange={(e) => setTipo((e.target.value || undefined) as typeof filters.tipo)}
+            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+          >
+            <option value="">Tipo</option>
+            <option value="pagar">A pagar</option>
+            <option value="receber">A receber</option>
+          </select>
+          <select
+            value={filters.origem ?? ''}
+            onChange={(e) => setOrigem((e.target.value || undefined) as typeof filters.origem)}
+            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+          >
+            <option value="">Origem</option>
+            <option value="compras">Compras</option>
+            <option value="fopag">FOPAG</option>
+            <option value="medicoes">Medições</option>
+            <option value="manual">Manual</option>
+          </select>
+          {hasActiveFilters && (
+            <button type="button" onClick={clearFilters} className="text-sm text-gray-500 hover:text-gray-700">
+              Limpar
+            </button>
+          )}
+        </div>
+      )}
 
       <MainContent className="space-y-6">
         {isLoading && (
-          <div className="flex flex-1 items-center justify-center py-12">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando visão financeira...</p>
-            </div>
+          <div className="space-y-0">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex gap-4 border-b border-gray-100/60 px-4 py-3">
+                <div className="h-4 w-2/5 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/4 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+              </div>
+            ))}
           </div>
         )}
 
@@ -116,15 +151,12 @@ export function FinanceiroListPage() {
                 </section>
 
                 <section className="grid gap-4 xl:grid-cols-[1.1fr,0.9fr]">
-                  <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+                  <article className="rounded-lg border border-gray-200 bg-white p-4">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h2 className="text-base font-semibold text-gray-900">
-                          Custo de pessoal por competência e obra
-                        </h2>
-                        <p className="mt-1 text-sm text-gray-500">
-                          Reflexo consolidado do fluxo Horas Extras → FOPAG → Financeiro, preservando Obra e centro de
-                          custo.
+                        <h2 className="text-sm font-medium text-gray-900">Custo de pessoal por competência e obra</h2>
+                        <p className="mt-0.5 text-xs text-gray-500">
+                          Reflexo consolidado do fluxo Horas Extras → FOPAG → Financeiro.
                         </p>
                       </div>
                       <StatusBadge
@@ -133,61 +165,61 @@ export function FinanceiroListPage() {
                       />
                     </div>
 
-                    <div className="mt-4 grid gap-3 md:grid-cols-4">
-                      <div className="rounded-lg bg-gray-50 px-3 py-2">
-                        <p className="text-xs uppercase tracking-wide text-gray-400">Competência</p>
-                        <p className="mt-1 text-sm font-semibold text-gray-900">
+                    <div className="mt-3 grid gap-2 md:grid-cols-4">
+                      <div className="rounded-md bg-gray-50 px-3 py-1.5">
+                        <p className="text-[10px] uppercase tracking-wide text-gray-400">Competência</p>
+                        <p className="mt-0.5 text-sm font-medium text-gray-900">
                           {formatCompetencia(pessoal.competencia.competencia)}
                         </p>
                       </div>
-                      <div className="rounded-lg bg-gray-50 px-3 py-2">
-                        <p className="text-xs uppercase tracking-wide text-gray-400">Funcionários</p>
-                        <p className="mt-1 text-sm font-semibold text-gray-900">
+                      <div className="rounded-md bg-gray-50 px-3 py-1.5">
+                        <p className="text-[10px] uppercase tracking-wide text-gray-400">Funcionários</p>
+                        <p className="mt-0.5 text-sm font-medium text-gray-900">
                           {pessoal.competencia.totalFuncionarios}
                         </p>
                       </div>
-                      <div className="rounded-lg bg-gray-50 px-3 py-2">
-                        <p className="text-xs uppercase tracking-wide text-gray-400">Obras</p>
-                        <p className="mt-1 text-sm font-semibold text-gray-900">{pessoal.competencia.totalObras}</p>
+                      <div className="rounded-md bg-gray-50 px-3 py-1.5">
+                        <p className="text-[10px] uppercase tracking-wide text-gray-400">Obras</p>
+                        <p className="mt-0.5 text-sm font-medium text-gray-900">{pessoal.competencia.totalObras}</p>
                       </div>
-                      <div className="rounded-lg bg-gray-50 px-3 py-2">
-                        <p className="text-xs uppercase tracking-wide text-gray-400">Centros de custo</p>
-                        <p className="mt-1 text-sm font-semibold text-gray-900">
+                      <div className="rounded-md bg-gray-50 px-3 py-1.5">
+                        <p className="text-[10px] uppercase tracking-wide text-gray-400">Centros de custo</p>
+                        <p className="mt-0.5 text-sm font-medium text-gray-900">
                           {pessoal.competencia.totalCentrosCusto}
                         </p>
                       </div>
                     </div>
 
-                    <div className="mt-4 overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-4 py-3 text-left font-semibold text-gray-600">Obra</th>
-                            <th className="px-4 py-3 text-right font-semibold text-gray-600">HE previsto</th>
-                            <th className="px-4 py-3 text-right font-semibold text-gray-600">FOPAG prevista</th>
-                            <th className="px-4 py-3 text-right font-semibold text-gray-600">Previsto</th>
-                            <th className="px-4 py-3 text-right font-semibold text-gray-600">Realizado</th>
+                    <div className="mt-3 overflow-x-auto">
+                      <table className="min-w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-gray-200/60">
+                            <th className="px-4 py-1.5 text-left text-xs font-medium text-gray-500">Obra</th>
+                            <th className="px-4 py-1.5 text-right text-xs font-medium text-gray-500">HE previsto</th>
+                            <th className="px-4 py-1.5 text-right text-xs font-medium text-gray-500">FOPAG prevista</th>
+                            <th className="px-4 py-1.5 text-right text-xs font-medium text-gray-500">Previsto</th>
+                            <th className="px-4 py-1.5 text-right text-xs font-medium text-gray-500">Realizado</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 bg-white">
+                        <tbody className="divide-y divide-gray-100/60">
                           {pessoal.porObra.map((item) => (
-                            <tr key={item.obraId} className="hover:bg-gray-50/70">
-                              <td className="px-4 py-3 align-top">
-                                <div className="font-medium text-gray-900">{item.obraNome}</div>
+                            <tr key={item.obraId} className="hover:bg-gray-50/50">
+                              <td className="px-4 py-1.5 align-top">
+                                <div className="font-medium text-gray-900 text-sm">{item.obraNome}</div>
                                 <div className="text-xs text-gray-500">
-                                  {item.totalFuncionarios} funcionário(s) · {item.totalCentrosCusto} centro(s)
+                                  {item.totalFuncionarios} func. · {item.totalCentrosCusto} CC
                                 </div>
                               </td>
-                              <td className="px-4 py-3 text-right text-gray-700">
+                              <td className="px-4 py-1.5 text-right text-gray-700">
                                 {formatCurrency(item.valorHorasExtrasPrevisto)}
                               </td>
-                              <td className="px-4 py-3 text-right text-gray-700">
+                              <td className="px-4 py-1.5 text-right text-gray-700">
                                 {formatCurrency(item.valorFopagPrevisto)}
                               </td>
-                              <td className="px-4 py-3 text-right font-medium text-gray-900">
+                              <td className="px-4 py-1.5 text-right font-medium text-gray-900">
                                 {formatCurrency(item.valorPrevisto)}
                               </td>
-                              <td className="px-4 py-3 text-right text-gray-700">
+                              <td className="px-4 py-1.5 text-right text-gray-700">
                                 {formatCurrency(item.valorRealizado)}
                               </td>
                             </tr>
@@ -197,28 +229,28 @@ export function FinanceiroListPage() {
                     </div>
                   </article>
 
-                  <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
-                    <h2 className="text-base font-semibold text-gray-900">Previsto x realizado de pessoal</h2>
-                    <p className="mt-1 text-sm text-gray-500">
+                  <article className="rounded-lg border border-gray-200 bg-white p-4">
+                    <h2 className="text-sm font-medium text-gray-900">Previsto x realizado de pessoal</h2>
+                    <p className="mt-0.5 text-xs text-gray-500">
                       Leitura gerencial mínima para apoiar relatórios e comparativos financeiros futuros.
                     </p>
-                    <div className="mt-4 space-y-3">
+                    <div className="mt-3 space-y-2">
                       {pessoal.previstoRealizado.map((item) => (
-                        <div key={item.id} className="rounded-lg bg-gray-50 p-3">
+                        <div key={item.id} className="rounded-md bg-gray-50 p-2.5">
                           <div className="flex items-center justify-between gap-3">
-                            <p className="text-sm font-semibold text-gray-900">{item.label}</p>
+                            <p className="text-sm font-medium text-gray-900">{item.label}</p>
                             <span className="text-xs text-gray-500">Δ {formatCurrency(item.variacao)}</span>
                           </div>
-                          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                          <div className="mt-1.5 grid gap-2 sm:grid-cols-2">
                             <div>
-                              <p className="text-xs uppercase tracking-wide text-gray-400">Previsto</p>
-                              <p className="mt-1 text-sm font-medium text-gray-900">
+                              <p className="text-[10px] uppercase tracking-wide text-gray-400">Previsto</p>
+                              <p className="mt-0.5 text-sm font-medium text-gray-900">
                                 {formatCurrency(item.valorPrevisto)}
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs uppercase tracking-wide text-gray-400">Realizado</p>
-                              <p className="mt-1 text-sm font-medium text-gray-900">
+                              <p className="text-[10px] uppercase tracking-wide text-gray-400">Realizado</p>
+                              <p className="mt-0.5 text-sm font-medium text-gray-900">
                                 {formatCurrency(item.valorRealizado)}
                               </p>
                             </div>
@@ -226,21 +258,21 @@ export function FinanceiroListPage() {
                         </div>
                       ))}
                     </div>
-                    <div className="mt-4 overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-4 py-3 text-left font-semibold text-gray-600">Centro de custo</th>
-                            <th className="px-4 py-3 text-left font-semibold text-gray-600">Obra</th>
-                            <th className="px-4 py-3 text-right font-semibold text-gray-600">Previsto</th>
+                    <div className="mt-3 overflow-x-auto">
+                      <table className="min-w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-gray-200/60">
+                            <th className="px-4 py-1.5 text-left text-xs font-medium text-gray-500">Centro de custo</th>
+                            <th className="px-4 py-1.5 text-left text-xs font-medium text-gray-500">Obra</th>
+                            <th className="px-4 py-1.5 text-right text-xs font-medium text-gray-500">Previsto</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 bg-white">
+                        <tbody className="divide-y divide-gray-100/60">
                           {pessoal.porCentroCusto.slice(0, 5).map((item) => (
-                            <tr key={item.centroCustoId} className="hover:bg-gray-50/70">
-                              <td className="px-4 py-3 font-medium text-gray-900">{item.centroCustoNome}</td>
-                              <td className="px-4 py-3 text-gray-700">{item.obraNome}</td>
-                              <td className="px-4 py-3 text-right text-gray-700">
+                            <tr key={item.centroCustoId} className="hover:bg-gray-50/50">
+                              <td className="px-4 py-1.5 font-medium text-gray-900">{item.centroCustoNome}</td>
+                              <td className="px-4 py-1.5 text-gray-700">{item.obraNome}</td>
+                              <td className="px-4 py-1.5 text-right text-gray-700">
                                 {formatCurrency(item.valorPrevisto)}
                               </td>
                             </tr>
@@ -276,15 +308,15 @@ export function FinanceiroListPage() {
                 }
               />
             ) : (
-              <section className="space-y-4">
+              <section className="space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Títulos financeiros</h2>
-                    <p className="text-sm text-gray-500">
+                    <h2 className="text-sm font-medium text-gray-900">Títulos financeiros</h2>
+                    <p className="text-xs text-gray-500">
                       Leitura consolidada dos títulos com vínculo de obra, competência, origem e status.
                     </p>
                   </div>
-                  <Link to="/financeiro/fluxo" className="text-sm font-medium text-jogab-600 hover:text-jogab-700">
+                  <Link to="/financeiro/fluxo" className="text-xs font-medium text-jogab-600 hover:text-jogab-700">
                     Ver fluxo projetado
                   </Link>
                 </div>

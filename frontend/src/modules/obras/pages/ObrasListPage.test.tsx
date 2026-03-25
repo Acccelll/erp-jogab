@@ -26,22 +26,12 @@ vi.mock('../hooks/useObraFilters', () => ({
   }),
 }));
 
-vi.mock('../components/ObraKpiBar', () => ({
-  ObraKpiBar: ({ kpis }: { kpis: { totalObras: number } }) => <div data-testid="kpi-bar">{kpis.totalObras} obras</div>,
-}));
-
-vi.mock('../components/ObraFilters', () => ({
-  ObraFilters: () => <div data-testid="filters" />,
-}));
-
-vi.mock('../components/ObraCard', () => ({
-  ObraCard: ({ obra }: { obra: { id: string; nome: string } }) => (
-    <div data-testid={`card-${obra.id}`}>{obra.nome}</div>
-  ),
-}));
-
 vi.mock('../components/ObraMutationDrawerForm', () => ({
   ObraMutationDrawerForm: () => <div data-testid="mutation-drawer" />,
+}));
+
+vi.mock('../components/ObraStatusBadge', () => ({
+  ObraStatusBadge: ({ status }: { status: string }) => <span>{status}</span>,
 }));
 
 import { useObras } from '../hooks/useObras';
@@ -68,15 +58,16 @@ describe('ObrasListPage', () => {
     vi.clearAllMocks();
   });
 
-  it('renders loading state', () => {
+  it('renders loading state with skeletons', () => {
     mockUseObras.mockReturnValue({
       data: undefined,
       isLoading: true,
       isError: false,
     } as ReturnType<typeof useObras>);
 
-    renderWithRouter();
-    expect(screen.getByText('Carregando obras...')).toBeInTheDocument();
+    const { container } = renderWithRouter();
+    const skeletons = container.querySelectorAll('.animate-pulse');
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it('renders error state', () => {
@@ -90,7 +81,7 @@ describe('ObrasListPage', () => {
     expect(screen.getByText('Erro ao carregar obras')).toBeInTheDocument();
   });
 
-  it('renders data state with KPIs and cards', () => {
+  it('renders data state with table and quick filter chips', () => {
     mockUseObras.mockReturnValue({
       data: {
         data: [
@@ -128,8 +119,8 @@ describe('ObrasListPage', () => {
     } as ReturnType<typeof useObras>);
 
     renderWithRouter();
-    expect(screen.getByTestId('kpi-bar')).toHaveTextContent('1 obras');
-    expect(screen.getByTestId('card-obra-1')).toHaveTextContent('Obra Alfa');
+    expect(screen.getByText('Obra Alfa')).toBeInTheDocument();
+    expect(screen.getByText('Em andamento')).toBeInTheDocument();
   });
 
   it('renders empty state', () => {

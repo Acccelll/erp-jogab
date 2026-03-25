@@ -25,10 +25,6 @@ vi.mock('@/modules/compras/hooks', () => ({
 }));
 
 vi.mock('../components', () => ({
-  ComprasFilters: () => <div data-testid="compras-filters" />,
-  ComprasKpiBar: ({ kpis }: { kpis: { totalSolicitacoes: number } }) => (
-    <div data-testid="compras-kpi-bar">{kpis.totalSolicitacoes} solicitações</div>
-  ),
   ComprasResumoCard: ({ card }: { card: { id: string; titulo: string } }) => (
     <div data-testid={`resumo-card-${card.id}`}>{card.titulo}</div>
   ),
@@ -76,8 +72,9 @@ describe('ComprasListPage', () => {
       refetch: refetchMock,
     } as ReturnType<typeof useCompras>);
 
-    renderWithRouter();
-    expect(screen.getByText('Carregando visão de compras...')).toBeInTheDocument();
+    const { container } = renderWithRouter();
+    const skeletons = container.querySelectorAll('.animate-pulse');
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it('renders error state with retry button', async () => {
@@ -101,10 +98,61 @@ describe('ComprasListPage', () => {
   it('renders data state with KPIs and tables', () => {
     mockUseCompras.mockReturnValue({
       data: {
-        solicitacoes: [{ id: 'sol-1', codigo: 'SOL-001', titulo: 'Material', descricao: '', solicitanteNome: 'Ana', obraId: '1', obraNome: 'Obra 1', centroCustoNome: 'CC1', competencia: '2026-03', categoria: 'material_obra' as const, prioridade: 'media' as const, status: 'pendente_aprovacao' as const, valorEstimado: 5000, itens: 2, createdAt: '2026-03-01', prazoNecessidade: '2026-03-15', integracaoFiscal: false, integracaoFinanceiro: false }],
+        solicitacoes: [
+          {
+            id: 'sol-1',
+            codigo: 'SOL-001',
+            titulo: 'Material',
+            descricao: '',
+            solicitanteNome: 'Ana',
+            obraId: '1',
+            obraNome: 'Obra 1',
+            centroCustoNome: 'CC1',
+            competencia: '2026-03',
+            categoria: 'material_obra' as const,
+            prioridade: 'media' as const,
+            status: 'pendente_aprovacao' as const,
+            valorEstimado: 5000,
+            itens: 2,
+            createdAt: '2026-03-01',
+            prazoNecessidade: '2026-03-15',
+            integracaoFiscal: false,
+            integracaoFinanceiro: false,
+          },
+        ],
         cotacoes: [],
-        pedidos: [{ id: 'ped-1', codigo: 'PED-001', solicitacaoId: 'sol-1', cotacaoId: null, fornecedorId: 'f1', fornecedorNome: 'Fornecedor A', obraId: '1', obraNome: 'Obra 1', centroCustoNome: 'CC1', competencia: '2026-03', categoria: 'material_obra' as const, prioridade: 'media' as const, status: 'pedido_emitido' as const, valorPedido: 4500, valorComprometidoFinanceiro: 4500, previsaoEntrega: '2026-03-20', fiscalStatus: 'pendente', financeiroStatus: 'pendente', itens: 2, createdAt: '2026-03-05' }],
-        kpis: { totalSolicitacoes: 1, solicitacoesPendentes: 1, cotacoesEmAberto: 0, pedidosEmitidos: 1, valorComprometido: 4500, valorAguardandoFiscal: 4500 },
+        pedidos: [
+          {
+            id: 'ped-1',
+            codigo: 'PED-001',
+            solicitacaoId: 'sol-1',
+            cotacaoId: null,
+            fornecedorId: 'f1',
+            fornecedorNome: 'Fornecedor A',
+            obraId: '1',
+            obraNome: 'Obra 1',
+            centroCustoNome: 'CC1',
+            competencia: '2026-03',
+            categoria: 'material_obra' as const,
+            prioridade: 'media' as const,
+            status: 'pedido_emitido' as const,
+            valorPedido: 4500,
+            valorComprometidoFinanceiro: 4500,
+            previsaoEntrega: '2026-03-20',
+            fiscalStatus: 'pendente',
+            financeiroStatus: 'pendente',
+            itens: 2,
+            createdAt: '2026-03-05',
+          },
+        ],
+        kpis: {
+          totalSolicitacoes: 1,
+          solicitacoesPendentes: 1,
+          cotacoesEmAberto: 0,
+          pedidosEmitidos: 1,
+          valorComprometido: 4500,
+          valorAguardandoFiscal: 4500,
+        },
         resumoCards: [{ id: 'card-1', titulo: 'Resumo Compras', descricao: 'Desc', itens: [] }],
         statusResumo: [],
       },
@@ -115,8 +163,6 @@ describe('ComprasListPage', () => {
     } as ReturnType<typeof useCompras>);
 
     renderWithRouter();
-    expect(screen.getByText('Compras')).toBeInTheDocument();
-    expect(screen.getByTestId('compras-kpi-bar')).toHaveTextContent('1 solicitações');
     expect(screen.getByTestId('solicitacoes-table')).toHaveTextContent('1 solicitações');
     expect(screen.getByTestId('pedidos-table')).toHaveTextContent('1 pedidos');
   });
@@ -127,7 +173,14 @@ describe('ComprasListPage', () => {
         solicitacoes: [],
         cotacoes: [],
         pedidos: [],
-        kpis: { totalSolicitacoes: 0, solicitacoesPendentes: 0, cotacoesEmAberto: 0, pedidosEmitidos: 0, valorComprometido: 0, valorAguardandoFiscal: 0 },
+        kpis: {
+          totalSolicitacoes: 0,
+          solicitacoesPendentes: 0,
+          cotacoesEmAberto: 0,
+          pedidosEmitidos: 0,
+          valorComprometido: 0,
+          valorAguardandoFiscal: 0,
+        },
         resumoCards: [],
         statusResumo: [],
       },
