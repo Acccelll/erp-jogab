@@ -1,5 +1,5 @@
 /**
- * Configuração de integração — Fase 6
+ * Configuração de integração — Fase 7
  * Centraliza controle de feature flags, readiness por módulo e configuração de ambiente.
  */
 
@@ -149,61 +149,68 @@ export const MODULE_READINESS: ModuleReadiness[] = [
         path: '/rh/funcionarios',
         method: 'POST',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Criar funcionário',
       },
       {
         path: '/rh/funcionarios/:id',
         method: 'PUT',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Atualizar funcionário',
       },
     ],
-    notes: 'Leitura integrada na Fase 6 (GET list e GET detail). Mutações ainda com fallback mock.',
+    notes: 'Integrado completo na Fase 7. GET list/detail (Fase 6) + POST/PUT mutações (Fase 7).',
   },
   {
     module: 'horas-extras',
     status: 'ready',
-    integrationStatus: 'ready',
+    integrationStatus: 'integrated',
     endpoints: [
       {
         path: '/horas-extras',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Listagem de horas extras',
       },
       {
         path: '/horas-extras/:id',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Detalhe da hora extra',
       },
       {
         path: '/horas-extras/dashboard',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Dashboard de horas extras',
       },
       {
         path: '/horas-extras/:id/aprovar',
         method: 'POST',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Aprovar hora extra',
       },
       {
         path: '/horas-extras/fechamento',
         method: 'POST',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Fechar competência',
       },
+      {
+        path: '/horas-extras/aprovacao',
+        method: 'GET',
+        readiness: 'ready',
+        integrated: true,
+        description: 'Dados de aprovação',
+      },
     ],
-    notes: 'Fluxo de aprovação e fechamento com normalizadores completos.',
+    notes: 'Integrado completo na Fase 7. Fluxo principal: listagem, detalhe, dashboard, aprovação e fechamento.',
   },
   {
     module: 'fopag',

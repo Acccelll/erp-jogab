@@ -96,10 +96,24 @@
 - Documentação completa (docs/12-integracao-fase6.md)
 - Total: 514 testes em 44 arquivos
 
+## Integração RH mutações + Horas Extras (Fase 7) ✅
+- RH completo: mutações (POST create, PUT update) integradas via `withApiFallback`
+- RH agora com CRUD completo (GET list, GET detail, POST create, PUT update)
+- Horas Extras integrado: fluxo completo via `withApiFallback`
+  - Listagem, detalhe, dashboard (GET)
+  - Aprovação de lançamento (POST)
+  - Fechamento de competência (POST)
+  - Dados de aprovação (GET)
+- Normalizers validados: `normalizeHorasExtrasDashboardData`, `normalizeHorasExtrasAprovacaoData`
+- Testes adicionados: RH mutações (8), HE service (20), HE aprovação (9), integration (3)
+- Registry atualizado: 6 módulos integrados (auth, context, dashboard, obras, rh, horas-extras)
+- Documentação completa (docs/13-integracao-fase7.md)
+- Total: 553 testes em 46 arquivos
+
 ## Próximos passos
-- Completar integração de RH com mutações (POST/PUT)
-- Conectar Horas Extras como próximo módulo integrado
-- Seguir fluxo crítico: HE → FOPAG → Financeiro → Compras
+- Integrar FOPAG como próximo módulo (recebe dados de Horas Extras fechadas)
+- Conectar Financeiro (fluxo FOPAG → Financeiro)
+- Seguir fluxo crítico: FOPAG → Financeiro → Compras
 - Desabilitar fallback gradualmente por módulo (`VITE_API_FALLBACK=false`)
 - Code-splitting com React.lazy para reduzir bundle size
 - Testes de integração end-to-end com API real
@@ -110,15 +124,15 @@
 **Resultado dos comandos de validação:**
 - `npm run build`: 0 erros TypeScript, build completo com sucesso
 - `npm run lint`: 0 erros
-- `npm run test`: 44 arquivos de teste, 514 testes passando
+- `npm run test`: 46 arquivos de teste, 553 testes passando
 - `npm audit`: 0 vulnerabilidades
 
 **Testes encontrados vs declarados:**
-- Arquivos de teste no repositório: 44 (17 `.test.ts` + 27 `.test.tsx`)
-- Testes executados pelo Vitest: 514 em 44 arquivos — todos passando
+- Arquivos de teste no repositório: 46 (19 `.test.ts` + 27 `.test.tsx`)
+- Testes executados pelo Vitest: 553 em 46 arquivos — todos passando
 - Padrão de include: `src/**/*.test.{ts,tsx}` — correto e abrangente
 
-**Endpoints efetivamente integrados (Fase 5 + 6):**
+**Endpoints efetivamente integrados (Fase 5 + 6 + 7):**
 - `POST /auth/login` — login real com fallback mock
 - `GET /auth/me` — restauração de sessão com fallback mock
 - `POST /auth/logout` — logout com fallback mock
@@ -131,11 +145,18 @@
 - `PUT /obras/:id` — atualização de obra com fallback mock
 - `GET /rh/funcionarios` — listagem de funcionários com fallback mock
 - `GET /rh/funcionarios/:id` — detalhe do funcionário com fallback mock
+- `POST /rh/funcionarios` — criação de funcionário com fallback mock
+- `PUT /rh/funcionarios/:id` — atualização de funcionário com fallback mock
+- `GET /horas-extras` — listagem de horas extras com fallback mock
+- `GET /horas-extras/:id` — detalhe da hora extra com fallback mock
+- `GET /horas-extras/dashboard` — dashboard de horas extras com fallback mock
+- `POST /horas-extras/:id/aprovar` — aprovação de hora extra com fallback mock
+- `POST /horas-extras/fechamento` — fechamento de competência com fallback mock
+- `GET /horas-extras/aprovacao` — dados de aprovação com fallback mock
 
 **Módulos que continuam apenas preparados:**
-- Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback)
+- FOPAG, Compras, Financeiro, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback)
 - Estoque, Medições, Documentos, Admin (parcialmente prontos)
-- RH mutações (POST/PUT) — prontas mas não integradas nesta fase
 
 **Rotas implementadas:**
 - `/horas-extras/lancamentos` — lista de lançamentos
