@@ -171,10 +171,10 @@ export function FuncionariosListPage() {
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="border-b border-border-default bg-surface-muted">
-                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Nome</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Cargo</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Obra</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Status</th>
+                  <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Nome</th>
+                  <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Cargo</th>
+                  <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Obra</th>
+                  <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-light">

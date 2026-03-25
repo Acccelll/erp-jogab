@@ -39,14 +39,14 @@ export function RelatoriosFilters({
         value={search}
         onChange={(event) => onSearchChange(event.target.value)}
         placeholder="Buscar por relatório, categoria, descrição ou origem"
-        className="h-10 min-w-[260px] flex-1 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
+        className="h-10 min-w-[260px] flex-1 rounded-md border border-border-default px-3 text-sm outline-none transition-colors focus:border-brand-primary"
       />
 
       <select
         value={categoria ?? ''}
         onChange={(event) => onCategoriaChange((event.target.value || undefined) as RelatorioCategoria | undefined)}
         disabled={lockCategoria}
-        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500 disabled:bg-surface-soft disabled:text-text-muted"
+        className="h-10 rounded-md border border-border-default px-3 text-sm outline-none transition-colors focus:border-brand-primary disabled:bg-surface-soft disabled:text-text-muted"
       >
         <option value="">Todas as categorias</option>
         {Object.entries(RELATORIO_CATEGORIA_LABELS).map(([value, label]) => (
@@ -61,7 +61,7 @@ export function RelatoriosFilters({
         onChange={(event) =>
           onDisponibilidadeChange((event.target.value || undefined) as RelatorioDisponibilidade | undefined)
         }
-        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
+        className="h-10 rounded-md border border-border-default px-3 text-sm outline-none transition-colors focus:border-brand-primary"
       >
         <option value="">Toda disponibilidade</option>
         {Object.entries(RELATORIO_DISPONIBILIDADE_LABELS).map(([value, label]) => (
@@ -74,7 +74,7 @@ export function RelatoriosFilters({
       <select
         value={formato ?? ''}
         onChange={(event) => onFormatoChange((event.target.value || undefined) as RelatorioSaida | undefined)}
-        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
+        className="h-10 rounded-md border border-border-default px-3 text-sm outline-none transition-colors focus:border-brand-primary"
       >
         <option value="">Todos os formatos</option>
         {Object.entries(RELATORIO_FORMATO_LABELS).map(([value, label]) => (
@@ -88,7 +88,7 @@ export function RelatoriosFilters({
         value={competencia ?? ''}
         onChange={(event) => onCompetenciaChange(event.target.value || undefined)}
         placeholder="Competência (YYYY-MM)"
-        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
+        className="h-10 rounded-md border border-border-default px-3 text-sm outline-none transition-colors focus:border-brand-primary"
       />
     </FilterBar>
   );

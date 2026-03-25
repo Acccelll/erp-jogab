@@ -62,9 +62,9 @@ export function DashboardPage() {
         <button
           type="button"
           onClick={() => void refetch()}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm font-medium text-text-body hover:bg-surface-soft"
+          className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs text-text-muted hover:bg-surface-soft hover:text-text-body"
         >
-          <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} />
+          <RefreshCw size={13} className={isFetching ? 'animate-spin' : ''} />
           Atualizar
         </button>
       </div>
@@ -157,28 +157,19 @@ export function DashboardPage() {
           </div>
 
           {/* ZONA 3 — Section groups */}
-          <DashboardSectionGroup
-            title="Resumo de Obras"
-            description="Consolidação com foco em avanço, custo e leitura do workspace central."
-          >
+          <DashboardSectionGroup title="Obras">
             {safe.obras.map((section) => (
               <DashboardSectionCard key={section.id} section={section} />
             ))}
           </DashboardSectionGroup>
 
-          <DashboardSectionGroup
-            title="Resumo de RH"
-            description="Alocação, provisões e pendências trabalhistas que impactam as obras."
-          >
+          <DashboardSectionGroup title="RH">
             {safe.rh.map((section) => (
               <DashboardSectionCard key={section.id} section={section} />
             ))}
           </DashboardSectionGroup>
 
-          <DashboardSectionGroup
-            title="Resumo Financeiro"
-            description="Indicadores executivos de desembolso, FOPAG e previsto x realizado."
-          >
+          <DashboardSectionGroup title="Financeiro">
             {safe.financeiro.map((section) => (
               <DashboardSectionCard key={section.id} section={section} />
             ))}

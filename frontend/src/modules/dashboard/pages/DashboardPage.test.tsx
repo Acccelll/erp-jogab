@@ -147,9 +147,9 @@ describe('DashboardPage', () => {
     expect(screen.getByText('Custo pessoal previsto')).toBeInTheDocument();
     expect(screen.getByText('Obras impactadas')).toBeInTheDocument();
     // Sections
-    expect(screen.getByText('Resumo de Obras')).toBeInTheDocument();
-    expect(screen.getByText('Resumo de RH')).toBeInTheDocument();
-    expect(screen.getByText('Resumo Financeiro')).toBeInTheDocument();
+    expect(screen.getByText('Obras')).toBeInTheDocument();
+    expect(screen.getByText('RH')).toBeInTheDocument();
+    expect(screen.getByText('Financeiro')).toBeInTheDocument();
   });
 
   it('renders without crashing when API returns partial payload', () => {
@@ -179,9 +179,9 @@ describe('DashboardPage', () => {
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('Custo pessoal previsto')).toBeInTheDocument();
     // Section groups should still render (with empty content)
-    expect(screen.getByText('Resumo de Obras')).toBeInTheDocument();
-    expect(screen.getByText('Resumo de RH')).toBeInTheDocument();
-    expect(screen.getByText('Resumo Financeiro')).toBeInTheDocument();
+    expect(screen.getByText('Obras')).toBeInTheDocument();
+    expect(screen.getByText('RH')).toBeInTheDocument();
+    expect(screen.getByText('Financeiro')).toBeInTheDocument();
   });
 
   it('renders refresh button and triggers refetch', async () => {

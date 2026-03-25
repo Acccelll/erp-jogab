@@ -33,15 +33,13 @@ export function AdminFilters({
         value={search}
         onChange={(event) => onSearchChange(event.target.value)}
         placeholder="Buscar por usuário, perfil, permissão, parâmetro, log ou integração"
-        className="h-10 min-w-[260px] flex-1 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
+        className="h-10 min-w-[260px] flex-1 rounded-md border border-border-default px-3 text-sm outline-none transition-colors focus:border-brand-primary"
       />
 
       <select
         value={categoria ?? ''}
-        onChange={(event) =>
-          onCategoriaChange((event.target.value || undefined) as AdminCategoria | undefined)
-        }
-        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
+        onChange={(event) => onCategoriaChange((event.target.value || undefined) as AdminCategoria | undefined)}
+        className="h-10 rounded-md border border-border-default px-3 text-sm outline-none transition-colors focus:border-brand-primary"
       >
         <option value="">Todas as categorias</option>
         {Object.entries(ADMIN_CATEGORIA_LABELS).map(([value, label]) => (
@@ -53,10 +51,8 @@ export function AdminFilters({
 
       <select
         value={status ?? ''}
-        onChange={(event) =>
-          onStatusChange((event.target.value || undefined) as AdminStatus | undefined)
-        }
-        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
+        onChange={(event) => onStatusChange((event.target.value || undefined) as AdminStatus | undefined)}
+        className="h-10 rounded-md border border-border-default px-3 text-sm outline-none transition-colors focus:border-brand-primary"
       >
         <option value="">Todos os status</option>
         {Object.entries(ADMIN_STATUS_LABELS).map(([value, label]) => (
@@ -70,7 +66,7 @@ export function AdminFilters({
         value={competencia ?? ''}
         onChange={(event) => onCompetenciaChange(event.target.value || undefined)}
         placeholder="Competência (YYYY-MM)"
-        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
+        className="h-10 rounded-md border border-border-default px-3 text-sm outline-none transition-colors focus:border-brand-primary"
       />
     </FilterBar>
   );

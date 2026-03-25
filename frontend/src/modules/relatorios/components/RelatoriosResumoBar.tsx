@@ -14,14 +14,11 @@ export function RelatoriosResumoBar({ resumo }: RelatoriosResumoBarProps) {
   ];
 
   return (
-    <section className="grid gap-3 border-b border-border-light bg-surface-secondary px-6 py-4 md:grid-cols-2 xl:grid-cols-5">
+    <section className="grid gap-3 border-b border-border-light bg-surface-secondary px-6 py-3 md:grid-cols-2 xl:grid-cols-5">
       {items.map((item) => (
-        <div
-          key={item.label}
-          className="rounded-xl border border-border-default bg-white px-4 py-3 shadow-sm shadow-gray-100/60"
-        >
+        <div key={item.label} className="rounded-lg border border-border-default bg-surface px-4 py-2.5 shadow-card">
           <p className="text-xs uppercase tracking-wide text-text-subtle">{item.label}</p>
-          <p className="mt-1 text-lg font-semibold text-text-strong">{item.value}</p>
+          <p className="mt-0.5 text-lg font-semibold text-text-strong">{item.value}</p>
         </div>
       ))}
     </section>
