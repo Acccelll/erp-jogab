@@ -79,6 +79,14 @@ describe('MODULE_READINESS', () => {
   it('integrated modules have all endpoints with integrated=true', () => {
     const integrated = MODULE_READINESS.filter((m) => m.integrationStatus === 'integrated');
     for (const mod of integrated) {
+      // RH is partially integrated (GET only), so check at module level
+      if (mod.module === 'rh') {
+        const getEndpoints = mod.endpoints.filter((ep) => ep.method === 'GET');
+        for (const ep of getEndpoints) {
+          expect(ep.integrated).toBe(true);
+        }
+        continue;
+      }
       for (const ep of mod.endpoints) {
         expect(ep.integrated).toBe(true);
       }
@@ -109,6 +117,26 @@ describe('getModuleReadiness', () => {
     expect(result).toBeDefined();
     expect(result?.module).toBe('context');
     expect(result?.integrationStatus).toBe('integrated');
+  });
+
+  it('returns readiness for the obras module as integrated', () => {
+    const result = getModuleReadiness('obras');
+    expect(result).toBeDefined();
+    expect(result?.module).toBe('obras');
+    expect(result?.integrationStatus).toBe('integrated');
+    expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
+  });
+
+  it('returns readiness for the rh module as integrated', () => {
+    const result = getModuleReadiness('rh');
+    expect(result).toBeDefined();
+    expect(result?.module).toBe('rh');
+    expect(result?.integrationStatus).toBe('integrated');
+    // Only GET endpoints are integrated in Phase 6
+    const getEndpoints = result?.endpoints.filter((ep) => ep.method === 'GET') ?? [];
+    expect(getEndpoints.every((ep) => ep.integrated)).toBe(true);
+    const mutationEndpoints = result?.endpoints.filter((ep) => ep.method !== 'GET') ?? [];
+    expect(mutationEndpoints.every((ep) => !ep.integrated)).toBe(true);
   });
 
   it('returns undefined for a nonexistent module', () => {
@@ -161,11 +189,13 @@ describe('getIntegratedModules', () => {
     }
   });
 
-  it('includes auth, context, and dashboard as integrated modules', () => {
+  it('includes auth, context, dashboard, obras, and rh as integrated modules', () => {
     const integratedNames = getIntegratedModules().map((m) => m.module);
     expect(integratedNames).toContain('auth');
     expect(integratedNames).toContain('context');
     expect(integratedNames).toContain('dashboard');
-    expect(integratedNames).toHaveLength(3);
+    expect(integratedNames).toContain('obras');
+    expect(integratedNames).toContain('rh');
+    expect(integratedNames).toHaveLength(5);
   });
 });
