@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Plus, FileCheck2, CalendarRange, Clock3, Search, SlidersHorizontal } from 'lucide-react';
 import { EmptyState, MainContent, QuickFilterChips } from '@/shared/components';
 import { useHorasExtras, useHorasExtrasFilters } from '../hooks';
-import { HorasExtrasResumoCard, HorasExtrasSectionHeader, HorasExtrasTable } from '../components';
+import { HorasExtrasTable } from '../components';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
 export function HorasExtrasDashboardPage() {
@@ -121,44 +121,32 @@ export function HorasExtrasDashboardPage() {
 
         {!isLoading && !isError && data && (
           <>
-            <section className="grid gap-4 xl:grid-cols-3">
-              {data.resumoCards.map((card) => (
-                <HorasExtrasResumoCard key={card.id} card={card} />
-              ))}
-            </section>
-
             {data.fechamentoAtual && (
-              <section className="rounded-lg border border-jogab-100 bg-jogab-50/70 p-4">
-                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-jogab-600">
-                      <Clock3 size={16} />
-                    </div>
-                    <div>
-                      <h2 className="text-sm font-medium text-gray-900">Fechamento da competência em andamento</h2>
-                      <p className="text-xs text-gray-600">
-                        Há {data.fechamentoAtual.pendentesAprovacao} pendência(s) antes do envio para FOPAG.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Link
-                      to="/horas-extras/aprovacao"
-                      className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                    >
-                      <FileCheck2 size={14} />
-                      Aprovação
-                    </Link>
-                    <Link
-                      to="/horas-extras/fechamento"
-                      className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1 text-sm font-medium text-white hover:bg-jogab-600"
-                    >
-                      <CalendarRange size={14} />
-                      Ver fechamento
-                    </Link>
-                  </div>
+              <div className="flex items-center justify-between gap-3 rounded-md border border-jogab-100 bg-jogab-50/70 px-3 py-2">
+                <div className="flex items-center gap-2.5">
+                  <Clock3 size={14} className="shrink-0 text-jogab-600" />
+                  <p className="text-xs text-gray-600">
+                    Fechamento em andamento — {data.fechamentoAtual.pendentesAprovacao} pendência(s) antes do envio para
+                    FOPAG.
+                  </p>
                 </div>
-              </section>
+                <div className="flex gap-2">
+                  <Link
+                    to="/horas-extras/aprovacao"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    <FileCheck2 size={12} />
+                    Aprovação
+                  </Link>
+                  <Link
+                    to="/horas-extras/fechamento"
+                    className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-2.5 py-1 text-xs font-medium text-white hover:bg-jogab-600"
+                  >
+                    <CalendarRange size={12} />
+                    Fechamento
+                  </Link>
+                </div>
+              </div>
             )}
 
             {data.data.length === 0 ? (
@@ -183,22 +171,23 @@ export function HorasExtrasDashboardPage() {
               />
             ) : (
               <section className="space-y-3">
-                <div>
-                  <h2 className="text-sm font-medium text-gray-900">Lançamentos</h2>
-                  <p className="text-xs text-gray-500">
-                    Lista dos eventos operacionais que alimentarão aprovação, fechamento e FOPAG.
-                  </p>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-medium text-gray-900">Lançamentos</h2>
+                    <p className="text-xs text-gray-500">
+                      Eventos operacionais que alimentarão aprovação, fechamento e FOPAG.
+                    </p>
+                  </div>
+                  <Link
+                    to="/horas-extras/aprovacao"
+                    className="text-xs font-medium text-jogab-600 hover:text-jogab-700"
+                  >
+                    Abrir aprovação
+                  </Link>
                 </div>
                 <HorasExtrasTable items={data.data} />
               </section>
             )}
-
-            <HorasExtrasSectionHeader
-              title="Aprovação e histórico"
-              description="Acompanhe a fila de aprovação e a trilha operacional que conecta RH, Obra, Horas Extras e FOPAG."
-              actionLabel="Abrir aprovação"
-              actionHref="/horas-extras/aprovacao"
-            />
           </>
         )}
       </MainContent>
