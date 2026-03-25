@@ -26,7 +26,8 @@ describe('getIntegrationConfig', () => {
 // MODULE_READINESS registry
 // ---------------------------------------------------------------------------
 describe('MODULE_READINESS', () => {
-  it('contains all 16 official modules (including auth and context)', () => {
+  it('contains all 15 official modules (including auth and context)', () => {
+    expect(MODULE_READINESS).toHaveLength(15);
     const moduleNames = MODULE_READINESS.map((m) => m.module);
     expect(moduleNames).toContain('auth');
     expect(moduleNames).toContain('context');

@@ -112,7 +112,7 @@ describe('normalizeContextOptions', () => {
     expect(result).toEqual(input);
   });
 
-  it('ignores non-array values for arrays', () => {
+  it('returns empty arrays when given non-array values', () => {
     const result = normalizeContextOptions({
       empresas: 'not-an-array' as unknown as [],
       filiais: 42 as unknown as [],
