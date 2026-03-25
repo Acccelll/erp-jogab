@@ -5,7 +5,7 @@
  */
 import { useState, useMemo } from 'react';
 import { Plus, Search, SlidersHorizontal } from 'lucide-react';
-import { MainContent, EmptyState, QuickFilterChips, TableCellStack } from '@/shared/components';
+import { MainContent, EmptyState, QuickFilterChips, TableCellStack, PageHeader } from '@/shared/components';
 import { useDrawerStore } from '@/shared/stores';
 import { ObraMutationDrawerForm } from '../components/ObraMutationDrawerForm';
 import { ObraStatusBadge } from '../components/ObraStatusBadge';
@@ -44,41 +44,49 @@ export function ObrasListPage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col">
-      {/* Filter bar */}
-      <div className="flex items-center justify-between border-b border-border-default/60 px-4 py-2.5">
+    <div className="flex flex-1 flex-col bg-surface-secondary">
+      {/* Operational Header */}
+      <PageHeader
+        title="Obras"
+        variant="operational"
+        actions={
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface-muted px-2.5 py-1 text-sm focus-within:border-brand-primary focus-within:bg-surface transition-all">
+              <Search size={14} className="text-text-subtle" />
+              <input
+                type="text"
+                placeholder="Buscar..."
+                value={filters.search ?? ''}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-text-subtle"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
+            >
+              <SlidersHorizontal size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={openCreateDrawer}
+              className="flex items-center gap-1.5 rounded-md bg-brand-primary px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-brand-primary-hover active:transform active:scale-95 transition-all"
+            >
+              <Plus size={14} />
+              Nova Obra
+            </button>
+          </div>
+        }
+      />
+
+      {/* Primary Context Bar */}
+      <div className="flex items-center border-b border-border-default bg-surface px-6 py-2">
         <QuickFilterChips
           chips={statusChips}
           value={filters.status ?? null}
           onChange={(v) => setStatus(v as typeof filters.status)}
         />
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-white px-2.5 py-1 text-sm">
-            <Search size={14} className="text-text-subtle" />
-            <input
-              type="text"
-              placeholder="Buscar..."
-              value={filters.search ?? ''}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-text-subtle"
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
-          >
-            <SlidersHorizontal size={16} />
-          </button>
-          <button
-            type="button"
-            onClick={openCreateDrawer}
-            className="flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
-          >
-            <Plus size={14} />
-            Nova Obra
-          </button>
-        </div>
       </div>
 
       {/* Advanced filters */}

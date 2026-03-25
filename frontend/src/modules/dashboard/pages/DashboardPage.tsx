@@ -1,7 +1,7 @@
-import { TrendingUp, RefreshCw, AlertTriangle } from 'lucide-react';
+import { TrendingUp, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { MainContent, EmptyState } from '@/shared/components';
+import { MainContent, EmptyState, PageHeader } from '@/shared/components';
 import { formatCurrency, formatCompetencia } from '@/shared/lib/utils';
 import { useContextStore } from '@/shared/stores';
 import { DashboardSectionCard, DashboardSectionGroup } from '../components';
@@ -48,25 +48,25 @@ export function DashboardPage() {
   const competenciaLabel = competencia ? formatCompetencia(competencia) : 'competência atual';
 
   const mainKpi = safe.kpis[0];
-  const secondaryKpis = safe.kpis.slice(1, 5);
+  const secondaryKpis = safe.kpis.slice(1, 4);
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Page header following the analytical variant pattern */}
-      <div className="flex items-end justify-between border-b border-border-default px-6 py-6">
-        <div>
-          <h1 className="text-2xl font-bold text-text-strong font-brand">Dashboard</h1>
-          <p className="mt-1 text-base text-text-muted">{competenciaLabel}</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => void refetch()}
-          className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs text-text-muted hover:bg-surface-soft hover:text-text-body"
-        >
-          <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} />
-          Atualizar dados
-        </button>
-      </div>
+      <PageHeader
+        title="Dashboard"
+        subtitle={competenciaLabel}
+        variant="analytical"
+        actions={
+          <button
+            type="button"
+            onClick={() => void refetch()}
+            className="inline-flex items-center gap-2 rounded-full border border-border-default bg-surface px-4 py-2 text-xs font-semibold text-text-body shadow-sm transition-all hover:bg-surface-soft hover:shadow-md"
+          >
+            <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} />
+            Atualizar indicadores
+          </button>
+        }
+      />
 
       {isLoading && (
         <div className="space-y-3 p-4">
@@ -112,31 +112,40 @@ export function DashboardPage() {
       )}
 
       {!isLoading && !isError && data && (
-        <MainContent className="space-y-6 px-6">
+        <MainContent className="space-y-8 px-8 py-8">
           {/* ZONA 1 — KPI principal + secundários inline */}
-          <div className="flex flex-wrap items-end gap-x-12 gap-y-4">
+          <div className="flex flex-wrap items-end gap-x-16 gap-y-6">
             {mainKpi && (
-              <div>
-                <span className="text-[11px] font-medium uppercase tracking-widest text-text-subtle">
+              <div className="group transition-all duration-300">
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted/40">
                   {mainKpi.label}
                 </span>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold tabular-nums text-text-strong">{formatKpiValue(mainKpi)}</span>
+                <div className="mt-1 flex items-baseline gap-3">
+                  <span className="text-5xl font-black tabular-nums tracking-tighter text-text-strong">
+                    {formatKpiValue(mainKpi)}
+                  </span>
                   {mainKpi.subtitle && (
-                    <span className="flex items-center gap-1 text-xs text-success">
-                      <TrendingUp className="h-3 w-3" />
+                    <span className="flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-xs font-bold text-success">
+                      <TrendingUp className="h-3.5 w-3.5" />
                       {mainKpi.subtitle}
                     </span>
                   )}
                 </div>
               </div>
             )}
-            {secondaryKpis.map((kpi) => (
-              <div key={kpi.label} className="min-w-0">
-                <div className="text-[11px] text-text-subtle">{kpi.label}</div>
-                <div className="text-lg font-medium tabular-nums text-text-strong">{formatKpiValue(kpi)}</div>
-              </div>
-            ))}
+            <div className="h-12 w-px bg-border-default/30" />
+            <div className="flex flex-wrap items-end gap-x-12">
+              {secondaryKpis.map((kpi) => (
+                <div key={kpi.label} className="min-w-0">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-text-muted/50">
+                    {kpi.label}
+                  </div>
+                  <div className="mt-0.5 text-xl font-bold tabular-nums text-text-strong/90">
+                    {formatKpiValue(kpi)}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* ZONA 2 — Alertas (ações urgentes primeiro) */}
@@ -155,9 +164,9 @@ export function DashboardPage() {
                     {alerta.actionTo && (
                       <Link
                         to={alerta.actionTo}
-                        className="shrink-0 text-xs font-medium text-accent-600 hover:text-accent-700"
+                      className="shrink-0 flex items-center gap-1 rounded-full bg-accent-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-600 hover:bg-accent-100 transition-colors"
                       >
-                        Resolver →
+                      Ação <ArrowRight size={10} />
                       </Link>
                     )}
                   </div>

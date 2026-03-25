@@ -32,29 +32,31 @@ export function ObraWorkspaceLayout() {
   }, [obraId, contextObraId, setObra]);
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
-      {/* Obra header + tabs — unified compact strip */}
-      <div className="border-b border-border-default bg-surface px-4 pt-1 pb-0">
+    <div className="flex flex-1 flex-col overflow-hidden bg-surface-secondary">
+      {/* Obra header + tabs — unified context strip */}
+      <div className="z-10 border-b border-border-default/60 bg-surface px-4 pt-3 pb-0 shadow-sm">
         {isLoading && (
-          <div className="mb-1 flex items-center gap-2">
-            <div className="h-6 w-6 animate-pulse rounded bg-surface-soft" />
-            <div className="h-3 w-40 animate-pulse rounded bg-surface-soft" />
+          <div className="mb-3 flex items-center gap-2">
+            <div className="h-6 w-6 animate-pulse rounded bg-surface-muted" />
+            <div className="h-4 w-48 animate-pulse rounded bg-surface-muted" />
           </div>
         )}
 
         {!isLoading && obra && (
-          <div className="mb-1">
+          <div className="mb-3">
             <ObraHeader obra={obra} />
           </div>
         )}
 
         {!isLoading && !obra && (
-          <div className="mb-1">
-            <p className="text-sm text-text-muted">Obra não encontrada (ID: {obraId})</p>
+          <div className="mb-3 px-1 py-1">
+            <p className="text-sm font-medium text-danger">Obra não encontrada (ID: {obraId})</p>
           </div>
         )}
 
-        <OverflowTabs tabs={obraTabs} maxVisible={5} basePath={`/obras/${obraId}`} />
+        <div className="flex items-center">
+          <OverflowTabs tabs={obraTabs} maxVisible={5} basePath={`/obras/${obraId}`} />
+        </div>
       </div>
 
       {/* Tab content */}

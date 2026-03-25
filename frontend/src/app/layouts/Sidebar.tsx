@@ -116,13 +116,12 @@ function NavItem({
         )}
         title={label}
       >
-        <Icon size={iconSize} className="shrink-0" />
+        <Icon size={iconSize} className={cn('shrink-0 transition-transform duration-200', isActive && 'scale-110')} />
         {!collapsed && (
           <span
             className={cn(
-              'truncate font-medium opacity-100 transition-opacity duration-150',
-              tier === 'secondary' && 'text-[13px]',
-              tier === 'utility' && 'text-[12px]',
+              'truncate transition-opacity duration-150',
+              tier === 'primary' ? 'opacity-100' : 'opacity-80',
             )}
           >
             {label}
