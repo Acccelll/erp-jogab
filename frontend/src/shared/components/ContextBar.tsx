@@ -22,7 +22,7 @@ function ContextSelect({ icon, label, value, options, onChange, placeholder }: C
       <select
         value={value ?? ''}
         onChange={(e) => onChange(e.target.value || null)}
-        className="h-7 rounded border border-border-default bg-white px-2 pr-7 text-xs font-medium text-text-body transition-colors hover:border-gray-300 focus:border-jogab-500 focus:outline-none focus:ring-1 focus:ring-jogab-500"
+        className="h-7 rounded border border-border-default bg-white px-2 pr-7 text-xs font-medium text-text-body transition-colors hover:border-border-soft focus:border-brand-secondary focus:outline-none focus:ring-1 focus:ring-brand-secondary/20"
       >
         <option value="">{placeholder}</option>
         {options.map((opt) => (

@@ -17,25 +17,25 @@ describe('StatusBadge', () => {
   it('applies success variant styles', () => {
     render(<StatusBadge label="Aprovado" variant="success" />);
     const badge = screen.getByText('Aprovado');
-    expect(badge).toHaveClass('bg-jogab-100', 'text-jogab-700');
+    expect(badge).toHaveClass('bg-success-soft', 'text-success');
   });
 
   it('applies warning variant styles', () => {
     render(<StatusBadge label="Pendente" variant="warning" />);
     const badge = screen.getByText('Pendente');
-    expect(badge).toHaveClass('bg-amber-50', 'text-amber-700');
+    expect(badge).toHaveClass('bg-warning-soft', 'text-warning');
   });
 
   it('applies error variant styles', () => {
     render(<StatusBadge label="Rejeitado" variant="error" />);
     const badge = screen.getByText('Rejeitado');
-    expect(badge).toHaveClass('bg-red-50', 'text-red-700');
+    expect(badge).toHaveClass('bg-danger-soft', 'text-danger');
   });
 
   it('applies info variant styles', () => {
     render(<StatusBadge label="Informação" variant="info" />);
     const badge = screen.getByText('Informação');
-    expect(badge).toHaveClass('bg-accent-100', 'text-accent-600');
+    expect(badge).toHaveClass('bg-info-soft', 'text-info');
   });
 
   it('applies custom className', () => {

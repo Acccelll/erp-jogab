@@ -1,5 +1,5 @@
 import { useLogs, useAdminFilters } from '../hooks';
-import { AdminFilters, AdminPreviewPlaceholder, AdminTable } from '../components';
+import { AdminFilters, AdminTable } from '../components';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 
 export function AdminLogsPage() {
@@ -39,7 +39,7 @@ export function AdminLogsPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
+                className="rounded-md bg-brand-primary px-3 py-1.5 text-sm text-white hover:bg-brand-primary-hover"
               >
                 Tentar novamente
               </button>
@@ -48,30 +48,18 @@ export function AdminLogsPage() {
         )}
 
         {!isLoading && !isError && data && (
-          <>
-            <AdminTable
-              category="logs"
-              columns={['Usuário', 'Ação', 'Módulo', 'Entidade', 'Data', 'Status']}
-              rows={items.map((item) => [
-                item.usuarioNome,
-                item.acao,
-                item.modulo,
-                item.entidade,
-                item.data,
-                item.status,
-              ])}
-            />
-
-            <section className="grid gap-4 xl:grid-cols-2">
-              {items.slice(0, 2).map((item) => (
-                <AdminPreviewPlaceholder
-                  key={item.id}
-                  title={`${item.usuarioNome} · ${item.acao}`}
-                  description={`${item.modulo} em ${item.data}.`}
-                />
-              ))}
-            </section>
-          </>
+          <AdminTable
+            category="logs"
+            columns={['Usuário', 'Ação', 'Módulo', 'Entidade', 'Data', 'Status']}
+            rows={items.map((item) => [
+              item.usuarioNome,
+              item.acao,
+              item.modulo,
+              item.entidade,
+              item.data,
+              item.status,
+            ])}
+          />
         )}
       </MainContent>
     </div>

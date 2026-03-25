@@ -38,10 +38,10 @@ export function ObraWorkspaceLayout() {
         {/* Dynamic header from obra data */}
         {isLoading && (
           <div className="mb-1.5 flex items-center gap-2.5">
-            <div className="h-8 w-8 animate-pulse rounded-md bg-neutral-200" />
+            <div className="h-8 w-8 animate-pulse rounded-md bg-surface-soft" />
             <div className="space-y-1">
-              <div className="h-3.5 w-48 animate-pulse rounded bg-neutral-200" />
-              <div className="h-2.5 w-32 animate-pulse rounded bg-neutral-200" />
+              <div className="h-3.5 w-48 animate-pulse rounded bg-surface-soft" />
+              <div className="h-2.5 w-32 animate-pulse rounded bg-surface-soft" />
             </div>
           </div>
         )}

@@ -73,7 +73,7 @@ export function FuncionariosListPage() {
           <button
             type="button"
             onClick={openCreateDrawer}
-            className="flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
+            className="flex items-center gap-1.5 rounded-md bg-brand-primary px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-primary-hover"
           >
             <Plus size={14} />
             Novo Funcionário
@@ -127,7 +127,7 @@ export function FuncionariosListPage() {
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
+                className="rounded-md bg-brand-primary px-3 py-1.5 text-sm text-white hover:bg-brand-primary-hover"
               >
                 Tentar novamente
               </button>
@@ -156,7 +156,7 @@ export function FuncionariosListPage() {
                 <button
                   type="button"
                   onClick={openCreateDrawer}
-                  className="flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
+                  className="flex items-center gap-1.5 rounded-md bg-brand-primary px-3 py-1.5 text-sm text-white hover:bg-brand-primary-hover"
                 >
                   <Plus size={16} />
                   Novo Funcionário

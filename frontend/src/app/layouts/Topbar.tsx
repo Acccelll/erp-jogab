@@ -221,7 +221,9 @@ export function Topbar() {
           {breadcrumbs.map((crumb, idx) => (
             <span key={`${crumb}-${idx}`} className="flex items-center gap-1">
               {idx > 0 && <span className="text-border-default">/</span>}
-              <span className={cn(idx === breadcrumbs.length - 1 ? 'font-semibold text-jogab-700' : 'text-text-muted')}>
+              <span
+                className={cn(idx === breadcrumbs.length - 1 ? 'font-semibold text-brand-primary' : 'text-text-muted')}
+              >
                 {crumb}
               </span>
             </span>
@@ -250,7 +252,7 @@ export function Topbar() {
         {/* Search placeholder */}
         <button
           type="button"
-          className="hidden items-center gap-2 rounded-md border border-border-default bg-surface-muted px-2.5 py-1 text-sm text-text-subtle transition-colors hover:border-border-soft hover:bg-surface-soft focus-within:border-accent-600 focus-within:ring-1 focus-within:ring-accent-600/20 md:flex"
+          className="hidden items-center gap-2 rounded-md border border-border-default bg-surface-muted px-2.5 py-1 text-sm text-text-subtle transition-colors hover:border-border-soft hover:bg-surface-soft focus-within:border-brand-secondary focus-within:ring-1 focus-within:ring-brand-secondary/20 md:flex"
         >
           <Search size={14} />
           <span className="text-xs">Buscar...</span>
@@ -266,7 +268,7 @@ export function Topbar() {
           aria-label="Notificações"
         >
           <Bell size={16} />
-          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-red-500" />
+          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-danger" />
         </button>
 
         {/* User dropdown */}
@@ -276,7 +278,7 @@ export function Topbar() {
             onClick={() => setUserMenuOpen(!userMenuOpen)}
             className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-surface-soft"
           >
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-jogab-100 text-[10px] font-semibold text-jogab-700">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-primary-soft text-[10px] font-semibold text-brand-primary">
               {usuario?.nome?.charAt(0)?.toUpperCase() ?? 'U'}
             </div>
             <span className="hidden max-w-[100px] truncate text-xs text-text-body md:inline">
@@ -308,7 +310,7 @@ export function Topbar() {
                   setUserMenuOpen(false);
                   navigate('/login');
                 }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-danger hover:bg-danger-soft"
               >
                 <LogOut size={14} />
                 Sair

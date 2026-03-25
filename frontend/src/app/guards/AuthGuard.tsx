@@ -18,7 +18,7 @@ export function AuthGuard() {
   if (!isHydrated) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-sidebar-bg">
-        <div className="rounded-lg border border-gray-700 bg-white px-6 py-5 text-sm text-gray-600 shadow-xl">
+        <div className="rounded-lg border border-surface-dark/40 bg-surface px-6 py-5 text-sm text-text-muted shadow-overlay">
           Restaurando sessão...
         </div>
       </div>
