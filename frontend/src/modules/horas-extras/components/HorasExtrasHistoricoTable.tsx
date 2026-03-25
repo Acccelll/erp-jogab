@@ -18,25 +18,17 @@ const DESTINO_LABELS = {
   financeiro: 'Financeiro',
 };
 
-const COLUMNS = [
-  'Competência',
-  'Funcionário',
-  'Obra',
-  'Evento',
-  'Responsável',
-  'Destino',
-  'Descrição',
-];
+const COLUMNS = ['Competência', 'Funcionário', 'Obra', 'Evento', 'Responsável', 'Destino', 'Descrição'];
 
 export function HorasExtrasHistoricoTable({ items }: { items: HoraExtraHistoricoItem[] }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm shadow-gray-100/60">
+    <div className="overflow-hidden rounded-xl border border-border-default bg-white shadow-sm shadow-gray-100/60">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
+          <thead className="bg-surface-soft">
             <tr>
               {COLUMNS.map((column) => (
-                <th key={column} className="px-4 py-3 text-left font-semibold text-gray-600">
+                <th key={column} className="px-4 py-3 text-left font-semibold text-text-muted">
                   {column}
                 </th>
               ))}
@@ -44,14 +36,14 @@ export function HorasExtrasHistoricoTable({ items }: { items: HoraExtraHistorico
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white">
             {items.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50/70">
-                <td className="px-4 py-3 text-gray-700">{formatCompetencia(item.competencia)}</td>
-                <td className="px-4 py-3 text-gray-700">{item.funcionarioNome}</td>
-                <td className="px-4 py-3 text-gray-700">{item.obraNome}</td>
-                <td className="px-4 py-3 text-gray-700">{EVENTO_LABELS[item.evento]}</td>
-                <td className="px-4 py-3 text-gray-700">{item.responsavel}</td>
-                <td className="px-4 py-3 text-gray-700">{DESTINO_LABELS[item.destino]}</td>
-                <td className="px-4 py-3 text-gray-700">{item.descricao}</td>
+              <tr key={item.id} className="hover:bg-surface-soft/70">
+                <td className="px-4 py-3 text-text-body">{formatCompetencia(item.competencia)}</td>
+                <td className="px-4 py-3 text-text-body">{item.funcionarioNome}</td>
+                <td className="px-4 py-3 text-text-body">{item.obraNome}</td>
+                <td className="px-4 py-3 text-text-body">{EVENTO_LABELS[item.evento]}</td>
+                <td className="px-4 py-3 text-text-body">{item.responsavel}</td>
+                <td className="px-4 py-3 text-text-body">{DESTINO_LABELS[item.destino]}</td>
+                <td className="px-4 py-3 text-text-body">{item.descricao}</td>
               </tr>
             ))}
           </tbody>

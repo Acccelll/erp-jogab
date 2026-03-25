@@ -29,8 +29,8 @@ export function FopagCompetenciaRateioPage() {
   return (
     <MainContent className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Rateio</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-lg font-semibold text-text-strong">Rateio</h2>
+        <p className="text-sm text-text-muted">
           Preparação do rateio da folha por centro de custo e obra para apropriação contábil e financeira.
         </p>
       </div>

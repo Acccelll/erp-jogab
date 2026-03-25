@@ -3,16 +3,8 @@ import { useCompraFilters, useSolicitacoesCompra } from '../hooks';
 import { ComprasFilters, SolicitacoesCompraTable } from '../components';
 
 export function ComprasSolicitacoesPage() {
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setCategoria,
-    setPrioridade,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useCompraFilters();
+  const { filters, setSearch, setStatus, setCategoria, setPrioridade, setCompetencia, clearFilters, hasActiveFilters } =
+    useCompraFilters();
 
   const { data, isLoading, isError, refetch } = useSolicitacoesCompra(filters);
 
@@ -39,14 +31,18 @@ export function ComprasSolicitacoesPage() {
       />
 
       <MainContent className="space-y-4">
-        {isLoading && <p className="text-sm text-gray-500">Carregando solicitações...</p>}
+        {isLoading && <p className="text-sm text-text-muted">Carregando solicitações...</p>}
 
         {isError && (
           <EmptyState
             title="Erro ao carregar solicitações"
             description="Não foi possível carregar as solicitações de compra."
             action={
-              <button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600">
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
+              >
                 Tentar novamente
               </button>
             }

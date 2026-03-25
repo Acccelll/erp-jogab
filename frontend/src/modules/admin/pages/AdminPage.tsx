@@ -18,14 +18,14 @@ export function AdminPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/admin/usuarios"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
             >
               <Users size={16} />
               Usuários
             </Link>
             <Link
               to="/admin/permissoes"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
             >
               <KeyRound size={16} />
               Permissões
@@ -50,7 +50,7 @@ export function AdminPage() {
       {data?.resumo && <AdminResumoBar resumo={data.resumo} />}
 
       <MainContent className="space-y-6">
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando administração...</div>}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando administração...</div>}
 
         {isError && (
           <EmptyState
@@ -60,7 +60,7 @@ export function AdminPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>

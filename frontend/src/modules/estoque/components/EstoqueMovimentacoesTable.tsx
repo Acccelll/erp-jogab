@@ -10,43 +10,58 @@ interface EstoqueMovimentacoesTableProps {
 
 export function EstoqueMovimentacoesTable({ items }: EstoqueMovimentacoesTableProps) {
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm shadow-gray-100/60">
+    <div className="overflow-hidden rounded-xl border border-border-default bg-white shadow-sm shadow-gray-100/60">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
+          <thead className="bg-surface-soft">
             <tr>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Movimentação</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Item</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Obra / Local</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Competência</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600">Quantidade</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600">Valor</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Status</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600">Ações</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Movimentação</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Item</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Obra / Local</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Competência</th>
+              <th className="px-4 py-3 text-right font-semibold text-text-muted">Quantidade</th>
+              <th className="px-4 py-3 text-right font-semibold text-text-muted">Valor</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Status</th>
+              <th className="px-4 py-3 text-right font-semibold text-text-muted">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white">
             {items.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50/70">
+              <tr key={item.id} className="hover:bg-surface-soft/70">
                 <td className="px-4 py-3 align-top">
-                  <div className="font-medium text-gray-900">{ESTOQUE_MOVIMENTACAO_TIPO_LABELS[item.tipo]}</div>
-                  <div className="text-xs text-gray-500">{item.dataMovimentacao} • {ESTOQUE_ORIGEM_LABELS[item.origem]}</div>
-                  <div className="mt-1 text-xs text-gray-400">{item.observacao}</div>
+                  <div className="font-medium text-text-strong">{ESTOQUE_MOVIMENTACAO_TIPO_LABELS[item.tipo]}</div>
+                  <div className="text-xs text-text-muted">
+                    {item.dataMovimentacao} • {ESTOQUE_ORIGEM_LABELS[item.origem]}
+                  </div>
+                  <div className="mt-1 text-xs text-text-subtle">{item.observacao}</div>
                 </td>
-                <td className="px-4 py-3 text-gray-700">
+                <td className="px-4 py-3 text-text-body">
                   <div>{item.itemCodigo}</div>
-                  <div className="text-xs text-gray-400">{item.itemDescricao}</div>
+                  <div className="text-xs text-text-subtle">{item.itemDescricao}</div>
                 </td>
-                <td className="px-4 py-3 text-gray-700">
+                <td className="px-4 py-3 text-text-body">
                   <div>{item.obraNome}</div>
-                  <div className="text-xs text-gray-400">{item.localNome} • {item.centroCusto}</div>
+                  <div className="text-xs text-text-subtle">
+                    {item.localNome} • {item.centroCusto}
+                  </div>
                 </td>
-                <td className="px-4 py-3 text-gray-700">{formatCompetencia(item.competencia)}</td>
-                <td className="px-4 py-3 text-right font-medium text-gray-800">{item.quantidade} {item.unidade}</td>
-                <td className="px-4 py-3 text-right font-medium text-gray-800">{formatCurrency(item.valorMovimento)}</td>
-                <td className="px-4 py-3"><EstoqueStatusBadge status={item.status} /></td>
+                <td className="px-4 py-3 text-text-body">{formatCompetencia(item.competencia)}</td>
+                <td className="px-4 py-3 text-right font-medium text-text-body">
+                  {item.quantidade} {item.unidade}
+                </td>
+                <td className="px-4 py-3 text-right font-medium text-text-body">
+                  {formatCurrency(item.valorMovimento)}
+                </td>
+                <td className="px-4 py-3">
+                  <EstoqueStatusBadge status={item.status} />
+                </td>
                 <td className="px-4 py-3 text-right">
-                  <Link to={`/estoque/itens/${item.itemId}`} className="text-sm font-medium text-jogab-600 hover:text-jogab-700">Ver item</Link>
+                  <Link
+                    to={`/estoque/itens/${item.itemId}`}
+                    className="text-sm font-medium text-jogab-700 hover:text-jogab-700"
+                  >
+                    Ver item
+                  </Link>
                 </td>
               </tr>
             ))}

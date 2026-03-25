@@ -14,16 +14,16 @@ interface FuncionarioHeaderProps {
 export function FuncionarioHeader({ funcionario }: FuncionarioHeaderProps) {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-jogab-50 text-jogab-600">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-jogab-50 text-jogab-700">
         <User size={18} />
       </div>
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[11px] font-medium text-gray-400">{funcionario.matricula}</span>
-          <h2 className="text-sm font-semibold text-gray-900">{funcionario.nome}</h2>
+          <span className="text-[11px] font-medium text-text-subtle">{funcionario.matricula}</span>
+          <h2 className="text-sm font-semibold text-text-strong">{funcionario.nome}</h2>
           <FuncionarioStatusBadge status={funcionario.status} />
         </div>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-gray-500">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-text-muted">
           <span className="flex items-center gap-1">
             <Briefcase size={11} />
             {funcionario.cargo} · {funcionario.funcao}
@@ -48,7 +48,7 @@ export function FuncionarioHeader({ funcionario }: FuncionarioHeaderProps) {
               {funcionario.email}
             </span>
           )}
-          <span className="text-gray-400">
+          <span className="text-text-subtle">
             {TIPO_CONTRATO_LABELS[funcionario.tipoContrato]} · {funcionario.departamento}
           </span>
         </div>

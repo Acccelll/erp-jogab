@@ -8,17 +8,7 @@
  * Referência: docs/06-arquitetura-de-telas.md (RH — detalhe do funcionário com abas)
  */
 import { useParams } from 'react-router-dom';
-import {
-  FileSignature,
-  DollarSign,
-  FolderOpen,
-  Building2,
-  Palmtree,
-  Gift,
-  Wallet,
-  Clock,
-  Receipt,
-} from 'lucide-react';
+import { FileSignature, DollarSign, FolderOpen, Building2, Palmtree, Gift, Wallet, Clock, Receipt } from 'lucide-react';
 import { MainContent } from '@/shared/components';
 import { useFuncionarioDetails } from '../hooks/useFuncionarioDetails';
 import type { FuncionarioResumoBloco } from '../types';
@@ -32,7 +22,7 @@ export function FuncionarioVisaoGeralPage() {
       <div className="flex flex-1 items-center justify-center py-12">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-          <p className="text-sm text-gray-500">Carregando visão geral...</p>
+          <p className="text-sm text-text-muted">Carregando visão geral...</p>
         </div>
       </div>
     );
@@ -41,7 +31,7 @@ export function FuncionarioVisaoGeralPage() {
   if (isError || !funcionario) {
     return (
       <div className="flex flex-1 items-center justify-center py-12">
-        <p className="text-sm text-gray-500">Erro ao carregar dados do funcionário.</p>
+        <p className="text-sm text-text-muted">Erro ao carregar dados do funcionário.</p>
       </div>
     );
   }
@@ -73,18 +63,18 @@ function ResumoBlocoCard({ bloco }: { bloco: FuncionarioResumoBloco }) {
   };
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
+    <div className="rounded-lg border border-border-default bg-white p-4">
       <div className="mb-3 flex items-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-jogab-50 text-jogab-600">
+        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-jogab-50 text-jogab-700">
           {iconMap[bloco.titulo] ?? <FileSignature size={16} />}
         </div>
-        <h3 className="text-sm font-semibold text-gray-900">{bloco.titulo}</h3>
+        <h3 className="text-sm font-semibold text-text-strong">{bloco.titulo}</h3>
       </div>
       <ul className="space-y-2">
         {bloco.itens.map((item) => (
           <li key={item.label} className="flex items-center justify-between text-xs">
-            <span className="text-gray-500">{item.label}</span>
-            <span className={item.destaque ? 'font-semibold text-jogab-600' : 'font-medium text-gray-700'}>
+            <span className="text-text-muted">{item.label}</span>
+            <span className={item.destaque ? 'font-semibold text-jogab-700' : 'font-medium text-text-body'}>
               {item.valor}
             </span>
           </li>

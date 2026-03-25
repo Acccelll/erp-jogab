@@ -5,16 +5,8 @@ import { FinanceiroFilters, TitulosFinanceirosTable } from '../components';
 import { useContasReceber, useFinanceiroFilters } from '../hooks';
 
 export function ContasReceberPage() {
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setTipo,
-    setOrigem,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useFinanceiroFilters();
+  const { filters, setSearch, setStatus, setTipo, setOrigem, setCompetencia, clearFilters, hasActiveFilters } =
+    useFinanceiroFilters();
 
   const { data, isLoading, isError, refetch } = useContasReceber(filters);
 
@@ -26,7 +18,7 @@ export function ContasReceberPage() {
         actions={
           <Link
             to="/financeiro/fluxo"
-            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
           >
             <TrendingUp size={16} />
             Ver no fluxo
@@ -51,11 +43,7 @@ export function ContasReceberPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando contas a receber...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando contas a receber...</div>}
 
         {isError && (
           <EmptyState
@@ -65,7 +53,7 @@ export function ContasReceberPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
               >
                 Tentar novamente
               </button>
@@ -75,13 +63,10 @@ export function ContasReceberPage() {
 
         {!isLoading && !isError && (
           <div className="space-y-4">
-            <section className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm shadow-gray-100/60">
-              <h2 className="text-base font-semibold text-gray-900">
-                Pipeline de recebimento
-              </h2>
-              <p className="mt-1 text-sm text-gray-500">
-                Títulos a receber consolidam medições, faturamento e contratos para apoiar
-                a previsão de caixa da obra.
+            <section className="rounded-xl border border-border-default bg-white p-4 shadow-sm shadow-gray-100/60">
+              <h2 className="text-base font-semibold text-text-strong">Pipeline de recebimento</h2>
+              <p className="mt-1 text-sm text-text-muted">
+                Títulos a receber consolidam medições, faturamento e contratos para apoiar a previsão de caixa da obra.
               </p>
             </section>
 

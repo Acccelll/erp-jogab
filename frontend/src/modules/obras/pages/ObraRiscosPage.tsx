@@ -40,7 +40,9 @@ export function ObraRiscosPage() {
     return items.filter((item: ObraRiscoItem) => {
       const matchesSearch =
         !search.trim() ||
-        `${item.codigo} ${item.titulo} ${item.categoria} ${item.responsavel}`.toLowerCase().includes(search.trim().toLowerCase());
+        `${item.codigo} ${item.titulo} ${item.categoria} ${item.responsavel}`
+          .toLowerCase()
+          .includes(search.trim().toLowerCase());
       const matchesStatus = !status || item.status === status;
       return matchesSearch && matchesStatus;
     });
@@ -71,9 +73,7 @@ export function ObraRiscosPage() {
           hasActiveFilters={hasActiveFilters}
         />
 
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">Carregando matriz de riscos...</div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando matriz de riscos...</div>}
 
         {isError && (
           <EmptyState
@@ -83,7 +83,7 @@ export function ObraRiscosPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
               >
                 Tentar novamente
               </button>

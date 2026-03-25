@@ -7,10 +7,7 @@ export function PerfilPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <PageHeader
-        title="Perfil"
-        subtitle="Dados do usuário e preferências"
-      />
+      <PageHeader title="Perfil" subtitle="Dados do usuário e preferências" />
       <MainContent>
         <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
           <section className="rounded-lg border border-gray-200 bg-white p-5">
@@ -28,7 +25,7 @@ export function PerfilPage() {
               <div className="rounded-md border border-gray-100 bg-gray-50 p-4">
                 <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">Perfil</dt>
                 <dd className="mt-2 flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <ShieldCheck size={16} className="text-jogab-600" />
+                  <ShieldCheck size={16} className="text-jogab-700" />
                   {usuario?.papel ?? 'visualizador'}
                 </dd>
               </div>
@@ -41,14 +38,14 @@ export function PerfilPage() {
               <div className="rounded-md border border-gray-100 bg-gray-50 p-4">
                 <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">Empresa</dt>
                 <dd className="mt-2 flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <Building2 size={16} className="text-jogab-600" />
+                  <Building2 size={16} className="text-jogab-700" />
                   {usuario?.empresaId ?? 'Não definida'}
                 </dd>
               </div>
               <div className="rounded-md border border-gray-100 bg-gray-50 p-4">
                 <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">Filial</dt>
                 <dd className="mt-2 flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <MapPin size={16} className="text-jogab-600" />
+                  <MapPin size={16} className="text-jogab-700" />
                   {usuario?.filialId ?? 'Não definida'}
                 </dd>
               </div>

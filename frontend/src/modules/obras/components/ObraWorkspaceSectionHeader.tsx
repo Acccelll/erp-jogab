@@ -14,16 +14,16 @@ export function ObraWorkspaceSectionHeader({
   actionHref,
 }: ObraWorkspaceSectionHeaderProps) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+    <div className="flex items-start justify-between gap-4 rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
-        <p className="mt-1 text-sm text-gray-500">{description}</p>
+        <h2 className="text-lg font-semibold text-text-strong">{title}</h2>
+        <p className="mt-1 text-sm text-text-muted">{description}</p>
       </div>
 
       {actionLabel && actionHref ? (
         <Link
           to={actionHref}
-          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
         >
           {actionLabel}
         </Link>

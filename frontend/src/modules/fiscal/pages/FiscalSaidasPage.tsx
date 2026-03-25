@@ -28,14 +28,14 @@ export function FiscalSaidasPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/medicoes"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
             >
               <ReceiptText size={16} />
               Medições
             </Link>
             <Link
               to="/financeiro/contas-receber"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
             >
               <Wallet size={16} />
               Contas a receber
@@ -66,7 +66,7 @@ export function FiscalSaidasPage() {
       {data?.kpis && <FiscalKpiBar kpis={data.kpis} />}
 
       <MainContent className="space-y-6">
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando saídas fiscais...</div>}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando saídas fiscais...</div>}
 
         {isError && (
           <EmptyState
@@ -76,7 +76,7 @@ export function FiscalSaidasPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -104,8 +104,8 @@ export function FiscalSaidasPage() {
             ) : (
               <section className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Saídas fiscais</h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="text-lg font-semibold text-text-strong">Saídas fiscais</h2>
+                  <p className="text-sm text-text-muted">
                     NF-es, NFS-es e guias ligadas ao faturamento, retenções e reflexos em contas a receber.
                   </p>
                 </div>

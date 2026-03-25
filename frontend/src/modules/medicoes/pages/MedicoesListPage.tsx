@@ -27,14 +27,14 @@ export function MedicoesListPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/financeiro/contas-receber"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
             >
               <Wallet size={16} />
               Contas a receber
             </Link>
             <Link
               to="/obras"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
             >
               <ReceiptText size={16} />
               Ver Obras
@@ -65,7 +65,7 @@ export function MedicoesListPage() {
           <div className="flex flex-1 items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando visão de medições...</p>
+              <p className="text-sm text-text-muted">Carregando visão de medições...</p>
             </div>
           </div>
         )}
@@ -78,7 +78,7 @@ export function MedicoesListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -109,7 +109,7 @@ export function MedicoesListPage() {
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                     >
                       Limpar filtros
                     </button>
@@ -120,8 +120,8 @@ export function MedicoesListPage() {
               <section className="space-y-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Listagem de medições</h2>
-                    <p className="text-sm text-gray-500">
+                    <h2 className="text-lg font-semibold text-text-strong">Listagem de medições</h2>
+                    <p className="text-sm text-text-muted">
                       Leitura consolidada do avanço medido por obra, contrato, aprovação e faturamento.
                     </p>
                   </div>

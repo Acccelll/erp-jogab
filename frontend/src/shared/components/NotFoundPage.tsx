@@ -11,8 +11,8 @@ export function NotFoundPage() {
       </div>
 
       <div className="text-center">
-        <h1 className="text-2xl font-semibold text-gray-900">Página não encontrada</h1>
-        <p className="mt-2 max-w-sm text-sm text-gray-500">
+        <h1 className="text-2xl font-semibold text-text-strong">Página não encontrada</h1>
+        <p className="mt-2 max-w-sm text-sm text-text-muted">
           A página que você procura não existe ou foi movida. Verifique o endereço ou volte ao início.
         </p>
       </div>
@@ -21,7 +21,7 @@ export function NotFoundPage() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+          className="flex items-center gap-2 rounded-md border border-border-default bg-white px-4 py-2 text-sm font-medium text-text-body transition-colors hover:bg-surface-soft"
         >
           <ArrowLeft size={16} />
           Voltar
@@ -29,7 +29,7 @@ export function NotFoundPage() {
         <button
           type="button"
           onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-2 rounded-md bg-jogab-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-jogab-600"
+          className="flex items-center gap-2 rounded-md bg-jogab-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-jogab-800"
         >
           <Home size={16} />
           Ir ao Dashboard

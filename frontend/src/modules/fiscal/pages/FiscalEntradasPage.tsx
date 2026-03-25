@@ -28,14 +28,14 @@ export function FiscalEntradasPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/compras"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
             >
               <ShoppingCart size={16} />
               Compras
             </Link>
             <Link
               to="/estoque"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
             >
               <Boxes size={16} />
               Estoque
@@ -66,7 +66,7 @@ export function FiscalEntradasPage() {
       {data?.kpis && <FiscalKpiBar kpis={data.kpis} />}
 
       <MainContent className="space-y-6">
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando entradas fiscais...</div>}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando entradas fiscais...</div>}
 
         {isError && (
           <EmptyState
@@ -76,7 +76,7 @@ export function FiscalEntradasPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -104,8 +104,8 @@ export function FiscalEntradasPage() {
             ) : (
               <section className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Entradas fiscais</h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="text-lg font-semibold text-text-strong">Entradas fiscais</h2>
+                  <p className="text-sm text-text-muted">
                     Notas de entrada, CT-es e NFS-es de recebimento já vinculados ao ciclo de compras.
                   </p>
                 </div>

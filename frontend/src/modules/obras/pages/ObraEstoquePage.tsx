@@ -58,9 +58,7 @@ export function ObraEstoquePage() {
           hasActiveFilters={hasActiveFilters}
         />
 
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">Carregando estoque da obra...</div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando estoque da obra...</div>}
 
         {isError && (
           <EmptyState
@@ -70,7 +68,7 @@ export function ObraEstoquePage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
               >
                 Tentar novamente
               </button>

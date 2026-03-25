@@ -54,15 +54,15 @@ export function DashboardPage() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Compact header */}
-      <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-border-default px-4 py-2.5">
         <div>
-          <h1 className="text-sm font-medium text-gray-900">Dashboard</h1>
-          <p className="text-xs text-gray-500">{competenciaLabel}</p>
+          <h1 className="text-sm font-semibold text-text-strong font-brand">Dashboard</h1>
+          <p className="text-xs text-text-muted">{competenciaLabel}</p>
         </div>
         <button
           type="button"
           onClick={() => void refetch()}
-          className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm font-medium text-text-body hover:bg-surface-soft"
         >
           <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} />
           Atualizar
@@ -72,11 +72,11 @@ export function DashboardPage() {
       {isLoading && (
         <div className="space-y-0 p-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="flex gap-4 border-b border-gray-100/60 px-4 py-3">
-              <div className="h-4 w-2/5 animate-pulse rounded bg-gray-200" />
-              <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
-              <div className="h-4 w-1/4 animate-pulse rounded bg-gray-200" />
-              <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+            <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
+              <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
+              <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
+              <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
+              <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
             </div>
           ))}
         </div>
@@ -91,7 +91,7 @@ export function DashboardPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -105,10 +105,10 @@ export function DashboardPage() {
           {/* ZONA 1 — Métrica principal */}
           {mainKpi && (
             <div className="px-1 py-2">
-              <span className="text-xs font-medium uppercase tracking-wider text-gray-400">{mainKpi.label}</span>
-              <div className="mt-1 text-4xl font-medium tabular-nums text-gray-900">{formatKpiValue(mainKpi)}</div>
+              <span className="text-xs font-medium uppercase tracking-wider text-text-subtle">{mainKpi.label}</span>
+              <div className="mt-1 text-4xl font-medium tabular-nums text-text-strong">{formatKpiValue(mainKpi)}</div>
               {mainKpi.subtitle && (
-                <div className="mt-1 flex items-center gap-1 text-sm text-green-600">
+                <div className="mt-1 flex items-center gap-1 text-sm text-jogab-700">
                   <TrendingUp className="h-3.5 w-3.5" />
                   {mainKpi.subtitle}
                 </div>
@@ -121,31 +121,31 @@ export function DashboardPage() {
             {/* KPIs grid */}
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {secondaryKpis.map((kpi) => (
-                <div key={kpi.label} className="rounded-lg border border-gray-200/60 bg-white p-3">
-                  <div className="text-xs text-gray-400">{kpi.label}</div>
-                  <div className="mt-0.5 text-xl font-medium tabular-nums text-gray-900">{formatKpiValue(kpi)}</div>
-                  {kpi.subtitle && <div className="mt-0.5 text-xs text-gray-500">{kpi.subtitle}</div>}
+                <div key={kpi.label} className="rounded-lg border border-border-default bg-surface-card p-3">
+                  <div className="text-xs text-text-subtle">{kpi.label}</div>
+                  <div className="mt-0.5 text-xl font-medium tabular-nums text-text-strong">{formatKpiValue(kpi)}</div>
+                  {kpi.subtitle && <div className="mt-0.5 text-xs text-text-muted">{kpi.subtitle}</div>}
                 </div>
               ))}
             </div>
 
             {/* Alertas panel */}
             {safe.alertas.length > 0 && (
-              <div className="rounded-lg border border-gray-200/60 bg-white p-3">
-                <h3 className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Alertas</h3>
+              <div className="rounded-lg border border-border-default bg-surface-card p-3">
+                <h3 className="mb-2 text-xs font-medium uppercase tracking-wider text-text-subtle">Alertas</h3>
                 <div className="space-y-0">
                   {safe.alertas.slice(0, 6).map((alerta) => (
                     <div
                       key={alerta.id}
-                      className="flex items-start gap-2 border-b border-gray-100/40 py-2 last:border-0"
+                      className="flex items-start gap-2 border-b border-border-light py-2 last:border-0"
                     >
                       <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm leading-tight text-gray-900">{alerta.title}</p>
-                        <p className="mt-0.5 text-xs text-gray-500">{alerta.description}</p>
+                        <p className="text-sm leading-tight text-text-body">{alerta.title}</p>
+                        <p className="mt-0.5 text-xs text-text-muted">{alerta.description}</p>
                       </div>
                       {alerta.actionTo && (
-                        <Link to={alerta.actionTo} className="shrink-0 text-xs text-gray-400 hover:text-gray-600">
+                        <Link to={alerta.actionTo} className="shrink-0 text-xs text-accent-600 hover:text-accent-700">
                           Ver →
                         </Link>
                       )}

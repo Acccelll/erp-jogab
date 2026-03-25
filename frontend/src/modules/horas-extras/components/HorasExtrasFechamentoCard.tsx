@@ -14,15 +14,19 @@ export function HorasExtrasFechamentoCard({ fechamento, onClose, isClosing }: Ho
   const canClose = fechamento.pendentesAprovacao === 0 && fechamento.status !== 'fechada_para_fopag';
 
   return (
-    <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+    <article className="rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-jogab-50 text-jogab-600">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-jogab-50 text-jogab-700">
             <CalendarCheck2 size={20} />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-gray-900">Competência {formatCompetencia(fechamento.competencia)}</h3>
-            <p className="text-sm text-gray-500">Última atualização em {new Date(fechamento.updatedAt).toLocaleString('pt-BR')}</p>
+            <h3 className="text-base font-semibold text-text-strong">
+              Competência {formatCompetencia(fechamento.competencia)}
+            </h3>
+            <p className="text-sm text-text-muted">
+              Última atualização em {new Date(fechamento.updatedAt).toLocaleString('pt-BR')}
+            </p>
           </div>
         </div>
         <StatusBadge
@@ -32,21 +36,21 @@ export function HorasExtrasFechamentoCard({ fechamento, onClose, isClosing }: Ho
       </div>
 
       <dl className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-lg bg-gray-50 p-3">
-          <dt className="text-xs uppercase tracking-wide text-gray-400">Lançamentos</dt>
-          <dd className="mt-1 text-sm font-semibold text-gray-900">{fechamento.totalLancamentos}</dd>
+        <div className="rounded-lg bg-surface-soft p-3">
+          <dt className="text-xs uppercase tracking-wide text-text-subtle">Lançamentos</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-strong">{fechamento.totalLancamentos}</dd>
         </div>
-        <div className="rounded-lg bg-gray-50 p-3">
-          <dt className="text-xs uppercase tracking-wide text-gray-400">Pendentes</dt>
-          <dd className="mt-1 text-sm font-semibold text-gray-900">{fechamento.pendentesAprovacao}</dd>
+        <div className="rounded-lg bg-surface-soft p-3">
+          <dt className="text-xs uppercase tracking-wide text-text-subtle">Pendentes</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-strong">{fechamento.pendentesAprovacao}</dd>
         </div>
-        <div className="rounded-lg bg-gray-50 p-3">
-          <dt className="text-xs uppercase tracking-wide text-gray-400">Horas Totais</dt>
-          <dd className="mt-1 text-sm font-semibold text-gray-900">{fechamento.horasTotais.toFixed(1)} h</dd>
+        <div className="rounded-lg bg-surface-soft p-3">
+          <dt className="text-xs uppercase tracking-wide text-text-subtle">Horas Totais</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-strong">{fechamento.horasTotais.toFixed(1)} h</dd>
         </div>
-        <div className="rounded-lg bg-gray-50 p-3">
-          <dt className="text-xs uppercase tracking-wide text-gray-400">Valor Total</dt>
-          <dd className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(fechamento.valorTotal)}</dd>
+        <div className="rounded-lg bg-surface-soft p-3">
+          <dt className="text-xs uppercase tracking-wide text-text-subtle">Valor Total</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-strong">{formatCurrency(fechamento.valorTotal)}</dd>
         </div>
       </dl>
 

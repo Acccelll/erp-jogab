@@ -90,7 +90,7 @@ export function ComprasFilters({
             type="button"
             onClick={onClear}
             disabled={!hasActiveFilters}
-            className="rounded-md border border-gray-300 px-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md border border-gray-300 px-3 text-sm font-medium text-text-body transition-colors hover:bg-surface-soft disabled:cursor-not-allowed disabled:opacity-50"
           >
             Limpar
           </button>

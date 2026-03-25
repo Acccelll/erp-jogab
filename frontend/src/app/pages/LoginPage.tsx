@@ -54,9 +54,7 @@ export function LoginPage() {
     <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-xl font-semibold text-gray-900">Entrar no ERP JOGAB</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Use uma conta de demonstração para iniciar a Sprint 2 localmente.
-        </p>
+        <p className="mt-1 text-sm text-gray-500">Use uma conta de demonstração para iniciar a Sprint 2 localmente.</p>
       </div>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
@@ -107,7 +105,7 @@ export function LoginPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-jogab-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-jogab-600 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-md bg-jogab-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-jogab-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <LogIn size={16} />
           {isLoading ? 'Entrando...' : 'Entrar'}

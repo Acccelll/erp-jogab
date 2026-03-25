@@ -60,7 +60,7 @@ describe('KPICard', () => {
   it('applies green color for up trend', () => {
     render(<KPICard label="Custo" value={100} subtitle="+5%" trend="up" />);
     const subtitle = screen.getByText('+5%');
-    expect(subtitle).toHaveClass('text-green-600');
+    expect(subtitle).toHaveClass('text-jogab-700');
   });
 
   it('applies red color for down trend', () => {
@@ -72,7 +72,7 @@ describe('KPICard', () => {
   it('applies gray color for neutral trend', () => {
     render(<KPICard label="Custo" value={100} subtitle="0%" trend="neutral" />);
     const subtitle = screen.getByText('0%');
-    expect(subtitle).toHaveClass('text-gray-500');
+    expect(subtitle).toHaveClass('text-text-muted');
   });
 
   it('renders value of 0 correctly', () => {

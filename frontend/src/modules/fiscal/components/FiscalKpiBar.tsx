@@ -17,10 +17,10 @@ export function FiscalKpiBar({ kpis }: { kpis: FiscalKpis }) {
       {items.map(([label, value]) => (
         <div
           key={label}
-          className="rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm shadow-gray-100/60"
+          className="rounded-xl border border-border-default bg-white px-4 py-3 shadow-sm shadow-gray-100/60"
         >
-          <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
-          <p className="mt-1 text-lg font-semibold text-gray-900">{value}</p>
+          <p className="text-xs uppercase tracking-wide text-text-subtle">{label}</p>
+          <p className="mt-1 text-lg font-semibold text-text-strong">{value}</p>
         </div>
       ))}
     </section>

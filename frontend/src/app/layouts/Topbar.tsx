@@ -124,16 +124,16 @@ function ContextSelectorButton({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 rounded-md border border-gray-200/60 bg-gray-50/50 px-2.5 py-1 text-sm transition-colors hover:bg-gray-100"
+        className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface-muted px-2.5 py-1 text-sm transition-colors hover:bg-surface-soft"
       >
-        <span className="text-gray-400">{icon}</span>
-        <span className="text-xs text-gray-400">{label}</span>
-        <span className="max-w-[140px] truncate font-medium text-gray-700">{selectedLabel ?? 'Todas'}</span>
-        <ChevronDown className="h-3 w-3 text-gray-400" />
+        <span className="text-text-subtle">{icon}</span>
+        <span className="text-xs text-text-subtle">{label}</span>
+        <span className="max-w-[140px] truncate font-medium text-text-body">{selectedLabel ?? 'Todas'}</span>
+        <ChevronDown className="h-3 w-3 text-text-subtle" />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1 max-h-64 w-56 overflow-auto rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+        <div className="absolute right-0 top-full z-50 mt-1 max-h-64 w-56 overflow-auto rounded-md border border-border-default bg-surface py-1 shadow-lg">
           <button
             type="button"
             onClick={() => {
@@ -141,8 +141,8 @@ function ContextSelectorButton({
               setOpen(false);
             }}
             className={cn(
-              'flex w-full px-3 py-1.5 text-left text-sm hover:bg-gray-50',
-              !value ? 'font-medium text-gray-900' : 'text-gray-600',
+              'flex w-full px-3 py-1.5 text-left text-sm hover:bg-surface-soft',
+              !value ? 'font-medium text-text-strong' : 'text-text-muted',
             )}
           >
             Todas
@@ -156,8 +156,8 @@ function ContextSelectorButton({
                 setOpen(false);
               }}
               className={cn(
-                'flex w-full px-3 py-1.5 text-left text-sm hover:bg-gray-50',
-                value === opt.value ? 'font-medium text-gray-900' : 'text-gray-600',
+                'flex w-full px-3 py-1.5 text-left text-sm hover:bg-surface-soft',
+                value === opt.value ? 'font-medium text-text-strong' : 'text-text-muted',
               )}
             >
               {opt.label}
@@ -210,7 +210,7 @@ export function Topbar() {
         <button
           type="button"
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 lg:hidden"
+          className="rounded-md p-1.5 text-text-muted hover:bg-surface-soft hover:text-text-body lg:hidden"
           aria-label="Toggle menu"
         >
           <Menu size={18} />
@@ -220,8 +220,8 @@ export function Topbar() {
         <nav className="flex items-center gap-1 text-sm" aria-label="Breadcrumb">
           {breadcrumbs.map((crumb, idx) => (
             <span key={`${crumb}-${idx}`} className="flex items-center gap-1">
-              {idx > 0 && <span className="text-gray-300">/</span>}
-              <span className={cn(idx === breadcrumbs.length - 1 ? 'font-medium text-gray-900' : 'text-gray-500')}>
+              {idx > 0 && <span className="text-border-default">/</span>}
+              <span className={cn(idx === breadcrumbs.length - 1 ? 'font-semibold text-jogab-700' : 'text-text-muted')}>
                 {crumb}
               </span>
             </span>
@@ -250,11 +250,11 @@ export function Topbar() {
         {/* Search placeholder */}
         <button
           type="button"
-          className="hidden items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-2.5 py-1 text-sm text-gray-400 transition-colors hover:border-gray-300 hover:bg-gray-100 md:flex"
+          className="hidden items-center gap-2 rounded-md border border-border-default bg-surface-muted px-2.5 py-1 text-sm text-text-subtle transition-colors hover:border-border-soft hover:bg-surface-soft focus-within:border-accent-600 focus-within:ring-1 focus-within:ring-accent-600/20 md:flex"
         >
           <Search size={14} />
           <span className="text-xs">Buscar...</span>
-          <kbd className="ml-2 rounded border border-gray-200 bg-white px-1 py-0.5 text-[10px] font-medium text-gray-400">
+          <kbd className="ml-2 rounded border border-border-soft bg-surface px-1 py-0.5 text-[10px] font-medium text-text-subtle">
             ⌘K
           </kbd>
         </button>
@@ -262,7 +262,7 @@ export function Topbar() {
         {/* Notifications */}
         <button
           type="button"
-          className="relative rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+          className="relative rounded-md p-1.5 text-text-muted hover:bg-surface-soft hover:text-text-body"
           aria-label="Notificações"
         >
           <Bell size={16} />
@@ -274,21 +274,21 @@ export function Topbar() {
           <button
             type="button"
             onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-gray-100"
+            className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-surface-soft"
           >
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-jogab-100 text-[10px] font-medium text-jogab-700">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-jogab-100 text-[10px] font-semibold text-jogab-700">
               {usuario?.nome?.charAt(0)?.toUpperCase() ?? 'U'}
             </div>
-            <span className="hidden max-w-[100px] truncate text-xs text-gray-700 md:inline">
+            <span className="hidden max-w-[100px] truncate text-xs text-text-body md:inline">
               {usuario?.nome ?? 'Usuário'}
             </span>
           </button>
 
           {userMenuOpen && (
-            <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
-              <div className="border-b border-gray-100 px-3 py-2">
-                <p className="text-sm font-medium text-gray-900">{usuario?.nome ?? 'Usuário'}</p>
-                <p className="text-xs text-gray-500">{usuario?.email ?? 'usuario@jogab.com.br'}</p>
+            <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-md border border-border-default bg-surface py-1 shadow-lg">
+              <div className="border-b border-border-light px-3 py-2">
+                <p className="text-sm font-medium text-text-strong">{usuario?.nome ?? 'Usuário'}</p>
+                <p className="text-xs text-text-muted">{usuario?.email ?? 'usuario@jogab.com.br'}</p>
               </div>
               <button
                 type="button"
@@ -296,7 +296,7 @@ export function Topbar() {
                   setUserMenuOpen(false);
                   navigate('/perfil');
                 }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-text-body hover:bg-surface-soft"
               >
                 <User size={14} />
                 Meu Perfil

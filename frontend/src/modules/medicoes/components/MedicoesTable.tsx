@@ -10,40 +10,52 @@ interface MedicoesTableProps {
 
 export function MedicoesTable({ items }: MedicoesTableProps) {
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm shadow-gray-100/60">
+    <div className="overflow-hidden rounded-xl border border-border-default bg-white shadow-sm shadow-gray-100/60">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
+          <thead className="bg-surface-soft">
             <tr>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Medição</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Obra / Contrato</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Competência</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600">Valor medido</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Aprovação</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Faturamento</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600">Status</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600">Ações</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Medição</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Obra / Contrato</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Competência</th>
+              <th className="px-4 py-3 text-right font-semibold text-text-muted">Valor medido</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Aprovação</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Faturamento</th>
+              <th className="px-4 py-3 text-left font-semibold text-text-muted">Status</th>
+              <th className="px-4 py-3 text-right font-semibold text-text-muted">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white">
             {items.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50/70">
+              <tr key={item.id} className="hover:bg-surface-soft/70">
                 <td className="px-4 py-3 align-top">
-                  <div className="font-medium text-gray-900">{item.codigo}</div>
-                  <div className="text-xs text-gray-500">Medição #{item.numeroMedicao} • {item.clienteNome}</div>
-                  <div className="mt-1 text-xs text-gray-400">Avanço {item.percentualAvanco}% • {item.responsavelNome}</div>
+                  <div className="font-medium text-text-strong">{item.codigo}</div>
+                  <div className="text-xs text-text-muted">
+                    Medição #{item.numeroMedicao} • {item.clienteNome}
+                  </div>
+                  <div className="mt-1 text-xs text-text-subtle">
+                    Avanço {item.percentualAvanco}% • {item.responsavelNome}
+                  </div>
                 </td>
-                <td className="px-4 py-3 text-gray-700">
+                <td className="px-4 py-3 text-text-body">
                   <div>{item.obraNome}</div>
-                  <div className="text-xs text-gray-400">{item.contratoCodigo} • {item.centroCusto}</div>
+                  <div className="text-xs text-text-subtle">
+                    {item.contratoCodigo} • {item.centroCusto}
+                  </div>
                 </td>
-                <td className="px-4 py-3 text-gray-700">{formatCompetencia(item.competencia)}</td>
-                <td className="px-4 py-3 text-right font-medium text-gray-800">{formatCurrency(item.resumoFinanceiro.valorMedido)}</td>
-                <td className="px-4 py-3 text-gray-700">{MEDICAO_APROVACAO_LABELS[item.aprovacaoStatus]}</td>
-                <td className="px-4 py-3 text-gray-700">{MEDICAO_FATURAMENTO_LABELS[item.faturamentoStatus]}</td>
-                <td className="px-4 py-3"><MedicaoStatusBadge status={item.status} /></td>
+                <td className="px-4 py-3 text-text-body">{formatCompetencia(item.competencia)}</td>
+                <td className="px-4 py-3 text-right font-medium text-text-body">
+                  {formatCurrency(item.resumoFinanceiro.valorMedido)}
+                </td>
+                <td className="px-4 py-3 text-text-body">{MEDICAO_APROVACAO_LABELS[item.aprovacaoStatus]}</td>
+                <td className="px-4 py-3 text-text-body">{MEDICAO_FATURAMENTO_LABELS[item.faturamentoStatus]}</td>
+                <td className="px-4 py-3">
+                  <MedicaoStatusBadge status={item.status} />
+                </td>
                 <td className="px-4 py-3 text-right">
-                  <Link to={`/medicoes/${item.id}`} className="text-sm font-medium text-jogab-600 hover:text-jogab-700">Ver detalhe</Link>
+                  <Link to={`/medicoes/${item.id}`} className="text-sm font-medium text-jogab-700 hover:text-jogab-700">
+                    Ver detalhe
+                  </Link>
                 </td>
               </tr>
             ))}

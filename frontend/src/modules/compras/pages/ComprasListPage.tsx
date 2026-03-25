@@ -27,40 +27,40 @@ export function ComprasListPage() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Filter bar */}
-      <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-border-default/60 px-4 py-2.5">
         <QuickFilterChips
           chips={statusChips}
           value={filters.status ?? null}
           onChange={(v) => setStatus(v as typeof filters.status)}
         />
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm">
-            <Search size={14} className="text-gray-400" />
+          <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-white px-2.5 py-1 text-sm">
+            <Search size={14} className="text-text-subtle" />
             <input
               type="text"
               placeholder="Buscar..."
               value={filters.search ?? ''}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-gray-400"
+              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-text-subtle"
             />
           </div>
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
           >
             <SlidersHorizontal size={16} />
           </button>
           <Link
             to="/compras/solicitacoes"
-            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
           >
             <FileStack size={14} />
             Solicitações
           </Link>
           <Link
             to="/compras/pedidos"
-            className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+            className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
           >
             <ShoppingBag size={14} />
             Pedidos
@@ -70,11 +70,11 @@ export function ComprasListPage() {
 
       {/* Advanced filters */}
       {showAdvanced && (
-        <div className="flex items-center gap-2 border-b border-gray-200/60 bg-gray-50/30 px-4 py-2">
+        <div className="flex items-center gap-2 border-b border-border-default/60 bg-surface-soft/30 px-4 py-2">
           <select
             value={filters.categoria ?? ''}
             onChange={(e) => setCategoria((e.target.value || undefined) as typeof filters.categoria)}
-            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+            className="rounded-md border border-border-default bg-white px-2.5 py-1 text-sm text-text-body"
           >
             <option value="">Categoria</option>
             <option value="material">Material</option>
@@ -84,7 +84,7 @@ export function ComprasListPage() {
           <select
             value={filters.prioridade ?? ''}
             onChange={(e) => setPrioridade((e.target.value || undefined) as typeof filters.prioridade)}
-            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+            className="rounded-md border border-border-default bg-white px-2.5 py-1 text-sm text-text-body"
           >
             <option value="">Prioridade</option>
             <option value="baixa">Baixa</option>
@@ -93,7 +93,7 @@ export function ComprasListPage() {
             <option value="urgente">Urgente</option>
           </select>
           {hasActiveFilters && (
-            <button type="button" onClick={clearFilters} className="text-sm text-gray-500 hover:text-gray-700">
+            <button type="button" onClick={clearFilters} className="text-sm text-text-muted hover:text-text-body">
               Limpar
             </button>
           )}
@@ -104,11 +104,11 @@ export function ComprasListPage() {
         {isLoading && (
           <div className="space-y-0">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex gap-4 border-b border-gray-100/60 px-4 py-3">
-                <div className="h-4 w-2/5 animate-pulse rounded bg-gray-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
-                <div className="h-4 w-1/4 animate-pulse rounded bg-gray-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+              <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
+                <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
+                <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
               </div>
             ))}
           </div>
@@ -122,7 +122,7 @@ export function ComprasListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -145,7 +145,7 @@ export function ComprasListPage() {
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                     >
                       Limpar filtros
                     </button>
@@ -156,10 +156,10 @@ export function ComprasListPage() {
               <section className="grid gap-6 xl:grid-cols-[1.2fr,1fr]">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
-                    <h2 className="text-sm font-medium text-gray-900">Solicitações recentes</h2>
+                    <h2 className="text-sm font-medium text-text-strong">Solicitações recentes</h2>
                     <Link
                       to="/compras/solicitacoes"
-                      className="text-xs font-medium text-jogab-600 hover:text-jogab-700"
+                      className="text-xs font-medium text-jogab-700 hover:text-jogab-700"
                     >
                       Ver todas
                     </Link>
@@ -170,16 +170,16 @@ export function ComprasListPage() {
                 <div className="space-y-3">
                   {data.kpis.valorAguardandoFiscal > 0 && (
                     <div className="flex items-start gap-2.5 rounded-md border border-jogab-100 bg-jogab-50/50 p-2.5">
-                      <PackageCheck size={14} className="mt-0.5 shrink-0 text-jogab-600" />
-                      <p className="text-xs text-gray-600">
+                      <PackageCheck size={14} className="mt-0.5 shrink-0 text-jogab-700" />
+                      <p className="text-xs text-text-muted">
                         Existem pedidos que ainda dependem de documentação fiscal.
                       </p>
                     </div>
                   )}
 
                   <div className="flex items-center justify-between gap-3">
-                    <h2 className="text-sm font-medium text-gray-900">Pedidos em destaque</h2>
-                    <Link to="/compras/pedidos" className="text-xs font-medium text-jogab-600 hover:text-jogab-700">
+                    <h2 className="text-sm font-medium text-text-strong">Pedidos em destaque</h2>
+                    <Link to="/compras/pedidos" className="text-xs font-medium text-jogab-700 hover:text-jogab-700">
                       Ver todos
                     </Link>
                   </div>

@@ -26,7 +26,9 @@ export function ObraRhPage() {
     return items.filter((item) => {
       const matchesSearch =
         !search.trim() ||
-        `${item.funcionarioNome} ${item.funcao} ${item.centroCustoNome}`.toLowerCase().includes(search.trim().toLowerCase());
+        `${item.funcionarioNome} ${item.funcao} ${item.centroCustoNome}`
+          .toLowerCase()
+          .includes(search.trim().toLowerCase());
       const matchesStatus = !status || item.status === status;
       return matchesSearch && matchesStatus;
     });
@@ -58,7 +60,7 @@ export function ObraRhPage() {
         />
 
         {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">Carregando dados de RH da obra...</div>
+          <div className="py-12 text-center text-sm text-text-muted">Carregando dados de RH da obra...</div>
         )}
 
         {isError && (
@@ -69,7 +71,7 @@ export function ObraRhPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
               >
                 Tentar novamente
               </button>

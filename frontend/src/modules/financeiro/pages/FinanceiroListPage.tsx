@@ -32,40 +32,40 @@ export function FinanceiroListPage() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Filter bar */}
-      <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-border-default px-4 py-2.5">
         <QuickFilterChips
           chips={statusChips}
           value={filters.status ?? null}
           onChange={(v) => setStatus(v as typeof filters.status)}
         />
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm">
-            <Search size={14} className="text-gray-400" />
+          <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm">
+            <Search size={14} className="text-text-subtle" />
             <input
               type="text"
               placeholder="Buscar..."
               value={filters.search ?? ''}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-gray-400"
+              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-text-subtle"
             />
           </div>
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
           >
             <SlidersHorizontal size={16} />
           </button>
           <Link
             to="/financeiro/fluxo"
-            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
           >
             <Landmark size={14} />
             Fluxo de caixa
           </Link>
           <Link
             to="/financeiro/contas-pagar"
-            className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+            className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
           >
             <TrendingDown size={14} />
             Contas a pagar
@@ -75,11 +75,11 @@ export function FinanceiroListPage() {
 
       {/* Advanced filters */}
       {showAdvanced && (
-        <div className="flex items-center gap-2 border-b border-gray-200/60 bg-gray-50/30 px-4 py-2">
+        <div className="flex items-center gap-2 border-b border-border-light bg-surface-muted px-4 py-2">
           <select
             value={filters.tipo ?? ''}
             onChange={(e) => setTipo((e.target.value || undefined) as typeof filters.tipo)}
-            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+            className="rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm text-text-body"
           >
             <option value="">Tipo</option>
             <option value="pagar">A pagar</option>
@@ -88,7 +88,7 @@ export function FinanceiroListPage() {
           <select
             value={filters.origem ?? ''}
             onChange={(e) => setOrigem((e.target.value || undefined) as typeof filters.origem)}
-            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+            className="rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm text-text-body"
           >
             <option value="">Origem</option>
             <option value="compras">Compras</option>
@@ -97,7 +97,7 @@ export function FinanceiroListPage() {
             <option value="manual">Manual</option>
           </select>
           {hasActiveFilters && (
-            <button type="button" onClick={clearFilters} className="text-sm text-gray-500 hover:text-gray-700">
+            <button type="button" onClick={clearFilters} className="text-sm text-text-muted hover:text-text-body">
               Limpar
             </button>
           )}
@@ -108,11 +108,11 @@ export function FinanceiroListPage() {
         {isLoading && (
           <div className="space-y-0">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex gap-4 border-b border-gray-100/60 px-4 py-3">
-                <div className="h-4 w-2/5 animate-pulse rounded bg-gray-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
-                <div className="h-4 w-1/4 animate-pulse rounded bg-gray-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+              <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
+                <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
+                <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
               </div>
             ))}
           </div>
@@ -126,7 +126,7 @@ export function FinanceiroListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -140,8 +140,8 @@ export function FinanceiroListPage() {
               <section className="space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-sm font-medium text-gray-900">Custo de pessoal por obra</h2>
-                    <p className="text-xs text-gray-500">
+                    <h2 className="text-sm font-medium text-text-strong">Custo de pessoal por obra</h2>
+                    <p className="text-xs text-text-muted">
                       Reflexo consolidado do fluxo Horas Extras → FOPAG → Financeiro.
                     </p>
                   </div>
@@ -151,7 +151,7 @@ export function FinanceiroListPage() {
                   />
                 </div>
 
-                <div className="flex items-center gap-4 text-xs text-gray-500">
+                <div className="flex items-center gap-4 text-xs text-text-muted">
                   <span>{formatCompetencia(pessoal.competencia.competencia)}</span>
                   <span>{pessoal.competencia.totalFuncionarios} func.</span>
                   <span>{pessoal.competencia.totalObras} obras</span>
@@ -161,33 +161,33 @@ export function FinanceiroListPage() {
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200/60">
-                        <th className="px-3 py-1.5 text-left text-xs font-medium text-gray-500">Obra</th>
-                        <th className="px-3 py-1.5 text-right text-xs font-medium text-gray-500">HE previsto</th>
-                        <th className="px-3 py-1.5 text-right text-xs font-medium text-gray-500">FOPAG prevista</th>
-                        <th className="px-3 py-1.5 text-right text-xs font-medium text-gray-500">Previsto</th>
-                        <th className="px-3 py-1.5 text-right text-xs font-medium text-gray-500">Realizado</th>
+                      <tr className="border-b border-border-default bg-surface-muted">
+                        <th className="px-3 py-1.5 text-left text-xs font-medium text-text-muted">Obra</th>
+                        <th className="px-3 py-1.5 text-right text-xs font-medium text-text-muted">HE previsto</th>
+                        <th className="px-3 py-1.5 text-right text-xs font-medium text-text-muted">FOPAG prevista</th>
+                        <th className="px-3 py-1.5 text-right text-xs font-medium text-text-muted">Previsto</th>
+                        <th className="px-3 py-1.5 text-right text-xs font-medium text-text-muted">Realizado</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100/60">
+                    <tbody className="divide-y divide-border-light">
                       {pessoal.porObra.map((item) => (
-                        <tr key={item.obraId} className="hover:bg-gray-50/50">
+                        <tr key={item.obraId} className="hover:bg-surface-soft">
                           <td className="px-3 py-1.5 align-top">
-                            <div className="text-sm font-medium text-gray-900">{item.obraNome}</div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-sm font-medium text-text-strong">{item.obraNome}</div>
+                            <div className="text-xs text-text-muted">
                               {item.totalFuncionarios} func. · {item.totalCentrosCusto} CC
                             </div>
                           </td>
-                          <td className="px-3 py-1.5 text-right text-gray-700">
+                          <td className="px-3 py-1.5 text-right text-text-body">
                             {formatCurrency(item.valorHorasExtrasPrevisto)}
                           </td>
-                          <td className="px-3 py-1.5 text-right text-gray-700">
+                          <td className="px-3 py-1.5 text-right text-text-body">
                             {formatCurrency(item.valorFopagPrevisto)}
                           </td>
-                          <td className="px-3 py-1.5 text-right font-medium text-gray-900">
+                          <td className="px-3 py-1.5 text-right font-medium text-text-strong">
                             {formatCurrency(item.valorPrevisto)}
                           </td>
-                          <td className="px-3 py-1.5 text-right text-gray-700">
+                          <td className="px-3 py-1.5 text-right text-text-body">
                             {formatCurrency(item.valorRealizado)}
                           </td>
                         </tr>
@@ -211,7 +211,7 @@ export function FinanceiroListPage() {
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                      className="rounded-md border border-border-default px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                     >
                       Limpar filtros
                     </button>
@@ -222,12 +222,12 @@ export function FinanceiroListPage() {
               <section className="space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-sm font-medium text-gray-900">Títulos financeiros</h2>
-                    <p className="text-xs text-gray-500">
+                    <h2 className="text-sm font-medium text-text-strong">Títulos financeiros</h2>
+                    <p className="text-xs text-text-muted">
                       Leitura consolidada dos títulos com vínculo de obra, competência, origem e status.
                     </p>
                   </div>
-                  <Link to="/financeiro/fluxo" className="text-xs font-medium text-jogab-600 hover:text-jogab-700">
+                  <Link to="/financeiro/fluxo" className="text-xs font-medium text-accent-600 hover:text-accent-700">
                     Ver fluxo projetado
                   </Link>
                 </div>

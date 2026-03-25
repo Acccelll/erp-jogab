@@ -29,8 +29,8 @@ export function FopagCompetenciaFuncionariosPage() {
   return (
     <MainContent className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Por funcionário</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-lg font-semibold text-text-strong">Por funcionário</h2>
+        <p className="text-sm text-text-muted">
           Consolidação da competência por colaborador, incluindo reflexo de horas extras e benefícios.
         </p>
       </div>

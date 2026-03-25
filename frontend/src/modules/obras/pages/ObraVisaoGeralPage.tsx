@@ -7,15 +7,7 @@
  * Referência: docs/06-arquitetura-de-telas.md, CLAUDE.md "Padrão de tela"
  */
 import { useParams } from 'react-router-dom';
-import {
-  DollarSign,
-  TrendingUp,
-  Wallet,
-  Users,
-  FileSignature,
-  Clock,
-  Target,
-} from 'lucide-react';
+import { DollarSign, TrendingUp, Wallet, Users, FileSignature, Clock, Target } from 'lucide-react';
 import { KPISection, KPICard, MainContent } from '@/shared/components';
 import { formatCurrency } from '@/shared/lib/utils';
 import { useObraDetails } from '../hooks/useObraDetails';
@@ -30,7 +22,7 @@ export function ObraVisaoGeralPage() {
       <div className="flex flex-1 items-center justify-center py-12">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-          <p className="text-sm text-gray-500">Carregando visão geral...</p>
+          <p className="text-sm text-text-muted">Carregando visão geral...</p>
         </div>
       </div>
     );
@@ -39,7 +31,7 @@ export function ObraVisaoGeralPage() {
   if (isError || !kpis) {
     return (
       <div className="flex flex-1 items-center justify-center py-12">
-        <p className="text-sm text-gray-500">Erro ao carregar dados da obra.</p>
+        <p className="text-sm text-text-muted">Erro ao carregar dados da obra.</p>
       </div>
     );
   }
@@ -48,21 +40,14 @@ export function ObraVisaoGeralPage() {
     <div className="flex flex-1 flex-col">
       {/* KPIs da obra */}
       <KPISection>
-        <KPICard
-          label="Orçamento Previsto"
-          value={formatCurrency(kpis.orcamentoPrevisto)}
-        />
+        <KPICard label="Orçamento Previsto" value={formatCurrency(kpis.orcamentoPrevisto)} />
         <KPICard
           label="Custo Realizado"
           value={formatCurrency(kpis.custoRealizado)}
           subtitle={`${kpis.orcamentoPrevisto > 0 ? Math.round((kpis.custoRealizado / kpis.orcamentoPrevisto) * 100) : 0}% do orçamento`}
           trend={kpis.custoRealizado > kpis.orcamentoPrevisto * 0.8 ? 'down' : 'neutral'}
         />
-        <KPICard
-          label="Comprometido"
-          value={formatCurrency(kpis.custoComprometido)}
-          trend="neutral"
-        />
+        <KPICard label="Comprometido" value={formatCurrency(kpis.custoComprometido)} trend="neutral" />
         <KPICard
           label="Saldo Disponível"
           value={formatCurrency(kpis.saldoDisponivel)}
@@ -79,21 +64,21 @@ export function ObraVisaoGeralPage() {
 
       <MainContent>
         {/* Progress bar large */}
-        <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4">
+        <div className="mb-6 rounded-lg border border-border-default bg-white p-4">
           <div className="mb-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Target size={16} className="text-jogab-500" />
-              <span className="text-sm font-medium text-gray-700">Progresso da Obra</span>
+              <span className="text-sm font-medium text-text-body">Progresso da Obra</span>
             </div>
-            <span className="text-lg font-bold text-jogab-600">{kpis.percentualConcluido}%</span>
+            <span className="text-lg font-bold text-jogab-700">{kpis.percentualConcluido}%</span>
           </div>
-          <div className="h-3 w-full rounded-full bg-gray-100">
+          <div className="h-3 w-full rounded-full bg-surface-soft">
             <div
-              className="h-full rounded-full bg-jogab-500 transition-all"
+              className="h-full rounded-full bg-jogab-700 transition-all"
               style={{ width: `${Math.min(kpis.percentualConcluido, 100)}%` }}
             />
           </div>
-          <div className="mt-2 flex justify-between text-xs text-gray-400">
+          <div className="mt-2 flex justify-between text-xs text-text-subtle">
             <span>{kpis.totalFuncionarios} funcionários alocados</span>
             <span>{kpis.totalContratos} contratos ativos</span>
           </div>
@@ -122,18 +107,18 @@ function ResumoBlocoCard({ bloco }: { bloco: ObraResumoBloco }) {
   };
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
+    <div className="rounded-lg border border-border-default bg-white p-4">
       <div className="mb-3 flex items-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-jogab-50 text-jogab-600">
+        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-jogab-50 text-jogab-700">
           {iconMap[bloco.titulo] ?? <Target size={16} />}
         </div>
-        <h3 className="text-sm font-semibold text-gray-900">{bloco.titulo}</h3>
+        <h3 className="text-sm font-semibold text-text-strong">{bloco.titulo}</h3>
       </div>
       <ul className="space-y-2">
         {bloco.itens.map((item) => (
           <li key={item.label} className="flex items-center justify-between text-xs">
-            <span className="text-gray-500">{item.label}</span>
-            <span className={item.destaque ? 'font-semibold text-jogab-600' : 'font-medium text-gray-700'}>
+            <span className="text-text-muted">{item.label}</span>
+            <span className={item.destaque ? 'font-semibold text-jogab-700' : 'font-medium text-text-body'}>
               {item.valor}
             </span>
           </li>

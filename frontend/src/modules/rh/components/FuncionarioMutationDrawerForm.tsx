@@ -151,28 +151,28 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
   });
 
   if (isEdit && isLoading) {
-    return <p className="text-sm text-gray-500">Carregando dados do funcionário...</p>;
+    return <p className="text-sm text-text-muted">Carregando dados do funcionário...</p>;
   }
 
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Matrícula</span>
           <input {...register('matricula')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           {errors.matricula && <span className="text-xs text-red-600">{errors.matricula.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Nome</span>
           <input {...register('nome')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           {errors.nome && <span className="text-xs text-red-600">{errors.nome.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">CPF</span>
           <input {...register('cpf')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           {errors.cpf && <span className="text-xs text-red-600">{errors.cpf.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Status</span>
           <select {...register('status')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="ativo">Ativo</option>
@@ -182,7 +182,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
             <option value="admissao_pendente">Admissão pendente</option>
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Contrato</span>
           <select {...register('tipoContrato')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="clt">CLT</option>
@@ -192,19 +192,19 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
             <option value="aprendiz">Aprendiz</option>
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Cargo</span>
           <input {...register('cargo')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Função</span>
           <input {...register('funcao')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Departamento</span>
           <input {...register('departamento')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Filial</span>
           <select {...register('filialId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             {referenceData.filiais.map((item) => (
@@ -214,7 +214,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
             ))}
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Obra</span>
           <select {...register('obraAlocadoId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Sem vínculo</option>
@@ -225,7 +225,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
             ))}
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Centro de custo</span>
           <select {...register('centroCustoId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Sem vínculo</option>
@@ -236,7 +236,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
             ))}
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Gestor</span>
           <select {...register('gestorId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Sem gestor</option>
@@ -247,7 +247,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
             ))}
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Data de admissão</span>
           <input
             type="date"
@@ -255,7 +255,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Salário base</span>
           <input
             type="number"
@@ -264,7 +264,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           />
         </label>
-        <label className="text-sm text-gray-700 md:col-span-2">
+        <label className="text-sm text-text-body md:col-span-2">
           <span className="mb-1 block font-medium">E-mail</span>
           <input
             type="email"
@@ -272,15 +272,15 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Telefone</span>
           <input {...register('telefone')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Cidade</span>
           <input {...register('cidade')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">UF</span>
           <input
             maxLength={2}
@@ -296,18 +296,18 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-2 border-t border-gray-200 pt-4">
+      <div className="flex items-center justify-end gap-2 border-t border-border-default pt-4">
         <button
           type="button"
           onClick={closeDrawer}
-          className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700"
+          className="rounded-md border border-gray-300 px-3 py-2 text-sm text-text-body"
         >
           Cancelar
         </button>
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex items-center gap-2 rounded-md bg-jogab-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-md bg-jogab-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
         >
           {isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           {isEdit ? 'Salvar funcionário' : 'Criar funcionário'}

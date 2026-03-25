@@ -9,7 +9,7 @@ function StatusBadgeInline({ status }: { status: HoraExtraStatus }) {
   const variant = HORA_EXTRA_STATUS_VARIANTS[status];
   const label = HORA_EXTRA_STATUS_LABELS[status];
   const colors: Record<string, string> = {
-    default: 'bg-gray-100 text-gray-700',
+    default: 'bg-surface-soft text-text-body',
     success: 'bg-green-100 text-green-700',
     warning: 'bg-yellow-100 text-yellow-700',
     error: 'bg-red-100 text-red-700',
@@ -27,8 +27,8 @@ function StatusBadgeInline({ status }: { status: HoraExtraStatus }) {
 function DetailField({ label, value }: { label: string; value: string | number | null | undefined }) {
   return (
     <div>
-      <dt className="text-sm font-medium text-gray-500">{label}</dt>
-      <dd className="mt-1 text-sm text-gray-900">{value ?? '—'}</dd>
+      <dt className="text-sm font-medium text-text-muted">{label}</dt>
+      <dd className="mt-1 text-sm text-text-strong">{value ?? '—'}</dd>
     </div>
   );
 }
@@ -45,7 +45,7 @@ export function HorasExtrasDetailPage() {
         actions={
           <Link
             to="/horas-extras/lancamentos"
-            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body transition-colors hover:bg-surface-soft"
           >
             <ArrowLeft size={16} />
             Voltar aos lançamentos
@@ -58,7 +58,7 @@ export function HorasExtrasDetailPage() {
           <div className="flex flex-1 items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando lançamento...</p>
+              <p className="text-sm text-text-muted">Carregando lançamento...</p>
             </div>
           </div>
         )}
@@ -71,7 +71,7 @@ export function HorasExtrasDetailPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -86,7 +86,7 @@ export function HorasExtrasDetailPage() {
             action={
               <Link
                 to="/horas-extras/lancamentos"
-                className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Voltar aos lançamentos
               </Link>
@@ -96,9 +96,9 @@ export function HorasExtrasDetailPage() {
 
         {!isLoading && !isError && horaExtra && (
           <>
-            <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-xl border border-border-default bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900">Informações gerais</h2>
+                <h2 className="text-lg font-semibold text-text-strong">Informações gerais</h2>
                 <StatusBadgeInline status={horaExtra.status} />
               </div>
               <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -111,10 +111,10 @@ export function HorasExtrasDetailPage() {
               </dl>
             </section>
 
-            <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-xl border border-border-default bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2">
-                <Clock size={18} className="text-jogab-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Dados do lançamento</h2>
+                <Clock size={18} className="text-jogab-700" />
+                <h2 className="text-lg font-semibold text-text-strong">Dados do lançamento</h2>
               </div>
               <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <DetailField label="Competência" value={horaExtra.competencia} />
@@ -131,10 +131,10 @@ export function HorasExtrasDetailPage() {
               </dl>
             </section>
 
-            <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-xl border border-border-default bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2">
-                <User size={18} className="text-jogab-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Aprovação</h2>
+                <User size={18} className="text-jogab-700" />
+                <h2 className="text-lg font-semibold text-text-strong">Aprovação</h2>
               </div>
               <dl className="grid gap-4 sm:grid-cols-2">
                 <DetailField label="Status atual" value={HORA_EXTRA_STATUS_LABELS[horaExtra.status]} />
@@ -143,21 +143,21 @@ export function HorasExtrasDetailPage() {
             </section>
 
             {horaExtra.observacao && (
-              <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+              <section className="rounded-xl border border-border-default bg-white p-6 shadow-sm">
                 <div className="mb-4 flex items-center gap-2">
-                  <FileText size={18} className="text-jogab-600" />
-                  <h2 className="text-lg font-semibold text-gray-900">Justificativa / Observação</h2>
+                  <FileText size={18} className="text-jogab-700" />
+                  <h2 className="text-lg font-semibold text-text-strong">Justificativa / Observação</h2>
                 </div>
-                <p className="text-sm text-gray-700">{horaExtra.observacao}</p>
+                <p className="text-sm text-text-body">{horaExtra.observacao}</p>
               </section>
             )}
 
             <section className="rounded-xl border border-dashed border-gray-300 bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2">
-                <Building2 size={18} className="text-gray-400" />
-                <h2 className="text-base font-semibold text-gray-900">Histórico de aprovação</h2>
+                <Building2 size={18} className="text-text-subtle" />
+                <h2 className="text-base font-semibold text-text-strong">Histórico de aprovação</h2>
               </div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-text-muted">
                 O histórico detalhado de aprovação será habilitado na integração com o backend.
               </p>
             </section>

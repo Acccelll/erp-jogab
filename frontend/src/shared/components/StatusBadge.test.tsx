@@ -11,13 +11,13 @@ describe('StatusBadge', () => {
   it('uses default variant styles when variant is omitted', () => {
     render(<StatusBadge label="Padrão" />);
     const badge = screen.getByText('Padrão');
-    expect(badge).toHaveClass('bg-gray-100', 'text-gray-700');
+    expect(badge).toHaveClass('bg-neutral-200', 'text-neutral-700');
   });
 
   it('applies success variant styles', () => {
     render(<StatusBadge label="Aprovado" variant="success" />);
     const badge = screen.getByText('Aprovado');
-    expect(badge).toHaveClass('bg-green-50', 'text-green-700');
+    expect(badge).toHaveClass('bg-jogab-100', 'text-jogab-700');
   });
 
   it('applies warning variant styles', () => {
@@ -35,7 +35,7 @@ describe('StatusBadge', () => {
   it('applies info variant styles', () => {
     render(<StatusBadge label="Informação" variant="info" />);
     const badge = screen.getByText('Informação');
-    expect(badge).toHaveClass('bg-blue-50', 'text-blue-700');
+    expect(badge).toHaveClass('bg-accent-100', 'text-accent-600');
   });
 
   it('applies custom className', () => {

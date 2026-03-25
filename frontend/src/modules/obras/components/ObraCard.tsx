@@ -27,16 +27,16 @@ export function ObraCard({ obra, onEdit }: ObraCardProps) {
           navigate(`/obras/${obra.id}`);
         }
       }}
-      className="w-full rounded-lg border border-gray-200 bg-white p-4 text-left transition-shadow hover:shadow-md"
+      className="w-full rounded-lg border border-border-default bg-white p-4 text-left transition-shadow hover:shadow-md"
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-jogab-50 text-jogab-600">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-jogab-50 text-jogab-700">
             <Building2 size={16} />
           </div>
           <div>
-            <p className="text-xs font-medium text-gray-500">{obra.codigo}</p>
-            <h3 className="text-sm font-semibold text-gray-900">{obra.nome}</h3>
+            <p className="text-xs font-medium text-text-muted">{obra.codigo}</p>
+            <h3 className="text-sm font-semibold text-text-strong">{obra.nome}</h3>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -48,7 +48,7 @@ export function ObraCard({ obra, onEdit }: ObraCardProps) {
                 event.stopPropagation();
                 onEdit(obra.id);
               }}
-              className="rounded-md border border-gray-200 p-1.5 text-gray-500 hover:bg-gray-50 hover:text-jogab-600"
+              className="rounded-md border border-border-default p-1.5 text-text-muted hover:bg-surface-soft hover:text-jogab-700"
               aria-label={`Editar ${obra.nome}`}
             >
               <Pencil size={14} />
@@ -57,7 +57,7 @@ export function ObraCard({ obra, onEdit }: ObraCardProps) {
         </div>
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+      <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-muted">
         <span className="flex items-center gap-1">
           <MapPin size={12} />
           {obra.cidade}/{obra.uf}
@@ -72,28 +72,30 @@ export function ObraCard({ obra, onEdit }: ObraCardProps) {
         </span>
       </div>
 
-      <p className="mb-3 text-xs text-gray-400">{OBRA_TIPO_LABELS[obra.tipo]} · {obra.clienteNome} · {obra.responsavelNome}</p>
+      <p className="mb-3 text-xs text-text-subtle">
+        {OBRA_TIPO_LABELS[obra.tipo]} · {obra.clienteNome} · {obra.responsavelNome}
+      </p>
 
       <div className="mb-2">
         <div className="mb-1 flex items-center justify-between text-xs">
-          <span className="text-gray-500">Progresso</span>
-          <span className="font-medium text-gray-700">{obra.percentualConcluido}%</span>
+          <span className="text-text-muted">Progresso</span>
+          <span className="font-medium text-text-body">{obra.percentualConcluido}%</span>
         </div>
-        <div className="h-1.5 w-full rounded-full bg-gray-100">
+        <div className="h-1.5 w-full rounded-full bg-surface-soft">
           <div
-            className="h-full rounded-full bg-jogab-500 transition-all"
+            className="h-full rounded-full bg-jogab-700 transition-all"
             style={{ width: `${Math.min(obra.percentualConcluido, 100)}%` }}
           />
         </div>
       </div>
 
       <div className="flex items-center justify-between text-xs">
-        <span className="text-gray-500">Orçamento</span>
-        <span className="font-medium text-gray-700">{formatCurrency(obra.orcamentoPrevisto)}</span>
+        <span className="text-text-muted">Orçamento</span>
+        <span className="font-medium text-text-body">{formatCurrency(obra.orcamentoPrevisto)}</span>
       </div>
       <div className="flex items-center justify-between text-xs">
-        <span className="text-gray-500">Realizado</span>
-        <span className="font-medium text-gray-700">{formatCurrency(obra.custoRealizado)}</span>
+        <span className="text-text-muted">Realizado</span>
+        <span className="font-medium text-text-body">{formatCurrency(obra.custoRealizado)}</span>
       </div>
     </div>
   );

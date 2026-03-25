@@ -46,34 +46,34 @@ export function ObrasListPage() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Filter bar */}
-      <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-border-default/60 px-4 py-2.5">
         <QuickFilterChips
           chips={statusChips}
           value={filters.status ?? null}
           onChange={(v) => setStatus(v as typeof filters.status)}
         />
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm">
-            <Search size={14} className="text-gray-400" />
+          <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-white px-2.5 py-1 text-sm">
+            <Search size={14} className="text-text-subtle" />
             <input
               type="text"
               placeholder="Buscar..."
               value={filters.search ?? ''}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-gray-400"
+              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-text-subtle"
             />
           </div>
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
           >
             <SlidersHorizontal size={16} />
           </button>
           <button
             type="button"
             onClick={openCreateDrawer}
-            className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+            className="flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
           >
             <Plus size={14} />
             Nova Obra
@@ -83,11 +83,11 @@ export function ObrasListPage() {
 
       {/* Advanced filters */}
       {showAdvanced && (
-        <div className="flex items-center gap-2 border-b border-gray-200/60 bg-gray-50/30 px-4 py-2">
+        <div className="flex items-center gap-2 border-b border-border-default/60 bg-surface-soft/30 px-4 py-2">
           <select
             value={filters.tipo ?? ''}
             onChange={(e) => setTipo((e.target.value || undefined) as typeof filters.tipo)}
-            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+            className="rounded-md border border-border-default bg-white px-2.5 py-1 text-sm text-text-body"
           >
             <option value="">Tipo</option>
             <option value="residencial">Residencial</option>
@@ -97,7 +97,7 @@ export function ObrasListPage() {
             <option value="reforma">Reforma</option>
           </select>
           {hasActiveFilters && (
-            <button type="button" onClick={clearFilters} className="text-sm text-gray-500 hover:text-gray-700">
+            <button type="button" onClick={clearFilters} className="text-sm text-text-muted hover:text-text-body">
               Limpar
             </button>
           )}
@@ -109,11 +109,11 @@ export function ObrasListPage() {
         {isLoading && (
           <div className="space-y-0">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex gap-4 border-b border-gray-100/60 px-4 py-3">
-                <div className="h-4 w-2/5 animate-pulse rounded bg-gray-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
-                <div className="h-4 w-1/4 animate-pulse rounded bg-gray-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+              <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
+                <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
+                <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
               </div>
             ))}
           </div>
@@ -127,7 +127,7 @@ export function ObrasListPage() {
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -148,7 +148,7 @@ export function ObrasListPage() {
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                  className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                 >
                   Limpar filtros
                 </button>
@@ -156,7 +156,7 @@ export function ObrasListPage() {
                 <button
                   type="button"
                   onClick={openCreateDrawer}
-                  className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                  className="flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
                 >
                   <Plus size={16} />
                   Nova Obra
@@ -170,17 +170,17 @@ export function ObrasListPage() {
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200/60">
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Nome</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Status</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Progresso</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">Valor</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Prazo</th>
+                <tr className="border-b border-border-default/60">
+                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Nome</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Status</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Progresso</th>
+                  <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Valor</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Prazo</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100/60">
                 {obras.map((obra) => (
-                  <tr key={obra.id} className="hover:bg-gray-50/50">
+                  <tr key={obra.id} className="hover:bg-surface-soft/50">
                     <td className="px-4 py-1.5">
                       <Link to={`/obras/${obra.id}`}>
                         <TableCellStack
@@ -194,19 +194,19 @@ export function ObrasListPage() {
                     </td>
                     <td className="px-4 py-1.5">
                       <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-100">
+                        <div className="h-1.5 w-16 overflow-hidden rounded-full bg-surface-soft">
                           <div
-                            className="h-full rounded-full bg-jogab-500"
+                            className="h-full rounded-full bg-jogab-700"
                             style={{ width: `${obra.percentualConcluido}%` }}
                           />
                         </div>
-                        <span className="text-xs text-gray-500">{obra.percentualConcluido}%</span>
+                        <span className="text-xs text-text-muted">{obra.percentualConcluido}%</span>
                       </div>
                     </td>
-                    <td className="px-4 py-1.5 text-right text-sm text-gray-700">
+                    <td className="px-4 py-1.5 text-right text-sm text-text-body">
                       {formatCurrency(obra.orcamentoPrevisto)}
                     </td>
-                    <td className="px-4 py-1.5 text-xs text-gray-500">
+                    <td className="px-4 py-1.5 text-xs text-text-muted">
                       {new Date(obra.dataPrevisaoFim).toLocaleDateString('pt-BR')}
                     </td>
                   </tr>

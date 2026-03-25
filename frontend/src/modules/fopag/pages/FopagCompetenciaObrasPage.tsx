@@ -18,10 +18,7 @@ export function FopagCompetenciaObrasPage() {
   if (isError || !detalhe) {
     return (
       <MainContent>
-        <EmptyState
-          title="Erro ao carregar obras"
-          description="Não foi possível carregar a visão da folha por obra."
-        />
+        <EmptyState title="Erro ao carregar obras" description="Não foi possível carregar a visão da folha por obra." />
       </MainContent>
     );
   }
@@ -29,8 +26,8 @@ export function FopagCompetenciaObrasPage() {
   return (
     <MainContent className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Por obra</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-lg font-semibold text-text-strong">Por obra</h2>
+        <p className="text-sm text-text-muted">
           Leitura da folha prevista por obra para apropriação de custo e integração com Financeiro.
         </p>
       </div>
