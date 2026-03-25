@@ -215,25 +215,27 @@ export function Topbar() {
   }, [userMenuOpen]);
 
   return (
-    <header className="flex h-11 items-center justify-between border-b border-border-default bg-surface px-4">
+    <header className="flex h-10 items-center justify-between border-b border-border-default bg-surface px-4 shadow-sm">
       {/* Left side */}
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="rounded-md p-1.5 text-text-muted hover:bg-surface-soft hover:text-text-body lg:hidden"
+          className="rounded-md p-1 text-text-muted hover:bg-surface-soft hover:text-text-body lg:hidden"
           aria-label="Toggle menu"
         >
-          <Menu size={18} />
+          <Menu size={16} />
         </button>
 
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-1 text-sm" aria-label="Breadcrumb">
+        <nav className="flex items-center gap-1.5 text-[13px]" aria-label="Breadcrumb">
           {breadcrumbs.map((crumb, idx) => (
-            <span key={`${crumb}-${idx}`} className="flex items-center gap-1">
-              {idx > 0 && <span className="text-border-default">/</span>}
+            <span key={`${crumb}-${idx}`} className="flex items-center gap-1.5">
+              {idx > 0 && <span className="text-border-default opacity-40">/</span>}
               <span
-                className={cn(idx === breadcrumbs.length - 1 ? 'font-semibold text-brand-primary' : 'text-text-muted')}
+                className={cn(
+                  idx === breadcrumbs.length - 1 ? 'font-bold text-brand-primary' : 'font-normal text-text-muted/50',
+                )}
               >
                 {crumb}
               </span>

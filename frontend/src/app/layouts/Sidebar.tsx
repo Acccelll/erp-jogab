@@ -118,7 +118,13 @@ function NavItem({
       >
         <Icon size={iconSize} className="shrink-0" />
         {!collapsed && (
-          <span className="truncate opacity-100 transition-opacity duration-150">
+          <span
+            className={cn(
+              'truncate font-medium opacity-100 transition-opacity duration-150',
+              tier === 'secondary' && 'text-[13px]',
+              tier === 'utility' && 'text-[12px]',
+            )}
+          >
             {label}
           </span>
         )}

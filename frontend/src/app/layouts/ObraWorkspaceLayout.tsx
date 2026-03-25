@@ -34,7 +34,7 @@ export function ObraWorkspaceLayout() {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Obra header + tabs — unified compact strip */}
-      <div className="border-b border-border-default bg-surface px-4 pt-1.5 pb-0">
+      <div className="border-b border-border-default bg-surface px-4 pt-1 pb-0">
         {isLoading && (
           <div className="mb-1 flex items-center gap-2">
             <div className="h-6 w-6 animate-pulse rounded bg-surface-soft" />
@@ -54,7 +54,7 @@ export function ObraWorkspaceLayout() {
           </div>
         )}
 
-        <OverflowTabs tabs={obraTabs} maxVisible={7} basePath={`/obras/${obraId}`} />
+        <OverflowTabs tabs={obraTabs} maxVisible={5} basePath={`/obras/${obraId}`} />
       </div>
 
       {/* Tab content */}

@@ -52,19 +52,19 @@ export function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Compact header */}
-      <div className="flex items-center justify-between border-b border-border-default px-4 py-2">
-        <div className="flex items-baseline gap-2">
-          <h1 className="text-sm font-semibold text-text-strong">Dashboard</h1>
-          <span className="text-xs text-text-muted">{competenciaLabel}</span>
+      {/* Page header following the analytical variant pattern */}
+      <div className="flex items-end justify-between border-b border-border-default px-6 py-6">
+        <div>
+          <h1 className="text-2xl font-bold text-text-strong font-brand">Dashboard</h1>
+          <p className="mt-1 text-base text-text-muted">{competenciaLabel}</p>
         </div>
         <button
           type="button"
           onClick={() => void refetch()}
-          className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-text-muted hover:bg-surface-soft hover:text-text-body"
+          className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs text-text-muted hover:bg-surface-soft hover:text-text-body"
         >
-          <RefreshCw size={12} className={isFetching ? 'animate-spin' : ''} />
-          Atualizar
+          <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} />
+          Atualizar dados
         </button>
       </div>
 
@@ -112,16 +112,16 @@ export function DashboardPage() {
       )}
 
       {!isLoading && !isError && data && (
-        <MainContent className="space-y-4">
+        <MainContent className="space-y-6 px-6">
           {/* ZONA 1 — KPI principal + secundários inline */}
-          <div className="flex flex-wrap items-end gap-x-6 gap-y-2">
+          <div className="flex flex-wrap items-end gap-x-12 gap-y-4">
             {mainKpi && (
               <div>
-                <span className="text-[11px] font-medium uppercase tracking-wider text-text-subtle">
+                <span className="text-[11px] font-medium uppercase tracking-widest text-text-subtle">
                   {mainKpi.label}
                 </span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-medium tabular-nums text-text-strong">{formatKpiValue(mainKpi)}</span>
+                  <span className="text-4xl font-bold tabular-nums text-text-strong">{formatKpiValue(mainKpi)}</span>
                   {mainKpi.subtitle && (
                     <span className="flex items-center gap-1 text-xs text-success">
                       <TrendingUp className="h-3 w-3" />
