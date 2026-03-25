@@ -15,16 +15,16 @@ function getDisponibilidadeClass(disponibilidade: RelatorioSaidaOperacional['dis
     return 'bg-amber-50 text-amber-700';
   }
 
-  return 'bg-gray-100 text-gray-700';
+  return 'bg-surface-soft text-text-body';
 }
 
 export function RelatorioSaidaCard({ item }: RelatorioSaidaCardProps) {
   return (
-    <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+    <article className="rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-base font-semibold text-gray-900">{item.titulo}</h3>
-          <p className="mt-1 text-sm text-gray-500">{item.descricao}</p>
+          <h3 className="text-base font-semibold text-text-strong">{item.titulo}</h3>
+          <p className="mt-1 text-sm text-text-muted">{item.descricao}</p>
         </div>
         <span
           className={`rounded-full px-2.5 py-1 text-xs font-medium ${getDisponibilidadeClass(item.disponibilidade)}`}
@@ -34,22 +34,22 @@ export function RelatorioSaidaCard({ item }: RelatorioSaidaCardProps) {
       </div>
 
       <div className="mt-4 grid gap-3 md:grid-cols-2">
-        <div className="rounded-lg bg-gray-50 p-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
+        <div className="rounded-lg bg-surface-soft p-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-text-strong">
             <LayoutDashboard size={14} />
             Saída principal
           </div>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-text-muted">
             {RELATORIO_FORMATO_LABELS[item.formatoPrincipal]} · {item.destinoPadrao}
           </p>
         </div>
 
-        <div className="rounded-lg bg-gray-50 p-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
+        <div className="rounded-lg bg-surface-soft p-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-text-strong">
             <Clock3 size={14} />
             Tempo estimado
           </div>
-          <p className="mt-1 text-sm text-gray-600">{item.tempoEstimado}</p>
+          <p className="mt-1 text-sm text-text-muted">{item.tempoEstimado}</p>
         </div>
       </div>
 
@@ -59,18 +59,18 @@ export function RelatorioSaidaCard({ item }: RelatorioSaidaCardProps) {
           {RELATORIO_FORMATO_LABELS[item.formatoPrincipal]}
         </span>
         {(item.formatosSecundarios ?? []).map((formato) => (
-          <span key={formato} className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
+          <span key={formato} className="rounded-full bg-surface-soft px-2.5 py-1 text-xs font-medium text-text-body">
             {RELATORIO_FORMATO_LABELS[formato]}
           </span>
         ))}
       </div>
 
-      <div className="mt-4 rounded-lg border border-dashed border-gray-200 p-3">
-        <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
+      <div className="mt-4 rounded-lg border border-dashed border-border-default p-3">
+        <div className="flex items-center gap-2 text-sm font-medium text-text-strong">
           <Repeat2 size={14} />
           Operação sugerida
         </div>
-        <p className="mt-1 text-sm text-gray-600">{item.agendamento}</p>
+        <p className="mt-1 text-sm text-text-muted">{item.agendamento}</p>
       </div>
     </article>
   );

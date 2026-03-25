@@ -27,21 +27,21 @@ export function ModulePlaceholder({
 
       {/* Title + Badge */}
       <div className="flex flex-col items-center gap-2">
-        <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+        <h2 className="text-xl font-semibold text-text-strong">{title}</h2>
         <StatusBadge label={`Previsto para ${phase}`} variant="info" />
       </div>
 
       {/* Description */}
-      <p className="max-w-md text-center text-sm text-gray-500">{description}</p>
+      <p className="max-w-md text-center text-sm text-text-muted">{description}</p>
 
       {/* Feature list */}
-      <div className="w-full max-w-sm rounded-lg border border-gray-200 bg-white p-4">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+      <div className="w-full max-w-sm rounded-lg border border-border-default bg-white p-4">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-subtle">
           Funcionalidades previstas
         </p>
         <ul className="space-y-2">
           {features.map((feature) => (
-            <li key={feature} className="flex items-center gap-2 text-sm text-gray-600">
+            <li key={feature} className="flex items-center gap-2 text-sm text-text-muted">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-jogab-300" />
               {feature}
             </li>
@@ -50,7 +50,7 @@ export function ModulePlaceholder({
       </div>
 
       {/* Development note */}
-      <div className="flex items-center gap-2 text-xs text-gray-400">
+      <div className="flex items-center gap-2 text-xs text-text-subtle">
         <Construction size={14} />
         <span>Módulo em desenvolvimento</span>
       </div>

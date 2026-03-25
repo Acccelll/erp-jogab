@@ -12,15 +12,8 @@ import {
 } from '../components';
 
 export function HorasExtrasAprovacaoPage() {
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setTipo,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useHorasExtrasFilters();
+  const { filters, setSearch, setStatus, setTipo, setCompetencia, clearFilters, hasActiveFilters } =
+    useHorasExtrasFilters();
 
   const { data, isLoading, isError, refetch } = useHorasExtrasAprovacao(filters.competencia);
 
@@ -68,13 +61,13 @@ export function HorasExtrasAprovacaoPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/horas-extras"
-              className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
             >
               Voltar ao painel
             </Link>
             <Link
               to="/horas-extras/fechamento"
-              className="inline-flex items-center rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+              className="inline-flex items-center rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
             >
               Ir para fechamento
             </Link>
@@ -105,7 +98,7 @@ export function HorasExtrasAprovacaoPage() {
           actionHref="/fopag"
         />
 
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando fila de aprovação...</div>}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando fila de aprovação...</div>}
 
         {isError && (
           <EmptyState
@@ -115,7 +108,7 @@ export function HorasExtrasAprovacaoPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
               >
                 Tentar novamente
               </button>
@@ -143,8 +136,8 @@ export function HorasExtrasAprovacaoPage() {
             ) : (
               <section className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Fila de aprovação</h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="text-lg font-semibold text-text-strong">Fila de aprovação</h2>
+                  <p className="text-sm text-text-muted">
                     Lançamentos que precisam de análise ou já seguem em direção ao fechamento/FOPAG.
                   </p>
                 </div>
@@ -160,10 +153,8 @@ export function HorasExtrasAprovacaoPage() {
             ) : (
               <section className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    Histórico por competência e lançamento
-                  </h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="text-lg font-semibold text-text-strong">Histórico por competência e lançamento</h2>
+                  <p className="text-sm text-text-muted">
                     Trilha de auditoria dos eventos que conectam Obra, RH, Horas Extras, FOPAG e Financeiro.
                   </p>
                 </div>

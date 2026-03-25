@@ -124,27 +124,31 @@ export function ObraMutationDrawerForm({ obraId }: ObraMutationDrawerFormProps) 
   });
 
   if (isEdit && isLoading) {
-    return <p className="text-sm text-gray-500">Carregando dados da obra...</p>;
+    return <p className="text-sm text-text-muted">Carregando dados da obra...</p>;
   }
 
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Código</span>
           <input {...register('codigo')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           {errors.codigo && <span className="text-xs text-red-600">{errors.codigo.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Nome</span>
           <input {...register('nome')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           {errors.nome && <span className="text-xs text-red-600">{errors.nome.message}</span>}
         </label>
-        <label className="text-sm text-gray-700 md:col-span-2">
+        <label className="text-sm text-text-body md:col-span-2">
           <span className="mb-1 block font-medium">Descrição</span>
-          <textarea {...register('descricao')} rows={3} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <textarea
+            {...register('descricao')}
+            rows={3}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Status</span>
           <select {...register('status')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="planejamento">Planejamento</option>
@@ -154,7 +158,7 @@ export function ObraMutationDrawerForm({ obraId }: ObraMutationDrawerFormProps) 
             <option value="cancelada">Cancelada</option>
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Tipo</span>
           <select {...register('tipo')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="residencial">Residencial</option>
@@ -165,47 +169,76 @@ export function ObraMutationDrawerForm({ obraId }: ObraMutationDrawerFormProps) 
             <option value="outros">Outros</option>
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Cliente</span>
           <select {...register('clienteId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
-            {referenceData.clientes.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+            {referenceData.clientes.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Responsável</span>
           <select {...register('responsavelId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
-            {referenceData.responsaveis.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+            {referenceData.responsaveis.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Filial</span>
           <select {...register('filialId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
-            {referenceData.filiais.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+            {referenceData.filiais.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Cidade</span>
           <input {...register('cidade')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">UF</span>
-          <input {...register('uf')} maxLength={2} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm uppercase" />
+          <input
+            {...register('uf')}
+            maxLength={2}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm uppercase"
+          />
         </label>
-        <label className="text-sm text-gray-700 md:col-span-2">
+        <label className="text-sm text-text-body md:col-span-2">
           <span className="mb-1 block font-medium">Endereço</span>
           <input {...register('endereco')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Data de início</span>
-          <input type="date" {...register('dataInicio')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input
+            type="date"
+            {...register('dataInicio')}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Previsão de fim</span>
-          <input type="date" {...register('dataPrevisaoFim')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input
+            type="date"
+            {...register('dataPrevisaoFim')}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
         </label>
-        <label className="text-sm text-gray-700 md:col-span-2">
+        <label className="text-sm text-text-body md:col-span-2">
           <span className="mb-1 block font-medium">Orçamento previsto</span>
-          <input type="number" step="0.01" {...register('orcamentoPrevisto', { valueAsNumber: true })} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input
+            type="number"
+            step="0.01"
+            {...register('orcamentoPrevisto', { valueAsNumber: true })}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
           {errors.orcamentoPrevisto && <span className="text-xs text-red-600">{errors.orcamentoPrevisto.message}</span>}
         </label>
       </div>
@@ -216,11 +249,19 @@ export function ObraMutationDrawerForm({ obraId }: ObraMutationDrawerFormProps) 
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-2 border-t border-gray-200 pt-4">
-        <button type="button" onClick={closeDrawer} className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
+      <div className="flex items-center justify-end gap-2 border-t border-border-default pt-4">
+        <button
+          type="button"
+          onClick={closeDrawer}
+          className="rounded-md border border-gray-300 px-3 py-2 text-sm text-text-body"
+        >
           Cancelar
         </button>
-        <button type="submit" disabled={isPending} className="inline-flex items-center gap-2 rounded-md bg-jogab-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
+        <button
+          type="submit"
+          disabled={isPending}
+          className="inline-flex items-center gap-2 rounded-md bg-jogab-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+        >
           {isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           {isEdit ? 'Salvar obra' : 'Criar obra'}
         </button>

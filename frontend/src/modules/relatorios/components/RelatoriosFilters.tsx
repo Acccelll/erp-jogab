@@ -1,14 +1,6 @@
 import { FilterBar } from '@/shared/components';
-import {
-  RELATORIO_CATEGORIA_LABELS,
-  RELATORIO_DISPONIBILIDADE_LABELS,
-  RELATORIO_FORMATO_LABELS,
-} from '../types';
-import type {
-  RelatorioCategoria,
-  RelatorioDisponibilidade,
-  RelatorioSaida,
-} from '../types';
+import { RELATORIO_CATEGORIA_LABELS, RELATORIO_DISPONIBILIDADE_LABELS, RELATORIO_FORMATO_LABELS } from '../types';
+import type { RelatorioCategoria, RelatorioDisponibilidade, RelatorioSaida } from '../types';
 
 interface RelatoriosFiltersProps {
   search: string;
@@ -52,13 +44,9 @@ export function RelatoriosFilters({
 
       <select
         value={categoria ?? ''}
-        onChange={(event) =>
-          onCategoriaChange(
-            (event.target.value || undefined) as RelatorioCategoria | undefined,
-          )
-        }
+        onChange={(event) => onCategoriaChange((event.target.value || undefined) as RelatorioCategoria | undefined)}
         disabled={lockCategoria}
-        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500 disabled:bg-gray-100 disabled:text-gray-500"
+        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500 disabled:bg-surface-soft disabled:text-text-muted"
       >
         <option value="">Todas as categorias</option>
         {Object.entries(RELATORIO_CATEGORIA_LABELS).map(([value, label]) => (
@@ -71,9 +59,7 @@ export function RelatoriosFilters({
       <select
         value={disponibilidade ?? ''}
         onChange={(event) =>
-          onDisponibilidadeChange(
-            (event.target.value || undefined) as RelatorioDisponibilidade | undefined,
-          )
+          onDisponibilidadeChange((event.target.value || undefined) as RelatorioDisponibilidade | undefined)
         }
         className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
       >
@@ -87,9 +73,7 @@ export function RelatoriosFilters({
 
       <select
         value={formato ?? ''}
-        onChange={(event) =>
-          onFormatoChange((event.target.value || undefined) as RelatorioSaida | undefined)
-        }
+        onChange={(event) => onFormatoChange((event.target.value || undefined) as RelatorioSaida | undefined)}
         className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500"
       >
         <option value="">Todos os formatos</option>

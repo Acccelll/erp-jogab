@@ -42,8 +42,8 @@ export function OverflowTabs({ tabs, maxVisible = 5, basePath }: OverflowTabsPro
             cn(
               'whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition-colors',
               isActive
-                ? 'border-jogab-600 text-jogab-600'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                ? 'border-jogab-700 text-jogab-700'
+                : 'border-transparent text-text-muted hover:border-jogab-400 hover:text-text-body',
             )
           }
         >
@@ -56,14 +56,14 @@ export function OverflowTabs({ tabs, maxVisible = 5, basePath }: OverflowTabsPro
           <button
             type="button"
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-1 whitespace-nowrap border-b-2 border-transparent px-2 py-2 text-xs text-gray-400 transition-colors hover:text-gray-600"
+            className="flex items-center gap-1 whitespace-nowrap border-b-2 border-transparent px-2 py-2 text-xs text-text-subtle transition-colors hover:text-text-muted"
           >
             +{hiddenTabs.length}
             <ChevronDown className="h-3 w-3" />
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+            <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-md border border-border-default bg-surface py-1 shadow-lg">
               {hiddenTabs.map((tab) => (
                 <NavLink
                   key={tab.path}
@@ -71,8 +71,8 @@ export function OverflowTabs({ tabs, maxVisible = 5, basePath }: OverflowTabsPro
                   onClick={() => setDropdownOpen(false)}
                   className={({ isActive }) =>
                     cn(
-                      'block px-3 py-1.5 text-sm hover:bg-gray-50',
-                      isActive ? 'font-medium text-gray-900' : 'text-gray-600',
+                      'block px-3 py-1.5 text-sm hover:bg-surface-soft',
+                      isActive ? 'font-medium text-jogab-700' : 'text-text-muted',
                     )
                   }
                 >

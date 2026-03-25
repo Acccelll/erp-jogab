@@ -22,15 +22,15 @@ export function SideDrawer() {
 
       {/* Drawer */}
       <aside
-        className="fixed right-0 top-0 z-50 flex h-full flex-col border-l border-gray-200 bg-white shadow-xl"
+        className="fixed right-0 top-0 z-50 flex h-full flex-col border-l border-border-default bg-white shadow-xl"
         style={{ width: width ?? '480px' }}
       >
-        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+        <div className="flex items-center justify-between border-b border-border-default px-4 py-3">
+          <h2 className="text-lg font-semibold text-text-strong">{title}</h2>
           <button
             type="button"
             onClick={closeDrawer}
-            className="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            className="rounded p-1 text-text-muted hover:bg-surface-soft hover:text-text-body"
           >
             <X size={20} />
           </button>

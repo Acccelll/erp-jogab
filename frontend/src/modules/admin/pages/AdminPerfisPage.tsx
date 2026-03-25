@@ -29,7 +29,7 @@ export function AdminPerfisPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando perfis...</div>}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando perfis...</div>}
 
         {isError && (
           <EmptyState
@@ -39,7 +39,7 @@ export function AdminPerfisPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
               >
                 Tentar novamente
               </button>

@@ -29,8 +29,8 @@ export function FopagCompetenciaPrevistoRealizadoPage() {
   return (
     <MainContent className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Previsto x Realizado</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-lg font-semibold text-text-strong">Previsto x Realizado</h2>
+        <p className="text-sm text-text-muted">
           Comparativo da folha prevista com os valores efetivamente realizados e conciliados.
         </p>
       </div>

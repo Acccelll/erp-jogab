@@ -7,14 +7,10 @@ interface FilterBarProps {
 
 export function FilterBar({ children, onClear }: FilterBarProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3 border-b border-gray-100 bg-white px-6 py-3">
+    <div className="flex flex-wrap items-center gap-3 border-b border-border-light bg-surface px-6 py-3">
       {children}
       {onClear && (
-        <button
-          type="button"
-          onClick={onClear}
-          className="ml-auto text-sm text-gray-500 hover:text-gray-700"
-        >
+        <button type="button" onClick={onClear} className="ml-auto text-sm text-text-muted hover:text-text-body">
           Limpar filtros
         </button>
       )}

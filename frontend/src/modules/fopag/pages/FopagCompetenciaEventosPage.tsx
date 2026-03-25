@@ -29,8 +29,8 @@ export function FopagCompetenciaEventosPage() {
   return (
     <MainContent className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Eventos</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-lg font-semibold text-text-strong">Eventos</h2>
+        <p className="text-sm text-text-muted">
           Detalhamento dos eventos da competência, incluindo origem em RH e Horas Extras.
         </p>
       </div>

@@ -5,16 +5,8 @@ import { useCompraFilters } from '../hooks';
 import { ComprasFilters, CotacoesCompraTable } from '../components';
 
 export function ComprasCotacoesPage() {
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setCategoria,
-    setPrioridade,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useCompraFilters();
+  const { filters, setSearch, setStatus, setCategoria, setPrioridade, setCompetencia, clearFilters, hasActiveFilters } =
+    useCompraFilters();
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['compras-cotacoes', filters],
@@ -44,14 +36,18 @@ export function ComprasCotacoesPage() {
       />
 
       <MainContent className="space-y-4">
-        {isLoading && <p className="text-sm text-gray-500">Carregando cotações...</p>}
+        {isLoading && <p className="text-sm text-text-muted">Carregando cotações...</p>}
 
         {isError && (
           <EmptyState
             title="Erro ao carregar cotações"
             description="Não foi possível carregar as cotações em andamento."
             action={
-              <button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600">
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
+              >
                 Tentar novamente
               </button>
             }

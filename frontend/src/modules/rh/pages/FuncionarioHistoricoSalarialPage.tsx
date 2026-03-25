@@ -63,13 +63,21 @@ export function FuncionarioHistoricoSalarialPage() {
           hasActiveFilters={Boolean(search || motivo)}
         />
 
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando histórico salarial...</div>}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando histórico salarial...</div>}
 
         {isError && (
           <EmptyState
             title="Erro ao carregar histórico salarial"
             description="Não foi possível carregar as movimentações salariais do funcionário."
-            action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white">Tentar novamente</button>}
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
+              >
+                Tentar novamente
+              </button>
+            }
           />
         )}
 
@@ -81,7 +89,10 @@ export function FuncionarioHistoricoSalarialPage() {
               ))}
             </section>
             {filtered.length === 0 ? (
-              <EmptyState title="Nenhuma movimentação encontrada" description="Não há histórico salarial para o filtro atual." />
+              <EmptyState
+                title="Nenhuma movimentação encontrada"
+                description="Não há histórico salarial para o filtro atual."
+              />
             ) : (
               <FuncionarioWorkspaceTable
                 columns={['Vigência', 'Motivo', 'Cargo', 'Salário', 'Responsável']}

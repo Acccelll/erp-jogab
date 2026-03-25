@@ -44,7 +44,7 @@ export function RelatorioCategoriaPage() {
         actions={
           <Link
             to="/relatorios"
-            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
           >
             <ArrowLeft size={16} />
             Voltar aos relatórios
@@ -70,7 +70,7 @@ export function RelatorioCategoriaPage() {
 
       <MainContent className="space-y-6">
         {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">Carregando relatórios da categoria...</div>
+          <div className="py-12 text-center text-sm text-text-muted">Carregando relatórios da categoria...</div>
         )}
 
         {isError && (
@@ -81,7 +81,7 @@ export function RelatorioCategoriaPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -99,8 +99,8 @@ export function RelatorioCategoriaPage() {
 
             <section className="space-y-4">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Relatórios da categoria</h2>
-                <p className="text-sm text-gray-500">
+                <h2 className="text-lg font-semibold text-text-strong">Relatórios da categoria</h2>
+                <p className="text-sm text-text-muted">
                   Lista operacional com origem dos dados, disponibilidade e formato principal.
                 </p>
               </div>
@@ -109,8 +109,8 @@ export function RelatorioCategoriaPage() {
 
             <section className="space-y-4">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Saídas e exportação</h2>
-                <p className="text-sm text-gray-500">
+                <h2 className="text-lg font-semibold text-text-strong">Saídas e exportação</h2>
+                <p className="text-sm text-text-muted">
                   Blocos operacionais para execução, distribuição e leitura do formato principal por relatório.
                 </p>
               </div>
@@ -123,8 +123,8 @@ export function RelatorioCategoriaPage() {
 
             <section className="space-y-4">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Cobertura de módulos</h2>
-                <p className="text-sm text-gray-500">
+                <h2 className="text-lg font-semibold text-text-strong">Cobertura de módulos</h2>
+                <p className="text-sm text-text-muted">
                   Módulos fonte já relacionados a esta categoria para análise gerencial e exportação.
                 </p>
               </div>
@@ -150,7 +150,7 @@ export function RelatorioCategoriaPage() {
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                  className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                 >
                   Limpar filtros
                 </button>

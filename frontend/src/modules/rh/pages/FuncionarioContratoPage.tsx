@@ -35,7 +35,7 @@ export function FuncionarioContratoPage() {
         />
 
         {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">Carregando contrato do funcionário...</div>
+          <div className="py-12 text-center text-sm text-text-muted">Carregando contrato do funcionário...</div>
         )}
         {isError && (
           <EmptyState
@@ -45,7 +45,7 @@ export function FuncionarioContratoPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
               >
                 Tentar novamente
               </button>
@@ -68,7 +68,7 @@ export function FuncionarioContratoPage() {
               ))}
             </section>
 
-            <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+            <section className="rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <Info label="Contrato" value={data.contratoId} />
                 <Info label="Situação" value={SITUACAO_LABELS[data.situacao]} />
@@ -103,8 +103,8 @@ export function FuncionarioContratoPage() {
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
-      <p className="mt-1 text-sm font-medium text-gray-900">{value}</p>
+      <p className="text-xs uppercase tracking-wide text-text-subtle">{label}</p>
+      <p className="mt-1 text-sm font-medium text-text-strong">{value}</p>
     </div>
   );
 }

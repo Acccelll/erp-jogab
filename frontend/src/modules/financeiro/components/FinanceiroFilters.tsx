@@ -59,7 +59,7 @@ export function FinanceiroFilters({
         value={tipo ?? ''}
         onChange={(event) => onTipoChange((event.target.value || undefined) as FinanceiroTipo | undefined)}
         disabled={lockTipo}
-        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500 disabled:cursor-not-allowed disabled:bg-gray-100"
+        className="h-10 rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-jogab-500 disabled:cursor-not-allowed disabled:bg-surface-soft"
       >
         <option value="">Todos os tipos</option>
         {Object.entries(FINANCEIRO_TIPO_LABELS).map(([value, label]) => (

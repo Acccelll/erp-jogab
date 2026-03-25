@@ -1,10 +1,5 @@
 import { AlertTriangle, Landmark } from 'lucide-react';
-import {
-  EmptyState,
-  MainContent,
-  PageHeader,
-  StatusBadge,
-} from '@/shared/components';
+import { EmptyState, MainContent, PageHeader, StatusBadge } from '@/shared/components';
 import { formatCurrency } from '@/shared/lib/utils';
 import { FinanceiroFilters } from '../components';
 import { useFinanceiroFilters, useFluxoCaixa } from '../hooks';
@@ -23,16 +18,8 @@ function getFluxoStatusVariant(status: keyof typeof FLUXO_CAIXA_STATUS_LABELS) {
 }
 
 export function FluxoCaixaPage() {
-  const {
-    filters,
-    setSearch,
-    setStatus,
-    setTipo,
-    setOrigem,
-    setCompetencia,
-    clearFilters,
-    hasActiveFilters,
-  } = useFinanceiroFilters();
+  const { filters, setSearch, setStatus, setTipo, setOrigem, setCompetencia, clearFilters, hasActiveFilters } =
+    useFinanceiroFilters();
 
   const { data, isLoading, isError, refetch } = useFluxoCaixa(filters);
 
@@ -59,11 +46,7 @@ export function FluxoCaixaPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">
-            Carregando fluxo de caixa...
-          </div>
-        )}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando fluxo de caixa...</div>}
 
         {isError && (
           <EmptyState
@@ -74,7 +57,7 @@ export function FluxoCaixaPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
               >
                 Tentar novamente
               </button>
@@ -86,17 +69,14 @@ export function FluxoCaixaPage() {
           <div className="space-y-4">
             <section className="rounded-xl border border-jogab-100 bg-jogab-50/70 p-4">
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-jogab-600">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-jogab-700">
                   <Landmark size={18} />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold text-gray-900">
-                    Leitura conceitual do caixa
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    O fluxo de caixa conecta saídas de FOPAG, Compras e Fiscal com entradas
-                    originadas em Medições e faturamento, sempre vinculadas à obra e à
-                    competência.
+                  <h2 className="text-base font-semibold text-text-strong">Leitura conceitual do caixa</h2>
+                  <p className="text-sm text-text-muted">
+                    O fluxo de caixa conecta saídas de FOPAG, Compras e Fiscal com entradas originadas em Medições e
+                    faturamento, sempre vinculadas à obra e à competência.
                   </p>
                 </div>
               </div>
@@ -108,53 +88,35 @@ export function FluxoCaixaPage() {
                 description="Ajuste a competência ou limpe os filtros para visualizar a agenda financeira projetada."
               />
             ) : (
-              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm shadow-gray-100/60">
+              <div className="overflow-hidden rounded-xl border border-border-default bg-white shadow-sm shadow-gray-100/60">
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-surface-soft">
                       <tr>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-600">
-                          Período
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-600">
-                          Previsto entrada
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-600">
-                          Previsto saída
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-600">
-                          Realizado entrada
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-600">
-                          Realizado saída
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-600">
-                          Saldo projetado
-                        </th>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-600">
-                          Status
-                        </th>
+                        <th className="px-4 py-3 text-left font-semibold text-text-muted">Período</th>
+                        <th className="px-4 py-3 text-right font-semibold text-text-muted">Previsto entrada</th>
+                        <th className="px-4 py-3 text-right font-semibold text-text-muted">Previsto saída</th>
+                        <th className="px-4 py-3 text-right font-semibold text-text-muted">Realizado entrada</th>
+                        <th className="px-4 py-3 text-right font-semibold text-text-muted">Realizado saída</th>
+                        <th className="px-4 py-3 text-right font-semibold text-text-muted">Saldo projetado</th>
+                        <th className="px-4 py-3 text-left font-semibold text-text-muted">Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 bg-white">
                       {data.map((item) => (
-                        <tr key={item.periodo} className="hover:bg-gray-50/70">
-                          <td className="px-4 py-3 font-medium text-gray-900">
+                        <tr key={item.periodo} className="hover:bg-surface-soft/70">
+                          <td className="px-4 py-3 font-medium text-text-strong">
                             {new Date(item.periodo).toLocaleDateString('pt-BR')}
                           </td>
-                          <td className="px-4 py-3 text-right text-gray-700">
+                          <td className="px-4 py-3 text-right text-text-body">
                             {formatCurrency(item.previstoEntrada)}
                           </td>
-                          <td className="px-4 py-3 text-right text-gray-700">
-                            {formatCurrency(item.previstoSaida)}
-                          </td>
-                          <td className="px-4 py-3 text-right text-gray-700">
+                          <td className="px-4 py-3 text-right text-text-body">{formatCurrency(item.previstoSaida)}</td>
+                          <td className="px-4 py-3 text-right text-text-body">
                             {formatCurrency(item.realizadoEntrada)}
                           </td>
-                          <td className="px-4 py-3 text-right text-gray-700">
-                            {formatCurrency(item.realizadoSaida)}
-                          </td>
-                          <td className="px-4 py-3 text-right font-semibold text-gray-900">
+                          <td className="px-4 py-3 text-right text-text-body">{formatCurrency(item.realizadoSaida)}</td>
+                          <td className="px-4 py-3 text-right font-semibold text-text-strong">
                             {formatCurrency(item.saldoProjetado)}
                           </td>
                           <td className="px-4 py-3">

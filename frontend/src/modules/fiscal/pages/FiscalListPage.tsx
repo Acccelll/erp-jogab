@@ -28,14 +28,14 @@ export function FiscalListPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/fiscal/entradas"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
             >
               <ArrowDownToLine size={16} />
               Entradas
             </Link>
             <Link
               to="/fiscal/saidas"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
             >
               <ArrowUpFromLine size={16} />
               Saídas
@@ -66,7 +66,7 @@ export function FiscalListPage() {
       {data?.kpis && <FiscalKpiBar kpis={data.kpis} />}
 
       <MainContent className="space-y-6">
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando visão fiscal...</div>}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando visão fiscal...</div>}
 
         {isError && (
           <EmptyState
@@ -76,7 +76,7 @@ export function FiscalListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -105,7 +105,7 @@ export function FiscalListPage() {
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                     >
                       Limpar filtros
                     </button>
@@ -115,8 +115,8 @@ export function FiscalListPage() {
             ) : (
               <section className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Lista principal de documentos fiscais</h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="text-lg font-semibold text-text-strong">Lista principal de documentos fiscais</h2>
+                  <p className="text-sm text-text-muted">
                     Rastreabilidade operacional entre documento, compra, obra, estoque e reflexo financeiro.
                   </p>
                 </div>

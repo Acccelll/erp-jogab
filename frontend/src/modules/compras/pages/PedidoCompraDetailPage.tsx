@@ -15,21 +15,28 @@ export function PedidoCompraDetailPage() {
         title="Detalhe do Pedido"
         subtitle="Visão consolidada do pedido, origem da solicitação, apoio da cotação e impactos futuros em Fiscal e Financeiro."
         actions={
-          <Link to="/compras/pedidos" className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Link
+            to="/compras/pedidos"
+            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
+          >
             Voltar para pedidos
           </Link>
         }
       />
 
       <MainContent className="space-y-6">
-        {isLoading && <p className="text-sm text-gray-500">Carregando detalhe do pedido...</p>}
+        {isLoading && <p className="text-sm text-text-muted">Carregando detalhe do pedido...</p>}
 
         {isError && (
           <EmptyState
             title="Erro ao carregar pedido"
             description="Não foi possível carregar o detalhe do pedido de compra."
             action={
-              <button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600">
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
+              >
                 Tentar novamente
               </button>
             }
@@ -46,59 +53,83 @@ export function PedidoCompraDetailPage() {
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-[1.2fr,0.8fr]">
-              <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+              <article className="rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
                 <div className="mb-4 flex items-start justify-between gap-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">{data.pedido.codigo}</h2>
-                    <p className="text-sm text-gray-500">Fornecedor {data.pedido.fornecedorNome} • Obra {data.pedido.obraNome}</p>
+                    <h2 className="text-lg font-semibold text-text-strong">{data.pedido.codigo}</h2>
+                    <p className="text-sm text-text-muted">
+                      Fornecedor {data.pedido.fornecedorNome} • Obra {data.pedido.obraNome}
+                    </p>
                   </div>
                   <CompraStatusBadge status={data.pedido.status} />
                 </div>
 
                 <dl className="grid gap-3 md:grid-cols-2">
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Competência</dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900">{formatCompetencia(data.pedido.competencia)}</dd>
+                  <div className="rounded-lg bg-surface-soft p-3">
+                    <dt className="text-xs uppercase tracking-wide text-text-subtle">Competência</dt>
+                    <dd className="mt-1 text-sm font-semibold text-text-strong">
+                      {formatCompetencia(data.pedido.competencia)}
+                    </dd>
                   </div>
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Valor do pedido</dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(data.pedido.valorPedido)}</dd>
+                  <div className="rounded-lg bg-surface-soft p-3">
+                    <dt className="text-xs uppercase tracking-wide text-text-subtle">Valor do pedido</dt>
+                    <dd className="mt-1 text-sm font-semibold text-text-strong">
+                      {formatCurrency(data.pedido.valorPedido)}
+                    </dd>
                   </div>
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Categoria</dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900">{COMPRA_CATEGORIA_LABELS[data.pedido.categoria]}</dd>
+                  <div className="rounded-lg bg-surface-soft p-3">
+                    <dt className="text-xs uppercase tracking-wide text-text-subtle">Categoria</dt>
+                    <dd className="mt-1 text-sm font-semibold text-text-strong">
+                      {COMPRA_CATEGORIA_LABELS[data.pedido.categoria]}
+                    </dd>
                   </div>
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Prioridade</dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900">{COMPRA_PRIORIDADE_LABELS[data.pedido.prioridade]}</dd>
+                  <div className="rounded-lg bg-surface-soft p-3">
+                    <dt className="text-xs uppercase tracking-wide text-text-subtle">Prioridade</dt>
+                    <dd className="mt-1 text-sm font-semibold text-text-strong">
+                      {COMPRA_PRIORIDADE_LABELS[data.pedido.prioridade]}
+                    </dd>
                   </div>
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Fiscal</dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900">{data.pedido.fiscalStatus.replaceAll('_', ' ')}</dd>
+                  <div className="rounded-lg bg-surface-soft p-3">
+                    <dt className="text-xs uppercase tracking-wide text-text-subtle">Fiscal</dt>
+                    <dd className="mt-1 text-sm font-semibold text-text-strong">
+                      {data.pedido.fiscalStatus.replaceAll('_', ' ')}
+                    </dd>
                   </div>
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <dt className="text-xs uppercase tracking-wide text-gray-400">Financeiro</dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900">{data.pedido.financeiroStatus.replaceAll('_', ' ')}</dd>
+                  <div className="rounded-lg bg-surface-soft p-3">
+                    <dt className="text-xs uppercase tracking-wide text-text-subtle">Financeiro</dt>
+                    <dd className="mt-1 text-sm font-semibold text-text-strong">
+                      {data.pedido.financeiroStatus.replaceAll('_', ' ')}
+                    </dd>
                   </div>
                 </dl>
               </article>
 
-              <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
-                <h3 className="text-base font-semibold text-gray-900">Origem da compra</h3>
-                <div className="mt-4 space-y-4 text-sm text-gray-600">
+              <article className="rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
+                <h3 className="text-base font-semibold text-text-strong">Origem da compra</h3>
+                <div className="mt-4 space-y-4 text-sm text-text-muted">
                   <div>
-                    <p className="font-medium text-gray-900">Solicitação</p>
-                    <p>{data.solicitacao ? `${data.solicitacao.codigo} • ${data.solicitacao.titulo}` : 'Sem solicitação vinculada'}</p>
+                    <p className="font-medium text-text-strong">Solicitação</p>
+                    <p>
+                      {data.solicitacao
+                        ? `${data.solicitacao.codigo} • ${data.solicitacao.titulo}`
+                        : 'Sem solicitação vinculada'}
+                    </p>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Cotação</p>
-                    <p>{data.cotacao ? `${data.cotacao.codigo} • ${data.cotacao.fornecedorPrincipal}` : 'Pedido direto sem cotação formal'}</p>
+                    <p className="font-medium text-text-strong">Cotação</p>
+                    <p>
+                      {data.cotacao
+                        ? `${data.cotacao.codigo} • ${data.cotacao.fornecedorPrincipal}`
+                        : 'Pedido direto sem cotação formal'}
+                    </p>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Observações de integração</p>
+                    <p className="font-medium text-text-strong">Observações de integração</p>
                     <ul className="mt-2 space-y-2">
                       {data.observacoes.map((observacao) => (
-                        <li key={observacao} className="rounded-lg bg-gray-50 px-3 py-2">{observacao}</li>
+                        <li key={observacao} className="rounded-lg bg-surface-soft px-3 py-2">
+                          {observacao}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -107,28 +138,32 @@ export function PedidoCompraDetailPage() {
             </section>
 
             <section className="grid gap-6 xl:grid-cols-[1.1fr,0.9fr]">
-              <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
-                <h3 className="text-base font-semibold text-gray-900">Itens do pedido</h3>
+              <article className="rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
+                <h3 className="text-base font-semibold text-text-strong">Itens do pedido</h3>
                 <div className="mt-4 overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-surface-soft">
                       <tr>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-600">Descrição</th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-600">Qtd.</th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-600">Unitário</th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-600">Total</th>
+                        <th className="px-4 py-3 text-left font-semibold text-text-muted">Descrição</th>
+                        <th className="px-4 py-3 text-right font-semibold text-text-muted">Qtd.</th>
+                        <th className="px-4 py-3 text-right font-semibold text-text-muted">Unitário</th>
+                        <th className="px-4 py-3 text-right font-semibold text-text-muted">Total</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {data.itens.map((item) => (
                         <tr key={item.id}>
                           <td className="px-4 py-3">
-                            <div className="font-medium text-gray-900">{item.descricao}</div>
-                            <div className="text-xs text-gray-500">{item.obraAplicacao}</div>
+                            <div className="font-medium text-text-strong">{item.descricao}</div>
+                            <div className="text-xs text-text-muted">{item.obraAplicacao}</div>
                           </td>
-                          <td className="px-4 py-3 text-right text-gray-700">{item.quantidade} {item.unidade}</td>
-                          <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.valorUnitario)}</td>
-                          <td className="px-4 py-3 text-right font-medium text-gray-900">{formatCurrency(item.valorTotal)}</td>
+                          <td className="px-4 py-3 text-right text-text-body">
+                            {item.quantidade} {item.unidade}
+                          </td>
+                          <td className="px-4 py-3 text-right text-text-body">{formatCurrency(item.valorUnitario)}</td>
+                          <td className="px-4 py-3 text-right font-medium text-text-strong">
+                            {formatCurrency(item.valorTotal)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -136,15 +171,15 @@ export function PedidoCompraDetailPage() {
                 </div>
               </article>
 
-              <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
-                <h3 className="text-base font-semibold text-gray-900">Linha do tempo</h3>
-                <ol className="mt-4 space-y-4 border-l border-gray-200 pl-4">
+              <article className="rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
+                <h3 className="text-base font-semibold text-text-strong">Linha do tempo</h3>
+                <ol className="mt-4 space-y-4 border-l border-border-default pl-4">
                   {data.timeline.map((item) => (
                     <li key={item.id} className="relative">
-                      <span className="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-jogab-500" />
-                      <p className="text-sm font-medium text-gray-900">{item.titulo}</p>
-                      <p className="text-xs text-gray-500">{new Date(item.data).toLocaleString('pt-BR')}</p>
-                      <p className="mt-1 text-sm text-gray-600">{item.descricao}</p>
+                      <span className="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-jogab-700" />
+                      <p className="text-sm font-medium text-text-strong">{item.titulo}</p>
+                      <p className="text-xs text-text-muted">{new Date(item.data).toLocaleString('pt-BR')}</p>
+                      <p className="mt-1 text-sm text-text-muted">{item.descricao}</p>
                     </li>
                   ))}
                 </ol>

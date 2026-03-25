@@ -26,7 +26,9 @@ export function ObraComprasPage() {
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
     return items.filter((item) => {
-      const matchesSearch = !search.trim() || `${item.codigo} ${item.objeto} ${item.fornecedor}`.toLowerCase().includes(search.trim().toLowerCase());
+      const matchesSearch =
+        !search.trim() ||
+        `${item.codigo} ${item.objeto} ${item.fornecedor}`.toLowerCase().includes(search.trim().toLowerCase());
       const matchesStatus = !status || item.status === status;
       return matchesSearch && matchesStatus;
     });
@@ -55,16 +57,35 @@ export function ObraComprasPage() {
           hasActiveFilters={Boolean(search || status)}
         />
 
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando compras da obra...</div>}
-        {isError && <EmptyState title="Erro ao carregar compras" description="Não foi possível carregar o pipeline de compras desta obra." action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white">Tentar novamente</button>} />}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando compras da obra...</div>}
+        {isError && (
+          <EmptyState
+            title="Erro ao carregar compras"
+            description="Não foi possível carregar o pipeline de compras desta obra."
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
+              >
+                Tentar novamente
+              </button>
+            }
+          />
+        )}
 
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-3">
-              {data.resumoCards.map((card) => <ObraWorkspaceResumoCard key={card.id} card={card} />)}
+              {data.resumoCards.map((card) => (
+                <ObraWorkspaceResumoCard key={card.id} card={card} />
+              ))}
             </section>
             {filtered.length === 0 ? (
-              <EmptyState title="Nenhum item de compra encontrado" description="Não há compras desta obra para o filtro atual." />
+              <EmptyState
+                title="Nenhum item de compra encontrado"
+                description="Não há compras desta obra para o filtro atual."
+              />
             ) : (
               <ObraWorkspaceTable
                 columns={['Código', 'Objeto', 'Fornecedor', 'Status', 'Valor', 'Entrega']}

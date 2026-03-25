@@ -26,12 +26,16 @@ export function QuickFilterChips({ chips, value, onChange }: QuickFilterChipsPro
             className={cn(
               'rounded-full border px-3 py-1.5 text-sm transition-colors',
               isActive
-                ? 'border-gray-300 bg-white font-medium text-gray-900'
-                : 'border-gray-200/60 bg-white text-gray-500 hover:bg-gray-50',
+                ? 'border-jogab-700 bg-jogab-700 font-medium text-white'
+                : 'border-border-default bg-surface text-text-muted hover:bg-surface-soft hover:text-text-body',
             )}
           >
             {chip.label}
-            {chip.count != null && <span className="ml-1.5 text-xs font-normal text-gray-400">{chip.count}</span>}
+            {chip.count != null && (
+              <span className={cn('ml-1.5 text-xs font-normal', isActive ? 'text-jogab-100' : 'text-text-subtle')}>
+                {chip.count}
+              </span>
+            )}
           </button>
         );
       })}

@@ -25,7 +25,8 @@ export function ObraCronogramaPage() {
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
     return items.filter((item) => {
-      const matchesSearch = !search.trim() || `${item.etapa} ${item.responsavel}`.toLowerCase().includes(search.trim().toLowerCase());
+      const matchesSearch =
+        !search.trim() || `${item.etapa} ${item.responsavel}`.toLowerCase().includes(search.trim().toLowerCase());
       const matchesStatus = !status || item.status === status;
       return matchesSearch && matchesStatus;
     });
@@ -56,13 +57,21 @@ export function ObraCronogramaPage() {
           hasActiveFilters={hasActiveFilters}
         />
 
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando cronograma da obra...</div>}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando cronograma da obra...</div>}
 
         {isError && (
           <EmptyState
             title="Erro ao carregar cronograma"
             description="Não foi possível carregar as etapas prioritárias desta obra."
-            action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white">Tentar novamente</button>}
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
+              >
+                Tentar novamente
+              </button>
+            }
           />
         )}
 
@@ -77,7 +86,11 @@ export function ObraCronogramaPage() {
             {filtered.length === 0 ? (
               <EmptyState
                 title="Nenhuma etapa encontrada"
-                description={hasActiveFilters ? 'Nenhuma etapa corresponde aos filtros selecionados.' : 'Ainda não há etapas de cronograma mapeadas para esta obra.'}
+                description={
+                  hasActiveFilters
+                    ? 'Nenhuma etapa corresponde aos filtros selecionados.'
+                    : 'Ainda não há etapas de cronograma mapeadas para esta obra.'
+                }
               />
             ) : (
               <ObraWorkspaceTable

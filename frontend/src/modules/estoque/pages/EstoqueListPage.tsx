@@ -27,14 +27,14 @@ export function EstoqueListPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/estoque/movimentacoes"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
             >
               <ArrowRightLeft size={16} />
               Movimentações
             </Link>
             <Link
               to="/compras"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
             >
               <Boxes size={16} />
               Ir para Compras
@@ -67,7 +67,7 @@ export function EstoqueListPage() {
           <div className="flex flex-1 items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando visão de estoque...</p>
+              <p className="text-sm text-text-muted">Carregando visão de estoque...</p>
             </div>
           </div>
         )}
@@ -80,7 +80,7 @@ export function EstoqueListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -115,7 +115,7 @@ export function EstoqueListPage() {
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                     >
                       Limpar filtros
                     </button>
@@ -126,12 +126,12 @@ export function EstoqueListPage() {
               <section className="space-y-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Itens de estoque</h2>
-                    <p className="text-sm text-gray-500">
+                    <h2 className="text-lg font-semibold text-text-strong">Itens de estoque</h2>
+                    <p className="text-sm text-text-muted">
                       Saldos por item, local e obra com leitura de consumo e rastreabilidade de origem.
                     </p>
                   </div>
-                  <Link to="/estoque/movimentacoes" className="text-sm font-medium text-jogab-600 hover:text-jogab-700">
+                  <Link to="/estoque/movimentacoes" className="text-sm font-medium text-jogab-700 hover:text-jogab-700">
                     Ver movimentações
                   </Link>
                 </div>

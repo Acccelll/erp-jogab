@@ -11,7 +11,7 @@ function StatusBadgeInline({ status }: { status: HoraExtraListItem['status'] }) 
   const variant = HORA_EXTRA_STATUS_VARIANTS[status];
   const label = HORA_EXTRA_STATUS_LABELS[status];
   const colors: Record<string, string> = {
-    default: 'bg-gray-100 text-gray-700',
+    default: 'bg-surface-soft text-text-body',
     success: 'bg-green-100 text-green-700',
     warning: 'bg-yellow-100 text-yellow-700',
     error: 'bg-red-100 text-red-700',
@@ -43,14 +43,14 @@ export function HorasExtrasLancamentosPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/horas-extras"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body transition-colors hover:bg-surface-soft"
             >
               <ArrowLeft size={16} />
               Voltar ao painel
             </Link>
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-800"
             >
               <Plus size={16} />
               Novo lançamento
@@ -77,7 +77,7 @@ export function HorasExtrasLancamentosPage() {
           <div className="flex flex-1 items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando lançamentos...</p>
+              <p className="text-sm text-text-muted">Carregando lançamentos...</p>
             </div>
           </div>
         )}
@@ -90,7 +90,7 @@ export function HorasExtrasLancamentosPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -111,7 +111,7 @@ export function HorasExtrasLancamentosPage() {
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                  className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                 >
                   Limpar filtros
                 </button>
@@ -123,51 +123,51 @@ export function HorasExtrasLancamentosPage() {
         {!isLoading && !isError && items.length > 0 && (
           <section className="space-y-4">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-text-strong">
                 {items.length} lançamento{items.length !== 1 ? 's' : ''}
               </h2>
-              <p className="text-sm text-gray-500">Lista completa dos lançamentos operacionais de horas extras.</p>
+              <p className="text-sm text-text-muted">Lista completa dos lançamentos operacionais de horas extras.</p>
             </div>
 
-            <div className="overflow-x-auto rounded-lg border border-gray-200">
+            <div className="overflow-x-auto rounded-lg border border-border-default">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-surface-soft">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                       Funcionário
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                       Obra
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                       Data
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                       Tipo
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
                       Horas
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                       Ações
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {items.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
-                      <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900">
+                    <tr key={item.id} className="hover:bg-surface-soft">
+                      <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-text-strong">
                         {item.funcionarioNome}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-600">{item.obraNome}</td>
-                      <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-600">{item.dataLancamento}</td>
-                      <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-600">
+                      <td className="whitespace-nowrap px-4 py-3 text-sm text-text-muted">{item.obraNome}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-sm text-text-muted">{item.dataLancamento}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-sm text-text-muted">
                         {HORA_EXTRA_TIPO_LABELS[item.tipo]}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-medium text-gray-900">
+                      <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-medium text-text-strong">
                         {item.quantidadeHoras.toFixed(1)}h
                       </td>
                       <td className="whitespace-nowrap px-4 py-3">
@@ -176,7 +176,7 @@ export function HorasExtrasLancamentosPage() {
                       <td className="whitespace-nowrap px-4 py-3 text-sm">
                         <Link
                           to={`/horas-extras/${item.id}`}
-                          className="font-medium text-jogab-600 hover:text-jogab-700"
+                          className="font-medium text-jogab-700 hover:text-jogab-700"
                         >
                           Detalhes
                         </Link>

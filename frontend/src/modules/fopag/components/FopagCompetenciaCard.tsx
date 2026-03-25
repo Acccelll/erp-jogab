@@ -9,13 +9,13 @@ interface FopagCompetenciaCardProps {
 
 export function FopagCompetenciaCard({ competencia }: FopagCompetenciaCardProps) {
   return (
-    <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-100/60">
+    <article className="rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-base font-semibold text-gray-900">
+          <h3 className="text-base font-semibold text-text-strong">
             Competência {formatCompetencia(competencia.competencia)}
           </h3>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-muted">
             Atualizada em {new Date(competencia.updatedAt).toLocaleString('pt-BR')}
           </p>
         </div>
@@ -23,23 +23,21 @@ export function FopagCompetenciaCard({ competencia }: FopagCompetenciaCardProps)
       </div>
 
       <dl className="grid gap-3 md:grid-cols-2">
-        <div className="rounded-lg bg-gray-50 p-3">
-          <dt className="text-xs uppercase tracking-wide text-gray-400">Funcionários</dt>
-          <dd className="mt-1 text-sm font-semibold text-gray-900">{competencia.totalFuncionarios}</dd>
+        <div className="rounded-lg bg-surface-soft p-3">
+          <dt className="text-xs uppercase tracking-wide text-text-subtle">Funcionários</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-strong">{competencia.totalFuncionarios}</dd>
         </div>
-        <div className="rounded-lg bg-gray-50 p-3">
-          <dt className="text-xs uppercase tracking-wide text-gray-400">Obras</dt>
-          <dd className="mt-1 text-sm font-semibold text-gray-900">{competencia.totalObras}</dd>
+        <div className="rounded-lg bg-surface-soft p-3">
+          <dt className="text-xs uppercase tracking-wide text-text-subtle">Obras</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-strong">{competencia.totalObras}</dd>
         </div>
-        <div className="rounded-lg bg-gray-50 p-3">
-          <dt className="text-xs uppercase tracking-wide text-gray-400">Previsto</dt>
-          <dd className="mt-1 text-sm font-semibold text-gray-900">
-            {formatCurrency(competencia.valorPrevisto)}
-          </dd>
+        <div className="rounded-lg bg-surface-soft p-3">
+          <dt className="text-xs uppercase tracking-wide text-text-subtle">Previsto</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-strong">{formatCurrency(competencia.valorPrevisto)}</dd>
         </div>
-        <div className="rounded-lg bg-gray-50 p-3">
-          <dt className="text-xs uppercase tracking-wide text-gray-400">Horas Extras</dt>
-          <dd className="mt-1 text-sm font-semibold text-gray-900">
+        <div className="rounded-lg bg-surface-soft p-3">
+          <dt className="text-xs uppercase tracking-wide text-text-subtle">Horas Extras</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-strong">
             {formatCurrency(competencia.valorHorasExtras)}
           </dd>
         </div>
@@ -47,7 +45,7 @@ export function FopagCompetenciaCard({ competencia }: FopagCompetenciaCardProps)
 
       <Link
         to={`/fopag/${competencia.id}`}
-        className="mt-4 inline-flex text-sm font-medium text-jogab-600 hover:text-jogab-700"
+        className="mt-4 inline-flex text-sm font-medium text-jogab-700 hover:text-jogab-700"
       >
         Abrir detalhe da competência
       </Link>

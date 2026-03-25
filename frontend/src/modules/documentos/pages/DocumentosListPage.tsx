@@ -34,14 +34,14 @@ export function DocumentosListPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/obras"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
             >
               <FolderOpen size={16} />
               Obras
             </Link>
             <Link
               to="/rh/funcionarios"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
             >
               <Users size={16} />
               Funcionários
@@ -74,7 +74,7 @@ export function DocumentosListPage() {
           <div className="flex flex-1 items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando visão documental...</p>
+              <p className="text-sm text-text-muted">Carregando visão documental...</p>
             </div>
           </div>
         )}
@@ -87,7 +87,7 @@ export function DocumentosListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -118,7 +118,7 @@ export function DocumentosListPage() {
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                     >
                       Limpar filtros
                     </button>
@@ -128,8 +128,8 @@ export function DocumentosListPage() {
             ) : (
               <section className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Lista principal de documentos</h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="text-lg font-semibold text-text-strong">Lista principal de documentos</h2>
+                  <p className="text-sm text-text-muted">
                     Documentos vinculados a obras, funcionários, fornecedores, contratos e empresa com leitura de
                     vencimentos.
                   </p>

@@ -40,14 +40,14 @@ export function RelatoriosListPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/dashboard"
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
             >
               <BarChart3 size={16} />
               Dashboard
             </Link>
             <Link
               to="/obras"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
             >
               <Building2 size={16} />
               Obras
@@ -75,7 +75,7 @@ export function RelatoriosListPage() {
 
       <MainContent className="space-y-6">
         {isLoading && (
-          <div className="py-12 text-center text-sm text-gray-500">Carregando catálogo de relatórios...</div>
+          <div className="py-12 text-center text-sm text-text-muted">Carregando catálogo de relatórios...</div>
         )}
 
         {isError && (
@@ -86,7 +86,7 @@ export function RelatoriosListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -121,7 +121,7 @@ export function RelatoriosListPage() {
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                     >
                       Limpar filtros
                     </button>
@@ -132,8 +132,8 @@ export function RelatoriosListPage() {
               <>
                 <section className="space-y-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Lista de relatórios</h2>
-                    <p className="text-sm text-gray-500">
+                    <h2 className="text-lg font-semibold text-text-strong">Lista de relatórios</h2>
+                    <p className="text-sm text-text-muted">
                       Catálogo por categoria com disponibilidade, origens de dados e operação de saída.
                     </p>
                   </div>
@@ -142,8 +142,8 @@ export function RelatoriosListPage() {
 
                 <section className="space-y-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Saídas operacionais</h2>
-                    <p className="text-sm text-gray-500">
+                    <h2 className="text-lg font-semibold text-text-strong">Saídas operacionais</h2>
+                    <p className="text-sm text-text-muted">
                       Área mais concreta de exportação, execução e distribuição do catálogo.
                     </p>
                   </div>
@@ -156,8 +156,8 @@ export function RelatoriosListPage() {
 
                 <section className="space-y-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Cobertura por módulo</h2>
-                    <p className="text-sm text-gray-500">
+                    <h2 className="text-lg font-semibold text-text-strong">Cobertura por módulo</h2>
+                    <p className="text-sm text-text-muted">
                       Visão de como o domínio Relatórios já conversa com os módulos operacionais e gerenciais.
                     </p>
                   </div>

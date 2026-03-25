@@ -20,7 +20,7 @@ export function FopagListPage() {
         actions={
           <Link
             to="/fopag/2026-03"
-            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
           >
             <CalendarDays size={16} />
             Abrir competência atual
@@ -46,7 +46,7 @@ export function FopagListPage() {
           <div className="flex flex-1 items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando competências...</p>
+              <p className="text-sm text-text-muted">Carregando competências...</p>
             </div>
           </div>
         )}
@@ -59,7 +59,7 @@ export function FopagListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white hover:bg-jogab-600"
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
               >
                 Tentar novamente
               </button>
@@ -80,7 +80,7 @@ export function FopagListPage() {
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                  className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                 >
                   Limpar filtros
                 </button>

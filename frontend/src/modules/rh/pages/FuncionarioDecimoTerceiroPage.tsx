@@ -37,7 +37,8 @@ export function FuncionarioDecimoTerceiroPage() {
   const filtered = useMemo(() => {
     const items = data?.items ?? [];
     return items.filter((item) => {
-      const matchesSearch = !search.trim() || `${item.etapa} ${item.origem}`.toLowerCase().includes(search.trim().toLowerCase());
+      const matchesSearch =
+        !search.trim() || `${item.etapa} ${item.origem}`.toLowerCase().includes(search.trim().toLowerCase());
       const matchesStatus = !status || item.status === status;
       return matchesSearch && matchesStatus;
     });
@@ -66,13 +67,21 @@ export function FuncionarioDecimoTerceiroPage() {
           hasActiveFilters={Boolean(search || status)}
         />
 
-        {isLoading && <div className="py-12 text-center text-sm text-gray-500">Carregando 13º salário...</div>}
+        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando 13º salário...</div>}
 
         {isError && (
           <EmptyState
             title="Erro ao carregar 13º salário"
             description="Não foi possível carregar as etapas de 13º salário deste funcionário."
-            action={<button type="button" onClick={() => void refetch()} className="rounded-md bg-jogab-500 px-3 py-1.5 text-sm text-white">Tentar novamente</button>}
+            action={
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
+              >
+                Tentar novamente
+              </button>
+            }
           />
         )}
 
@@ -84,7 +93,10 @@ export function FuncionarioDecimoTerceiroPage() {
               ))}
             </section>
             {filtered.length === 0 ? (
-              <EmptyState title="Nenhum registro encontrado" description="Não há registros de 13º salário para o filtro atual." />
+              <EmptyState
+                title="Nenhum registro encontrado"
+                description="Não há registros de 13º salário para o filtro atual."
+              />
             ) : (
               <FuncionarioWorkspaceTable
                 columns={['Competência', 'Etapa', 'Status', 'Origem', 'Valor']}

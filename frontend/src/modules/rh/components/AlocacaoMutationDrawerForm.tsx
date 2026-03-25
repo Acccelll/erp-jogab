@@ -185,7 +185,7 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Obra</span>
           <select {...register('obraId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Selecione</option>
@@ -197,7 +197,7 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
           </select>
           {errors.obraId && <span className="text-xs text-red-600">{errors.obraId.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Centro de custo</span>
           <select {...register('centroCustoId')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="">Selecione</option>
@@ -209,27 +209,27 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
           </select>
           {errors.centroCustoId && <span className="text-xs text-red-600">{errors.centroCustoId.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Função</span>
           <input {...register('funcao')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           {errors.funcao && <span className="text-xs text-red-600">{errors.funcao.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Equipe</span>
           <input {...register('equipe')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           {errors.equipe && <span className="text-xs text-red-600">{errors.equipe.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Departamento</span>
           <input {...register('departamento')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           {errors.departamento && <span className="text-xs text-red-600">{errors.departamento.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Jornada</span>
           <input {...register('jornada')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           {errors.jornada && <span className="text-xs text-red-600">{errors.jornada.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Percentual</span>
           <input
             type="number"
@@ -239,7 +239,7 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
           />
           {errors.percentual && <span className="text-xs text-red-600">{errors.percentual.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Status</span>
           <select {...register('status')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
             <option value="ativa">Ativa</option>
@@ -247,7 +247,7 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
             <option value="encerrada">Encerrada</option>
           </select>
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Início da vigência</span>
           <input
             type="date"
@@ -256,7 +256,7 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
           />
           {errors.periodoInicio && <span className="text-xs text-red-600">{errors.periodoInicio.message}</span>}
         </label>
-        <label className="text-sm text-gray-700">
+        <label className="text-sm text-text-body">
           <span className="mb-1 block font-medium">Fim da vigência</span>
           <input
             type="date"
@@ -279,7 +279,7 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
         </div>
       )}
 
-      <div className="flex items-center justify-between gap-2 border-t border-gray-200 pt-4">
+      <div className="flex items-center justify-between gap-2 border-t border-border-default pt-4">
         <div>
           {isEdit && currentAlocacao?.status !== 'encerrada' && (
             <button
@@ -297,14 +297,14 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
           <button
             type="button"
             onClick={closeDrawer}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-text-body"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isPending}
-            className="inline-flex items-center gap-2 rounded-md bg-jogab-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-md bg-jogab-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
           >
             {isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             {isEdit ? 'Salvar alocação' : 'Criar alocação'}
