@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { getIntegrationConfig, getModuleReadiness, getReadyModules, MODULE_READINESS } from '@/shared/lib/integration';
+import {
+  getIntegrationConfig,
+  getModuleReadiness,
+  getReadyModules,
+  getIntegratedModules,
+  MODULE_READINESS,
+} from '@/shared/lib/integration';
 
 // ---------------------------------------------------------------------------
 // getIntegrationConfig
@@ -20,8 +26,10 @@ describe('getIntegrationConfig', () => {
 // MODULE_READINESS registry
 // ---------------------------------------------------------------------------
 describe('MODULE_READINESS', () => {
-  it('contains all 13 official modules', () => {
+  it('contains all 16 official modules (including auth and context)', () => {
     const moduleNames = MODULE_READINESS.map((m) => m.module);
+    expect(moduleNames).toContain('auth');
+    expect(moduleNames).toContain('context');
     expect(moduleNames).toContain('dashboard');
     expect(moduleNames).toContain('obras');
     expect(moduleNames).toContain('rh');
@@ -43,7 +51,7 @@ describe('MODULE_READINESS', () => {
     }
   });
 
-  it('every endpoint has a valid path, method, readiness, and description', () => {
+  it('every endpoint has a valid path, method, readiness, integrated flag, and description', () => {
     const validMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
     const validReadiness = ['ready', 'partial', 'mock-only'];
 
@@ -52,6 +60,7 @@ describe('MODULE_READINESS', () => {
         expect(ep.path).toMatch(/^\//);
         expect(validMethods).toContain(ep.method);
         expect(validReadiness).toContain(ep.readiness);
+        expect(typeof ep.integrated).toBe('boolean');
         expect(ep.description.length).toBeGreaterThan(0);
       }
     }
@@ -62,6 +71,15 @@ describe('MODULE_READINESS', () => {
       const hasPartial = mod.endpoints.some((ep) => ep.readiness === 'partial' || ep.readiness === 'mock-only');
       if (mod.status === 'ready') {
         expect(hasPartial).toBe(false);
+      }
+    }
+  });
+
+  it('integrated modules have all endpoints with integrated=true', () => {
+    const integrated = MODULE_READINESS.filter((m) => m.integrationStatus === 'integrated');
+    for (const mod of integrated) {
+      for (const ep of mod.endpoints) {
+        expect(ep.integrated).toBe(true);
       }
     }
   });
@@ -76,6 +94,20 @@ describe('getModuleReadiness', () => {
     expect(result).toBeDefined();
     expect(result?.module).toBe('dashboard');
     expect(result?.status).toBe('ready');
+  });
+
+  it('returns readiness for the auth module', () => {
+    const result = getModuleReadiness('auth');
+    expect(result).toBeDefined();
+    expect(result?.module).toBe('auth');
+    expect(result?.integrationStatus).toBe('integrated');
+  });
+
+  it('returns readiness for the context module', () => {
+    const result = getModuleReadiness('context');
+    expect(result).toBeDefined();
+    expect(result?.module).toBe('context');
+    expect(result?.integrationStatus).toBe('integrated');
   });
 
   it('returns undefined for a nonexistent module', () => {
@@ -94,8 +126,10 @@ describe('getReadyModules', () => {
     }
   });
 
-  it('includes the 9 modules that are ready', () => {
+  it('includes the 12 modules that are ready (including auth and context)', () => {
     const readyNames = getReadyModules().map((m) => m.module);
+    expect(readyNames).toContain('auth');
+    expect(readyNames).toContain('context');
     expect(readyNames).toContain('dashboard');
     expect(readyNames).toContain('obras');
     expect(readyNames).toContain('rh');
@@ -112,5 +146,25 @@ describe('getReadyModules', () => {
     expect(readyNames).not.toContain('estoque');
     expect(readyNames).not.toContain('medicoes');
     expect(readyNames).not.toContain('documentos');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getIntegratedModules
+// ---------------------------------------------------------------------------
+describe('getIntegratedModules', () => {
+  it('returns only modules with integrationStatus "integrated"', () => {
+    const integrated = getIntegratedModules();
+    for (const mod of integrated) {
+      expect(mod.integrationStatus).toBe('integrated');
+    }
+  });
+
+  it('includes auth, context, and dashboard as integrated modules', () => {
+    const integratedNames = getIntegratedModules().map((m) => m.module);
+    expect(integratedNames).toContain('auth');
+    expect(integratedNames).toContain('context');
+    expect(integratedNames).toContain('dashboard');
+    expect(integratedNames).toHaveLength(3);
   });
 });
