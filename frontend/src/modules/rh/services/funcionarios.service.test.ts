@@ -5,8 +5,10 @@ import {
   fetchFuncionarios,
   fetchFuncionarioById,
   fetchFuncionarioDetail,
+  createFuncionario,
+  updateFuncionario,
 } from './funcionarios.service';
-import type { FuncionariosListResponse } from '../types';
+import type { FuncionariosListResponse, FuncionarioCreatePayload, FuncionarioUpdatePayload } from '../types';
 
 // ---------------------------------------------------------------------------
 // RH_API_ENDPOINTS
@@ -172,5 +174,133 @@ describe('fetchFuncionarioDetail (mock fallback)', () => {
   it('returns null funcionario for a non-existent ID', async () => {
     const detail = await fetchFuncionarioDetail('nonexistent-id-xyz');
     expect(detail.funcionario).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// createFuncionario (mock fallback)
+// ---------------------------------------------------------------------------
+describe('createFuncionario (mock fallback)', () => {
+  it('creates a funcionario and returns success response', async () => {
+    const payload: FuncionarioCreatePayload = {
+      matricula: `MAT-TEST-${Date.now()}`,
+      nome: 'Funcionário Teste Criação',
+      cpf: `${Date.now()}`.slice(0, 11),
+      status: 'ativo',
+      tipoContrato: 'clt',
+      cargo: 'Engenheiro de Testes',
+      funcao: 'Testador',
+      departamento: 'QA',
+      filialId: 'fil-1',
+      dataAdmissao: '2025-01-15',
+      salarioBase: 5000,
+      email: 'teste@jogab.com',
+      telefone: '11999990000',
+      cidade: 'São Paulo',
+      uf: 'SP',
+    };
+
+    const result = await createFuncionario(payload);
+    expect(result.message).toBeDefined();
+    expect(result.funcionario).toBeDefined();
+    expect(result.funcionario.nome).toBe(payload.nome);
+    expect(result.funcionario.matricula).toBe(payload.matricula);
+    expect(result.funcionario.status).toBe('ativo');
+    expect(result.funcionario.id).toBeDefined();
+  });
+
+  it('rejects duplicate CPF', async () => {
+    const list = await fetchFuncionarios();
+    const existing = list.data[0];
+
+    const payload: FuncionarioCreatePayload = {
+      matricula: `MAT-UNIQUE-${Date.now()}`,
+      nome: 'Duplicate CPF Test',
+      cpf: existing.cpf,
+      status: 'ativo',
+      tipoContrato: 'clt',
+      cargo: 'Cargo',
+      funcao: 'Funcao',
+      departamento: 'Depto',
+      filialId: 'fil-1',
+      dataAdmissao: '2025-01-15',
+      salarioBase: 3000,
+      email: 'dup@jogab.com',
+      telefone: '11999990001',
+      cidade: 'SP',
+      uf: 'SP',
+    };
+
+    await expect(createFuncionario(payload)).rejects.toThrow('CPF');
+  });
+
+  it('sets dataDesligamento when status is desligado', async () => {
+    const payload: FuncionarioCreatePayload = {
+      matricula: `MAT-DESL-${Date.now()}`,
+      nome: 'Funcionário Desligado',
+      cpf: `DES${Date.now()}`.slice(0, 11),
+      status: 'desligado',
+      tipoContrato: 'clt',
+      cargo: 'Ex-Funcionário',
+      funcao: 'N/A',
+      departamento: 'Saída',
+      filialId: 'fil-1',
+      dataAdmissao: '2024-01-01',
+      salarioBase: 3000,
+      email: 'desl@jogab.com',
+      telefone: '11999990002',
+      cidade: 'SP',
+      uf: 'SP',
+    };
+
+    const result = await createFuncionario(payload);
+    expect(result.funcionario.dataDesligamento).not.toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// updateFuncionario (mock fallback)
+// ---------------------------------------------------------------------------
+describe('updateFuncionario (mock fallback)', () => {
+  it('updates an existing funcionario and returns success response', async () => {
+    const list = await fetchFuncionarios();
+    const funcId = list.data[0].id;
+
+    const payload: FuncionarioUpdatePayload = {
+      id: funcId,
+      nome: 'Nome Atualizado Teste',
+      cargo: 'Cargo Atualizado',
+    } as FuncionarioUpdatePayload;
+
+    const result = await updateFuncionario(payload);
+    expect(result.message).toBeDefined();
+    expect(result.funcionario).toBeDefined();
+    expect(result.funcionario.id).toBe(funcId);
+    expect(result.funcionario.nome).toBe('Nome Atualizado Teste');
+    expect(result.funcionario.cargo).toBe('Cargo Atualizado');
+  });
+
+  it('throws error for non-existent funcionario', async () => {
+    const payload: FuncionarioUpdatePayload = {
+      id: 'nonexistent-id-xyz',
+      nome: 'Should Fail',
+    } as FuncionarioUpdatePayload;
+
+    await expect(updateFuncionario(payload)).rejects.toThrow('não encontrado');
+  });
+
+  it('reflects update in subsequent fetch', async () => {
+    const list = await fetchFuncionarios();
+    const funcId = list.data[0].id;
+    const originalName = list.data[0].nome;
+
+    const newName = `Updated-${Date.now()}`;
+    await updateFuncionario({ id: funcId, nome: newName } as FuncionarioUpdatePayload);
+
+    const updated = await fetchFuncionarioById(funcId);
+    expect(updated?.nome).toBe(newName);
+
+    // Restore original name
+    await updateFuncionario({ id: funcId, nome: originalName } as FuncionarioUpdatePayload);
   });
 });
