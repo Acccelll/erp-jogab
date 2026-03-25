@@ -46,7 +46,7 @@ export function FuncionariosListPage() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Filter bar */}
-      <div className="flex items-center justify-between border-b border-border-default px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-border-default px-4 py-2">
         <QuickFilterChips
           chips={statusChips}
           value={filters.status ?? null}

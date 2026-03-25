@@ -33,33 +33,28 @@ export function ObraWorkspaceLayout() {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {/* Obra header */}
-      <div className="border-b border-border-default bg-surface px-4 pt-2 pb-0">
-        {/* Dynamic header from obra data */}
+      {/* Obra header + tabs — unified compact strip */}
+      <div className="border-b border-border-default bg-surface px-4 pt-1.5 pb-0">
         {isLoading && (
-          <div className="mb-1.5 flex items-center gap-2.5">
-            <div className="h-8 w-8 animate-pulse rounded-md bg-surface-soft" />
-            <div className="space-y-1">
-              <div className="h-3.5 w-48 animate-pulse rounded bg-surface-soft" />
-              <div className="h-2.5 w-32 animate-pulse rounded bg-surface-soft" />
-            </div>
+          <div className="mb-1 flex items-center gap-2">
+            <div className="h-6 w-6 animate-pulse rounded bg-surface-soft" />
+            <div className="h-3 w-40 animate-pulse rounded bg-surface-soft" />
           </div>
         )}
 
         {!isLoading && obra && (
-          <div className="mb-1.5">
+          <div className="mb-1">
             <ObraHeader obra={obra} />
           </div>
         )}
 
         {!isLoading && !obra && (
-          <div className="mb-1.5">
+          <div className="mb-1">
             <p className="text-sm text-text-muted">Obra não encontrada (ID: {obraId})</p>
           </div>
         )}
 
-        {/* Obra tabs with overflow */}
-        <OverflowTabs tabs={obraTabs} maxVisible={5} basePath={`/obras/${obraId}`} />
+        <OverflowTabs tabs={obraTabs} maxVisible={7} basePath={`/obras/${obraId}`} />
       </div>
 
       {/* Tab content */}

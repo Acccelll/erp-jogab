@@ -14,34 +14,33 @@ export function AdminLogsPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Compact filter bar */}
-      <div className="flex items-center justify-between border-b border-border-default px-4 py-2.5">
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-text-strong font-brand">Administração · Logs</span>
-          <div className="h-4 w-px bg-border-default" />
-          <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm">
-            <Search size={14} className="text-text-subtle" />
-            <input
-              type="text"
-              placeholder="Buscar por usuário, ação, módulo..."
-              value={filters.search ?? ''}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-48 border-0 bg-transparent text-sm outline-none placeholder:text-text-subtle"
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
-          >
-            <SlidersHorizontal size={16} />
-          </button>
-          {hasActiveFilters && (
-            <button type="button" onClick={clearFilters} className="text-xs text-text-muted hover:text-text-body">
-              Limpar
-            </button>
-          )}
+      {/* Compact technical filter bar */}
+      <div className="flex items-center gap-2 border-b border-border-default px-4 py-2">
+        <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm">
+          <Search size={14} className="text-text-subtle" />
+          <input
+            type="text"
+            placeholder="Buscar por usuário, ação, módulo..."
+            value={filters.search ?? ''}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-56 border-0 bg-transparent text-sm outline-none placeholder:text-text-subtle"
+          />
         </div>
+        <button
+          type="button"
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
+        >
+          <SlidersHorizontal size={16} />
+        </button>
+        {hasActiveFilters && (
+          <button type="button" onClick={clearFilters} className="text-xs text-text-muted hover:text-text-body">
+            Limpar
+          </button>
+        )}
+        <span className="ml-auto text-xs tabular-nums text-text-subtle">
+          {items.length} registro{items.length !== 1 ? 's' : ''}
+        </span>
       </div>
 
       {/* Advanced filters */}
@@ -67,12 +66,12 @@ export function AdminLogsPage() {
           <div className="space-y-0">
             <p className="sr-only">Carregando logs...</p>
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
-                <div className="h-4 w-1/5 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/5 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
+              <div key={i} className="flex gap-4 border-b border-border-light px-4 py-2.5">
+                <div className="h-3.5 w-1/5 animate-pulse rounded bg-neutral-200" />
+                <div className="h-3.5 w-1/5 animate-pulse rounded bg-neutral-200" />
+                <div className="h-3.5 w-1/6 animate-pulse rounded bg-neutral-200" />
+                <div className="h-3.5 w-1/6 animate-pulse rounded bg-neutral-200" />
+                <div className="h-3.5 w-1/6 animate-pulse rounded bg-neutral-200" />
               </div>
             ))}
           </div>

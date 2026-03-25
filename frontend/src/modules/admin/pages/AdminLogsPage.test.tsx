@@ -97,7 +97,6 @@ describe('AdminLogsPage', () => {
 
     render(<AdminLogsPage />);
 
-    expect(screen.getByText('Administração · Logs')).toBeInTheDocument();
     expect(screen.getByText(/carregando logs/i)).toBeInTheDocument();
   });
 
@@ -145,8 +144,8 @@ describe('AdminLogsPage', () => {
 
     render(<AdminLogsPage />);
 
-    // Page header is always present
-    expect(screen.getByText('Administração · Logs')).toBeInTheDocument();
+    // Filter bar is always present
+    expect(screen.getByPlaceholderText(/buscar por usuário/i)).toBeInTheDocument();
     // No table, no loading, no error
     expect(screen.queryByTestId('admin-table-logs')).not.toBeInTheDocument();
     expect(screen.queryByText(/carregando/i)).not.toBeInTheDocument();
@@ -164,7 +163,7 @@ describe('AdminLogsPage', () => {
     render(<AdminLogsPage />);
 
     // Page renders without crashing, table shows 0 rows
-    expect(screen.getByText('Administração · Logs')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/buscar por usuário/i)).toBeInTheDocument();
     expect(screen.getByTestId('admin-table-logs')).toHaveTextContent('0 linhas');
   });
 
