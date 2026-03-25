@@ -135,6 +135,29 @@ describe('getModuleReadiness', () => {
     expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
   });
 
+  it('returns readiness for fopag module as integrated', () => {
+    const result = getModuleReadiness('fopag');
+    expect(result).toBeDefined();
+    expect(result?.integrationStatus).toBe('integrated');
+    expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
+  });
+
+  it('returns readiness for financeiro module as integrated', () => {
+    const result = getModuleReadiness('financeiro');
+    expect(result).toBeDefined();
+    expect(result?.integrationStatus).toBe('integrated');
+    expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
+  });
+
+  it('returns readiness for compras module as integrated with all 5 endpoints', () => {
+    const result = getModuleReadiness('compras');
+    expect(result).toBeDefined();
+    expect(result?.module).toBe('compras');
+    expect(result?.integrationStatus).toBe('integrated');
+    expect(result?.endpoints).toHaveLength(5);
+    expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
+  });
+
   it('returns undefined for a nonexistent module', () => {
     expect(getModuleReadiness('nonexistent')).toBeUndefined();
   });
@@ -185,7 +208,7 @@ describe('getIntegratedModules', () => {
     }
   });
 
-  it('includes auth, context, dashboard, obras, rh, and horas-extras as integrated modules', () => {
+  it('includes auth, context, dashboard, obras, rh, horas-extras, fopag, financeiro, and compras as integrated modules', () => {
     const integratedNames = getIntegratedModules().map((m) => m.module);
     expect(integratedNames).toContain('auth');
     expect(integratedNames).toContain('context');
@@ -193,6 +216,9 @@ describe('getIntegratedModules', () => {
     expect(integratedNames).toContain('obras');
     expect(integratedNames).toContain('rh');
     expect(integratedNames).toContain('horas-extras');
-    expect(integratedNames).toHaveLength(6);
+    expect(integratedNames).toContain('fopag');
+    expect(integratedNames).toContain('financeiro');
+    expect(integratedNames).toContain('compras');
+    expect(integratedNames).toHaveLength(9);
   });
 });

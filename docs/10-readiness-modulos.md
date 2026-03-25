@@ -130,19 +130,19 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 9. Compras
+### 9. Compras (Fase 9)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
-| `/compras/solicitacoes` | GET | ✅ | Solicitações de compra |
-| `/compras/cotacoes` | GET | ✅ | Cotações em andamento |
-| `/compras/pedidos` | GET | ✅ | Pedidos de compra |
-| `/compras/pedidos/:id` | GET | ✅ | Detalhe do pedido |
-| `/compras/dashboard` | GET | ✅ | Dashboard consolidado (3 etapas) |
+| `/compras/solicitacoes` | GET | ✅ Integrado | Solicitações de compra |
+| `/compras/cotacoes` | GET | ✅ Integrado | Cotações em andamento |
+| `/compras/pedidos` | GET | ✅ Integrado | Pedidos de compra |
+| `/compras/pedidos/:id` | GET | ✅ Integrado | Detalhe do pedido |
+| `/compras/dashboard` | GET | ✅ Integrado | Dashboard consolidado (3 etapas) |
 
 **Normalizador:** `normalizeComprasDashboardData`.
-**Validação Zod:** `compraSchema`, schemas de criação.
-**Notas:** Fluxo de 3 etapas (solicitação → cotação → pedido) completo.
+**Validação Zod:** `compraStatusSchema`, `compraCategoriaSchema`, `compraPrioridadeSchema`, `compraFiltersSchema`.
+**Notas:** Integrado na Fase 9. Fluxo de 3 etapas (solicitação → cotação → pedido) com `withApiFallback`.
 
 ---
 
@@ -237,7 +237,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | Horas Extras | ✅ Integrado | 6 | 6 | 6 |
 | FOPAG | ✅ Integrado | 2 | 2 | 2 |
 | Financeiro | ✅ Integrado | 6 | 6 | 6 |
-| Compras | 🔵 Ready | 0 | 5 | 5 |
+| Compras | ✅ Integrado (Fase 9) | 5 | 5 | 5 |
 | Fiscal | 🔵 Ready | 0 | 4 | 4 |
 | Relatórios | 🔵 Ready | 0 | 2 | 2 |
 | Estoque | 🟡 Partial | 0 | 2 | 3 |
@@ -245,7 +245,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | Documentos | 🟡 Partial | 0 | 1 | 2 |
 | Admin | 🟡 Partial | 0 | 7 | 7 |
 
-**Total:** 28 endpoints integrados, 51 endpoints ready de 54 mapeados.
+**Total:** 33 endpoints integrados, 51 endpoints ready de 54 mapeados.
 
 ---
 
@@ -259,7 +259,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 6. ~~**Horas Extras**~~ — ✅ Integrado (Fase 7)
 7. ~~**FOPAG**~~ — ✅ Integrado (Fase 8)
 8. ~~**Financeiro**~~ — ✅ Integrado (Fase 8)
-9. **Compras** — Fluxo de 3 etapas
+9. ~~**Compras**~~ — ✅ Integrado (Fase 9)
 10. **Fiscal** — Módulo de leitura
 9. **Relatórios** — Consolidação de dados
 10. **Estoque, Medições, Documentos** — Completar contratos parciais
