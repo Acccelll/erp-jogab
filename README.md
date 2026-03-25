@@ -16,6 +16,7 @@ Este pacote foi preparado para uso com GitHub Copilot Agent ou Claude Code.
 11. `docs/10-readiness-modulos.md`
 12. `docs/11-integracao-fase5.md`
 13. `docs/12-integracao-fase6.md`
+14. `docs/13-integracao-fase7.md`
 
 ## Objetivo do pacote
 Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura definida, sem improvisar stack, rotas, organização por domínio ou regras centrais do negócio.
@@ -27,7 +28,7 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 
 ## Estado atual do frontend
 
-Todas as 8 fases do roadmap original estão completas, além de 6 fases de alinhamento/integração. Os 14 módulos possuem páginas, services, hooks, types e mock data implementados. A Fase 5 conectou auth, contexto global e dashboard à API real via `withApiFallback`. A Fase 6 integrou Obras (CRUD completo) e RH (leitura) à API real. Detalhes em `docs/08-roadmap.md`, `docs/11-integracao-fase5.md` e `docs/12-integracao-fase6.md`.
+Todas as 8 fases do roadmap original estão completas, além de 7 fases de alinhamento/integração. Os 14 módulos possuem páginas, services, hooks, types e mock data implementados. A Fase 5 conectou auth, contexto global e dashboard à API real via `withApiFallback`. A Fase 6 integrou Obras (CRUD completo) e RH (leitura) à API real. A Fase 7 completou RH (mutações POST/PUT) e integrou Horas Extras (fluxo completo). Detalhes em `docs/08-roadmap.md`, `docs/11-integracao-fase5.md`, `docs/12-integracao-fase6.md` e `docs/13-integracao-fase7.md`.
 
 ### Módulos implementados
 
@@ -70,9 +71,9 @@ Todas as 8 fases do roadmap original estão completas, além de 6 fases de alinh
 | Stores Zustand | 5 | 39 | contextStore, notificationStore, filtersStore, uiStore, drawerStore |
 | Componentes compartilhados | 5 | 37 | KPISection, StatusBadge, EmptyState, PageHeader, FilterBar |
 | Hooks TanStack Query | 8 | 32 | Dashboard, Obras (list, detail, mutations), RH, FOPAG, Compras, Horas Extras |
-| Services de módulos | 3 | 53 | Obras service (24), workspace (12), RH service (17) |
+| Services de módulos | 5 | 81 | Obras service (24), workspace (12), RH service (25), HE service (20), HE aprovação (9) |
 
-**Total: 44 arquivos, 514 testes**
+**Total: 46 arquivos, 553 testes**
 
 ### Comandos
 
@@ -121,7 +122,7 @@ Para desabilitar fallback e forçar API real: `VITE_API_FALLBACK=false`.
 
 A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`. Detalhes completos em `docs/11-integracao-fase5.md`.
 
-### Endpoints efetivamente integrados (Fases 5 + 6)
+### Endpoints efetivamente integrados (Fases 5 + 6 + 7)
 
 | Módulo | Endpoint | Método | Descrição |
 |--------|----------|--------|-----------|
@@ -137,20 +138,28 @@ A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`
 | Obras | `/obras/:id` | PUT | Atualizar obra |
 | RH | `/rh/funcionarios` | GET | Listagem de funcionários |
 | RH | `/rh/funcionarios/:id` | GET | Detalhe do funcionário |
+| RH | `/rh/funcionarios` | POST | Criar funcionário |
+| RH | `/rh/funcionarios/:id` | PUT | Atualizar funcionário |
+| Horas Extras | `/horas-extras` | GET | Listagem de horas extras |
+| Horas Extras | `/horas-extras/:id` | GET | Detalhe da hora extra |
+| Horas Extras | `/horas-extras/dashboard` | GET | Dashboard de horas extras |
+| Horas Extras | `/horas-extras/:id/aprovar` | POST | Aprovar hora extra |
+| Horas Extras | `/horas-extras/fechamento` | POST | Fechar competência |
+| Horas Extras | `/horas-extras/aprovacao` | GET | Dados de aprovação |
 
 ### Status dos módulos
 
 | Status | Módulos | Qtd |
 |--------|---------|-----|
-| ✅ Integrado | Auth, Contexto, Dashboard, Obras, RH (leitura) | 5 |
-| 🔵 Ready | Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios | 6 |
+| ✅ Integrado | Auth, Contexto, Dashboard, Obras, RH, Horas Extras | 6 |
+| 🔵 Ready | FOPAG, Compras, Financeiro, Fiscal, Relatórios | 5 |
 | 🟡 Partial | Estoque, Medições, Documentos, Admin | 4 |
 
 - **Integrado:** conectado à API real com `withApiFallback`, normalizers e testes de integração.
 - **Ready:** contrato estável, normalizer completo, `withApiFallback` implementado — pronto para API real.
 - **Partial:** service com `withApiFallback`, mas contrato de detalhe ou mutação parcial.
 
-**Total:** 50 endpoints prontos de 53 mapeados + 12 endpoints efetivamente integrados. Detalhes em `docs/10-readiness-modulos.md`.
+**Total:** 50 endpoints prontos de 53 mapeados + 20 endpoints efetivamente integrados. Detalhes em `docs/10-readiness-modulos.md`.
 
 ---
 

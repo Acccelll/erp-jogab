@@ -68,35 +68,36 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 5. RH — Funcionários (Fase 6 — leitura)
+### 5. RH — Funcionários (Fase 6 + 7 — completo)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
 | `/rh/funcionarios` | GET | ✅ Integrado | Listagem com KPIs (ativos, afastados, férias, desligados) |
 | `/rh/funcionarios/:id` | GET | ✅ Integrado | Detalhe com alocações e vínculo |
-| `/rh/funcionarios` | POST | 🔵 Ready | Criar funcionário com validação de matrícula/CPF |
-| `/rh/funcionarios/:id` | PUT | 🔵 Ready | Atualizar funcionário |
+| `/rh/funcionarios` | POST | ✅ Integrado | Criar funcionário com validação de matrícula/CPF |
+| `/rh/funcionarios/:id` | PUT | ✅ Integrado | Atualizar funcionário |
 
 **Normalizador:** `normalizeFuncionariosListResponse` — arrays `[]`, KPIs defaults `0`.
 **Validação Zod:** `funcionarioSchema`, `funcionarioCreateSchema`.
-**Notas:** Leitura integrada na Fase 6. Mutações (POST/PUT) aguardam Fase 7.
+**Notas:** CRUD completo integrado. Leitura na Fase 6, mutações na Fase 7.
 
 ---
 
 ## Módulos prontos para integração imediata (Ready)
 
-### 6. Horas Extras
+### 6. Horas Extras (Fase 7)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
-| `/horas-extras` | GET | ✅ | Listagem com filtros e KPIs |
-| `/horas-extras/:id` | GET | ✅ | Detalhe da hora extra |
-| `/horas-extras/dashboard` | GET | ✅ | Dashboard com resumo e cards |
-| `/horas-extras/:id/aprovar` | POST | ✅ | Aprovar lançamento |
-| `/horas-extras/fechamento` | POST | ✅ | Fechar competência |
+| `/horas-extras` | GET | ✅ Integrado | Listagem com filtros e KPIs |
+| `/horas-extras/:id` | GET | ✅ Integrado | Detalhe da hora extra |
+| `/horas-extras/dashboard` | GET | ✅ Integrado | Dashboard com resumo e cards |
+| `/horas-extras/:id/aprovar` | POST | ✅ Integrado | Aprovar lançamento |
+| `/horas-extras/fechamento` | POST | ✅ Integrado | Fechar competência |
+| `/horas-extras/aprovacao` | GET | ✅ Integrado | Dados de aprovação |
 
 **Normalizador:** `normalizeHorasExtrasDashboardData`, `normalizeHorasExtrasAprovacaoData`.
-**Notas:** Fluxo crítico de negócio. Aprovação e fechamento preparados.
+**Notas:** Fluxo crítico de negócio integrado na Fase 7. Aprovação e fechamento prontos. Dados de competência fechada alimentam FOPAG.
 
 ---
 
@@ -232,8 +233,8 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | Context | ✅ Integrado | 2 | 2 | 2 |
 | Dashboard | ✅ Integrado | 1 | 1 | 1 |
 | Obras | ✅ Integrado | 4 | 4 | 4 |
-| RH | ✅ Integrado (parcial) | 2 | 4 | 4 |
-| Horas Extras | 🔵 Ready | 0 | 5 | 5 |
+| RH | ✅ Integrado | 4 | 4 | 4 |
+| Horas Extras | ✅ Integrado | 6 | 6 | 6 |
 | FOPAG | 🔵 Ready | 0 | 2 | 2 |
 | Compras | 🔵 Ready | 0 | 5 | 5 |
 | Financeiro | 🔵 Ready | 0 | 6 | 6 |
@@ -244,7 +245,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | Documentos | 🟡 Partial | 0 | 1 | 2 |
 | Admin | 🟡 Partial | 0 | 7 | 7 |
 
-**Total:** 12 endpoints integrados, 50 endpoints ready de 53 mapeados.
+**Total:** 20 endpoints integrados, 51 endpoints ready de 54 mapeados.
 
 ---
 
@@ -254,10 +255,12 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 2. ~~**Contexto**~~ — ✅ Integrado (Fase 5)
 3. ~~**Dashboard**~~ — ✅ Integrado (Fase 5)
 4. ~~**Obras**~~ — ✅ Integrado (Fase 6)
-5. **RH** — Leitura integrada (Fase 6), mutações aguardam Fase 7
-6. **Horas Extras → FOPAG → Financeiro** — Fluxo crítico de negócio
-7. **Compras** — Fluxo de 3 etapas
-8. **Fiscal** — Módulo de leitura
+5. ~~**RH**~~ — ✅ Integrado completo (Fase 6 + 7)
+6. ~~**Horas Extras**~~ — ✅ Integrado (Fase 7)
+7. **FOPAG** — Próximo: recebe dados de Horas Extras fechadas
+8. **Financeiro** — Após FOPAG: fluxo FOPAG → Financeiro
+9. **Compras** — Fluxo de 3 etapas
+10. **Fiscal** — Módulo de leitura
 9. **Relatórios** — Consolidação de dados
 10. **Estoque, Medições, Documentos** — Completar contratos parciais
 11. **Admin** — Adicionar mutações de CRUD
