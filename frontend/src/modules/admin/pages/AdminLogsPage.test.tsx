@@ -119,7 +119,7 @@ describe('AdminLogsPage', () => {
     expect(refetchMock).toHaveBeenCalled();
   });
 
-  it('renders data state with log table and preview cards', () => {
+  it('renders data state with log table', () => {
     mockUseLogs.mockReturnValue({
       data: mockLogs,
       isLoading: false,
@@ -131,9 +131,8 @@ describe('AdminLogsPage', () => {
 
     // Table with correct rows
     expect(screen.getByTestId('admin-table-logs')).toHaveTextContent('2 linhas');
-    // Preview cards for first 2 items
-    expect(screen.getByText('Admin · Criou usuário')).toBeInTheDocument();
-    expect(screen.getByText('Operador · Atualizou obra')).toBeInTheDocument();
+    // Preview section removed — table is the sole protagonist
+    expect(screen.queryByTestId('admin-preview')).not.toBeInTheDocument();
   });
 
   it('renders nothing in main content when data is undefined and not loading/error', () => {

@@ -91,7 +91,7 @@ export function DashboardPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
+                className="rounded-md bg-brand-primary px-3 py-1.5 text-sm text-white hover:bg-brand-primary-hover"
               >
                 Tentar novamente
               </button>
@@ -108,7 +108,7 @@ export function DashboardPage() {
               <span className="text-xs font-medium uppercase tracking-wider text-text-subtle">{mainKpi.label}</span>
               <div className="mt-1 text-4xl font-medium tabular-nums text-text-strong">{formatKpiValue(mainKpi)}</div>
               {mainKpi.subtitle && (
-                <div className="mt-1 flex items-center gap-1 text-sm text-jogab-700">
+                <div className="mt-1 flex items-center gap-1 text-sm text-success">
                   <TrendingUp className="h-3.5 w-3.5" />
                   {mainKpi.subtitle}
                 </div>
@@ -139,7 +139,7 @@ export function DashboardPage() {
                       key={alerta.id}
                       className="flex items-start gap-2 border-b border-border-light py-2 last:border-0"
                     >
-                      <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+                      <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-warning" />
                       <div className="min-w-0 flex-1">
                         <p className="text-sm leading-tight text-text-body">{alerta.title}</p>
                         <p className="mt-0.5 text-xs text-text-muted">{alerta.description}</p>

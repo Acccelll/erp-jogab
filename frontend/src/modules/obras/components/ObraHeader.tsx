@@ -15,7 +15,7 @@ export function ObraHeader({ obra }: ObraHeaderProps) {
   return (
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-2.5">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-jogab-100 text-jogab-700">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-brand-primary-soft text-brand-primary">
           <HardHat size={18} />
         </div>
         <div className="min-w-0">
@@ -51,7 +51,7 @@ export function ObraHeader({ obra }: ObraHeaderProps) {
 
       {/* Compact progress */}
       <div className="shrink-0 text-right">
-        <p className="text-lg font-bold text-jogab-700">{obra.percentualConcluido}%</p>
+        <p className="text-lg font-bold text-brand-primary">{obra.percentualConcluido}%</p>
         <p className="text-[10px] text-text-subtle">concluído</p>
       </div>
     </div>

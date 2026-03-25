@@ -65,7 +65,7 @@ export function FinanceiroListPage() {
           </Link>
           <Link
             to="/financeiro/contas-pagar"
-            className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
+            className="inline-flex items-center gap-1.5 rounded-md bg-brand-primary px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-primary-hover"
           >
             <TrendingDown size={14} />
             Contas a pagar
@@ -126,7 +126,7 @@ export function FinanceiroListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
+                className="rounded-md bg-brand-primary px-3 py-1.5 text-sm text-white hover:bg-brand-primary-hover"
               >
                 Tentar novamente
               </button>

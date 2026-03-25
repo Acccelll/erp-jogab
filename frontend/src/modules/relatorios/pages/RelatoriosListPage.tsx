@@ -35,7 +35,7 @@ export function RelatoriosListPage() {
     <div className="flex flex-1 flex-col">
       <PageHeader
         title="Relatórios"
-        subtitle="Catálogo consolidado de relatórios gerenciais e operacionais integrando Obras, RH, HE, FOPAG, Compras, Fiscal, Financeiro, Estoque, Medições e Documentos."
+        subtitle="Catálogo gerencial e operacional: Obras, RH, HE, FOPAG, Compras, Financeiro e mais."
         actions={
           <div className="flex items-center gap-2">
             <Link
@@ -47,7 +47,7 @@ export function RelatoriosListPage() {
             </Link>
             <Link
               to="/obras"
-              className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
+              className="inline-flex items-center gap-1.5 rounded-md bg-brand-primary px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-primary-hover"
             >
               <Building2 size={16} />
               Obras
@@ -86,7 +86,7 @@ export function RelatoriosListPage() {
               <button
                 type="button"
                 onClick={() => void refetch()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
+                className="rounded-md bg-brand-primary px-3 py-1.5 text-sm text-white hover:bg-brand-primary-hover"
               >
                 Tentar novamente
               </button>
@@ -121,7 +121,7 @@ export function RelatoriosListPage() {
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
+                      className="rounded-md border border-border-default px-3 py-1.5 text-sm text-text-body hover:bg-surface-soft"
                     >
                       Limpar filtros
                     </button>
@@ -132,8 +132,8 @@ export function RelatoriosListPage() {
               <>
                 <section className="space-y-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-text-strong">Lista de relatórios</h2>
-                    <p className="text-sm text-text-muted">
+                    <h2 className="text-sm font-medium text-text-strong">Lista de relatórios</h2>
+                    <p className="text-xs text-text-muted">
                       Catálogo por categoria com disponibilidade, origens de dados e operação de saída.
                     </p>
                   </div>
@@ -142,10 +142,8 @@ export function RelatoriosListPage() {
 
                 <section className="space-y-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-text-strong">Saídas operacionais</h2>
-                    <p className="text-sm text-text-muted">
-                      Área mais concreta de exportação, execução e distribuição do catálogo.
-                    </p>
+                    <h2 className="text-sm font-medium text-text-strong">Saídas operacionais</h2>
+                    <p className="text-xs text-text-muted">Área de exportação, execução e distribuição do catálogo.</p>
                   </div>
                   <div className="grid gap-4 xl:grid-cols-2">
                     {saidasOperacionais.slice(0, 4).map((item) => (
@@ -156,9 +154,9 @@ export function RelatoriosListPage() {
 
                 <section className="space-y-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-text-strong">Cobertura por módulo</h2>
-                    <p className="text-sm text-text-muted">
-                      Visão de como o domínio Relatórios já conversa com os módulos operacionais e gerenciais.
+                    <h2 className="text-sm font-medium text-text-strong">Cobertura por módulo</h2>
+                    <p className="text-xs text-text-muted">
+                      Como o domínio Relatórios conversa com os módulos operacionais e gerenciais.
                     </p>
                   </div>
                   <div className="grid gap-4 xl:grid-cols-3">
