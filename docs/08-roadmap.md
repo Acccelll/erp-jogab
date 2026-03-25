@@ -82,7 +82,7 @@
 - Testes de integração end-to-end com API real
 - Completar contratos parciais: estoque detalhe, medições detalhe, documentos gestão, admin CRUD
 
-## Estado atual (2026-03-24)
+## Estado atual (2026-03-25)
 
 **Resultado dos comandos de validação:**
 - `npm run build`: 0 erros TypeScript, build completo com sucesso
