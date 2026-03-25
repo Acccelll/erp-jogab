@@ -74,9 +74,20 @@
 - 9 módulos prontos para integração imediata, 4 parcialmente prontos
 - Total: 410 testes em 37 arquivos
 
+## Integração real incremental (Fase 5) ✅
+- Autenticação real: login, restauração de sessão e logout via `withApiFallback`
+- Contexto/bootstrap real: opções e bootstrap de contexto via `withApiFallback`
+- Dashboard integrado: resumo executivo com normalizador e `withApiFallback`
+- Normalizers de contexto: `normalizeContextOptions` e `normalizeContextBootstrap`
+- Configuração por ambiente documentada (.env.example com comentários)
+- Registry de integração atualizado: auth, context e dashboard como `integrated`
+- Testes de integração: auth service (16), context service (16), integration registry (15)
+- Documentação de integração (docs/11-integracao-fase5.md)
+- Total: 447 testes em 39 arquivos
+
 ## Próximos passos
-- Implementar backend real começando por autenticação e contexto
-- Conectar primeiro módulo (Dashboard) à API real
+- Conectar Obras como próximo módulo integrado (candidato para Fase 6)
+- Conectar RH como segundo módulo integrado
 - Desabilitar fallback gradualmente por módulo (`VITE_API_FALLBACK=false`)
 - Code-splitting com React.lazy para reduzir bundle size
 - Testes de integração end-to-end com API real
@@ -87,15 +98,27 @@
 **Resultado dos comandos de validação:**
 - `npm run build`: 0 erros TypeScript, build completo com sucesso
 - `npm run lint`: 0 erros
-- `npm run test`: 37 arquivos de teste, 410 testes passando
+- `npm run test`: 39 arquivos de teste, 447 testes passando
 - `npm audit`: 0 vulnerabilidades
 
 **Testes encontrados vs declarados:**
-- Arquivos de teste no repositório: 37 (13 `.test.ts` + 24 `.test.tsx`)
-- Testes executados pelo Vitest: 410 em 37 arquivos — todos passando
+- Arquivos de teste no repositório: 39 (15 `.test.ts` + 24 `.test.tsx`)
+- Testes executados pelo Vitest: 447 em 39 arquivos — todos passando
 - Padrão de include: `src/**/*.test.{ts,tsx}` — correto e abrangente
 
+**Endpoints efetivamente integrados (Fase 5):**
+- `POST /auth/login` — login real com fallback mock
+- `GET /auth/me` — restauração de sessão com fallback mock
+- `POST /auth/logout` — logout com fallback mock
+- `GET /context/bootstrap` — bootstrap de contexto com fallback mock
+- `GET /context/options` — opções de contexto com fallback mock
+- `GET /dashboard/summary` — resumo executivo com fallback mock
+
+**Módulos que continuam apenas preparados:**
+- Obras, RH, Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback)
+- Estoque, Medições, Documentos, Admin (parcialmente prontos)
+
 **Rotas implementadas:**
-- `/horas-extras/lancamentos` — lista de lançamentos (adicionada nesta atualização)
-- `/horas-extras/:lancamentoId` — detalhe do lançamento (adicionada nesta atualização)
+- `/horas-extras/lancamentos` — lista de lançamentos
+- `/horas-extras/:lancamentoId` — detalhe do lançamento
 - Todas as demais rotas documentadas em `docs/06-arquitetura-de-telas.md` estão presentes
