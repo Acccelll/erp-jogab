@@ -101,20 +101,36 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 7. FOPAG
+### 7. FOPAG (Fase 8)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
-| `/fopag/competencias` | GET | ✅ | Listagem de competências com KPIs financeiros |
-| `/fopag/competencias/:id` | GET | ✅ | Detalhe da competência (funcionários, valores) |
+| `/fopag/competencias` | GET | ✅ Integrado | Listagem de competências com KPIs financeiros |
+| `/fopag/competencias/:id` | GET | ✅ Integrado | Detalhe da competência (funcionários, valores) |
 
 **Normalizador:** `normalizeFopagCompetenciasResponse`.
 **Validação Zod:** `fopagCompetenciaSchema`.
-**Notas:** Módulo de leitura com contrato estável.
+**Notas:** Módulo de leitura integrado na Fase 8. Recebe dados do fechamento de Horas Extras.
 
 ---
 
-### 8. Compras
+### 8. Financeiro (Fase 8)
+
+| Endpoint | Método | Status | Descrição |
+|----------|--------|--------|-----------|
+| `/financeiro/dashboard` | GET | ✅ Integrado | Dashboard financeiro principal |
+| `/financeiro/fluxo-caixa` | GET | ✅ Integrado | Fluxo de caixa |
+| `/financeiro/pessoal` | GET | ✅ Integrado | Custos de pessoal (integrado com FOPAG) |
+| `/financeiro/contas-pagar` | GET | ✅ Integrado | Contas a pagar |
+| `/financeiro/contas-receber` | GET | ✅ Integrado | Contas a receber |
+| `/financeiro/titulos/:id` | GET | ✅ Integrado | Detalhe de título financeiro |
+
+**Normalizador:** `normalizeFinanceiroDashboardData`.
+**Notas:** Integrado na Fase 8. O campo `pessoal` no dashboard reflete os dados vindos da FOPAG.
+
+---
+
+### 9. Compras
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
@@ -127,22 +143,6 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 **Normalizador:** `normalizeComprasDashboardData`.
 **Validação Zod:** `compraSchema`, schemas de criação.
 **Notas:** Fluxo de 3 etapas (solicitação → cotação → pedido) completo.
-
----
-
-### 9. Financeiro
-
-| Endpoint | Método | Status | Descrição |
-|----------|--------|--------|-----------|
-| `/financeiro/dashboard` | GET | ✅ | Dashboard financeiro principal |
-| `/financeiro/fluxo-caixa` | GET | ✅ | Fluxo de caixa |
-| `/financeiro/pessoal` | GET | ✅ | Custos de pessoal |
-| `/financeiro/contas-pagar` | GET | ✅ | Contas a pagar |
-| `/financeiro/contas-receber` | GET | ✅ | Contas a receber |
-| `/financeiro/titulos/:id` | GET | ✅ | Detalhe de título financeiro |
-
-**Normalizador:** `normalizeFinanceiroDashboardData`.
-**Notas:** 5 views distintas, todas com normalizadores.
 
 ---
 
@@ -235,9 +235,9 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | Obras | ✅ Integrado | 4 | 4 | 4 |
 | RH | ✅ Integrado | 4 | 4 | 4 |
 | Horas Extras | ✅ Integrado | 6 | 6 | 6 |
-| FOPAG | 🔵 Ready | 0 | 2 | 2 |
+| FOPAG | ✅ Integrado | 2 | 2 | 2 |
+| Financeiro | ✅ Integrado | 6 | 6 | 6 |
 | Compras | 🔵 Ready | 0 | 5 | 5 |
-| Financeiro | 🔵 Ready | 0 | 6 | 6 |
 | Fiscal | 🔵 Ready | 0 | 4 | 4 |
 | Relatórios | 🔵 Ready | 0 | 2 | 2 |
 | Estoque | 🟡 Partial | 0 | 2 | 3 |
@@ -245,7 +245,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | Documentos | 🟡 Partial | 0 | 1 | 2 |
 | Admin | 🟡 Partial | 0 | 7 | 7 |
 
-**Total:** 20 endpoints integrados, 51 endpoints ready de 54 mapeados.
+**Total:** 28 endpoints integrados, 51 endpoints ready de 54 mapeados.
 
 ---
 
@@ -257,8 +257,8 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 4. ~~**Obras**~~ — ✅ Integrado (Fase 6)
 5. ~~**RH**~~ — ✅ Integrado completo (Fase 6 + 7)
 6. ~~**Horas Extras**~~ — ✅ Integrado (Fase 7)
-7. **FOPAG** — Próximo: recebe dados de Horas Extras fechadas
-8. **Financeiro** — Após FOPAG: fluxo FOPAG → Financeiro
+7. ~~**FOPAG**~~ — ✅ Integrado (Fase 8)
+8. ~~**Financeiro**~~ — ✅ Integrado (Fase 8)
 9. **Compras** — Fluxo de 3 etapas
 10. **Fiscal** — Módulo de leitura
 9. **Relatórios** — Consolidação de dados
