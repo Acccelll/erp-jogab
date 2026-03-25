@@ -13,6 +13,7 @@ Este pacote foi preparado para uso com GitHub Copilot Agent ou Claude Code.
 8. `docs/06-arquitetura-de-telas.md`
 9. `docs/07-regras-de-implementacao.md`
 10. `docs/08-roadmap.md`
+11. `docs/10-readiness-modulos.md`
 
 ## Objetivo do pacote
 Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura definida, sem improvisar stack, rotas, organização por domínio ou regras centrais do negócio.
@@ -63,12 +64,12 @@ Todas as 8 fases do roadmap original estão completas. Os 14 módulos possuem p�
 | Normalização de services | 1 | 80 | 80 cenários cobrindo todos os 14 módulos |
 | Validação Zod (schemas) | 4 | 101 | Schemas de Obras, RH, Compras, FOPAG |
 | Páginas | 13 | 58 | Dashboard, Obras, RH, FOPAG, Compras, Horas Extras, Financeiro, Fiscal, Estoque, Medições, Documentos, Relatórios, Admin |
-| Utilitários compartilhados | 2 | 46 | HTTP client (api.ts), helpers (utils.ts) |
+| Utilitários compartilhados | 3 | 72 | HTTP client (api.ts), helpers (utils.ts), módulo de integração (integration.ts) |
 | Stores Zustand | 5 | 39 | contextStore, notificationStore, filtersStore, uiStore, drawerStore |
 | Componentes compartilhados | 5 | 37 | KPISection, StatusBadge, EmptyState, PageHeader, FilterBar |
 | Hooks TanStack Query | 6 | 23 | Dashboard, Obras, RH, FOPAG, Compras, Horas Extras |
 
-**Total: 36 arquivos, 384 testes**
+**Total: 37 arquivos, 410 testes**
 
 ### Comandos
 
@@ -87,6 +88,38 @@ npm run lint          # ESLint
 - **Hooks de módulos secundários:** Hooks de Financeiro, Fiscal, Estoque, Medições, Documentos, Relatórios e Admin sem testes unitários isolados
 - **Componentes específicos de módulo:** Filtros, tabelas e cards internos de cada módulo sem testes dedicados
 - **Testes end-to-end:** Ainda sem testes de integração E2E
+
+---
+
+## Preparação para integração (Fase 4 de alinhamento)
+
+A Fase 4 preparou o frontend para conexão progressiva com backend real. Detalhes completos em `docs/10-readiness-modulos.md`.
+
+### Camada HTTP reforçada
+
+- `ApiError` tipado com classificação automática (network / timeout / http / html / payload / unknown)
+- `classifyError()` e `normalizeApiError()` para tratamento uniforme
+- Timeout configurável via `VITE_API_TIMEOUT` (padrão 15 000 ms)
+- Fallback para timeout (`ECONNABORTED`) elegível para degradação para mock
+
+### Variáveis de ambiente
+
+| Variável | Default | Descrição |
+|----------|---------|-----------|
+| `VITE_API_URL` | `/api` | URL base da API |
+| `VITE_API_FALLBACK` | `true` | Habilitar fallback para mock local quando API falha |
+| `VITE_API_TIMEOUT` | `15000` | Timeout de requisição em ms |
+
+Para desabilitar fallback e forçar API real: `VITE_API_FALLBACK=false`.
+
+### Readiness por módulo
+
+| Status | Módulos | Qtd |
+|--------|---------|-----|
+| ✅ Ready | Dashboard, Obras, RH, Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios | 9 |
+| 🟡 Partial | Estoque, Medições, Documentos, Admin | 4 |
+
+**Total:** 45 endpoints prontos de 48 mapeados. Detalhes em `docs/10-readiness-modulos.md`.
 
 ---
 
