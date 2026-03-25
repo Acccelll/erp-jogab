@@ -15,6 +15,7 @@ Este pacote foi preparado para uso com GitHub Copilot Agent ou Claude Code.
 10. `docs/08-roadmap.md`
 11. `docs/10-readiness-modulos.md`
 12. `docs/11-integracao-fase5.md`
+13. `docs/12-integracao-fase6.md`
 
 ## Objetivo do pacote
 Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura definida, sem improvisar stack, rotas, organização por domínio ou regras centrais do negócio.
@@ -26,7 +27,7 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 
 ## Estado atual do frontend
 
-Todas as 8 fases do roadmap original estão completas, além de 5 fases de alinhamento. Os 14 módulos possuem páginas, services, hooks, types e mock data implementados. A Fase 5 (integração real incremental) conectou auth, contexto global e dashboard à API real via `withApiFallback`. Detalhes em `docs/08-roadmap.md` e `docs/11-integracao-fase5.md`.
+Todas as 8 fases do roadmap original estão completas, além de 6 fases de alinhamento/integração. Os 14 módulos possuem páginas, services, hooks, types e mock data implementados. A Fase 5 conectou auth, contexto global e dashboard à API real via `withApiFallback`. A Fase 6 integrou Obras (CRUD completo) e RH (leitura) à API real. Detalhes em `docs/08-roadmap.md`, `docs/11-integracao-fase5.md` e `docs/12-integracao-fase6.md`.
 
 ### Módulos implementados
 
@@ -68,9 +69,10 @@ Todas as 8 fases do roadmap original estão completas, além de 5 fases de alinh
 | Utilitários compartilhados | 5 | 109 | HTTP client (api.ts), helpers (utils.ts), módulo de integração (integration.ts), auth service, context service |
 | Stores Zustand | 5 | 39 | contextStore, notificationStore, filtersStore, uiStore, drawerStore |
 | Componentes compartilhados | 5 | 37 | KPISection, StatusBadge, EmptyState, PageHeader, FilterBar |
-| Hooks TanStack Query | 6 | 23 | Dashboard, Obras, RH, FOPAG, Compras, Horas Extras |
+| Hooks TanStack Query | 8 | 32 | Dashboard, Obras (list, detail, mutations), RH, FOPAG, Compras, Horas Extras |
+| Services de módulos | 3 | 53 | Obras service (24), workspace (12), RH service (17) |
 
-**Total: 39 arquivos, 447 testes**
+**Total: 44 arquivos, 514 testes**
 
 ### Comandos
 
@@ -119,7 +121,7 @@ Para desabilitar fallback e forçar API real: `VITE_API_FALLBACK=false`.
 
 A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`. Detalhes completos em `docs/11-integracao-fase5.md`.
 
-### Endpoints efetivamente integrados
+### Endpoints efetivamente integrados (Fases 5 + 6)
 
 | Módulo | Endpoint | Método | Descrição |
 |--------|----------|--------|-----------|
@@ -129,20 +131,26 @@ A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`
 | Context | `/context/bootstrap` | GET | Bootstrap de contexto global |
 | Context | `/context/options` | GET | Opções de contexto (selects) |
 | Dashboard | `/dashboard/summary` | GET | Resumo executivo com KPIs |
+| Obras | `/obras` | GET | Listagem de obras com filtros |
+| Obras | `/obras/:id` | GET | Detalhe da obra |
+| Obras | `/obras` | POST | Criar obra |
+| Obras | `/obras/:id` | PUT | Atualizar obra |
+| RH | `/rh/funcionarios` | GET | Listagem de funcionários |
+| RH | `/rh/funcionarios/:id` | GET | Detalhe do funcionário |
 
 ### Status dos módulos
 
 | Status | Módulos | Qtd |
 |--------|---------|-----|
-| ✅ Integrado | Auth, Contexto, Dashboard | 3 |
-| 🔵 Ready | Obras, RH, Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios | 8 |
+| ✅ Integrado | Auth, Contexto, Dashboard, Obras, RH (leitura) | 5 |
+| 🔵 Ready | Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios | 6 |
 | 🟡 Partial | Estoque, Medições, Documentos, Admin | 4 |
 
 - **Integrado:** conectado à API real com `withApiFallback`, normalizers e testes de integração.
 - **Ready:** contrato estável, normalizer completo, `withApiFallback` implementado — pronto para API real.
 - **Partial:** service com `withApiFallback`, mas contrato de detalhe ou mutação parcial.
 
-**Total:** 45 endpoints prontos de 48 mapeados + 6 endpoints efetivamente integrados. Detalhes em `docs/10-readiness-modulos.md`.
+**Total:** 50 endpoints prontos de 53 mapeados + 12 endpoints efetivamente integrados. Detalhes em `docs/10-readiness-modulos.md`.
 
 ---
 

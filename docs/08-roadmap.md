@@ -85,9 +85,21 @@
 - Documentação de integração (docs/11-integracao-fase5.md)
 - Total: 447 testes em 39 arquivos
 
+## Integração Obras + RH leitura (Fase 6) ✅
+- Obras integrado: CRUD completo (GET list, GET detail, POST create, PUT update) via `withApiFallback`
+- RH parcialmente integrado: leitura (GET list, GET detail) via `withApiFallback`
+- Normalizers validados: `normalizeObrasListResponse` e `normalizeFuncionariosListResponse`
+- Workspace de Obras funcional com API real: 11 abas com fallback controlado
+- Mutações de Obras validadas: criação e atualização com feedback e validação Zod
+- Testes adicionados: service Obras (24), workspace (12), useObraDetails (5), useObraMutations (4), service RH (17), integration (5)
+- Registry atualizado: auth, context, dashboard, obras e rh como `integrated`
+- Documentação completa (docs/12-integracao-fase6.md)
+- Total: 514 testes em 44 arquivos
+
 ## Próximos passos
-- Conectar Obras como próximo módulo integrado (candidato para Fase 6)
-- Conectar RH como segundo módulo integrado
+- Completar integração de RH com mutações (POST/PUT)
+- Conectar Horas Extras como próximo módulo integrado
+- Seguir fluxo crítico: HE → FOPAG → Financeiro → Compras
 - Desabilitar fallback gradualmente por módulo (`VITE_API_FALLBACK=false`)
 - Code-splitting com React.lazy para reduzir bundle size
 - Testes de integração end-to-end com API real
@@ -98,25 +110,32 @@
 **Resultado dos comandos de validação:**
 - `npm run build`: 0 erros TypeScript, build completo com sucesso
 - `npm run lint`: 0 erros
-- `npm run test`: 39 arquivos de teste, 447 testes passando
+- `npm run test`: 44 arquivos de teste, 514 testes passando
 - `npm audit`: 0 vulnerabilidades
 
 **Testes encontrados vs declarados:**
-- Arquivos de teste no repositório: 39 (15 `.test.ts` + 24 `.test.tsx`)
-- Testes executados pelo Vitest: 447 em 39 arquivos — todos passando
+- Arquivos de teste no repositório: 44 (17 `.test.ts` + 27 `.test.tsx`)
+- Testes executados pelo Vitest: 514 em 44 arquivos — todos passando
 - Padrão de include: `src/**/*.test.{ts,tsx}` — correto e abrangente
 
-**Endpoints efetivamente integrados (Fase 5):**
+**Endpoints efetivamente integrados (Fase 5 + 6):**
 - `POST /auth/login` — login real com fallback mock
 - `GET /auth/me` — restauração de sessão com fallback mock
 - `POST /auth/logout` — logout com fallback mock
 - `GET /context/bootstrap` — bootstrap de contexto com fallback mock
 - `GET /context/options` — opções de contexto com fallback mock
 - `GET /dashboard/summary` — resumo executivo com fallback mock
+- `GET /obras` — listagem de obras com fallback mock
+- `GET /obras/:id` — detalhe da obra com fallback mock
+- `POST /obras` — criação de obra com fallback mock
+- `PUT /obras/:id` — atualização de obra com fallback mock
+- `GET /rh/funcionarios` — listagem de funcionários com fallback mock
+- `GET /rh/funcionarios/:id` — detalhe do funcionário com fallback mock
 
 **Módulos que continuam apenas preparados:**
-- Obras, RH, Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback)
+- Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback)
 - Estoque, Medições, Documentos, Admin (parcialmente prontos)
+- RH mutações (POST/PUT) — prontas mas não integradas nesta fase
 
 **Rotas implementadas:**
 - `/horas-extras/lancamentos` — lista de lançamentos

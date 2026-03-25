@@ -1,5 +1,5 @@
 /**
- * Configuração de integração — Fase 5
+ * Configuração de integração — Fase 6
  * Centraliza controle de feature flags, readiness por módulo e configuração de ambiente.
  */
 
@@ -111,38 +111,38 @@ export const MODULE_READINESS: ModuleReadiness[] = [
   {
     module: 'obras',
     status: 'ready',
-    integrationStatus: 'ready',
+    integrationStatus: 'integrated',
     endpoints: [
       {
         path: '/obras',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Listagem de obras com filtros',
       },
-      { path: '/obras/:id', method: 'GET', readiness: 'ready', integrated: false, description: 'Detalhe da obra' },
-      { path: '/obras', method: 'POST', readiness: 'ready', integrated: false, description: 'Criar obra' },
-      { path: '/obras/:id', method: 'PUT', readiness: 'ready', integrated: false, description: 'Atualizar obra' },
+      { path: '/obras/:id', method: 'GET', readiness: 'ready', integrated: true, description: 'Detalhe da obra' },
+      { path: '/obras', method: 'POST', readiness: 'ready', integrated: true, description: 'Criar obra' },
+      { path: '/obras/:id', method: 'PUT', readiness: 'ready', integrated: true, description: 'Atualizar obra' },
     ],
-    notes: 'Módulo central. Contrato CRUD estável com validação Zod. Candidato para Fase 6.',
+    notes: 'Integrado na Fase 6. CRUD completo com withApiFallback, normalizador e validação Zod.',
   },
   {
     module: 'rh',
     status: 'ready',
-    integrationStatus: 'ready',
+    integrationStatus: 'integrated',
     endpoints: [
       {
         path: '/rh/funcionarios',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Listagem de funcionários',
       },
       {
         path: '/rh/funcionarios/:id',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Detalhe do funcionário',
       },
       {
@@ -160,7 +160,7 @@ export const MODULE_READINESS: ModuleReadiness[] = [
         description: 'Atualizar funcionário',
       },
     ],
-    notes: 'Contrato CRUD com validação Zod e normalizadores prontos.',
+    notes: 'Leitura integrada na Fase 6 (GET list e GET detail). Mutações ainda com fallback mock.',
   },
   {
     module: 'horas-extras',
