@@ -14,6 +14,7 @@ Este pacote foi preparado para uso com GitHub Copilot Agent ou Claude Code.
 9. `docs/07-regras-de-implementacao.md`
 10. `docs/08-roadmap.md`
 11. `docs/10-readiness-modulos.md`
+12. `docs/11-integracao-fase5.md`
 
 ## Objetivo do pacote
 Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura definida, sem improvisar stack, rotas, organização por domínio ou regras centrais do negócio.
@@ -25,7 +26,7 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 
 ## Estado atual do frontend
 
-Todas as 8 fases do roadmap original estão completas. Os 14 módulos possuem páginas, services, hooks, types e mock data implementados. Detalhes em `docs/08-roadmap.md`.
+Todas as 8 fases do roadmap original estão completas, além de 5 fases de alinhamento. Os 14 módulos possuem páginas, services, hooks, types e mock data implementados. A Fase 5 (integração real incremental) conectou auth, contexto global e dashboard à API real via `withApiFallback`. Detalhes em `docs/08-roadmap.md` e `docs/11-integracao-fase5.md`.
 
 ### Módulos implementados
 
@@ -64,12 +65,12 @@ Todas as 8 fases do roadmap original estão completas. Os 14 módulos possuem p�
 | Normalização de services | 1 | 80 | 80 cenários cobrindo todos os 14 módulos |
 | Validação Zod (schemas) | 4 | 101 | Schemas de Obras, RH, Compras, FOPAG |
 | Páginas | 13 | 58 | Dashboard, Obras, RH, FOPAG, Compras, Horas Extras, Financeiro, Fiscal, Estoque, Medições, Documentos, Relatórios, Admin |
-| Utilitários compartilhados | 3 | 72 | HTTP client (api.ts), helpers (utils.ts), módulo de integração (integration.ts) |
+| Utilitários compartilhados | 5 | 109 | HTTP client (api.ts), helpers (utils.ts), módulo de integração (integration.ts), auth service, context service |
 | Stores Zustand | 5 | 39 | contextStore, notificationStore, filtersStore, uiStore, drawerStore |
 | Componentes compartilhados | 5 | 37 | KPISection, StatusBadge, EmptyState, PageHeader, FilterBar |
 | Hooks TanStack Query | 6 | 23 | Dashboard, Obras, RH, FOPAG, Compras, Horas Extras |
 
-**Total: 37 arquivos, 410 testes**
+**Total: 39 arquivos, 447 testes**
 
 ### Comandos
 
@@ -112,14 +113,36 @@ A Fase 4 preparou o frontend para conexão progressiva com backend real. Detalhe
 
 Para desabilitar fallback e forçar API real: `VITE_API_FALLBACK=false`.
 
-### Readiness por módulo
+---
+
+## Integração real incremental (Fase 5)
+
+A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`. Detalhes completos em `docs/11-integracao-fase5.md`.
+
+### Endpoints efetivamente integrados
+
+| Módulo | Endpoint | Método | Descrição |
+|--------|----------|--------|-----------|
+| Auth | `/auth/login` | POST | Login com credenciais |
+| Auth | `/auth/me` | GET | Restauração de sessão |
+| Auth | `/auth/logout` | POST | Logout |
+| Context | `/context/bootstrap` | GET | Bootstrap de contexto global |
+| Context | `/context/options` | GET | Opções de contexto (selects) |
+| Dashboard | `/dashboard/summary` | GET | Resumo executivo com KPIs |
+
+### Status dos módulos
 
 | Status | Módulos | Qtd |
 |--------|---------|-----|
-| ✅ Ready | Dashboard, Obras, RH, Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios | 9 |
+| ✅ Integrado | Auth, Contexto, Dashboard | 3 |
+| 🔵 Ready | Obras, RH, Horas Extras, FOPAG, Compras, Financeiro, Fiscal, Relatórios | 8 |
 | 🟡 Partial | Estoque, Medições, Documentos, Admin | 4 |
 
-**Total:** 45 endpoints prontos de 48 mapeados. Detalhes em `docs/10-readiness-modulos.md`.
+- **Integrado:** conectado à API real com `withApiFallback`, normalizers e testes de integração.
+- **Ready:** contrato estável, normalizer completo, `withApiFallback` implementado — pronto para API real.
+- **Partial:** service com `withApiFallback`, mas contrato de detalhe ou mutação parcial.
+
+**Total:** 45 endpoints prontos de 48 mapeados + 6 endpoints efetivamente integrados. Detalhes em `docs/10-readiness-modulos.md`.
 
 ---
 
