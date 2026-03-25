@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Landmark, TrendingDown, Search, SlidersHorizontal, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { EmptyState, MainContent, StatusBadge, QuickFilterChips } from '@/shared/components';
+import { EmptyState, MainContent, StatusBadge, QuickFilterChips, PageHeader } from '@/shared/components';
 import { cn, formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { TitulosFinanceirosTable } from '../components';
 import { useFinanceiro, useFinanceiroFilters, useFinanceiroPessoal } from '../hooks';
@@ -31,47 +31,55 @@ export function FinanceiroListPage() {
   }, []);
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex flex-1 flex-col bg-surface-secondary">
+      {/* Operational Header */}
+      <PageHeader
+        title="Financeiro"
+        variant="operational"
+        actions={
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface-muted px-2.5 py-1 text-sm focus-within:border-brand-primary focus-within:bg-surface transition-all">
+              <Search size={14} className="text-text-subtle" />
+              <input
+                type="text"
+                placeholder="Buscar..."
+                value={filters.search ?? ''}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-text-subtle"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
+            >
+              <SlidersHorizontal size={16} />
+            </button>
+            <Link
+              to="/financeiro/fluxo"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1.5 text-xs font-medium text-text-body hover:bg-surface-soft"
+            >
+              <Landmark size={13} />
+              Fluxo
+            </Link>
+            <Link
+              to="/financeiro/contas-pagar"
+              className="inline-flex items-center gap-1.5 rounded-md bg-brand-primary px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-brand-primary-hover active:transform active:scale-95 transition-all"
+            >
+              <TrendingDown size={14} />
+              Contas a pagar
+            </Link>
+          </div>
+        }
+      />
+
       {/* Filter bar */}
-      <div className="flex items-center justify-between border-b border-border-default px-4 py-2">
+      <div className="flex items-center border-b border-border-default bg-surface px-6 py-2">
         <QuickFilterChips
           chips={statusChips}
           value={filters.status ?? null}
           onChange={(v) => setStatus(v as typeof filters.status)}
         />
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm">
-            <Search size={14} className="text-text-subtle" />
-            <input
-              type="text"
-              placeholder="Buscar..."
-              value={filters.search ?? ''}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-text-subtle"
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
-          >
-            <SlidersHorizontal size={16} />
-          </button>
-          <Link
-            to="/financeiro/fluxo"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1.5 text-xs font-medium text-text-body hover:bg-surface-soft"
-          >
-            <Landmark size={13} />
-            Fluxo
-          </Link>
-          <Link
-            to="/financeiro/contas-pagar"
-            className="inline-flex items-center gap-1.5 rounded-md bg-brand-primary px-2.5 py-1.5 text-xs font-medium text-white hover:bg-brand-primary-hover"
-          >
-            <TrendingDown size={13} />
-            Contas a pagar
-          </Link>
-        </div>
       </div>
 
       {/* Advanced filters */}

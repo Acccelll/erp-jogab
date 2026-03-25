@@ -89,25 +89,24 @@ function NavItem({
       <NavLink
         to={path}
         className={cn(
-          'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors',
+          'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 transition-all duration-200',
           isActive
-            ? 'bg-sidebar-active text-sidebar-text-active'
+            ? 'bg-sidebar-active text-sidebar-text-active shadow-sm font-semibold'
             : tier === 'utility'
-              ? 'text-sidebar-text/35 hover:bg-sidebar-hover hover:text-white'
+              ? 'text-sidebar-text/30 hover:bg-sidebar-hover hover:text-white text-[13px]'
               : tier === 'secondary'
-                ? 'text-sidebar-text/45 hover:bg-sidebar-hover hover:text-white'
-                : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
+                ? 'text-sidebar-text/50 hover:bg-sidebar-hover hover:text-white text-[13px]'
+                : 'text-sidebar-text/80 hover:bg-sidebar-hover hover:text-white text-sm font-medium',
           collapsed && 'justify-center px-0',
         )}
         title={label}
       >
-        <Icon size={iconSize} className="shrink-0" />
+        <Icon size={iconSize} className={cn('shrink-0 transition-transform duration-200', isActive && 'scale-110')} />
         {!collapsed && (
           <span
             className={cn(
-              'truncate font-medium opacity-100 transition-opacity duration-150',
-              tier === 'secondary' && 'text-[13px]',
-              tier === 'utility' && 'text-[12px]',
+              'truncate transition-opacity duration-150',
+              tier === 'primary' ? 'opacity-100' : 'opacity-80',
             )}
           >
             {label}

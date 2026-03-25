@@ -8,8 +8,8 @@
  */
 import { useParams } from 'react-router-dom';
 import { DollarSign, TrendingUp, Wallet, Users, FileSignature, Clock, Target } from 'lucide-react';
-import { KPISection, KPICard, MainContent } from '@/shared/components';
-import { formatCurrency } from '@/shared/lib/utils';
+import { MainContent } from '@/shared/components';
+import { formatCurrency, cn } from '@/shared/lib/utils';
 import { useObraDetails } from '../hooks/useObraDetails';
 import type { ObraResumoBloco } from '../types';
 
@@ -38,54 +38,79 @@ export function ObraVisaoGeralPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* KPIs da obra */}
-      <KPISection>
-        <KPICard label="Orçamento Previsto" value={formatCurrency(kpis.orcamentoPrevisto)} />
-        <KPICard
-          label="Custo Realizado"
-          value={formatCurrency(kpis.custoRealizado)}
-          subtitle={`${kpis.orcamentoPrevisto > 0 ? Math.round((kpis.custoRealizado / kpis.orcamentoPrevisto) * 100) : 0}% do orçamento`}
-          trend={kpis.custoRealizado > kpis.orcamentoPrevisto * 0.8 ? 'down' : 'neutral'}
-        />
-        <KPICard label="Comprometido" value={formatCurrency(kpis.custoComprometido)} trend="neutral" />
-        <KPICard
-          label="Saldo Disponível"
-          value={formatCurrency(kpis.saldoDisponivel)}
-          subtitle={kpis.saldoDisponivel < 0 ? 'Orçamento estourado!' : undefined}
-          trend={kpis.saldoDisponivel < 0 ? 'down' : 'up'}
-        />
-        <KPICard
-          label="Dias Restantes"
-          value={kpis.diasRestantes}
-          subtitle={kpis.diasRestantes < 30 ? 'Prazo próximo' : undefined}
-          trend={kpis.diasRestantes < 30 ? 'down' : 'neutral'}
-        />
-      </KPISection>
-
-      <MainContent>
-        {/* Progress bar large */}
-        <div className="mb-6 rounded-lg border border-border-default bg-white p-4">
-          <div className="mb-2 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Target size={16} className="text-jogab-500" />
-              <span className="text-sm font-medium text-text-body">Progresso da Obra</span>
+      <MainContent className="space-y-8 px-8 py-8">
+        {/* KPIs da obra — dominant display */}
+        <div className="flex flex-wrap items-end gap-x-12 gap-y-6">
+          <div className="group">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted/40">
+              Custo Realizado
+            </span>
+            <div className="mt-1 flex items-baseline gap-3">
+              <span className="text-4xl font-black tabular-nums tracking-tighter text-text-strong">
+                {formatCurrency(kpis.custoRealizado)}
+              </span>
+              <span className="flex items-center gap-1 rounded-full bg-surface-muted px-2 py-0.5 text-xs font-bold text-text-muted">
+                {kpis.orcamentoPrevisto > 0 ? Math.round((kpis.custoRealizado / kpis.orcamentoPrevisto) * 100) : 0}%
+              </span>
             </div>
-            <span className="text-lg font-bold text-jogab-700">{kpis.percentualConcluido}%</span>
           </div>
-          <div className="h-3 w-full rounded-full bg-surface-soft">
-            <div
-              className="h-full rounded-full bg-jogab-700 transition-all"
-              style={{ width: `${Math.min(kpis.percentualConcluido, 100)}%` }}
-            />
+
+          <div className="h-10 w-px bg-border-default/30" />
+
+          <div className="flex flex-wrap items-end gap-x-10">
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-text-muted/50">Saldo</div>
+              <div className={cn(
+                "mt-0.5 text-xl font-bold tabular-nums",
+                kpis.saldoDisponivel < 0 ? "text-danger" : "text-text-strong/90"
+              )}>
+                {formatCurrency(kpis.saldoDisponivel)}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-text-muted/50">Comprometido</div>
+              <div className="mt-0.5 text-xl font-bold tabular-nums text-text-strong/90">
+                {formatCurrency(kpis.custoComprometido)}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-text-muted/50">Prazo</div>
+              <div className="mt-0.5 text-xl font-bold tabular-nums text-text-strong/90">
+                {kpis.diasRestantes} <span className="text-xs font-medium text-text-muted">dias</span>
+              </div>
+            </div>
           </div>
-          <div className="mt-2 flex justify-between text-xs text-text-subtle">
-            <span>{kpis.totalFuncionarios} funcionários alocados</span>
-            <span>{kpis.totalContratos} contratos ativos</span>
+        </div>
+        {/* Progress horizontal strip — less heavy than a full block */}
+        <div className="flex items-center gap-6 border-y border-border-default/30 py-4">
+          <div className="flex items-center gap-3 min-w-[200px]">
+            <Target size={18} className="text-brand-primary opacity-60" />
+            <div className="flex-1 space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-text-muted">
+                <span>Progresso</span>
+                <span>{kpis.percentualConcluido}%</span>
+              </div>
+              <div className="h-1.5 w-full rounded-full bg-surface-muted overflow-hidden">
+                <div
+                  className="h-full bg-brand-primary transition-all duration-700"
+                  style={{ width: `${Math.min(kpis.percentualConcluido, 100)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-8 text-[11px] text-text-muted/80">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-text-strong">{kpis.totalFuncionarios}</span> funcionários
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-text-strong">{kpis.totalContratos}</span> contratos ativos
+            </div>
           </div>
         </div>
 
-        {/* Resumo por domínio — blocos */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Resumo por domínio — compact cards */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {resumoBlocos.map((bloco) => (
             <ResumoBlocoCard key={bloco.titulo} bloco={bloco} />
           ))}

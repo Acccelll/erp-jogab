@@ -40,10 +40,10 @@ export function OverflowTabs({ tabs, maxVisible = 5, basePath }: OverflowTabsPro
           end={tab.path === ''}
           className={({ isActive }) =>
             cn(
-              'whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition-colors',
+              'whitespace-nowrap border-b-2 px-3 py-2.5 text-[13px] font-semibold transition-all duration-200',
               isActive
-                ? 'border-brand-primary text-brand-primary'
-                : 'border-transparent text-text-muted hover:border-brand-primary/40 hover:text-text-body',
+                ? 'border-brand-primary text-brand-primary bg-brand-primary/[0.03]'
+                : 'border-transparent text-text-muted/60 hover:text-text-body hover:border-border-default',
             )
           }
         >

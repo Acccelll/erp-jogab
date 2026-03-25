@@ -15,23 +15,40 @@ export function PageHeader({ title, subtitle, actions, variant = 'operational' }
   return (
     <div
       className={cn(
-        'flex items-center justify-between border-b border-border-default bg-surface px-4',
-        isAnalytical ? 'py-6' : 'py-2',
-        isWorkspace && 'border-b-0 px-0',
+        'flex items-center justify-between border-b border-border-default bg-surface px-6 transition-all duration-200',
+        isAnalytical ? 'py-8 border-b-border-default/40' : 'py-3',
+        isWorkspace && 'border-b-0 px-0 py-0',
       )}
     >
-      <div>
+      <div className="min-w-0 flex-1">
         <h1
           className={cn(
-            'text-text-strong font-brand',
-            isAnalytical ? 'text-2xl font-bold' : isWorkspace ? 'text-xs uppercase tracking-widest text-text-muted' : 'text-sm font-semibold',
+            'text-text-strong font-brand transition-all duration-200',
+            isAnalytical
+              ? 'text-3xl font-extrabold tracking-tight'
+              : isWorkspace
+                ? 'text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted/50'
+                : 'text-lg font-bold tracking-tight',
           )}
         >
           {title}
         </h1>
-        {subtitle && <p className={cn('text-text-muted', isAnalytical ? 'mt-1 text-base' : 'mt-0.5 text-xs')}>{subtitle}</p>}
+        {subtitle && (
+          <p
+            className={cn(
+              'text-text-muted transition-all duration-200',
+              isAnalytical ? 'mt-2 text-lg font-medium opacity-70' : 'mt-0.5 text-xs opacity-60'
+            )}
+          >
+            {subtitle}
+          </p>
+        )}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && (
+        <div className={cn('flex items-center gap-3', isAnalytical ? 'mb-auto' : '')}>
+          {actions}
+        </div>
+      )}
     </div>
   );
 }

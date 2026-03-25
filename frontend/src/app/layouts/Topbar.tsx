@@ -57,9 +57,9 @@ function useBreadcrumbs() {
   const location = useLocation();
   const segments = location.pathname.split('/').filter(Boolean);
   const contextOptions = useContextStore((s) => s.options);
-  const obras = contextOptions?.obras ?? [];
 
   return useMemo(() => {
+    const obras = contextOptions?.obras ?? [];
     const crumbs: string[] = [];
 
     for (let i = 0; i < segments.length && crumbs.length < 3; i++) {
@@ -87,7 +87,7 @@ function useBreadcrumbs() {
     }
 
     return crumbs;
-  }, [segments, obras]);
+  }, [segments, contextOptions?.obras]);
 }
 
 /** Compact context selector for Topbar */
@@ -204,32 +204,38 @@ export function Topbar() {
   }, [userMenuOpen]);
 
   return (
-    <header className="flex h-10 items-center justify-between border-b border-border-default bg-surface px-4 shadow-sm">
+    <header className="flex h-9 items-center justify-between border-b border-border-default bg-surface px-4 shadow-sm transition-all duration-200">
       {/* Left side */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <button
           type="button"
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="rounded-md p-1 text-text-muted hover:bg-surface-soft hover:text-text-body lg:hidden"
+          className="rounded-md p-1 text-text-muted/80 hover:bg-surface-soft hover:text-text-body lg:hidden"
           aria-label="Toggle menu"
         >
           <Menu size={16} />
         </button>
 
-        {/* Breadcrumbs */}
-        <nav className="flex items-center gap-1.5 text-[13px]" aria-label="Breadcrumb">
-          {breadcrumbs.map((crumb, idx) => (
-            <span key={`${crumb}-${idx}`} className="flex items-center gap-1.5">
-              {idx > 0 && <span className="text-border-default opacity-40">/</span>}
-              <span
-                className={cn(
-                  idx === breadcrumbs.length - 1 ? 'font-bold text-brand-primary' : 'font-normal text-text-muted/50',
-                )}
-              >
-                {crumb}
+        {/* Breadcrumbs with improved orientation */}
+        <nav className="flex items-center gap-2 text-[12px] tracking-tight" aria-label="Breadcrumb">
+          {breadcrumbs.map((crumb, idx) => {
+            const isLast = idx === breadcrumbs.length - 1;
+            return (
+              <span key={`${crumb}-${idx}`} className="flex items-center gap-2">
+                {idx > 0 && <span className="text-border-default opacity-30 select-none">/</span>}
+                <span
+                  className={cn(
+                    'transition-colors duration-200',
+                    isLast
+                      ? 'font-bold text-brand-primary'
+                      : 'font-medium text-text-muted/40 hover:text-text-muted/70 cursor-default'
+                  )}
+                >
+                  {crumb}
+                </span>
               </span>
-            </span>
-          ))}
+            );
+          })}
         </nav>
       </div>
 
