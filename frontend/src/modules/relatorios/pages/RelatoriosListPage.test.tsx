@@ -167,7 +167,7 @@ describe('RelatoriosListPage', () => {
 
     render(<RelatoriosListPage />);
 
-    expect(screen.getByText('Relatórios')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/buscar relatório/i)).toBeInTheDocument();
     expect(screen.getByText(/carregando catálogo/i)).toBeInTheDocument();
   });
 

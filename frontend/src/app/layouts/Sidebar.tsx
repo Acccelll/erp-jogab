@@ -27,20 +27,20 @@ interface SidebarNavItem {
   icon: LucideIcon;
 }
 
-/** Grupo 1 — Core */
+/** Grupo 1 — Core (always prominent) */
 const coreItems: SidebarNavItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { label: 'Obras', path: '/obras', icon: Building2 },
 ];
 
-/** Grupo 2 — Pessoas */
+/** Grupo 2 — Pessoas (primary operational) */
 const pessoasItems: SidebarNavItem[] = [
   { label: 'Funcionários', path: '/rh/funcionarios', icon: Users },
   { label: 'Horas Extras', path: '/horas-extras', icon: Clock },
   { label: 'FOPAG', path: '/fopag', icon: Receipt },
 ];
 
-/** Grupo 3 — Operacional */
+/** Grupo 3 — Operacional (secondary) */
 const operacionalItems: SidebarNavItem[] = [
   { label: 'Compras', path: '/compras', icon: ShoppingCart },
   { label: 'Fiscal', path: '/fiscal', icon: FileText },
@@ -50,27 +50,39 @@ const operacionalItems: SidebarNavItem[] = [
   { label: 'Documentos', path: '/documentos', icon: FolderOpen },
 ];
 
-/** Rodapé */
+/** Rodapé (utility — lowest hierarchy) */
 const footerItems: SidebarNavItem[] = [
   { label: 'Relatórios', path: '/relatorios', icon: BarChart2 },
   { label: 'Administração', path: '/admin', icon: Settings },
 ];
 
 function Divider() {
-  return <div className="mx-2 my-1.5 h-px bg-sidebar-border" />;
+  return <div className="mx-2 my-1 h-px bg-sidebar-border/50" />;
 }
 
 function GroupLabel({ label, collapsed }: { label: string; collapsed: boolean }) {
   if (collapsed) return null;
   return (
-    <p className="px-2.5 pb-1 pt-2.5 text-[10px] font-semibold uppercase tracking-widest text-sidebar-group">{label}</p>
+    <p className="px-2.5 pb-0.5 pt-2 text-[10px] font-medium uppercase tracking-widest text-sidebar-group/60">
+      {label}
+    </p>
   );
 }
 
-function NavItem({ item, collapsed, muted = false }: { item: SidebarNavItem; collapsed: boolean; muted?: boolean }) {
+function NavItem({
+  item,
+  collapsed,
+  tier = 'primary',
+}: {
+  item: SidebarNavItem;
+  collapsed: boolean;
+  tier?: 'primary' | 'secondary' | 'utility';
+}) {
   const location = useLocation();
   const { icon: Icon, label, path } = item;
   const isActive = location.pathname === path || location.pathname.startsWith(`${path}/`);
+
+  const iconSize = tier === 'primary' ? 20 : 16;
 
   return (
     <li>
@@ -80,17 +92,22 @@ function NavItem({ item, collapsed, muted = false }: { item: SidebarNavItem; col
           'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors',
           isActive
             ? 'bg-sidebar-active text-sidebar-text-active'
-            : muted
-              ? 'text-sidebar-text/70 hover:bg-sidebar-hover hover:text-white'
-              : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
+            : tier === 'utility'
+              ? 'text-sidebar-text/50 hover:bg-sidebar-hover hover:text-white'
+              : tier === 'secondary'
+                ? 'text-sidebar-text/60 hover:bg-sidebar-hover hover:text-white'
+                : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
           collapsed && 'justify-center px-0',
         )}
         title={label}
       >
-        <Icon size={muted ? 18 : 20} className="shrink-0" />
+        <Icon size={iconSize} className="shrink-0" />
         {!collapsed && (
           <span
-            className={cn('truncate font-medium opacity-100 transition-opacity duration-150', muted && 'text-[13px]')}
+            className={cn(
+              'truncate font-medium opacity-100 transition-opacity duration-150',
+              tier !== 'primary' && 'text-[13px]',
+            )}
           >
             {label}
           </span>
@@ -148,40 +165,41 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex flex-1 flex-col overflow-y-auto px-1.5 py-1">
-        {/* Grupo 1 — Core */}
+        {/* Core — highest prominence */}
         <ul className="space-y-0.5">
           {coreItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} />
+            <NavItem key={item.path} item={item} collapsed={collapsed} tier="primary" />
           ))}
         </ul>
 
         <Divider />
 
-        {/* Grupo 2 — Pessoas */}
+        {/* Pessoas */}
         <GroupLabel label="Pessoas" collapsed={collapsed} />
         <ul className="space-y-0.5">
           {pessoasItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} />
+            <NavItem key={item.path} item={item} collapsed={collapsed} tier="primary" />
           ))}
         </ul>
 
         <Divider />
 
-        {/* Grupo 3 — Operacional */}
+        {/* Operacional — visually recessed */}
         <GroupLabel label="Operacional" collapsed={collapsed} />
-        <ul className="space-y-0.5">
+        <ul className="space-y-0">
           {operacionalItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} muted />
+            <NavItem key={item.path} item={item} collapsed={collapsed} tier="secondary" />
           ))}
         </ul>
 
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* Rodapé — Relatórios e Admin */}
-        <ul className="space-y-0.5">
+        {/* Footer — utility tier */}
+        <Divider />
+        <ul className="space-y-0">
           {footerItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} />
+            <NavItem key={item.path} item={item} collapsed={collapsed} tier="utility" />
           ))}
         </ul>
       </nav>

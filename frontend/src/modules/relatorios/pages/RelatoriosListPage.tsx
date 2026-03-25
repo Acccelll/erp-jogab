@@ -1,6 +1,5 @@
-import { BarChart3, Building2, Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { EmptyState, MainContent } from '@/shared/components';
 import { RelatorioCategoriaCard, RelatoriosTable } from '../components';
 import { useRelatorios, useRelatoriosFilters } from '../hooks';
@@ -17,10 +16,8 @@ export function RelatoriosListPage() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Compact filter bar */}
-      <div className="flex items-center justify-between border-b border-border-default px-4 py-2.5">
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-text-strong font-brand">Relatórios</span>
-          <div className="h-4 w-px bg-border-default" />
+      <div className="flex items-center justify-between border-b border-border-default px-4 py-2">
+        <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm">
             <Search size={14} className="text-text-subtle" />
             <input
@@ -43,22 +40,6 @@ export function RelatoriosListPage() {
               Limpar
             </button>
           )}
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            to="/dashboard"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-3 py-1.5 text-sm font-medium text-text-body hover:bg-surface-soft"
-          >
-            <BarChart3 size={14} />
-            Dashboard
-          </Link>
-          <Link
-            to="/obras"
-            className="inline-flex items-center gap-1.5 rounded-md bg-brand-primary px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-primary-hover"
-          >
-            <Building2 size={14} />
-            Obras
-          </Link>
         </div>
       </div>
 
@@ -106,7 +87,7 @@ export function RelatoriosListPage() {
         </div>
       )}
 
-      <MainContent className="space-y-5">
+      <MainContent className="space-y-4">
         {isLoading && (
           <div className="space-y-0">
             <p className="sr-only">Carregando catálogo de relatórios...</p>
@@ -139,16 +120,16 @@ export function RelatoriosListPage() {
 
         {!isLoading && !isError && data && (
           <>
-            {/* Categories — compact chips */}
+            {/* Category chips — compact discovery */}
             {categorias.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {categorias.map((item) => (
                   <RelatorioCategoriaCard key={item.categoria} item={item} />
                 ))}
               </div>
             )}
 
-            {/* Reports list */}
+            {/* Reports table — protagonist */}
             {itens.length === 0 ? (
               <EmptyState
                 title="Nenhum relatório encontrado"

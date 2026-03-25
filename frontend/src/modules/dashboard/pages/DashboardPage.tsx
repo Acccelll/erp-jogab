@@ -1,4 +1,4 @@
-import { TrendingUp, RefreshCw } from 'lucide-react';
+import { TrendingUp, RefreshCw, AlertTriangle } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { MainContent, EmptyState } from '@/shared/components';
@@ -47,38 +47,49 @@ export function DashboardPage() {
 
   const competenciaLabel = competencia ? formatCompetencia(competencia) : 'competência atual';
 
-  // Main KPI (first one) and secondary KPIs
   const mainKpi = safe.kpis[0];
   const secondaryKpis = safe.kpis.slice(1, 5);
 
   return (
     <div className="flex flex-1 flex-col">
       {/* Compact header */}
-      <div className="flex items-center justify-between border-b border-border-default px-4 py-2.5">
-        <div>
-          <h1 className="text-sm font-semibold text-text-strong font-brand">Dashboard</h1>
-          <p className="text-xs text-text-muted">{competenciaLabel}</p>
+      <div className="flex items-center justify-between border-b border-border-default px-4 py-2">
+        <div className="flex items-baseline gap-2">
+          <h1 className="text-sm font-semibold text-text-strong">Dashboard</h1>
+          <span className="text-xs text-text-muted">{competenciaLabel}</span>
         </div>
         <button
           type="button"
           onClick={() => void refetch()}
-          className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs text-text-muted hover:bg-surface-soft hover:text-text-body"
+          className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-text-muted hover:bg-surface-soft hover:text-text-body"
         >
-          <RefreshCw size={13} className={isFetching ? 'animate-spin' : ''} />
+          <RefreshCw size={12} className={isFetching ? 'animate-spin' : ''} />
           Atualizar
         </button>
       </div>
 
       {isLoading && (
-        <div className="space-y-0 p-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
-              <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
-              <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-              <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
-              <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
+        <div className="space-y-3 p-4">
+          {/* KPI skeleton */}
+          <div className="flex flex-wrap items-end gap-x-6 gap-y-2">
+            <div>
+              <div className="h-3 w-20 animate-pulse rounded bg-neutral-200" />
+              <div className="mt-1 h-8 w-32 animate-pulse rounded bg-neutral-200" />
             </div>
-          ))}
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i}>
+                <div className="h-2.5 w-16 animate-pulse rounded bg-neutral-200" />
+                <div className="mt-1 h-5 w-20 animate-pulse rounded bg-neutral-200" />
+              </div>
+            ))}
+          </div>
+          {/* Section skeleton */}
+          <div className="h-3 w-24 animate-pulse rounded bg-neutral-200" />
+          <div className="grid gap-3 xl:grid-cols-2">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="h-16 animate-pulse rounded-lg bg-neutral-100" />
+            ))}
+          </div>
         </div>
       )}
 
@@ -102,74 +113,73 @@ export function DashboardPage() {
 
       {!isLoading && !isError && data && (
         <MainContent className="space-y-4">
-          {/* ZONA 1 — Métrica principal */}
-          {mainKpi && (
-            <div className="px-1 py-2">
-              <span className="text-xs font-medium uppercase tracking-wider text-text-subtle">{mainKpi.label}</span>
-              <div className="mt-1 text-4xl font-medium tabular-nums text-text-strong">{formatKpiValue(mainKpi)}</div>
-              {mainKpi.subtitle && (
-                <div className="mt-1 flex items-center gap-1 text-sm text-success">
-                  <TrendingUp className="h-3.5 w-3.5" />
-                  {mainKpi.subtitle}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ZONA 2 — KPIs secundários + Alertas */}
-          <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
-            {/* KPIs grid */}
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-              {secondaryKpis.map((kpi) => (
-                <div key={kpi.label} className="rounded-lg border border-border-default bg-surface-card p-3">
-                  <div className="text-xs text-text-subtle">{kpi.label}</div>
-                  <div className="mt-0.5 text-xl font-medium tabular-nums text-text-strong">{formatKpiValue(kpi)}</div>
-                  {kpi.subtitle && <div className="mt-0.5 text-xs text-text-muted">{kpi.subtitle}</div>}
-                </div>
-              ))}
-            </div>
-
-            {/* Alertas panel */}
-            {safe.alertas.length > 0 && (
-              <div className="rounded-lg border border-border-default bg-surface-card p-3">
-                <h3 className="mb-2 text-xs font-medium uppercase tracking-wider text-text-subtle">Alertas</h3>
-                <div className="space-y-0">
-                  {safe.alertas.slice(0, 6).map((alerta) => (
-                    <div
-                      key={alerta.id}
-                      className="flex items-start gap-2 border-b border-border-light py-2 last:border-0"
-                    >
-                      <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-warning" />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm leading-tight text-text-body">{alerta.title}</p>
-                        <p className="mt-0.5 text-xs text-text-muted">{alerta.description}</p>
-                      </div>
-                      {alerta.actionTo && (
-                        <Link to={alerta.actionTo} className="shrink-0 text-xs text-accent-600 hover:text-accent-700">
-                          Ver →
-                        </Link>
-                      )}
-                    </div>
-                  ))}
+          {/* ZONA 1 — KPI principal + secundários inline */}
+          <div className="flex flex-wrap items-end gap-x-6 gap-y-2">
+            {mainKpi && (
+              <div>
+                <span className="text-[11px] font-medium uppercase tracking-wider text-text-subtle">
+                  {mainKpi.label}
+                </span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-medium tabular-nums text-text-strong">{formatKpiValue(mainKpi)}</span>
+                  {mainKpi.subtitle && (
+                    <span className="flex items-center gap-1 text-xs text-success">
+                      <TrendingUp className="h-3 w-3" />
+                      {mainKpi.subtitle}
+                    </span>
+                  )}
                 </div>
               </div>
             )}
+            {secondaryKpis.map((kpi) => (
+              <div key={kpi.label} className="min-w-0">
+                <div className="text-[11px] text-text-subtle">{kpi.label}</div>
+                <div className="text-lg font-medium tabular-nums text-text-strong">{formatKpiValue(kpi)}</div>
+              </div>
+            ))}
           </div>
 
-          {/* ZONA 3 — Section groups */}
-          <DashboardSectionGroup title="Obras">
+          {/* ZONA 2 — Alertas (ações urgentes primeiro) */}
+          {safe.alertas.length > 0 && (
+            <div className="rounded-lg border border-warning/30 bg-warning-soft/30 px-3 py-2">
+              <div className="mb-1 flex items-center gap-1.5">
+                <AlertTriangle size={13} className="text-warning" />
+                <span className="text-xs font-medium text-text-body">
+                  {safe.alertas.length} alerta{safe.alertas.length > 1 ? 's' : ''}
+                </span>
+              </div>
+              <div className="divide-y divide-warning/10">
+                {safe.alertas.slice(0, 4).map((alerta) => (
+                  <div key={alerta.id} className="flex items-center gap-2 py-1.5">
+                    <p className="min-w-0 flex-1 text-sm text-text-body">{alerta.title}</p>
+                    {alerta.actionTo && (
+                      <Link
+                        to={alerta.actionTo}
+                        className="shrink-0 text-xs font-medium text-accent-600 hover:text-accent-700"
+                      >
+                        Resolver →
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ZONA 3 — Section groups (collapsible) */}
+          <DashboardSectionGroup title="Obras" defaultOpen>
             {safe.obras.map((section) => (
               <DashboardSectionCard key={section.id} section={section} />
             ))}
           </DashboardSectionGroup>
 
-          <DashboardSectionGroup title="RH">
+          <DashboardSectionGroup title="RH" defaultOpen={false}>
             {safe.rh.map((section) => (
               <DashboardSectionCard key={section.id} section={section} />
             ))}
           </DashboardSectionGroup>
 
-          <DashboardSectionGroup title="Financeiro">
+          <DashboardSectionGroup title="Financeiro" defaultOpen={false}>
             {safe.financeiro.map((section) => (
               <DashboardSectionCard key={section.id} section={section} />
             ))}
