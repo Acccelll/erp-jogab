@@ -6,7 +6,7 @@ export function NotFoundPage() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-16">
-      <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+      <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-danger-soft text-danger">
         <AlertCircle size={40} />
       </div>
 
@@ -21,7 +21,7 @@ export function NotFoundPage() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 rounded-md border border-border-default bg-white px-4 py-2 text-sm font-medium text-text-body transition-colors hover:bg-surface-soft"
+          className="flex items-center gap-2 rounded-md border border-border-default bg-surface px-4 py-2 text-sm font-medium text-text-body transition-colors hover:bg-surface-soft"
         >
           <ArrowLeft size={16} />
           Voltar
@@ -29,7 +29,7 @@ export function NotFoundPage() {
         <button
           type="button"
           onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-2 rounded-md bg-jogab-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-jogab-800"
+          className="flex items-center gap-2 rounded-md bg-brand-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-primary-hover"
         >
           <Home size={16} />
           Ir ao Dashboard

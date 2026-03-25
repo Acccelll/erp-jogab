@@ -11,22 +11,22 @@ interface DashboardAlertsPanelProps {
 const severityConfig = {
   critical: {
     icon: ShieldAlert,
-    containerClassName: 'border-red-200 bg-red-50/60',
-    titleClassName: 'text-red-800',
+    containerClassName: 'border-danger-soft bg-danger-soft/60',
+    titleClassName: 'text-danger',
     badgeVariant: 'error' as const,
     badgeLabel: 'Crítico',
   },
   warning: {
     icon: AlertTriangle,
-    containerClassName: 'border-amber-200 bg-amber-50/70',
-    titleClassName: 'text-amber-800',
+    containerClassName: 'border-warning-soft bg-warning-soft/60',
+    titleClassName: 'text-warning',
     badgeVariant: 'warning' as const,
     badgeLabel: 'Atenção',
   },
   info: {
     icon: Info,
-    containerClassName: 'border-blue-200 bg-blue-50/70',
-    titleClassName: 'text-blue-800',
+    containerClassName: 'border-info-soft bg-info-soft/60',
+    titleClassName: 'text-info',
     badgeVariant: 'info' as const,
     badgeLabel: 'Informativo',
   },
@@ -34,9 +34,9 @@ const severityConfig = {
 
 export function DashboardAlertsPanel({ alerts }: DashboardAlertsPanelProps) {
   return (
-    <section className="rounded-xl border border-border-default bg-white p-5 shadow-sm shadow-gray-100/60">
+    <section className="rounded-xl border border-border-default bg-surface-card p-5 shadow-card">
       <div className="mb-4 flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning-soft text-warning">
           <Bell size={18} />
         </div>
         <div>

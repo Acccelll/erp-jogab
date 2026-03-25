@@ -221,7 +221,9 @@ export function Topbar() {
           {breadcrumbs.map((crumb, idx) => (
             <span key={`${crumb}-${idx}`} className="flex items-center gap-1">
               {idx > 0 && <span className="text-border-default">/</span>}
-              <span className={cn(idx === breadcrumbs.length - 1 ? 'font-semibold text-jogab-700' : 'text-text-muted')}>
+              <span
+                className={cn(idx === breadcrumbs.length - 1 ? 'font-semibold text-brand-primary' : 'text-text-muted')}
+              >
                 {crumb}
               </span>
             </span>
@@ -276,7 +278,7 @@ export function Topbar() {
             onClick={() => setUserMenuOpen(!userMenuOpen)}
             className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-surface-soft"
           >
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-jogab-100 text-[10px] font-semibold text-jogab-700">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-primary-soft text-[10px] font-semibold text-brand-primary">
               {usuario?.nome?.charAt(0)?.toUpperCase() ?? 'U'}
             </div>
             <span className="hidden max-w-[100px] truncate text-xs text-text-body md:inline">

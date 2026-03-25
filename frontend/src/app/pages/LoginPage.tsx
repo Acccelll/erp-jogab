@@ -99,7 +99,7 @@ export function LoginPage() {
         </div>
 
         {(validationError || authError) && (
-          <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <div className="rounded-md border border-danger-soft bg-danger-soft px-3 py-2 text-sm text-danger">
             {validationError ?? authError}
           </div>
         )}
@@ -114,7 +114,7 @@ export function LoginPage() {
         </button>
       </form>
 
-      <div className="rounded-md border border-jogab-100 bg-jogab-50 p-3 text-xs text-jogab-700">
+      <div className="rounded-md border border-brand-primary-soft bg-brand-primary-soft p-3 text-xs text-brand-primary">
         <p className="font-semibold">Credenciais de demonstração</p>
         <p>E-mail: {DEFAULT_LOGIN_CREDENTIALS.email}</p>
         <p>Senha: {DEFAULT_LOGIN_CREDENTIALS.password}</p>

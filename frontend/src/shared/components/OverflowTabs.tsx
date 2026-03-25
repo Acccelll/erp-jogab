@@ -42,8 +42,8 @@ export function OverflowTabs({ tabs, maxVisible = 5, basePath }: OverflowTabsPro
             cn(
               'whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition-colors',
               isActive
-                ? 'border-jogab-700 text-jogab-700'
-                : 'border-transparent text-text-muted hover:border-jogab-400 hover:text-text-body',
+                ? 'border-brand-primary text-brand-primary'
+                : 'border-transparent text-text-muted hover:border-brand-primary/40 hover:text-text-body',
             )
           }
         >
@@ -72,7 +72,7 @@ export function OverflowTabs({ tabs, maxVisible = 5, basePath }: OverflowTabsPro
                   className={({ isActive }) =>
                     cn(
                       'block px-3 py-1.5 text-sm hover:bg-surface-soft',
-                      isActive ? 'font-medium text-jogab-700' : 'text-text-muted',
+                      isActive ? 'font-medium text-brand-primary' : 'text-text-muted',
                     )
                   }
                 >

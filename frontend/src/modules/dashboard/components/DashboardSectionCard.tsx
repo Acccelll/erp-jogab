@@ -20,13 +20,13 @@ export function DashboardSectionCard({ section }: DashboardSectionCardProps) {
         {section.metrics.map((metric) => (
           <div
             key={metric.label}
-            className={metric.highlight ? 'rounded-lg bg-jogab-50 p-3' : 'rounded-lg bg-surface-soft p-3'}
+            className={metric.highlight ? 'rounded-lg bg-brand-primary-soft p-3' : 'rounded-lg bg-surface-soft p-3'}
           >
             <dt className="text-xs font-medium uppercase tracking-wide text-text-subtle">{metric.label}</dt>
             <dd
               className={
                 metric.highlight
-                  ? 'mt-1 text-sm font-semibold text-jogab-700'
+                  ? 'mt-1 text-sm font-semibold text-brand-primary'
                   : 'mt-1 text-sm font-semibold text-text-body'
               }
             >

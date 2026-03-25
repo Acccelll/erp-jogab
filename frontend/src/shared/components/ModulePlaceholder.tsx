@@ -21,7 +21,7 @@ export function ModulePlaceholder({
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-12">
       {/* Icon */}
-      <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-jogab-50 text-jogab-500">
+      <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-brand-primary-soft text-brand-primary">
         <Icon size={40} />
       </div>
 
@@ -35,14 +35,14 @@ export function ModulePlaceholder({
       <p className="max-w-md text-center text-sm text-text-muted">{description}</p>
 
       {/* Feature list */}
-      <div className="w-full max-w-sm rounded-lg border border-border-default bg-white p-4">
+      <div className="w-full max-w-sm rounded-lg border border-border-default bg-surface-card p-4">
         <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-subtle">
           Funcionalidades previstas
         </p>
         <ul className="space-y-2">
           {features.map((feature) => (
             <li key={feature} className="flex items-center gap-2 text-sm text-text-muted">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-jogab-300" />
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-primary/40" />
               {feature}
             </li>
           ))}
