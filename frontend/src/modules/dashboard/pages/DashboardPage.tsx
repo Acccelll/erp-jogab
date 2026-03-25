@@ -1,9 +1,9 @@
 import { TrendingUp, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { MainContent, EmptyState, PageHeader } from '@/shared/components';
 import { formatCurrency, formatCompetencia } from '@/shared/lib/utils';
-import { useContextStore } from '@/shared/stores';
+import { useContextStore, useUIStore } from '@/shared/stores';
 import { DashboardSectionCard, DashboardSectionGroup } from '../components';
 import { useDashboardSummary } from '../hooks';
 import type { DashboardKpi, DashboardSummary } from '../types';
@@ -29,8 +29,16 @@ const EMPTY_SUMMARY: DashboardSummary = {
   alertas: [],
 };
 
+/** Default open states for each dashboard section (used when no persisted value exists) */
+const SECTION_DEFAULTS: Record<string, boolean> = {
+  obras: true,
+  rh: false,
+  financeiro: false,
+};
+
 export function DashboardPage() {
   const { competencia } = useContextStore();
+  const { dashboardSectionsOpen, setDashboardSectionOpen } = useUIStore();
   const { data, isLoading, isError, refetch, isFetching } = useDashboardSummary();
 
   const safe = useMemo<DashboardSummary>(() => {
@@ -44,6 +52,12 @@ export function DashboardPage() {
       alertas: Array.isArray(data.alertas) ? data.alertas : [],
     };
   }, [data]);
+
+  /** Resolve the open state for a section, falling back to the default if not yet stored */
+  const sectionIsOpen = useCallback(
+    (id: string): boolean => (id in dashboardSectionsOpen ? dashboardSectionsOpen[id] : (SECTION_DEFAULTS[id] ?? true)),
+    [dashboardSectionsOpen],
+  );
 
   const competenciaLabel = competencia ? formatCompetencia(competencia) : 'competência atual';
 
@@ -137,12 +151,8 @@ export function DashboardPage() {
             <div className="flex flex-wrap items-end gap-x-12">
               {secondaryKpis.map((kpi) => (
                 <div key={kpi.label} className="min-w-0">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-text-muted/50">
-                    {kpi.label}
-                  </div>
-                  <div className="mt-0.5 text-xl font-bold tabular-nums text-text-strong/90">
-                    {formatKpiValue(kpi)}
-                  </div>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-text-muted/50">{kpi.label}</div>
+                  <div className="mt-0.5 text-xl font-bold tabular-nums text-text-strong/90">{formatKpiValue(kpi)}</div>
                 </div>
               ))}
             </div>
@@ -164,9 +174,9 @@ export function DashboardPage() {
                     {alerta.actionTo && (
                       <Link
                         to={alerta.actionTo}
-                      className="shrink-0 flex items-center gap-1 rounded-full bg-accent-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-600 hover:bg-accent-100 transition-colors"
+                        className="shrink-0 flex items-center gap-1 rounded-full bg-accent-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-600 hover:bg-accent-100 transition-colors"
                       >
-                      Ação <ArrowRight size={10} />
+                        Ação <ArrowRight size={10} />
                       </Link>
                     )}
                   </div>
@@ -175,20 +185,32 @@ export function DashboardPage() {
             </div>
           )}
 
-          {/* ZONA 3 — Section groups (collapsible) */}
-          <DashboardSectionGroup title="Obras" defaultOpen>
+          {/* ZONA 3 — Section groups (collapsible, state persisted in uiStore) */}
+          <DashboardSectionGroup
+            title="Obras"
+            isOpen={sectionIsOpen('obras')}
+            onToggle={(open) => setDashboardSectionOpen('obras', open)}
+          >
             {safe.obras.map((section) => (
               <DashboardSectionCard key={section.id} section={section} />
             ))}
           </DashboardSectionGroup>
 
-          <DashboardSectionGroup title="RH" defaultOpen={false}>
+          <DashboardSectionGroup
+            title="RH"
+            isOpen={sectionIsOpen('rh')}
+            onToggle={(open) => setDashboardSectionOpen('rh', open)}
+          >
             {safe.rh.map((section) => (
               <DashboardSectionCard key={section.id} section={section} />
             ))}
           </DashboardSectionGroup>
 
-          <DashboardSectionGroup title="Financeiro" defaultOpen={false}>
+          <DashboardSectionGroup
+            title="Financeiro"
+            isOpen={sectionIsOpen('financeiro')}
+            onToggle={(open) => setDashboardSectionOpen('financeiro', open)}
+          >
             {safe.financeiro.map((section) => (
               <DashboardSectionCard key={section.id} section={section} />
             ))}

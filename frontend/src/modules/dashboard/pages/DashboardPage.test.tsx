@@ -16,6 +16,10 @@ vi.mock('@/modules/dashboard/hooks', () => ({
 
 vi.mock('@/shared/stores', () => ({
   useContextStore: () => ({ competencia: '2026-03', obraId: null }),
+  useUIStore: () => ({
+    dashboardSectionsOpen: {},
+    setDashboardSectionOpen: vi.fn(),
+  }),
 }));
 
 // Mock child components that aren't relevant to these tests
