@@ -45,15 +45,19 @@ export function FuncionariosListPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Filter bar */}
-      <div className="flex items-center justify-between border-b border-border-default px-4 py-2">
-        <QuickFilterChips
-          chips={statusChips}
-          value={filters.status ?? null}
-          onChange={(v) => setStatus(v as typeof filters.status)}
-        />
+      {/* Operational Header with tight layout */}
+      <div className="flex items-center justify-between border-b border-border-default bg-surface px-4 py-2">
+        <div className="flex items-center gap-4">
+          <h1 className="text-sm font-semibold text-text-strong font-brand">Funcionários</h1>
+          <div className="h-4 w-px bg-border-default" />
+          <QuickFilterChips
+            chips={statusChips}
+            value={filters.status ?? null}
+            onChange={(v) => setStatus(v as typeof filters.status)}
+          />
+        </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface px-2.5 py-1 text-sm">
+          <div className="flex items-center gap-1.5 rounded-md border border-border-default bg-surface-muted px-2.5 py-1 text-sm focus-within:border-brand-primary focus-within:bg-surface">
             <Search size={14} className="text-text-subtle" />
             <input
               type="text"
@@ -67,13 +71,14 @@ export function FuncionariosListPage() {
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
             className="rounded-md p-1.5 text-text-subtle hover:bg-surface-soft hover:text-text-muted"
+            title="Filtros avançados"
           >
             <SlidersHorizontal size={16} />
           </button>
           <button
             type="button"
             onClick={openCreateDrawer}
-            className="flex items-center gap-1.5 rounded-md bg-brand-primary px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-primary-hover"
+            className="flex items-center gap-1.5 rounded-md bg-brand-primary px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-brand-primary-hover active:transform active:scale-95 transition-all"
           >
             <Plus size={14} />
             Novo Funcionário
