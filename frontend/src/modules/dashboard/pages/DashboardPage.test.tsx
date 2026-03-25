@@ -20,13 +20,10 @@ vi.mock('@/shared/stores', () => ({
 
 // Mock child components that aren't relevant to these tests
 vi.mock('../components', () => ({
-  DashboardAlertsPanel: ({ alerts }: { alerts: unknown[] }) => (
-    <div data-testid="alerts-panel">{alerts.length} alertas</div>
-  ),
   DashboardSectionCard: ({ section }: { section: { id: string; title: string } }) => (
     <div data-testid={`section-card-${section.id}`}>{section.title}</div>
   ),
-  DashboardSectionGroup: ({ title, children }: { title: string; children: React.ReactNode }) => (
+  DashboardSectionGroup: ({ title, children }: { title: string; description?: string; children: React.ReactNode }) => (
     <div data-testid={`section-group`}>
       <h2>{title}</h2>
       {children}
@@ -44,7 +41,13 @@ const mockUseDashboardSummary = vi.mocked(useDashboardSummary);
 const mockSummary: DashboardSummary = {
   generatedAt: new Date().toISOString(),
   kpis: [
-    { label: 'Custo pessoal previsto', value: 120000, format: 'currency', subtitle: 'Competência 2026-03', trend: 'up' },
+    {
+      label: 'Custo pessoal previsto',
+      value: 120000,
+      format: 'currency',
+      subtitle: 'Competência 2026-03',
+      trend: 'up',
+    },
     { label: 'Obras impactadas', value: 3, format: 'number', subtitle: '5 centros de custo', trend: 'neutral' },
   ],
   obras: [
@@ -102,9 +105,10 @@ describe('DashboardPage', () => {
       refetch: refetchMock,
     } as ReturnType<typeof useDashboardSummary>);
 
-    render(<DashboardPage />);
+    const { container } = render(<DashboardPage />);
 
-    expect(screen.getByText('Carregando dashboard...')).toBeInTheDocument();
+    const skeletons = container.querySelectorAll('.animate-pulse');
+    expect(skeletons.length).toBeGreaterThan(0);
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
   });
 
@@ -145,14 +149,20 @@ describe('DashboardPage', () => {
     // Sections
     expect(screen.getByText('Resumo de Obras')).toBeInTheDocument();
     expect(screen.getByText('Resumo de RH')).toBeInTheDocument();
-    expect(screen.getByText('Resumo Financeiro e Pessoal')).toBeInTheDocument();
+    expect(screen.getByText('Resumo Financeiro')).toBeInTheDocument();
   });
 
   it('renders without crashing when API returns partial payload', () => {
     const partialSummary = {
       generatedAt: new Date().toISOString(),
       kpis: [
-        { label: 'Custo pessoal previsto', value: 50000, format: 'currency' as const, subtitle: 'Parcial', trend: 'neutral' as const },
+        {
+          label: 'Custo pessoal previsto',
+          value: 50000,
+          format: 'currency' as const,
+          subtitle: 'Parcial',
+          trend: 'neutral' as const,
+        },
       ],
     } as DashboardSummary;
 
@@ -171,9 +181,7 @@ describe('DashboardPage', () => {
     // Section groups should still render (with empty content)
     expect(screen.getByText('Resumo de Obras')).toBeInTheDocument();
     expect(screen.getByText('Resumo de RH')).toBeInTheDocument();
-    expect(screen.getByText('Resumo Financeiro e Pessoal')).toBeInTheDocument();
-    // Alerts panel should render with 0 alerts
-    expect(screen.getByTestId('alerts-panel')).toHaveTextContent('0 alertas');
+    expect(screen.getByText('Resumo Financeiro')).toBeInTheDocument();
   });
 
   it('renders refresh button and triggers refetch', async () => {
@@ -188,7 +196,7 @@ describe('DashboardPage', () => {
 
     render(<DashboardPage />);
 
-    const refreshBtn = screen.getByRole('button', { name: /atualizar visão/i });
+    const refreshBtn = screen.getByRole('button', { name: /atualizar/i });
     await user.click(refreshBtn);
     expect(refetchMock).toHaveBeenCalled();
   });

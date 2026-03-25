@@ -1,29 +1,39 @@
 /**
  * FuncionariosListPage — Tela principal de listagem de funcionários.
  *
- * Segue o padrão de tela obrigatório:
- *   PageHeader → FilterBar → KPISection → MainContent
- *
- * Referência: CLAUDE.md "Padrão de tela obrigatório", docs/06
+ * Padrão redesign: QuickFilterChips → Tabela densa
  */
-import { Plus } from 'lucide-react';
-import { PageHeader, MainContent, EmptyState } from '@/shared/components';
+import { useState, useMemo } from 'react';
+import { Plus, Search, SlidersHorizontal } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MainContent, EmptyState, QuickFilterChips, TableCellStack } from '@/shared/components';
 import { useDrawerStore } from '@/shared/stores';
-import { FuncionarioKpiBar } from '../components/FuncionarioKpiBar';
-import { FuncionarioFilters } from '../components/FuncionarioFilters';
-import { FuncionarioCard } from '../components/FuncionarioCard';
+import { FuncionarioStatusBadge } from '../components/FuncionarioStatusBadge';
 import { FuncionarioMutationDrawerForm } from '../components/FuncionarioMutationDrawerForm';
 import { useFuncionarios } from '../hooks/useFuncionarios';
 import { useFuncionarioFilters } from '../hooks/useFuncionarioFilters';
+import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
 export function FuncionariosListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
   const { filters, setSearch, setStatus, setTipoContrato, clearFilters, hasActiveFilters } = useFuncionarioFilters();
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const { data, isLoading, isError } = useFuncionarios(filters);
 
   const funcionarios = data?.data ?? [];
   const kpis = data?.kpis;
+
+  const statusChips = useMemo<QuickFilterChip[]>(() => {
+    if (!kpis) return [];
+    return [
+      { label: 'Todos', value: null, count: kpis.totalFuncionarios },
+      { label: 'Ativos', value: 'ativo', count: kpis.ativos, variant: 'success' },
+      { label: 'Afastados', value: 'afastado', count: kpis.afastados, variant: 'warning' },
+      { label: 'Férias', value: 'ferias', count: kpis.ferias, variant: 'info' },
+      { label: 'Desligados', value: 'desligado', count: kpis.desligados, variant: 'danger' },
+    ];
+  }, [kpis]);
 
   const openCreateDrawer = () => {
     openDrawer({
@@ -33,51 +43,79 @@ export function FuncionariosListPage() {
     });
   };
 
-  const openEditDrawer = (funcionarioId: string) => {
-    openDrawer({
-      title: 'Editar funcionário',
-      content: <FuncionarioMutationDrawerForm funcionarioId={funcionarioId} />,
-      width: '760px',
-    });
-  };
-
   return (
     <div className="flex flex-1 flex-col">
-      <PageHeader
-        title="Funcionários"
-        subtitle="Gestão de funcionários, alocações e vínculos trabalhistas"
-        actions={
+      {/* Filter bar */}
+      <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-2.5">
+        <QuickFilterChips
+          chips={statusChips}
+          value={filters.status ?? null}
+          onChange={(v) => setStatus(v as typeof filters.status)}
+        />
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm">
+            <Search size={14} className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar..."
+              value={filters.search ?? ''}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-gray-400"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          >
+            <SlidersHorizontal size={16} />
+          </button>
           <button
             type="button"
             onClick={openCreateDrawer}
-            className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-600"
+            className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
           >
-            <Plus size={16} />
+            <Plus size={14} />
             Novo Funcionário
           </button>
-        }
-      />
+        </div>
+      </div>
 
-      <FuncionarioFilters
-        search={filters.search ?? ''}
-        status={filters.status}
-        tipoContrato={filters.tipoContrato}
-        onSearchChange={setSearch}
-        onStatusChange={setStatus}
-        onTipoContratoChange={setTipoContrato}
-        onClear={clearFilters}
-        hasActiveFilters={hasActiveFilters}
-      />
-
-      {kpis && <FuncionarioKpiBar kpis={kpis} />}
+      {/* Advanced filters */}
+      {showAdvanced && (
+        <div className="flex items-center gap-2 border-b border-gray-200/60 bg-gray-50/30 px-4 py-2">
+          <select
+            value={filters.tipoContrato ?? ''}
+            onChange={(e) => setTipoContrato((e.target.value || undefined) as typeof filters.tipoContrato)}
+            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+          >
+            <option value="">Tipo contrato</option>
+            <option value="clt">CLT</option>
+            <option value="pj">PJ</option>
+            <option value="temporario">Temporário</option>
+            <option value="estagio">Estágio</option>
+            <option value="aprendiz">Aprendiz</option>
+          </select>
+          {hasActiveFilters && (
+            <button type="button" onClick={clearFilters} className="text-sm text-gray-500 hover:text-gray-700">
+              Limpar
+            </button>
+          )}
+        </div>
+      )}
 
       <MainContent>
+        {/* Loading skeleton */}
         {isLoading && (
-          <div className="flex flex-1 items-center justify-center py-12">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando funcionários...</p>
-            </div>
+          <div className="space-y-0">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex gap-4 border-b border-gray-100/60 px-4 py-3">
+                <div className="h-4 w-2/5 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/4 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+              </div>
+            ))}
           </div>
         )}
 
@@ -129,10 +167,33 @@ export function FuncionariosListPage() {
         )}
 
         {!isLoading && !isError && funcionarios.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {funcionarios.map((func) => (
-              <FuncionarioCard key={func.id} funcionario={func} onEdit={openEditDrawer} />
-            ))}
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200/60">
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Nome</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Cargo</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Obra</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100/60">
+                {funcionarios.map((func) => (
+                  <tr key={func.id} className="hover:bg-gray-50/50">
+                    <td className="px-4 py-1.5">
+                      <Link to={`/rh/funcionarios/${func.id}`}>
+                        <TableCellStack primary={func.nome} secondary={`${func.matricula} · ${func.departamento}`} />
+                      </Link>
+                    </td>
+                    <td className="px-4 py-1.5 text-sm text-gray-700">{func.cargo}</td>
+                    <td className="px-4 py-1.5 text-sm text-gray-500">{func.obraAlocadoNome ?? '—'}</td>
+                    <td className="px-4 py-1.5">
+                      <FuncionarioStatusBadge status={func.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </MainContent>

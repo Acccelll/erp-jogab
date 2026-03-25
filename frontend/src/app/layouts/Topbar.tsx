@@ -1,21 +1,25 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu, Bell, LogOut, User, Search } from 'lucide-react';
-import { useUIStore, useAuthStore } from '@/shared/stores';
+import { Menu, Bell, LogOut, User, Search, ChevronDown, HardHat, Calendar } from 'lucide-react';
+import { useUIStore, useAuthStore, useContextStore } from '@/shared/stores';
+import { useQuery } from '@tanstack/react-query';
+import { fetchContextOptions } from '@/shared/lib/context.service';
+import { formatCompetencia } from '@/shared/lib/utils';
 import { cn } from '@/shared/lib/utils';
 
 /** Maps route prefixes to human-readable breadcrumb labels */
 const routeLabels: Record<string, string> = {
   dashboard: 'Dashboard',
   obras: 'Obras',
-  rh: 'Recursos Humanos',
+  rh: 'RH',
+  funcionarios: 'Funcionários',
   'horas-extras': 'Horas Extras',
   fopag: 'FOPAG',
   compras: 'Compras',
   fiscal: 'Fiscal',
   financeiro: 'Financeiro',
   estoque: 'Estoque',
-  medicoes: 'Medições e Faturamento',
+  medicoes: 'Medições',
   documentos: 'Documentos',
   relatorios: 'Relatórios',
   admin: 'Administração',
@@ -26,7 +30,86 @@ function useBreadcrumbs() {
   const location = useLocation();
   const segments = location.pathname.split('/').filter(Boolean);
 
-  return segments.map((seg) => routeLabels[seg] ?? seg).slice(0, 2);
+  return segments.map((seg) => routeLabels[seg] ?? seg).slice(0, 3);
+}
+
+/** Compact context selector for Topbar */
+function ContextSelectorButton({
+  icon,
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | null;
+  options: { value: string; label: string }[];
+  onChange: (value: string | null) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [open]);
+
+  const selectedLabel = options.find((o) => o.value === value)?.label;
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 rounded-md border border-gray-200/60 bg-gray-50/50 px-2.5 py-1 text-sm transition-colors hover:bg-gray-100"
+      >
+        <span className="text-gray-400">{icon}</span>
+        <span className="text-xs text-gray-400">{label}</span>
+        <span className="max-w-[140px] truncate font-medium text-gray-700">{selectedLabel ?? 'Todas'}</span>
+        <ChevronDown className="h-3 w-3 text-gray-400" />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-full z-50 mt-1 max-h-64 w-56 overflow-auto rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+          <button
+            type="button"
+            onClick={() => {
+              onChange(null);
+              setOpen(false);
+            }}
+            className={cn(
+              'flex w-full px-3 py-1.5 text-left text-sm hover:bg-gray-50',
+              !value ? 'font-medium text-gray-900' : 'text-gray-600',
+            )}
+          >
+            Todas
+          </button>
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => {
+                onChange(opt.value);
+                setOpen(false);
+              }}
+              className={cn(
+                'flex w-full px-3 py-1.5 text-left text-sm hover:bg-gray-50',
+                value === opt.value ? 'font-medium text-gray-900' : 'text-gray-600',
+              )}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function Topbar() {
@@ -34,6 +117,18 @@ export function Topbar() {
   const usuario = useAuthStore((s) => s.usuario);
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
+
+  const { obraId, competencia, options, setObra, setCompetencia } = useContextStore();
+
+  const { data: contextData } = useQuery({
+    queryKey: ['context-options'],
+    queryFn: fetchContextOptions,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const mergedOptions = contextData ?? options;
+  const obras = mergedOptions?.obras ?? [];
+  const competencias = mergedOptions?.competencias ?? [];
 
   const breadcrumbs = useBreadcrumbs();
 
@@ -52,7 +147,7 @@ export function Topbar() {
   }, [userMenuOpen]);
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-border-default bg-surface px-4">
+    <header className="flex h-11 items-center justify-between border-b border-border-default bg-surface px-4">
       {/* Left side */}
       <div className="flex items-center gap-3">
         <button
@@ -61,21 +156,15 @@ export function Topbar() {
           className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 lg:hidden"
           aria-label="Toggle menu"
         >
-          <Menu size={20} />
+          <Menu size={18} />
         </button>
 
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-1 text-sm" aria-label="Breadcrumb">
           {breadcrumbs.map((crumb, idx) => (
-            <span key={crumb} className="flex items-center gap-1">
+            <span key={`${crumb}-${idx}`} className="flex items-center gap-1">
               {idx > 0 && <span className="text-gray-300">/</span>}
-              <span
-                className={cn(
-                  idx === breadcrumbs.length - 1
-                    ? 'font-medium text-gray-900'
-                    : 'text-gray-500',
-                )}
-              >
+              <span className={cn(idx === breadcrumbs.length - 1 ? 'font-medium text-gray-900' : 'text-gray-500')}>
                 {crumb}
               </span>
             </span>
@@ -83,16 +172,32 @@ export function Topbar() {
         </nav>
       </div>
 
-      {/* Right side */}
+      {/* Right side — context selectors + actions */}
       <div className="flex items-center gap-2">
+        {/* Context selectors */}
+        <ContextSelectorButton
+          icon={<HardHat size={14} />}
+          label="Obra"
+          value={obraId}
+          options={obras}
+          onChange={setObra}
+        />
+        <ContextSelectorButton
+          icon={<Calendar size={14} />}
+          label=""
+          value={competencia}
+          options={competencias.map((c) => ({ ...c, label: formatCompetencia(c.value) }))}
+          onChange={setCompetencia}
+        />
+
         {/* Search placeholder */}
         <button
           type="button"
-          className="hidden items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-400 transition-colors hover:border-gray-300 hover:bg-gray-100 md:flex"
+          className="hidden items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-2.5 py-1 text-sm text-gray-400 transition-colors hover:border-gray-300 hover:bg-gray-100 md:flex"
         >
           <Search size={14} />
-          <span>Buscar...</span>
-          <kbd className="ml-4 rounded border border-gray-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-gray-400">
+          <span className="text-xs">Buscar...</span>
+          <kbd className="ml-2 rounded border border-gray-200 bg-white px-1 py-0.5 text-[10px] font-medium text-gray-400">
             ⌘K
           </kbd>
         </button>
@@ -103,8 +208,8 @@ export function Topbar() {
           className="relative rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
           aria-label="Notificações"
         >
-          <Bell size={18} />
-          <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
+          <Bell size={16} />
+          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-red-500" />
         </button>
 
         {/* User dropdown */}
@@ -112,12 +217,12 @@ export function Topbar() {
           <button
             type="button"
             onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-100"
+            className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-gray-100"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-jogab-100 text-xs font-semibold text-jogab-700">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-jogab-100 text-[10px] font-medium text-jogab-700">
               {usuario?.nome?.charAt(0)?.toUpperCase() ?? 'U'}
             </div>
-            <span className="hidden max-w-[120px] truncate text-gray-700 md:inline">
+            <span className="hidden max-w-[100px] truncate text-xs text-gray-700 md:inline">
               {usuario?.nome ?? 'Usuário'}
             </span>
           </button>
@@ -125,12 +230,8 @@ export function Topbar() {
           {userMenuOpen && (
             <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
               <div className="border-b border-gray-100 px-3 py-2">
-                <p className="text-sm font-medium text-gray-900">
-                  {usuario?.nome ?? 'Usuário'}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {usuario?.email ?? 'usuario@jogab.com.br'}
-                </p>
+                <p className="text-sm font-medium text-gray-900">{usuario?.nome ?? 'Usuário'}</p>
+                <p className="text-xs text-gray-500">{usuario?.email ?? 'usuario@jogab.com.br'}</p>
               </div>
               <button
                 type="button"

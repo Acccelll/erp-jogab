@@ -11,22 +11,22 @@
 import { useEffect, useRef } from 'react';
 import { useParams, NavLink, Outlet } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { cn } from '@/shared/lib/utils';
+import { OverflowTabs } from '@/shared/components';
 import { FuncionarioHeader } from '../components/FuncionarioHeader';
 import { useFuncionarioDetails } from '../hooks/useFuncionarioDetails';
 import { useContextStore } from '@/shared/stores';
 
-/** Abas do detalhe do funcionário */
+/** Abas do detalhe do funcionário — 5 mais usadas primeiro */
 const funcionarioTabs = [
   { label: 'Visão Geral', path: '' },
   { label: 'Contrato', path: 'contrato' },
+  { label: 'Alocações', path: 'alocacoes' },
+  { label: 'Horas Extras', path: 'horas-extras' },
   { label: 'Histórico Salarial', path: 'historico-salarial' },
   { label: 'Documentos', path: 'documentos' },
-  { label: 'Alocações', path: 'alocacoes' },
   { label: 'Férias', path: 'ferias' },
   { label: '13º', path: 'decimo-terceiro' },
   { label: 'Provisões', path: 'provisoes' },
-  { label: 'Horas Extras', path: 'horas-extras' },
   { label: 'FOPAG', path: 'fopag' },
 ];
 
@@ -55,9 +55,9 @@ export function FuncionarioDetailPage() {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header */}
-      <div className="border-b border-border-default bg-surface px-6 pt-4 pb-0">
+      <div className="border-b border-gray-200/60 bg-surface px-4 pt-2.5 pb-0">
         {/* Back link */}
-        <div className="mb-2">
+        <div className="mb-1.5">
           <NavLink
             to="/rh/funcionarios"
             className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600"
@@ -69,47 +69,29 @@ export function FuncionarioDetailPage() {
 
         {/* Dynamic header from funcionario data */}
         {isLoading && (
-          <div className="mb-3 flex items-center gap-3">
-            <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200" />
-            <div className="space-y-2">
-              <div className="h-5 w-48 animate-pulse rounded bg-gray-200" />
+          <div className="mb-2 flex items-center gap-3">
+            <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
+            <div className="space-y-1.5">
+              <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
               <div className="h-3 w-32 animate-pulse rounded bg-gray-200" />
             </div>
           </div>
         )}
 
         {!isLoading && funcionario && (
-          <div className="mb-3">
+          <div className="mb-2">
             <FuncionarioHeader funcionario={funcionario} />
           </div>
         )}
 
         {!isLoading && !funcionario && (
-          <div className="mb-3">
+          <div className="mb-2">
             <p className="text-sm text-gray-500">Funcionário não encontrado (ID: {funcId})</p>
           </div>
         )}
 
-        {/* Tabs */}
-        <nav className="-mb-px flex gap-1 overflow-x-auto" aria-label="Abas do funcionário">
-          {funcionarioTabs.map((tab) => (
-            <NavLink
-              key={tab.path}
-              to={`/rh/funcionarios/${funcId}${tab.path ? `/${tab.path}` : ''}`}
-              end={tab.path === ''}
-              className={({ isActive }) =>
-                cn(
-                  'whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'border-jogab-600 text-jogab-600'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                )
-              }
-            >
-              {tab.label}
-            </NavLink>
-          ))}
-        </nav>
+        {/* Tabs with overflow */}
+        <OverflowTabs tabs={funcionarioTabs} maxVisible={5} basePath={`/rh/funcionarios/${funcId}`} />
       </div>
 
       {/* Tab content — always via Outlet (index route = Visão Geral) */}

@@ -26,10 +26,6 @@ vi.mock('@/modules/financeiro/hooks', () => ({
 }));
 
 vi.mock('../components', () => ({
-  FinanceiroFilters: () => <div data-testid="financeiro-filters" />,
-  FinanceiroKpiBar: ({ kpis }: { kpis: { totalTitulos: number } }) => (
-    <div data-testid="financeiro-kpi-bar">{kpis.totalTitulos} títulos</div>
-  ),
   FinanceiroResumoCard: ({ card }: { card: { id: string; titulo: string } }) => (
     <div data-testid={`resumo-card-${card.id}`}>{card.titulo}</div>
   ),
@@ -72,8 +68,9 @@ describe('FinanceiroListPage', () => {
       refetch: refetchMock,
     } as ReturnType<typeof useFinanceiro>);
 
-    renderWithRouter();
-    expect(screen.getByText('Carregando visão financeira...')).toBeInTheDocument();
+    const { container } = renderWithRouter();
+    const skeletons = container.querySelectorAll('.animate-pulse');
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it('renders error state with retry button', async () => {
@@ -157,8 +154,7 @@ describe('FinanceiroListPage', () => {
     } as ReturnType<typeof useFinanceiro>);
 
     renderWithRouter();
-    expect(screen.getByText('Financeiro')).toBeInTheDocument();
-    expect(screen.getByTestId('financeiro-kpi-bar')).toHaveTextContent('1 títulos');
+    expect(screen.getByText('Títulos financeiros')).toBeInTheDocument();
     expect(screen.getByTestId('titulos-table')).toHaveTextContent('1 títulos');
   });
 

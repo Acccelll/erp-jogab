@@ -1,29 +1,39 @@
 /**
  * ObrasListPage — Tela principal de listagem de obras.
  *
- * Segue o padrão de tela obrigatório:
- *   PageHeader → FilterBar → KPISection → MainContent
- *
- * Referência: CLAUDE.md "Padrão de tela obrigatório", docs/06
+ * Padrão redesign: QuickFilterChips → Tabela densa
  */
-import { Plus } from 'lucide-react';
-import { PageHeader, MainContent, EmptyState } from '@/shared/components';
+import { useState, useMemo } from 'react';
+import { Plus, Search, SlidersHorizontal } from 'lucide-react';
+import { MainContent, EmptyState, QuickFilterChips, TableCellStack } from '@/shared/components';
 import { useDrawerStore } from '@/shared/stores';
-import { ObraKpiBar } from '../components/ObraKpiBar';
-import { ObraFilters } from '../components/ObraFilters';
-import { ObraCard } from '../components/ObraCard';
 import { ObraMutationDrawerForm } from '../components/ObraMutationDrawerForm';
+import { ObraStatusBadge } from '../components/ObraStatusBadge';
 import { useObras } from '../hooks/useObras';
 import { useObraFilters } from '../hooks/useObraFilters';
+import { formatCurrency } from '@/shared/lib/utils';
+import { Link } from 'react-router-dom';
+import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
 export function ObrasListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
   const { filters, setSearch, setStatus, setTipo, clearFilters, hasActiveFilters } = useObraFilters();
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const { data, isLoading, isError } = useObras(filters);
 
   const obras = data?.data ?? [];
   const kpis = data?.kpis;
+
+  const statusChips = useMemo<QuickFilterChip[]>(() => {
+    if (!kpis) return [];
+    return [
+      { label: 'Todas', value: null, count: kpis.totalObras },
+      { label: 'Em andamento', value: 'em_andamento', count: kpis.obrasAtivas, variant: 'info' },
+      { label: 'Concluídas', value: 'concluida', count: kpis.obrasConcluidas, variant: 'success' },
+      { label: 'Paralisadas', value: 'paralisada', count: kpis.obrasParalisadas, variant: 'danger' },
+    ];
+  }, [kpis]);
 
   const openCreateDrawer = () => {
     openDrawer({
@@ -33,51 +43,79 @@ export function ObrasListPage() {
     });
   };
 
-  const openEditDrawer = (obraId: string) => {
-    openDrawer({
-      title: 'Editar obra',
-      content: <ObraMutationDrawerForm obraId={obraId} />,
-      width: '720px',
-    });
-  };
-
   return (
     <div className="flex flex-1 flex-col">
-      <PageHeader
-        title="Obras"
-        subtitle="Gestão de obras e projetos — núcleo central do ERP"
-        actions={
+      {/* Filter bar */}
+      <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-2.5">
+        <QuickFilterChips
+          chips={statusChips}
+          value={filters.status ?? null}
+          onChange={(v) => setStatus(v as typeof filters.status)}
+        />
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm">
+            <Search size={14} className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar..."
+              value={filters.search ?? ''}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-36 border-0 bg-transparent text-sm outline-none placeholder:text-gray-400"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          >
+            <SlidersHorizontal size={16} />
+          </button>
           <button
             type="button"
             onClick={openCreateDrawer}
-            className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-600"
+            className="flex items-center gap-1.5 rounded-md bg-jogab-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-600"
           >
-            <Plus size={16} />
+            <Plus size={14} />
             Nova Obra
           </button>
-        }
-      />
+        </div>
+      </div>
 
-      <ObraFilters
-        search={filters.search ?? ''}
-        status={filters.status}
-        tipo={filters.tipo}
-        onSearchChange={setSearch}
-        onStatusChange={setStatus}
-        onTipoChange={setTipo}
-        onClear={clearFilters}
-        hasActiveFilters={hasActiveFilters}
-      />
-
-      {kpis && <ObraKpiBar kpis={kpis} />}
+      {/* Advanced filters */}
+      {showAdvanced && (
+        <div className="flex items-center gap-2 border-b border-gray-200/60 bg-gray-50/30 px-4 py-2">
+          <select
+            value={filters.tipo ?? ''}
+            onChange={(e) => setTipo((e.target.value || undefined) as typeof filters.tipo)}
+            className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-sm text-gray-700"
+          >
+            <option value="">Tipo</option>
+            <option value="residencial">Residencial</option>
+            <option value="comercial">Comercial</option>
+            <option value="industrial">Industrial</option>
+            <option value="infraestrutura">Infraestrutura</option>
+            <option value="reforma">Reforma</option>
+          </select>
+          {hasActiveFilters && (
+            <button type="button" onClick={clearFilters} className="text-sm text-gray-500 hover:text-gray-700">
+              Limpar
+            </button>
+          )}
+        </div>
+      )}
 
       <MainContent>
+        {/* Loading skeleton */}
         {isLoading && (
-          <div className="flex flex-1 items-center justify-center py-12">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-gray-500">Carregando obras...</p>
-            </div>
+          <div className="space-y-0">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex gap-4 border-b border-gray-100/60 px-4 py-3">
+                <div className="h-4 w-2/5 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/4 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/6 animate-pulse rounded bg-gray-200" />
+              </div>
+            ))}
           </div>
         )}
 
@@ -129,10 +167,52 @@ export function ObrasListPage() {
         )}
 
         {!isLoading && !isError && obras.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {obras.map((obra) => (
-              <ObraCard key={obra.id} obra={obra} onEdit={openEditDrawer} />
-            ))}
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200/60">
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Nome</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Status</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Progresso</th>
+                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">Valor</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Prazo</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100/60">
+                {obras.map((obra) => (
+                  <tr key={obra.id} className="hover:bg-gray-50/50">
+                    <td className="px-4 py-1.5">
+                      <Link to={`/obras/${obra.id}`}>
+                        <TableCellStack
+                          primary={obra.nome}
+                          secondary={`${obra.cidade}/${obra.uf} · ${obra.responsavelNome}`}
+                        />
+                      </Link>
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <ObraStatusBadge status={obra.status} />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-100">
+                          <div
+                            className="h-full rounded-full bg-jogab-500"
+                            style={{ width: `${obra.percentualConcluido}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-gray-500">{obra.percentualConcluido}%</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-1.5 text-right text-sm text-gray-700">
+                      {formatCurrency(obra.orcamentoPrevisto)}
+                    </td>
+                    <td className="px-4 py-1.5 text-xs text-gray-500">
+                      {new Date(obra.dataPrevisaoFim).toLocaleDateString('pt-BR')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </MainContent>
