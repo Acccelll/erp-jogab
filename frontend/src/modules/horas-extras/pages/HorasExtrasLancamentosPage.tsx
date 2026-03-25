@@ -176,7 +176,7 @@ export function HorasExtrasLancamentosPage() {
                       <td className="whitespace-nowrap px-4 py-3 text-sm">
                         <Link
                           to={`/horas-extras/${item.id}`}
-                          className="font-medium text-jogab-700 hover:text-jogab-700"
+                          className="font-medium text-jogab-700 hover:text-jogab-800"
                         >
                           Detalhes
                         </Link>
