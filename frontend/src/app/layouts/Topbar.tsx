@@ -250,7 +250,7 @@ export function Topbar() {
         {/* Search placeholder */}
         <button
           type="button"
-          className="hidden items-center gap-2 rounded-md border border-border-default bg-surface-muted px-2.5 py-1 text-sm text-text-subtle transition-colors hover:border-border-soft hover:bg-surface-soft focus-within:border-accent-600 focus-within:ring-1 focus-within:ring-accent-600/20 md:flex"
+          className="hidden items-center gap-2 rounded-md border border-border-default bg-surface-muted px-2.5 py-1 text-sm text-text-subtle transition-colors hover:border-border-soft hover:bg-surface-soft focus-within:border-brand-secondary focus-within:ring-1 focus-within:ring-brand-secondary/20 md:flex"
         >
           <Search size={14} />
           <span className="text-xs">Buscar...</span>
@@ -266,7 +266,7 @@ export function Topbar() {
           aria-label="Notificações"
         >
           <Bell size={16} />
-          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-red-500" />
+          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-danger" />
         </button>
 
         {/* User dropdown */}
@@ -308,7 +308,7 @@ export function Topbar() {
                   setUserMenuOpen(false);
                   navigate('/login');
                 }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-danger hover:bg-danger-soft"
               >
                 <LogOut size={14} />
                 Sair

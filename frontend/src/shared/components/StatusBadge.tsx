@@ -10,10 +10,10 @@ interface StatusBadgeProps {
 
 const variantStyles: Record<BadgeVariant, string> = {
   default: 'bg-neutral-200 text-neutral-700',
-  success: 'bg-jogab-100 text-jogab-700',
-  warning: 'bg-amber-50 text-amber-700',
-  error: 'bg-red-50 text-red-700',
-  info: 'bg-accent-100 text-accent-600',
+  success: 'bg-success-soft text-success',
+  warning: 'bg-warning-soft text-warning',
+  error: 'bg-danger-soft text-danger',
+  info: 'bg-info-soft text-info',
 };
 
 export function StatusBadge({ label, variant = 'default', className }: StatusBadgeProps) {

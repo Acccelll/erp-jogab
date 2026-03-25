@@ -60,6 +60,13 @@ function Divider() {
   return <div className="mx-2 my-1.5 h-px bg-sidebar-border" />;
 }
 
+function GroupLabel({ label, collapsed }: { label: string; collapsed: boolean }) {
+  if (collapsed) return null;
+  return (
+    <p className="px-2.5 pb-1 pt-2.5 text-[10px] font-semibold uppercase tracking-widest text-sidebar-group">{label}</p>
+  );
+}
+
 function NavItem({ item, collapsed }: { item: SidebarNavItem; collapsed: boolean }) {
   const location = useLocation();
   const { icon: Icon, label, path } = item;
@@ -122,7 +129,7 @@ export function Sidebar() {
       {/* Logo / Brand */}
       <div className="flex h-11 items-center px-3">
         <div className="flex items-center gap-2 overflow-hidden">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-jogab-700 text-xs font-bold text-white font-brand">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-brand-primary text-xs font-bold text-white font-brand">
             J
           </div>
           {!collapsed && (
@@ -145,6 +152,7 @@ export function Sidebar() {
         <Divider />
 
         {/* Grupo 2 — Pessoas */}
+        <GroupLabel label="Pessoas" collapsed={collapsed} />
         <ul className="space-y-0.5">
           {pessoasItems.map((item) => (
             <NavItem key={item.path} item={item} collapsed={collapsed} />
@@ -154,6 +162,7 @@ export function Sidebar() {
         <Divider />
 
         {/* Grupo 3 — Operacional */}
+        <GroupLabel label="Operacional" collapsed={collapsed} />
         <ul className="space-y-0.5">
           {operacionalItems.map((item) => (
             <NavItem key={item.path} item={item} collapsed={collapsed} />

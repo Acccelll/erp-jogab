@@ -18,10 +18,10 @@ interface KPICardProps {
 }
 
 export function KPICard({ label, value, subtitle, trend }: KPICardProps) {
-  const trendColor = trend === 'up' ? 'text-jogab-700' : trend === 'down' ? 'text-red-600' : 'text-text-muted';
+  const trendColor = trend === 'up' ? 'text-success' : trend === 'down' ? 'text-danger' : 'text-text-muted';
 
   return (
-    <div className="rounded-lg border border-border-default bg-surface-card p-4">
+    <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-card">
       <p className="text-sm font-medium text-text-muted">{label}</p>
       <p className="mt-1 text-2xl font-semibold text-text-strong">{value}</p>
       {subtitle && <p className={`mt-1 text-xs ${trendColor}`}>{subtitle}</p>}

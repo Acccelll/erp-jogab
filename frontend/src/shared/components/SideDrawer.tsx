@@ -22,7 +22,7 @@ export function SideDrawer() {
 
       {/* Drawer */}
       <aside
-        className="fixed right-0 top-0 z-50 flex h-full flex-col border-l border-border-default bg-white shadow-xl"
+        className="fixed right-0 top-0 z-50 flex h-full flex-col border-l border-border-default bg-surface-card shadow-overlay"
         style={{ width: width ?? '480px' }}
       >
         <div className="flex items-center justify-between border-b border-border-default px-4 py-3">
