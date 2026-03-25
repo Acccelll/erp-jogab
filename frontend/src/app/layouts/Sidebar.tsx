@@ -14,8 +14,8 @@ import {
   FolderOpen,
   BarChart2,
   Settings,
-  Pin,
-  PinOff,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { useUIStore } from '@/shared/stores';
 import { cn } from '@/shared/lib/utils';
@@ -27,20 +27,20 @@ interface SidebarNavItem {
   icon: LucideIcon;
 }
 
-/** Grupo 1 — Core (máxima proeminência: ponto de entrada principal) */
+/** Grupo 1 — Core (always prominent) */
 const coreItems: SidebarNavItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { label: 'Obras', path: '/obras', icon: Building2 },
 ];
 
-/** Grupo 2 — Pessoas (operacional primário: uso frequente) */
+/** Grupo 2 — Pessoas (primary operational) */
 const pessoasItems: SidebarNavItem[] = [
   { label: 'Funcionários', path: '/rh/funcionarios', icon: Users },
   { label: 'Horas Extras', path: '/horas-extras', icon: Clock },
   { label: 'FOPAG', path: '/fopag', icon: Receipt },
 ];
 
-/** Grupo 3 — Operacional (secundário: acesso contextual) */
+/** Grupo 3 — Operacional (secondary) */
 const operacionalItems: SidebarNavItem[] = [
   { label: 'Compras', path: '/compras', icon: ShoppingCart },
   { label: 'Fiscal', path: '/fiscal', icon: FileText },
@@ -50,24 +50,20 @@ const operacionalItems: SidebarNavItem[] = [
   { label: 'Documentos', path: '/documentos', icon: FolderOpen },
 ];
 
-/** Rodapé (utilitário — hierarquia mínima) */
+/** Rodapé (utility — lowest hierarchy) */
 const footerItems: SidebarNavItem[] = [
   { label: 'Relatórios', path: '/relatorios', icon: BarChart2 },
   { label: 'Administração', path: '/admin', icon: Settings },
 ];
 
-function Divider({ spacing = 'normal' }: { spacing?: 'normal' | 'tight' }) {
-  return (
-    <div
-      className={cn('mx-2 h-px bg-sidebar-border/40', spacing === 'tight' ? 'my-0.5' : 'my-1.5')}
-    />
-  );
+function Divider() {
+  return <div className="mx-2 my-1 h-px bg-sidebar-border/50" />;
 }
 
 function GroupLabel({ label, collapsed }: { label: string; collapsed: boolean }) {
   if (collapsed) return null;
   return (
-    <p className="px-2.5 pb-1 pt-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-sidebar-group/45">
+    <p className="mt-3 px-2.5 pb-0.5 pt-2 text-[10px] font-medium uppercase tracking-widest text-sidebar-group/30">
       {label}
     </p>
   );
@@ -80,39 +76,28 @@ function NavItem({
 }: {
   item: SidebarNavItem;
   collapsed: boolean;
-  tier?: 'core' | 'primary' | 'secondary' | 'utility';
+  tier?: 'primary' | 'secondary' | 'utility';
 }) {
   const location = useLocation();
   const { icon: Icon, label, path } = item;
   const isActive = location.pathname === path || location.pathname.startsWith(`${path}/`);
 
-  const iconSize = tier === 'core' ? 18 : tier === 'primary' ? 16 : 15;
+  const iconSize = tier === 'primary' ? 20 : 16;
 
   return (
     <li>
       <NavLink
         to={path}
         className={cn(
-          'flex items-center gap-2.5 rounded-md transition-colors',
-          tier === 'core'
-            ? 'px-2.5 py-2 text-sm font-semibold'
-            : tier === 'primary'
-              ? 'px-2.5 py-1.5 text-[13px] font-medium'
-              : tier === 'secondary'
-                ? 'px-2.5 py-1 text-[12.5px] font-medium'
-                : 'px-2.5 py-1 text-[12px] font-medium',
+          'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 transition-all duration-200',
           isActive
-            ? tier === 'core'
-              ? 'bg-sidebar-active text-sidebar-text-active'
-              : 'bg-sidebar-active/80 text-sidebar-text-active'
+            ? 'bg-sidebar-active text-sidebar-text-active shadow-sm font-semibold'
             : tier === 'utility'
-              ? 'text-sidebar-text/40 hover:bg-sidebar-hover/60 hover:text-sidebar-text/70'
+              ? 'text-sidebar-text/30 hover:bg-sidebar-hover hover:text-white text-[13px]'
               : tier === 'secondary'
-                ? 'text-sidebar-text/55 hover:bg-sidebar-hover/60 hover:text-sidebar-text/80'
-                : tier === 'primary'
-                  ? 'text-sidebar-text/75 hover:bg-sidebar-hover hover:text-white'
-                  : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
-          collapsed && 'justify-center px-0 py-2',
+                ? 'text-sidebar-text/50 hover:bg-sidebar-hover hover:text-white text-[13px]'
+                : 'text-sidebar-text/80 hover:bg-sidebar-hover hover:text-white text-sm font-medium',
+          collapsed && 'justify-center px-0',
         )}
         title={label}
       >
@@ -180,18 +165,18 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex flex-1 flex-col overflow-y-auto px-1.5 py-1">
-        {/* Core — máxima proeminência */}
+        {/* Core — highest prominence */}
         <ul className="space-y-0.5">
           {coreItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} tier="core" />
+            <NavItem key={item.path} item={item} collapsed={collapsed} tier="primary" />
           ))}
         </ul>
 
         <Divider />
 
-        {/* Pessoas — uso frequente */}
+        {/* Pessoas */}
         <GroupLabel label="Pessoas" collapsed={collapsed} />
-        <ul className="space-y-0">
+        <ul className="space-y-0.5">
           {pessoasItems.map((item) => (
             <NavItem key={item.path} item={item} collapsed={collapsed} tier="primary" />
           ))}
@@ -199,7 +184,7 @@ export function Sidebar() {
 
         <Divider />
 
-        {/* Operacional — acesso contextual */}
+        {/* Operacional — visually recessed */}
         <GroupLabel label="Operacional" collapsed={collapsed} />
         <ul className="space-y-0">
           {operacionalItems.map((item) => (
@@ -210,8 +195,8 @@ export function Sidebar() {
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* Utilitário */}
-        <Divider spacing="tight" />
+        {/* Footer — utility tier */}
+        <Divider />
         <ul className="space-y-0">
           {footerItems.map((item) => (
             <NavItem key={item.path} item={item} collapsed={collapsed} tier="utility" />
@@ -219,19 +204,19 @@ export function Sidebar() {
         </ul>
       </nav>
 
-      {/* Pin toggle — discreto */}
-      <div className="border-t border-sidebar-border/40 px-1.5 py-1">
+      {/* Toggle pin button */}
+      <div className="border-t border-sidebar-border px-1.5 py-1.5">
         <button
           type="button"
           onClick={togglePin}
           className={cn(
-            'flex w-full items-center gap-2 rounded-md px-2.5 py-1 text-sidebar-text/30 transition-colors hover:bg-sidebar-hover/50 hover:text-sidebar-text/60',
+            'flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm text-sidebar-text transition-colors hover:bg-sidebar-hover hover:text-white',
             collapsed && 'justify-center px-0',
           )}
-          title={sidebarPinned ? 'Soltar menu' : 'Fixar menu aberto'}
+          title={sidebarPinned ? 'Recolher menu' : 'Fixar menu'}
         >
-          {sidebarPinned ? <PinOff size={13} /> : <Pin size={13} />}
-          {!collapsed && <span className="text-[11px]">{sidebarPinned ? 'Soltar' : 'Fixar'}</span>}
+          {sidebarPinned ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          {!collapsed && <span className="text-xs font-medium">{sidebarPinned ? 'Recolher' : 'Fixar menu'}</span>}
         </button>
       </div>
     </aside>

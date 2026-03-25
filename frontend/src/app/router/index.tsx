@@ -73,10 +73,15 @@ import {
 import { MedicaoDetailPage, MedicoesListPage } from '@/modules/medicoes';
 import {
   ObraComprasPage,
+  ObraContratosPage,
   ObraCronogramaPage,
   ObraDocumentosPage,
   ObraEquipePage,
+  ObraEstoquePage,
   ObraFinanceiroPage,
+  ObraMedicoesPage,
+  ObraRhPage,
+  ObraRiscosPage,
   ObrasListPage,
   ObraVisaoGeralPage,
 } from '@/modules/obras';
@@ -228,7 +233,18 @@ const funcionarioDetailTabs: PlaceholderTabConfig[] = [
   },
 ];
 
-const obraImplementedTabs = new Set(['cronograma', 'equipe', 'compras', 'financeiro', 'documentos']);
+const obraImplementedTabs = new Set([
+  'cronograma',
+  'equipe',
+  'compras',
+  'financeiro',
+  'documentos',
+  'contratos',
+  'rh',
+  'estoque',
+  'medicoes',
+  'riscos',
+]);
 
 const funcionarioImplementedTabs = new Set([
   'contrato',
@@ -290,6 +306,11 @@ const appRoutes: RouteObject[] = [
           { path: 'compras', element: <ObraComprasPage /> },
           { path: 'financeiro', element: <ObraFinanceiroPage /> },
           { path: 'documentos', element: <ObraDocumentosPage /> },
+          { path: 'contratos', element: <ObraContratosPage /> },
+          { path: 'rh', element: <ObraRhPage /> },
+          { path: 'estoque', element: <ObraEstoquePage /> },
+          { path: 'medicoes', element: <ObraMedicoesPage /> },
+          { path: 'riscos', element: <ObraRiscosPage /> },
           ...obraPlaceholderRoutes,
         ],
       },
