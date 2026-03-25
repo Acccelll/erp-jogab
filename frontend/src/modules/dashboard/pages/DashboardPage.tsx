@@ -69,14 +69,27 @@ export function DashboardPage() {
       </div>
 
       {isLoading && (
-        <div className="space-y-0 p-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
-              <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
-              <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-              <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
+        <div className="space-y-3 p-4">
+          {/* KPI skeleton */}
+          <div className="flex flex-wrap items-end gap-x-6 gap-y-2">
+            <div>
+              <div className="h-3 w-20 animate-pulse rounded bg-neutral-200" />
+              <div className="mt-1 h-8 w-32 animate-pulse rounded bg-neutral-200" />
             </div>
-          ))}
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i}>
+                <div className="h-2.5 w-16 animate-pulse rounded bg-neutral-200" />
+                <div className="mt-1 h-5 w-20 animate-pulse rounded bg-neutral-200" />
+              </div>
+            ))}
+          </div>
+          {/* Section skeleton */}
+          <div className="h-3 w-24 animate-pulse rounded bg-neutral-200" />
+          <div className="grid gap-3 xl:grid-cols-2">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="h-16 animate-pulse rounded-lg bg-neutral-100" />
+            ))}
+          </div>
         </div>
       )}
 
