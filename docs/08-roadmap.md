@@ -38,14 +38,20 @@
 - Estoque (lista, movimentações, detalhe do item)
 - Medições (lista, detalhe da medição)
 
-## Fase 8 ✅
-- Integração FOPAG (lista de competências, detalhe com 7 abas) via `withApiFallback`
-- Integração Financeiro (dashboard, fluxo de caixa, contas a pagar, contas a receber, detalhe de título) via `withApiFallback`
-- Cadeia de dados HE → FOPAG → Financeiro validada visualmente
-- Documentos (lista, detalhe do documento)
-- Relatórios (lista, relatórios por categoria)
-- Administração (painel, usuários, perfis, permissões, parâmetros, logs, integrações)
-- Perfil (página do usuário)
+## Integração FOPAG + Financeiro (Fase 8) ✅
+- FOPAG integrado: listagem e detalhe de competências via `withApiFallback`
+  - `GET /fopag/competencias` — listagem com KPIs
+  - `GET /fopag/competencias/:id` — detalhe com funcionários, obras, eventos, rateio e financeiro
+- Financeiro integrado: todos os endpoints via `withApiFallback`
+  - `GET /financeiro/dashboard` — dashboard com pessoal (integrado FOPAG)
+  - `GET /financeiro/pessoal` — custos de pessoal oriundos de FOPAG
+  - `GET /financeiro/fluxo-caixa`, `GET /financeiro/contas-pagar`, `GET /financeiro/contas-receber`, `GET /financeiro/titulos/:id`
+- Cadeia HE → FOPAG → Financeiro validada e documentada (workforceCost.ts + testes)
+- Registry de integração atualizado: 8 módulos integrados (+ fopag + financeiro)
+- Lint: 0 erros (fixado no `fopag.service.test.ts` e `financeiro.service.test.ts`)
+- Testes adicionados: FOPAG service (17), Financeiro service (22), workforceCost chain (23), integration registry (2)
+- Compras preparado para Fase 9: contratos e endpoints revisados, documentados em `docs/14-integracao-fase8.md`
+- Total: 621 testes em 49 arquivos
 
 ## Fase de saneamento (Fase 1 de alinhamento) ✅
 - Normalização de services para resiliência a payload parcial
@@ -113,8 +119,8 @@
 - Documentação completa (docs/13-integracao-fase7.md)
 - Total: 553 testes em 46 arquivos
 
-## Próximos passos
-- Integrar Compras (solicitações, cotações, pedidos) como próximo módulo
+## Próximos passos (Fase 9)
+- Integrar Compras (solicitações, cotações, pedidos) como próximo fluxo independente
 - Integrar Fiscal (entradas, saídas, detalhe do documento)
 - Desabilitar fallback gradualmente por módulo (`VITE_API_FALLBACK=false`)
 - Code-splitting com React.lazy para reduzir bundle size
@@ -126,12 +132,12 @@
 **Resultado dos comandos de validação:**
 - `npm run build`: 0 erros TypeScript, build completo com sucesso
 - `npm run lint`: 0 erros
-- `npm run test`: 48 arquivos de teste, 555 testes passando
+- `npm run test`: 49 arquivos de teste, 621 testes passando
 - `npm audit`: 0 vulnerabilidades
 
 **Testes encontrados vs declarados:**
-- Arquivos de teste no repositório: 48 (21 `.test.ts` + 27 `.test.tsx`)
-- Testes executados pelo Vitest: 555 em 48 arquivos — todos passando
+- Arquivos de teste no repositório: 49 (22 `.test.ts` + 27 `.test.tsx`)
+- Testes executados pelo Vitest: 621 em 49 arquivos — todos passando
 - Padrão de include: `src/**/*.test.{ts,tsx}` — correto e abrangente
 
 **Endpoints efetivamente integrados (Fase 5 + 6 + 7 + 8):**
@@ -155,17 +161,17 @@
 - `POST /horas-extras/:id/aprovar` — aprovação de hora extra com fallback mock
 - `POST /horas-extras/fechamento` — fechamento de competência com fallback mock
 - `GET /horas-extras/aprovacao` — dados de aprovação com fallback mock
-- `GET /fopag/competencias` — listagem de competências FOPAG
-- `GET /fopag/competencias/:id` — detalhe da competência FOPAG
-- `GET /financeiro/dashboard` — dashboard financeiro principal
-- `GET /financeiro/fluxo-caixa` — fluxo de caixa
-- `GET /financeiro/pessoal` — custos de pessoal (integrado FOPAG)
-- `GET /financeiro/contas-pagar` — contas a pagar
-- `GET /financeiro/contas-receber` — contas a receber
-- `GET /financeiro/titulos/:id` — detalhe de título financeiro
+- `GET /fopag/competencias` — listagem de competências FOPAG com fallback mock
+- `GET /fopag/competencias/:id` — detalhe da competência FOPAG com fallback mock
+- `GET /financeiro/dashboard` — dashboard financeiro principal com fallback mock
+- `GET /financeiro/fluxo-caixa` — fluxo de caixa com fallback mock
+- `GET /financeiro/pessoal` — custos de pessoal (integrado FOPAG) com fallback mock
+- `GET /financeiro/contas-pagar` — contas a pagar com fallback mock
+- `GET /financeiro/contas-receber` — contas a receber com fallback mock
+- `GET /financeiro/titulos/:id` — detalhe de título financeiro com fallback mock
 
 **Módulos que continuam apenas preparados:**
-- Compras, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback)
+- Compras, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback — Fase 9)
 - Estoque, Medições, Documentos, Admin (parcialmente prontos)
 
 **Rotas implementadas:**
