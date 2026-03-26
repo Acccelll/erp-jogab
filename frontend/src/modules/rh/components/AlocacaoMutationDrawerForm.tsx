@@ -2,8 +2,9 @@ import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Loader2, Save, XCircle } from 'lucide-react';
 import { z } from 'zod';
+import { useFormDirty } from '@/shared/hooks';
 import { getAlocacaoById, getCentrosCustoByObraId } from '@/shared/lib/erpRelations';
-import { useContextStore, useDrawerStore } from '@/shared/stores';
+import { useContextStore, useDrawerStore, useDirtyStore } from '@/shared/stores';
 import type { AlocacaoCreatePayload, AlocacaoUpdatePayload } from '@/shared/types';
 import { mockObras } from '@/modules/obras/data/obras.mock';
 import { useCreateAlocacao, useEncerrarAlocacao, useUpdateAlocacao } from '../hooks';
@@ -77,7 +78,7 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
     getValues,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<AlocacaoFormData>({
     defaultValues: toFormValues({
       obraId: currentAlocacao?.obraId ?? contextObraId ?? '',
@@ -92,6 +93,8 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
       status: currentAlocacao?.status ?? 'ativa',
     }),
   });
+
+  useFormDirty(isDirty);
 
   const obraId = useWatch({ control, name: 'obraId' });
   const status = useWatch({ control, name: 'status' });
@@ -144,6 +147,7 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
 
   const onSubmit = handleSubmit(async (values) => {
     const parsed = alocacaoFormSchema.safeParse(values);
+    const { resetDirty } = useDirtyStore.getState();
 
     if (!parsed.success) {
       parsed.error.issues.forEach((issue) => {
@@ -165,6 +169,7 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
       } else {
         await createMutation.mutateAsync({ funcionarioId, ...parsed.data } satisfies AlocacaoCreatePayload);
       }
+      resetDirty();
       closeDrawer();
     } catch (error) {
       setError('root', { message: error instanceof Error ? error.message : 'Não foi possível salvar a alocação.' });

@@ -1,8 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Loader2, Save } from 'lucide-react';
+import { useFormDirty } from '@/shared/hooks';
 import { getCentrosCustoByObraId } from '@/shared/lib/erpRelations';
-import { useContextStore, useDrawerStore } from '@/shared/stores';
+import { useContextStore, useDrawerStore, useDirtyStore } from '@/shared/stores';
 import { mockFuncionarios } from '../data/funcionarios.mock';
 import { useCreateFuncionario, useFuncionarioDetails, useUpdateFuncionario } from '../hooks';
 import { getFuncionarioFormReferenceData } from '../services/funcionarios.service';
@@ -57,7 +58,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
     setValue,
     getValues,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<FuncionarioFormData>({
     defaultValues: toFormValues({
       filialId: contextFilialId ?? referenceData.filiais[0]?.value ?? mockFuncionarios[0]?.filialId ?? '',
@@ -67,6 +68,8 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
       dataAdmissao: new Date().toISOString().slice(0, 10),
     }),
   });
+
+  useFormDirty(isDirty);
 
   const obraAlocadoId = useWatch({ control, name: 'obraAlocadoId' });
   const centrosCusto = useMemo(() => (obraAlocadoId ? getCentrosCustoByObraId(obraAlocadoId) : []), [obraAlocadoId]);
@@ -126,6 +129,8 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
   const onSubmit = handleSubmit(async (values) => {
     const parsed = funcionarioFormSchema.safeParse(values);
 
+    const { resetDirty } = useDirtyStore.getState();
+
     if (!parsed.success) {
       parsed.error.issues.forEach((issue) => {
         const field = issue.path[0];
@@ -142,6 +147,7 @@ export function FuncionarioMutationDrawerForm({ funcionarioId }: FuncionarioMuta
       } else {
         await createMutation.mutateAsync(parsed.data);
       }
+      resetDirty();
       closeDrawer();
     } catch (error) {
       setError('root', {

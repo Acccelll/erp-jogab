@@ -4,14 +4,15 @@
  * Padrão redesign: QuickFilterChips → Tabela densa
  */
 import { useState, useMemo } from 'react';
-import { Plus, Search, SlidersHorizontal } from 'lucide-react';
-import { MainContent, EmptyState, QuickFilterChips, TableCellStack, PageHeader } from '@/shared/components';
+import { Plus, Search, SlidersHorizontal, Trash2, Download, CheckCircle2 } from 'lucide-react';
+import { MainContent, EmptyState, QuickFilterChips, TableCellStack, PageHeader, BulkActionBar } from '@/shared/components';
 import { useDrawerStore } from '@/shared/stores';
 import { ObraMutationDrawerForm } from '../components/ObraMutationDrawerForm';
 import { ObraStatusBadge } from '../components/ObraStatusBadge';
 import { useObras } from '../hooks/useObras';
 import { useObraFilters } from '../hooks/useObraFilters';
-import { formatCurrency } from '@/shared/lib/utils';
+import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
+import { formatCurrency, cn } from '@/shared/lib/utils';
 import { Link } from 'react-router-dom';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
@@ -23,6 +24,16 @@ export function ObrasListPage() {
   const { data, isLoading, isError } = useObras(filters);
 
   const obras = data?.data ?? [];
+  const {
+    selectedIds,
+    selectedCount,
+    isSelected,
+    toggleSelection,
+    toggleAll,
+    clearSelection,
+    allSelected,
+    someSelected,
+  } = useBulkSelection(obras);
   const kpis = data?.kpis;
 
   const statusChips = useMemo<QuickFilterChip[]>(() => {
@@ -179,6 +190,17 @@ export function ObrasListPage() {
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="border-b border-border-default/60">
+                  <th className="w-10 px-4 py-2">
+                    <input
+                      type="checkbox"
+                      checked={allSelected}
+                      ref={(el) => {
+                        if (el) el.indeterminate = someSelected;
+                      }}
+                      onChange={toggleAll}
+                      className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
+                    />
+                  </th>
                   <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Nome</th>
                   <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Status</th>
                   <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Progresso</th>
@@ -188,7 +210,21 @@ export function ObrasListPage() {
               </thead>
               <tbody className="divide-y divide-gray-100/60">
                 {obras.map((obra) => (
-                  <tr key={obra.id} className="hover:bg-surface-soft/50">
+                  <tr
+                    key={obra.id}
+                    className={cn(
+                      'hover:bg-surface-soft/50 transition-colors',
+                      isSelected(obra.id) && 'bg-brand-primary/[0.02]'
+                    )}
+                  >
+                    <td className="px-4 py-1.5">
+                      <input
+                        type="checkbox"
+                        checked={isSelected(obra.id)}
+                        onChange={() => toggleSelection(obra.id)}
+                        className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
+                      />
+                    </td>
                     <td className="px-4 py-1.5">
                       <Link to={`/obras/${obra.id}`}>
                         <TableCellStack
@@ -224,6 +260,41 @@ export function ObrasListPage() {
           </div>
         )}
       </MainContent>
+
+      <BulkActionBar
+        selectedCount={selectedCount}
+        onClear={clearSelection}
+        actions={[
+          {
+            label: 'Concluir',
+            icon: <CheckCircle2 size={16} />,
+            onClick: () => {
+              console.log('Concluindo obras:', selectedIds);
+              clearSelection();
+            },
+            variant: 'success',
+          },
+          {
+            label: 'Exportar',
+            icon: <Download size={16} />,
+            onClick: () => {
+              console.log('Exportando obras:', selectedIds);
+              clearSelection();
+            },
+          },
+          {
+            label: 'Excluir',
+            icon: <Trash2 size={16} />,
+            onClick: () => {
+              if (confirm(`Deseja excluir ${selectedCount} obra(s) selecionada(s)?`)) {
+                console.log('Excluindo obras:', selectedIds);
+                clearSelection();
+              }
+            },
+            variant: 'danger',
+          },
+        ]}
+      />
     </div>
   );
 }

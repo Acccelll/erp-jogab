@@ -4,14 +4,16 @@
  * Padrão redesign: QuickFilterChips → Tabela densa
  */
 import { useState, useMemo } from 'react';
-import { Plus, Search, SlidersHorizontal } from 'lucide-react';
+import { Plus, Search, SlidersHorizontal, Trash2, Download, UserCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { MainContent, EmptyState, QuickFilterChips, TableCellStack, PageHeader } from '@/shared/components';
+import { MainContent, EmptyState, QuickFilterChips, TableCellStack, PageHeader, BulkActionBar } from '@/shared/components';
 import { useDrawerStore } from '@/shared/stores';
 import { FuncionarioStatusBadge } from '../components/FuncionarioStatusBadge';
 import { FuncionarioMutationDrawerForm } from '../components/FuncionarioMutationDrawerForm';
 import { useFuncionarios } from '../hooks/useFuncionarios';
 import { useFuncionarioFilters } from '../hooks/useFuncionarioFilters';
+import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
+import { cn } from '@/shared/lib/utils';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
 export function FuncionariosListPage() {
@@ -22,6 +24,16 @@ export function FuncionariosListPage() {
   const { data, isLoading, isError } = useFuncionarios(filters);
 
   const funcionarios = data?.data ?? [];
+  const {
+    selectedIds,
+    selectedCount,
+    isSelected,
+    toggleSelection,
+    toggleAll,
+    clearSelection,
+    allSelected,
+    someSelected,
+  } = useBulkSelection(funcionarios);
   const kpis = data?.kpis;
 
   const statusChips = useMemo<QuickFilterChip[]>(() => {
@@ -180,6 +192,17 @@ export function FuncionariosListPage() {
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="border-b border-border-default bg-surface-muted">
+                  <th className="w-10 px-4 py-1.5">
+                    <input
+                      type="checkbox"
+                      checked={allSelected}
+                      ref={(el) => {
+                        if (el) el.indeterminate = someSelected;
+                      }}
+                      onChange={toggleAll}
+                      className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
+                    />
+                  </th>
                   <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Nome</th>
                   <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Cargo</th>
                   <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Obra</th>
@@ -188,7 +211,21 @@ export function FuncionariosListPage() {
               </thead>
               <tbody className="divide-y divide-border-light">
                 {funcionarios.map((func) => (
-                  <tr key={func.id} className="hover:bg-surface-soft">
+                  <tr
+                    key={func.id}
+                    className={cn(
+                      'hover:bg-surface-soft transition-colors',
+                      isSelected(func.id) && 'bg-brand-primary/[0.02]'
+                    )}
+                  >
+                    <td className="px-4 py-1.5">
+                      <input
+                        type="checkbox"
+                        checked={isSelected(func.id)}
+                        onChange={() => toggleSelection(func.id)}
+                        className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
+                      />
+                    </td>
                     <td className="px-4 py-1.5">
                       <Link to={`/rh/funcionarios/${func.id}`}>
                         <TableCellStack primary={func.nome} secondary={`${func.matricula} · ${func.departamento}`} />
@@ -206,6 +243,41 @@ export function FuncionariosListPage() {
           </div>
         )}
       </MainContent>
+
+      <BulkActionBar
+        selectedCount={selectedCount}
+        onClear={clearSelection}
+        actions={[
+          {
+            label: 'Ativar',
+            icon: <UserCheck size={16} />,
+            onClick: () => {
+              console.log('Ativando funcionários:', selectedIds);
+              clearSelection();
+            },
+            variant: 'success',
+          },
+          {
+            label: 'Exportar',
+            icon: <Download size={16} />,
+            onClick: () => {
+              console.log('Exportando funcionários:', selectedIds);
+              clearSelection();
+            },
+          },
+          {
+            label: 'Excluir',
+            icon: <Trash2 size={16} />,
+            onClick: () => {
+              if (confirm(`Deseja excluir ${selectedCount} funcionário(s) selecionado(s)?`)) {
+                console.log('Excluindo funcionários:', selectedIds);
+                clearSelection();
+              }
+            },
+            variant: 'danger',
+          },
+        ]}
+      />
     </div>
   );
 }

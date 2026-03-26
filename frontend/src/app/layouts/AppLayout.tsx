@@ -13,7 +13,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
-import { ContextBar } from '@/shared/components';
+import { ContextBar, NavigationBlocker } from '@/shared/components';
 import { SideDrawer } from '@/shared/components/SideDrawer';
 import { useUIStore } from '@/shared/stores';
 
@@ -63,6 +63,9 @@ export function AppLayout() {
 
       {/* ── 5. SideDrawer — drawer lateral global ── */}
       <SideDrawer />
+
+      {/* ── Global navigation blocker ── */}
+      <NavigationBlocker />
     </div>
   );
 }

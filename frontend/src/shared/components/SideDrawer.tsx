@@ -1,19 +1,31 @@
-import { useDrawerStore } from '@/shared/stores';
+import { useDrawerStore, useDirtyStore } from '@/shared/stores';
 import { X } from 'lucide-react';
 
 export function SideDrawer() {
   const { isOpen, title, content, width, closeDrawer } = useDrawerStore();
+  const { isDirty, message, resetDirty } = useDirtyStore();
 
   if (!isOpen) return null;
+
+  const handleClose = () => {
+    if (isDirty) {
+      if (confirm(message || 'Você tem alterações não salvas. Deseja realmente sair?')) {
+        resetDirty();
+        closeDrawer();
+      }
+    } else {
+      closeDrawer();
+    }
+  };
 
   return (
     <>
       {/* Overlay */}
       <div
         className="fixed inset-0 z-40 bg-black/30"
-        onClick={closeDrawer}
+        onClick={handleClose}
         onKeyDown={(e) => {
-          if (e.key === 'Escape') closeDrawer();
+          if (e.key === 'Escape') handleClose();
         }}
         role="button"
         tabIndex={-1}
@@ -29,7 +41,7 @@ export function SideDrawer() {
           <h2 className="text-lg font-semibold text-text-strong">{title}</h2>
           <button
             type="button"
-            onClick={closeDrawer}
+            onClick={handleClose}
             className="rounded p-1 text-text-muted hover:bg-surface-soft hover:text-text-body"
           >
             <X size={20} />

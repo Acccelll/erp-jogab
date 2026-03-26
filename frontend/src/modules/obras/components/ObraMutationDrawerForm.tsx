@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Loader2, Save } from 'lucide-react';
-import { useContextStore, useDrawerStore } from '@/shared/stores';
+import { useFormDirty } from '@/shared/hooks';
+import { useContextStore, useDrawerStore, useDirtyStore } from '@/shared/stores';
 import { mockObras } from '../data/obras.mock';
 import { useObraDetails, useCreateObra, useUpdateObra } from '../hooks';
 import { getObraFormReferenceData } from '../services/obras.service';
@@ -49,7 +50,7 @@ export function ObraMutationDrawerForm({ obraId }: ObraMutationDrawerFormProps) 
     handleSubmit,
     reset,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<ObraFormData>({
     defaultValues: toFormValues({
       clienteId: fallbackClienteId,
@@ -59,6 +60,8 @@ export function ObraMutationDrawerForm({ obraId }: ObraMutationDrawerFormProps) 
       dataPrevisaoFim: new Date().toISOString().slice(0, 10),
     }),
   });
+
+  useFormDirty(isDirty);
 
   useEffect(() => {
     if (!isEdit) {
@@ -99,6 +102,8 @@ export function ObraMutationDrawerForm({ obraId }: ObraMutationDrawerFormProps) 
   const onSubmit = handleSubmit(async (values) => {
     const parsed = obraFormSchema.safeParse(values);
 
+    const { resetDirty } = useDirtyStore.getState();
+
     if (!parsed.success) {
       parsed.error.issues.forEach((issue) => {
         const field = issue.path[0];
@@ -115,6 +120,7 @@ export function ObraMutationDrawerForm({ obraId }: ObraMutationDrawerFormProps) 
       } else {
         await createMutation.mutateAsync(parsed.data);
       }
+      resetDirty();
       closeDrawer();
     } catch (error) {
       setError('root', {
