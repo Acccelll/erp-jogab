@@ -17,6 +17,7 @@ Este pacote foi preparado para uso com GitHub Copilot Agent ou Claude Code.
 12. `docs/11-integracao-fase5.md`
 13. `docs/12-integracao-fase6.md`
 14. `docs/13-integracao-fase7.md`
+15. `docs/14-integracao-fase8.md`
 16. `docs/15-integracao-fase10.md`
 17. `docs/16-integracao-fase9.md`
 18. `docs/17-integracao-fase11.md`
@@ -32,7 +33,7 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 
 ## Estado atual do frontend
 
-Todas as 8 fases do roadmap original estão completas, além de 13 fases de alinhamento/integração/qualidade. Os 15 módulos possuem pages, services, hooks, types e mock data implementados e todos estão integrados à API real com `withApiFallback`. A Fase 11 fechou os últimos módulos parciais. A Fase 12 adicionou mutations (POST/PUT) a Compras, Fiscal, Estoque, Medições e Relatórios. A Fase 13 corrigiu os contratos de mutation e expandiu a cobertura de testes para hooks de todos os módulos secundários (63 arquivos, 880 testes). Detalhes em `docs/08-roadmap.md` e `docs/18-qualidade-fase13.md`.
+Todas as 8 fases do roadmap original estão completas, além de 13 fases de alinhamento/integração/qualidade. Os 15 módulos possuem pages, services, hooks, types e mock data implementados e todos estão integrados à API real com `withApiFallback`. A Fase 11 fechou os últimos módulos parciais. A Fase 12 adicionou mutations (POST/PUT) a Compras, Fiscal, Estoque, Medições e Relatórios. A Fase 13 corrigiu os contratos de mutation, expandiu a cobertura de testes para hooks de todos os módulos secundários e corrigiu a arquitetura de contexto global: `ContextBar` é agora renderizado no `AppLayout`, e a `Topbar` ficou focada em breadcrumbs, ações e menu do usuário (63 arquivos, 880 testes). Detalhes em `docs/08-roadmap.md` e `docs/18-qualidade-fase13.md`.
 
 ### Módulos implementados
 
