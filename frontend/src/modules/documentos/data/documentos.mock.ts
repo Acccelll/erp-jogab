@@ -32,6 +32,9 @@ const documentos: Documento[] = [
   {
     id: 'doc-006', codigo: 'DOC-EMP-009', titulo: 'Apólice de seguro corporativo', tipo: 'seguranca', entidade: 'empresa', status: 'arquivado', entidadeId: 'emp-1', entidadeNome: 'JOGAB Engenharia Ltda', responsavelNome: 'Marcos Vinicius', versao: 'v9', vencimento: { dataEmissao: '2024-01-01', dataVencimento: '2025-12-31', diasParaVencer: -81, alerta: 'critico' }, ultimaAtualizacaoEm: '2026-01-15',
   },
+  {
+    id: 'doc-007', codigo: 'DOC-OBR-007', titulo: 'Alvará de Construção - Hospital', tipo: 'licenca', entidade: 'obra', status: 'vigente', obraId: 'obra-7', obraNome: 'OBR-007 — Hospital da Luz', entidadeId: 'obra-7', entidadeNome: 'Hospital da Luz', competencia: '2026-03', responsavelNome: 'Rafael Lima', versao: 'v1', vencimento: { dataEmissao: '2025-01-01', dataVencimento: '2027-01-01', diasParaVencer: 285, alerta: 'sem_alerta' }, ultimaAtualizacaoEm: '2026-03-20',
+  },
 ];
 
 const documentoDetalhes: Record<string, DocumentoDetalheData> = {

@@ -31,6 +31,9 @@ const medicoes: Medicao[] = [
   {
     id: 'med-005', codigo: 'MED-2026-005', numeroMedicao: 9, obraId: 'obra-2', obraNome: 'OBR-002 — Residencial Parque', contratoId: 'ctr-088', contratoCodigo: 'CTR-088', clienteNome: 'Parque SPE', competencia: '2026-01', periodoInicio: '2026-01-16', periodoFim: '2026-01-31', status: 'faturada_parcial', origem: 'ajuste', aprovacaoStatus: 'aprovada', faturamentoStatus: 'recebido', percentualAvanco: 48, valorContrato: 4820000, resumoFinanceiro: { valorMedido: 205500, valorRetido: 10275, valorLiberadoFaturamento: 195225, valorFaturado: 150000, valorRecebido: 150000, tituloFinanceiroCodigo: 'TIT-2026-011' }, centroCusto: 'CC-FAT-OBR', responsavelNome: 'Bianca Tavares', updatedAt: '2026-02-15',
   },
+  {
+    id: 'med-006', codigo: 'MED-2026-006', numeroMedicao: 1, obraId: 'obra-7', obraNome: 'OBR-007 — Hospital da Luz', contratoId: 'ctr-150', contratoCodigo: 'CTR-150', clienteNome: 'Saúde & Vida S.A.', competencia: '2026-03', periodoInicio: '2026-03-01', periodoFim: '2026-03-15', status: 'em_elaboracao', origem: 'contrato', aprovacaoStatus: 'pendente_engenharia', faturamentoStatus: 'nao_iniciado', percentualAvanco: 5, valorContrato: 45000000, resumoFinanceiro: { valorMedido: 2250000, valorRetido: 112500, valorLiberadoFaturamento: 2137500, valorFaturado: 0, valorRecebido: 0 }, centroCusto: 'CC-HOS-ENG', responsavelNome: 'Rafael Lima', updatedAt: '2026-03-20',
+  },
 ];
 
 const medicaoDetalhes: Record<string, MedicaoDetalheData> = {

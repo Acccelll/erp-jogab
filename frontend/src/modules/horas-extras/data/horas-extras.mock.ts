@@ -79,6 +79,11 @@ export const mockHorasExtras: HoraExtraLancamento[] = [
     obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-7', centroCustoNome: 'Obra Aurora — Auxiliares', filialId: 'fil-1', filialNome: 'Matriz — São Paulo',
     competencia: '2026-03', dataLancamento: '2026-03-12', quantidadeHoras: 7, valorCalculado: 504.8, tipo: 'he_100', status: 'rejeitada', origem: 'obra', aprovadorNome: 'Sérgio Dias', regraId: 'regra-he100', observacao: 'Horas divergentes com apontamento',
   },
+  {
+    id: 'he-8', funcionarioId: 'func-12', funcionarioNome: 'Rafael Lima', matricula: 'MAT-012', cargo: 'Engenheiro de Instalações',
+    obraId: 'obra-7', obraNome: 'Hospital da Luz', centroCustoId: 'cc-10', centroCustoNome: 'Hospital — Engenharia', filialId: 'fil-1', filialNome: 'Matriz — São Paulo',
+    competencia: '2026-03', dataLancamento: '2026-03-15', quantidadeHoras: 3, valorCalculado: 325.5, tipo: 'he_50', status: 'pendente_aprovacao', origem: 'obra', aprovadorNome: null, regraId: 'regra-he50', observacao: 'Acompanhamento de entrega técnica Carrier',
+  },
 ];
 
 export const mockFechamentosCompetencia: FechamentoCompetencia[] = [

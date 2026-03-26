@@ -151,14 +151,11 @@ export function Sidebar() {
     >
       {/* Logo / Brand */}
       <div className="flex h-11 items-center px-3">
-        <div className="flex items-center gap-2 overflow-hidden">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-brand-primary text-xs font-bold text-white font-brand">
-            J
-          </div>
-          {!collapsed && (
-            <span className="whitespace-nowrap text-sm font-semibold tracking-wide text-white font-brand">
-              ERP JOGAB
-            </span>
+        <div className="flex w-full items-center justify-center overflow-hidden">
+          {collapsed ? (
+            <img src="/logo-sem-texto.png" alt="Logo" className="h-6 w-auto" />
+          ) : (
+            <img src="/logo-horizontal-branco.png" alt="ERP JOGAB" className="h-6 w-auto" />
           )}
         </div>
       </div>

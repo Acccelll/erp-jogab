@@ -52,6 +52,9 @@ export function LoginPage() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-center">
+        <img src="/logo-jogab.png" alt="JOGAB Engenharia" className="h-12 w-auto" />
+      </div>
       <div className="text-center">
         <h2 className="text-xl font-semibold text-text-strong">Entrar no ERP JOGAB</h2>
         <p className="mt-1 text-sm text-text-muted">

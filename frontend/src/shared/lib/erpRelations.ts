@@ -10,6 +10,10 @@ export const mockCentrosCusto: CentroCustoResumo[] = [
   { id: 'cc-7', codigo: 'CC-AUR-AUX', nome: 'Obra Aurora — Auxiliares', obraId: 'obra-1', obraNome: 'Edifício Aurora', filialId: 'fil-1' },
   { id: 'cc-8', codigo: 'CC-AUR-ALM', nome: 'Obra Aurora — Almoxarifado', obraId: 'obra-1', obraNome: 'Edifício Aurora', filialId: 'fil-1' },
   { id: 'cc-9', codigo: 'CC-PON-OPER', nome: 'Obra Ponte — Equipamentos', obraId: 'obra-4', obraNome: 'Ponte BR-101', filialId: 'fil-3' },
+  { id: 'cc-10', codigo: 'CC-HOS-ENG', nome: 'Hospital — Engenharia', obraId: 'obra-7', obraNome: 'Hospital da Luz', filialId: 'fil-1' },
+  { id: 'cc-11', codigo: 'CC-LOG-OPER', nome: 'Logistics — Operações', obraId: 'obra-8', obraNome: 'Galpão Logístico Sigma', filialId: 'fil-3' },
+  { id: 'cc-12', codigo: 'CC-HOS-PROD', nome: 'Hospital — Produção', obraId: 'obra-7', obraNome: 'Hospital da Luz', filialId: 'fil-1' },
+  { id: 'cc-13', codigo: 'CC-VIA-PLAN', nome: 'Viaduto — Planejamento', obraId: 'obra-10', obraNome: 'Viaduto do Trabalhador', filialId: 'fil-1' },
 ]
 
 export const mockAlocacoes: AlocacaoResumo[] = [
@@ -24,6 +28,10 @@ export const mockAlocacoes: AlocacaoResumo[] = [
   { id: 'alo-9', funcionarioId: 'func-9', funcionarioNome: 'Ricardo Barbosa', obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-7', centroCustoNome: 'Obra Aurora — Auxiliares', funcao: 'Auxiliar Geral', equipe: 'Campo', jornada: '44h semanais', percentual: 100, departamento: 'Produção', periodoInicio: '2025-11-01', status: 'ativa' },
   { id: 'alo-10', funcionarioId: 'func-10', funcionarioNome: 'Patrícia Rocha', obraId: 'obra-1', obraNome: 'Edifício Aurora', centroCustoId: 'cc-8', centroCustoNome: 'Obra Aurora — Almoxarifado', funcao: 'Almoxarife de Obra', equipe: 'Suprimentos', jornada: '44h semanais', percentual: 100, departamento: 'Estoque', periodoInicio: '2026-04-01', status: 'planejada' },
   { id: 'alo-11', funcionarioId: 'func-11', funcionarioNome: 'Luan Ferreira', obraId: 'obra-4', obraNome: 'Ponte BR-101', centroCustoId: 'cc-9', centroCustoNome: 'Obra Ponte — Equipamentos', funcao: 'Operador de Equipamentos', equipe: 'Infraestrutura', jornada: '12x36', percentual: 100, departamento: 'Produção', periodoInicio: '2025-07-10', periodoFim: '2026-04-30', status: 'encerrada' },
+  { id: 'alo-12', funcionarioId: 'func-12', funcionarioNome: 'Rafael Lima', obraId: 'obra-7', obraNome: 'Hospital da Luz', centroCustoId: 'cc-10', centroCustoNome: 'Hospital — Engenharia', funcao: 'Engenheiro Hospitalar', equipe: 'Engenharia', jornada: '44h semanais', percentual: 100, departamento: 'Engenharia', periodoInicio: '2025-01-10', status: 'ativa' },
+  { id: 'alo-13', funcionarioId: 'func-13', funcionarioNome: 'Beatriz Costa', obraId: 'obra-8', obraNome: 'Galpão Logístico Sigma', centroCustoId: 'cc-11', centroCustoNome: 'Logistics — Operações', funcao: 'Analista de Operações', equipe: 'Logística', jornada: '44h semanais', percentual: 100, departamento: 'Logística', periodoInicio: '2025-08-15', status: 'ativa' },
+  { id: 'alo-14', funcionarioId: 'func-14', funcionarioNome: 'Gustavo Henrique', obraId: 'obra-7', obraNome: 'Hospital da Luz', centroCustoId: 'cc-12', centroCustoNome: 'Hospital — Produção', funcao: 'Encarregado', equipe: 'Produção', jornada: '44h semanais', percentual: 100, departamento: 'Produção', periodoInicio: '2025-02-01', status: 'ativa' },
+  { id: 'alo-15', funcionarioId: 'func-16', funcionarioNome: 'Felipe Rocha', obraId: 'obra-10', obraNome: 'Viaduto do Trabalhador', centroCustoId: 'cc-13', centroCustoNome: 'Viaduto — Planejamento', funcao: 'Consultor', equipe: 'Planejamento', jornada: '40h semanais', percentual: 100, departamento: 'Engenharia', periodoInicio: '2025-04-01', status: 'ativa' },
 ]
 
 export function getAlocacoesByObraId(obraId: string) {
