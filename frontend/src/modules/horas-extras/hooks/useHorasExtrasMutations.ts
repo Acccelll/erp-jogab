@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { approveHoraExtra, fecharCompetenciaHorasExtras } from '../services/horasExtras.service';
+import { approveHoraExtra, rejectHoraExtra, createHoraExtra, fecharCompetenciaHorasExtras } from '../services/horasExtras.service';
+import type { HoraExtraLancamento } from '../types';
 
 function invalidateHorasExtrasQueries(queryClient: ReturnType<typeof useQueryClient>, competencia: string) {
   void queryClient.invalidateQueries({ queryKey: ['horas-extras'] });
@@ -11,11 +12,33 @@ function invalidateHorasExtrasQueries(queryClient: ReturnType<typeof useQueryCli
   void queryClient.invalidateQueries({ queryKey: ['obras'] });
 }
 
+export function useCreateHoraExtra() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: Omit<HoraExtraLancamento, 'id' | 'valorCalculado' | 'status' | 'aprovadorNome'>) => createHoraExtra(payload),
+    onSuccess: (result) => {
+      invalidateHorasExtrasQueries(queryClient, result.lancamento.competencia);
+    },
+  });
+}
+
 export function useApproveHoraExtra() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string) => approveHoraExtra(id),
+    onSuccess: (result) => {
+      invalidateHorasExtrasQueries(queryClient, result.lancamento.competencia);
+    },
+  });
+}
+
+export function useRejectHoraExtra() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, observacao }: { id: string; observacao?: string }) => rejectHoraExtra(id, observacao),
     onSuccess: (result) => {
       invalidateHorasExtrasQueries(queryClient, result.lancamento.competencia);
     },

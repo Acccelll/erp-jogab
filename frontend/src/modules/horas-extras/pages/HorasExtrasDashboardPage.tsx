@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { Plus, FileCheck2, CalendarRange, Clock3, Search, SlidersHorizontal } from 'lucide-react';
 import { EmptyState, MainContent, QuickFilterChips } from '@/shared/components';
 import { useHorasExtras, useHorasExtrasFilters } from '../hooks';
-import { HorasExtrasTable } from '../components';
+import { HorasExtrasTable, HoraExtraFormDrawer } from '../components';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
+import { useDrawerStore } from '@/shared/stores';
 
 export function HorasExtrasDashboardPage() {
+  const { openDrawer } = useDrawerStore();
   const { filters, setSearch, setStatus, setTipo, clearFilters, hasActiveFilters } = useHorasExtrasFilters();
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -58,6 +60,7 @@ export function HorasExtrasDashboardPage() {
           </Link>
           <button
             type="button"
+            onClick={() => openDrawer({ title: 'Novo Lançamento de Hora Extra', content: <HoraExtraFormDrawer />, width: '560px' })}
             className="flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-jogab-800"
           >
             <Plus size={14} />

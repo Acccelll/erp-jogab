@@ -1,9 +1,12 @@
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Clock, User, Building2, FileText } from 'lucide-react';
+import { ArrowLeft, Clock, User, FileText, Check, X, Loader2, History } from 'lucide-react';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useHoraExtraDetails } from '../hooks';
 import { HORA_EXTRA_TIPO_LABELS, HORA_EXTRA_STATUS_LABELS, HORA_EXTRA_STATUS_VARIANTS } from '../types';
 import type { HoraExtraStatus } from '../types';
+import { useApproveHoraExtra, useRejectHoraExtra } from '../hooks/useHorasExtrasMutations';
+import { useNotificationStore } from '@/shared/stores';
+import { useHorasExtrasAprovacao } from '../hooks/useHorasExtrasAprovacao';
 
 function StatusBadgeInline({ status }: { status: HoraExtraStatus }) {
   const variant = HORA_EXTRA_STATUS_VARIANTS[status];
@@ -36,6 +39,35 @@ function DetailField({ label, value }: { label: string; value: string | number |
 export function HorasExtrasDetailPage() {
   const { lancamentoId } = useParams<{ lancamentoId: string }>();
   const { horaExtra, isLoading, isError, refetch } = useHoraExtraDetails(lancamentoId);
+  const { data: aprovacaoData } = useHorasExtrasAprovacao(horaExtra?.competencia);
+
+  const { mutate: approve, isPending: isApproving } = useApproveHoraExtra();
+  const { mutate: reject, isPending: isRejecting } = useRejectHoraExtra();
+  const { addNotification } = useNotificationStore();
+
+  const handleApprove = () => {
+    if (!horaExtra) return;
+    approve(horaExtra.id, {
+      onSuccess: () => {
+        addNotification({ title: 'Aprovado', message: 'Lançamento aprovado com sucesso.', type: 'success' });
+        void refetch();
+      }
+    });
+  };
+
+  const handleReject = () => {
+    if (!horaExtra) return;
+    const motivo = window.prompt('Motivo da rejeição:');
+    if (motivo === null) return;
+    reject({ id: horaExtra.id, observacao: motivo }, {
+      onSuccess: () => {
+        addNotification({ title: 'Rejeitado', message: 'Lançamento rejeitado.', type: 'success' });
+        void refetch();
+      }
+    });
+  };
+
+  const historico = aprovacaoData?.historico.filter(h => h.horaExtraId === lancamentoId) ?? [];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -152,14 +184,70 @@ export function HorasExtrasDetailPage() {
               </section>
             )}
 
-            <section className="rounded-xl border border-dashed border-gray-300 bg-white p-6 shadow-sm">
+            {(horaExtra.status === 'pendente_aprovacao' || horaExtra.status === 'digitada') && (
+              <section className="rounded-xl border border-jogab-100 bg-jogab-50/30 p-6 shadow-sm">
+                <h2 className="mb-4 text-lg font-semibold text-text-strong">Ações de aprovação</h2>
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleApprove}
+                    disabled={isApproving || isRejecting}
+                    className="flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+                  >
+                    {isApproving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
+                    Aprovar lançamento
+                  </button>
+                  <button
+                    onClick={handleReject}
+                    disabled={isApproving || isRejecting}
+                    className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                  >
+                    {isRejecting ? <Loader2 size={16} className="animate-spin" /> : <X size={16} />}
+                    Rejeitar lançamento
+                  </button>
+                </div>
+              </section>
+            )}
+
+            <section className="rounded-xl border border-border-default bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2">
-                <Building2 size={18} className="text-text-subtle" />
-                <h2 className="text-base font-semibold text-text-strong">Histórico de aprovação</h2>
+                <History size={18} className="text-jogab-700" />
+                <h2 className="text-lg font-semibold text-text-strong">Histórico operacional</h2>
               </div>
-              <p className="text-sm text-text-muted">
-                O histórico detalhado de aprovação será habilitado na integração com o backend.
-              </p>
+              {historico.length === 0 ? (
+                <p className="text-sm text-text-muted italic">Nenhum evento registrado no histórico.</p>
+              ) : (
+                <div className="flow-root">
+                  <ul className="-mb-8">
+                    {historico.map((event, idx) => (
+                      <li key={event.id}>
+                        <div className="relative pb-8">
+                          {idx !== historico.length - 1 && (
+                            <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true" />
+                          )}
+                          <div className="relative flex space-x-3">
+                            <div>
+                              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-jogab-50 ring-8 ring-white">
+                                <Clock size={14} className="text-jogab-700" />
+                              </span>
+                            </div>
+                            <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+                              <div>
+                                <p className="text-sm text-text-body">
+                                  {event.descricao}{' '}
+                                  <span className="font-medium text-text-strong">por {event.responsavel}</span>
+                                </p>
+                              </div>
+                              <div className="whitespace-nowrap text-right text-sm text-text-muted">
+                                {new Date(event.dataEvento).toLocaleDateString('pt-BR')}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </section>
           </>
         )}

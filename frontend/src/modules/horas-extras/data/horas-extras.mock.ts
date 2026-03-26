@@ -226,6 +226,28 @@ export function gerarHorasExtrasResumoCards(items: HoraExtraLancamento[], fecham
   ];
 }
 
+export function createHoraExtraMock(payload: Omit<HoraExtraLancamento, 'id' | 'valorCalculado' | 'status' | 'aprovadorNome'>): HoraExtraMutationResponse {
+  const id = `he-${mockHorasExtras.length + 1}`;
+
+  // Cálculo simplificado para o mock: base 50 reais/hora ajustado pela regra
+  const regra = mockHoraExtraRegras.find(r => r.id === payload.regraId) || mockHoraExtraRegras[0];
+  const valorBaseHora = 50;
+  const valorCalculado = Number((valorBaseHora * (1 + regra.percentualAdicional / 100) * payload.quantidadeHoras).toFixed(2));
+
+  const lancamento: HoraExtraLancamento = {
+    ...payload,
+    id,
+    valorCalculado,
+    status: 'pendente_aprovacao',
+    aprovadorNome: null,
+  };
+
+  mockHorasExtras.push(lancamento);
+  syncFechamentoCompetencia(lancamento.competencia);
+
+  return { message: 'Lançamento criado com sucesso.', lancamento };
+}
+
 export function approveHoraExtraMock(id: string, aprovadorNome = 'Gestor da Competência'): HoraExtraMutationResponse {
   const lancamento = mockHorasExtras.find((item) => item.id === id);
   if (!lancamento) throw new Error('Lançamento de hora extra não encontrado.');
@@ -235,6 +257,20 @@ export function approveHoraExtraMock(id: string, aprovadorNome = 'Gestor da Comp
   syncFechamentoCompetencia(lancamento.competencia);
 
   return { message: 'Hora extra aprovada com sucesso.', lancamento };
+}
+
+export function rejectHoraExtraMock(id: string, observacao?: string, aprovadorNome = 'Gestor da Competência'): HoraExtraMutationResponse {
+  const lancamento = mockHorasExtras.find((item) => item.id === id);
+  if (!lancamento) throw new Error('Lançamento de hora extra não encontrado.');
+
+  lancamento.status = 'rejeitada';
+  lancamento.aprovadorNome = aprovadorNome;
+  if (observacao) {
+    lancamento.observacao = observacao;
+  }
+  syncFechamentoCompetencia(lancamento.competencia);
+
+  return { message: 'Hora extra rejeitada com sucesso.', lancamento };
 }
 
 export function fecharCompetenciaMock(competencia: string): HorasExtrasFechamentoResponse {
