@@ -174,7 +174,7 @@ describe('getReadyModules', () => {
     }
   });
 
-  it('includes the 12 modules that are ready (including auth and context)', () => {
+  it('includes the 15 modules that are ready (all integrated now)', () => {
     const readyNames = getReadyModules().map((m) => m.module);
     expect(readyNames).toContain('auth');
     expect(readyNames).toContain('context');
@@ -187,13 +187,15 @@ describe('getReadyModules', () => {
     expect(readyNames).toContain('financeiro');
     expect(readyNames).toContain('fiscal');
     expect(readyNames).toContain('relatorios');
+    expect(readyNames).toContain('estoque');
+    expect(readyNames).toContain('medicoes');
+    expect(readyNames).toContain('documentos');
+    expect(readyNames).toContain('admin');
   });
 
-  it('does not include partial modules', () => {
-    const readyNames = getReadyModules().map((m) => m.module);
-    expect(readyNames).not.toContain('estoque');
-    expect(readyNames).not.toContain('medicoes');
-    expect(readyNames).not.toContain('documentos');
+  it('no longer has partial modules — all are integrated in Fase 11', () => {
+    const partialModules = MODULE_READINESS.filter((m) => m.status === 'partial');
+    expect(partialModules).toHaveLength(0);
   });
 });
 
@@ -208,7 +210,7 @@ describe('getIntegratedModules', () => {
     }
   });
 
-  it('includes auth, context, dashboard, obras, rh, horas-extras, fopag, financeiro, compras, fiscal, and relatorios as integrated modules', () => {
+  it('includes all 15 modules as integrated (Fase 11)', () => {
     const integratedNames = getIntegratedModules().map((m) => m.module);
     expect(integratedNames).toContain('auth');
     expect(integratedNames).toContain('context');
@@ -221,6 +223,10 @@ describe('getIntegratedModules', () => {
     expect(integratedNames).toContain('compras');
     expect(integratedNames).toContain('fiscal');
     expect(integratedNames).toContain('relatorios');
-    expect(integratedNames).toHaveLength(11);
+    expect(integratedNames).toContain('estoque');
+    expect(integratedNames).toContain('medicoes');
+    expect(integratedNames).toContain('documentos');
+    expect(integratedNames).toContain('admin');
+    expect(integratedNames).toHaveLength(15);
   });
 });
