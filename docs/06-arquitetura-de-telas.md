@@ -40,6 +40,7 @@
 
 ### Horas Extras
 - `/horas-extras` — dashboard de horas extras
+- `/horas-extras/lancamentos` — listagem de lançamentos individuais
 - `/horas-extras/fechamento` — fechamento por competência
 - `/horas-extras/aprovacao` — aprovação de lançamentos
 
@@ -140,7 +141,7 @@ A tela `/rh/funcionarios/:funcId` funciona como workspace com 10 abas:
 - aprovação de lançamentos
 - fechamento por competência
 
-> **Nota:** Rotas de lançamento individual (`/horas-extras/lancamentos`, `/horas-extras/:lancamentoId`) estão previstas no spec original mas ainda não implementadas. Devem ser adicionadas em sprint futura.
+> **Nota:** As rotas `/horas-extras/lancamentos` e `/horas-extras/:lancamentoId` estão implementadas no router desde a Fase 7.
 
 ## FOPAG
 - lista de competências

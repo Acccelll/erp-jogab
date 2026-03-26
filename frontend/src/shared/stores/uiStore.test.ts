@@ -3,12 +3,13 @@ import { useUIStore } from './uiStore';
 
 describe('uiStore', () => {
   beforeEach(() => {
-    useUIStore.setState({ sidebarCollapsed: true, sidebarPinned: false });
+    useUIStore.setState({ sidebarCollapsed: true, sidebarPinned: false, dashboardSectionsOpen: {} });
   });
 
   it('has correct initial state', () => {
     expect(useUIStore.getState().sidebarCollapsed).toBe(true);
     expect(useUIStore.getState().sidebarPinned).toBe(false);
+    expect(useUIStore.getState().dashboardSectionsOpen).toEqual({});
   });
 
   it('setSidebarCollapsed sets to false', () => {
@@ -53,5 +54,31 @@ describe('uiStore', () => {
     useUIStore.getState().setSidebarPinned(false);
     expect(useUIStore.getState().sidebarPinned).toBe(false);
     expect(useUIStore.getState().sidebarCollapsed).toBe(true);
+  });
+
+  describe('dashboardSectionsOpen', () => {
+    it('setDashboardSectionOpen stores open state for a section', () => {
+      useUIStore.getState().setDashboardSectionOpen('obras', false);
+      expect(useUIStore.getState().dashboardSectionsOpen).toEqual({ obras: false });
+    });
+
+    it('setDashboardSectionOpen stores open state for multiple sections independently', () => {
+      useUIStore.getState().setDashboardSectionOpen('obras', true);
+      useUIStore.getState().setDashboardSectionOpen('rh', false);
+      useUIStore.getState().setDashboardSectionOpen('financeiro', true);
+      expect(useUIStore.getState().dashboardSectionsOpen).toEqual({
+        obras: true,
+        rh: false,
+        financeiro: true,
+      });
+    });
+
+    it('setDashboardSectionOpen updates an existing section without affecting others', () => {
+      useUIStore.getState().setDashboardSectionOpen('obras', true);
+      useUIStore.getState().setDashboardSectionOpen('rh', false);
+      useUIStore.getState().setDashboardSectionOpen('obras', false);
+      expect(useUIStore.getState().dashboardSectionsOpen.obras).toBe(false);
+      expect(useUIStore.getState().dashboardSectionsOpen.rh).toBe(false);
+    });
   });
 });

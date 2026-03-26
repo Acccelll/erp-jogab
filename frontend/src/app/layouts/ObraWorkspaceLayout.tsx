@@ -10,11 +10,11 @@ const obraTabs = [
   { label: 'Cronograma', path: 'cronograma' },
   { label: 'Financeiro', path: 'financeiro' },
   { label: 'Equipe', path: 'equipe' },
-  { label: 'Compras', path: 'compras' },
   { label: 'RH', path: 'rh' },
+  { label: 'Contratos', path: 'contratos' },
+  { label: 'Compras', path: 'compras' },
   { label: 'Estoque', path: 'estoque' },
   { label: 'Medições', path: 'medicoes' },
-  { label: 'Contratos', path: 'contratos' },
   { label: 'Documentos', path: 'documentos' },
   { label: 'Riscos', path: 'riscos' },
 ];
@@ -55,7 +55,7 @@ export function ObraWorkspaceLayout() {
         )}
 
         <div className="flex items-center">
-          <OverflowTabs tabs={obraTabs} maxVisible={5} basePath={`/obras/${obraId}`} />
+          <OverflowTabs tabs={obraTabs} maxVisible={7} basePath={`/obras/${obraId}`} />
         </div>
       </div>
 

@@ -25,8 +25,11 @@ import {
 export const ADMIN_API_ENDPOINTS = {
   dashboard: '/admin/dashboard',
   usuarios: '/admin/usuarios',
+  usuarioDetail: (id: string) => `/admin/usuarios/${id}`,
   perfis: '/admin/perfis',
+  perfilDetail: (id: string) => `/admin/perfis/${id}`,
   permissoes: '/admin/permissoes',
+  permissaoDetail: (id: string) => `/admin/permissoes/${id}`,
   parametros: '/admin/parametros',
   logs: '/admin/logs',
   integracoes: '/admin/integracoes',
@@ -216,5 +219,143 @@ export async function fetchIntegracoes(filters?: AdminFiltersData): Promise<Admi
       return normalizeAdminIntegracoes(unwrapApiResponse<AdminIntegracao[]>(response.data));
     },
     () => fetchIntegracoesMock(filters),
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Mutation payload types
+// ---------------------------------------------------------------------------
+
+export interface CreateUsuarioPayload {
+  nome: string;
+  email: string;
+  perfilNome: string;
+  obraEscopo?: string;
+}
+
+export interface UpdateUsuarioPayload {
+  nome?: string;
+  email?: string;
+  perfilNome?: string;
+  status?: AdminUsuario['status'];
+  obraEscopo?: string;
+}
+
+export interface CreatePerfilPayload {
+  nome: string;
+  descricao: string;
+}
+
+export interface UpdatePerfilPayload {
+  nome?: string;
+  descricao?: string;
+  status?: AdminPerfil['status'];
+}
+
+export interface UpdatePermissaoPayload {
+  nivel?: AdminPermissao['nivel'];
+  status?: AdminPermissao['status'];
+}
+
+// ---------------------------------------------------------------------------
+// Mutation mock helpers
+// ---------------------------------------------------------------------------
+
+async function createUsuarioMock(payload: CreateUsuarioPayload): Promise<AdminUsuario> {
+  await wait();
+  return {
+    id: `usuario-mock-${Date.now()}`,
+    nome: payload.nome,
+    email: payload.email,
+    perfilNome: payload.perfilNome,
+    status: 'ativo',
+    obraEscopo: payload.obraEscopo,
+    ultimoAcessoEm: new Date().toISOString(),
+  };
+}
+
+async function updateUsuarioMock(id: string, payload: UpdateUsuarioPayload): Promise<AdminUsuario> {
+  await wait();
+  const found = adminUsuarios.find((u) => u.id === id);
+  if (!found) throw new Error('Usuário não encontrado.');
+  return { ...found, ...payload };
+}
+
+async function createPerfilMock(payload: CreatePerfilPayload): Promise<AdminPerfil> {
+  await wait();
+  return {
+    id: `perfil-mock-${Date.now()}`,
+    nome: payload.nome,
+    descricao: payload.descricao,
+    usuarios: 0,
+    status: 'ativo',
+  };
+}
+
+async function updatePerfilMock(id: string, payload: UpdatePerfilPayload): Promise<AdminPerfil> {
+  await wait();
+  const found = adminPerfis.find((p) => p.id === id);
+  if (!found) throw new Error('Perfil não encontrado.');
+  return { ...found, ...payload };
+}
+
+async function updatePermissaoMock(id: string, payload: UpdatePermissaoPayload): Promise<AdminPermissao> {
+  await wait();
+  const found = adminPermissoes.find((p) => p.id === id);
+  if (!found) throw new Error('Permissão não encontrada.');
+  return { ...found, ...payload };
+}
+
+// ---------------------------------------------------------------------------
+// Mutations — CRUD
+// ---------------------------------------------------------------------------
+
+export async function createUsuario(payload: CreateUsuarioPayload): Promise<AdminUsuario> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(ADMIN_API_ENDPOINTS.usuarios, payload);
+      return unwrapApiResponse<AdminUsuario>(response.data);
+    },
+    () => createUsuarioMock(payload),
+  );
+}
+
+export async function updateUsuario(id: string, payload: UpdateUsuarioPayload): Promise<AdminUsuario> {
+  return withApiFallback(
+    async () => {
+      const response = await api.put(ADMIN_API_ENDPOINTS.usuarioDetail(id), payload);
+      return unwrapApiResponse<AdminUsuario>(response.data);
+    },
+    () => updateUsuarioMock(id, payload),
+  );
+}
+
+export async function createPerfil(payload: CreatePerfilPayload): Promise<AdminPerfil> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(ADMIN_API_ENDPOINTS.perfis, payload);
+      return unwrapApiResponse<AdminPerfil>(response.data);
+    },
+    () => createPerfilMock(payload),
+  );
+}
+
+export async function updatePerfil(id: string, payload: UpdatePerfilPayload): Promise<AdminPerfil> {
+  return withApiFallback(
+    async () => {
+      const response = await api.put(ADMIN_API_ENDPOINTS.perfilDetail(id), payload);
+      return unwrapApiResponse<AdminPerfil>(response.data);
+    },
+    () => updatePerfilMock(id, payload),
+  );
+}
+
+export async function updatePermissao(id: string, payload: UpdatePermissaoPayload): Promise<AdminPermissao> {
+  return withApiFallback(
+    async () => {
+      const response = await api.put(ADMIN_API_ENDPOINTS.permissaoDetail(id), payload);
+      return unwrapApiResponse<AdminPermissao>(response.data);
+    },
+    () => updatePermissaoMock(id, payload),
   );
 }

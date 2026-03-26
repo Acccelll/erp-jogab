@@ -119,28 +119,44 @@
 - Documentação completa (docs/13-integracao-fase7.md)
 - Total: 553 testes em 46 arquivos
 
-## Próximos passos (Fase 9)
-- Integrar Compras (solicitações, cotações, pedidos) como próximo fluxo independente
-- Integrar Fiscal (entradas, saídas, detalhe do documento)
+## Fase 9 — Concluída (2026-03-26)
+
+- ✅ Compras integrado: solicitações, cotações, pedidos, detalhe do pedido e dashboard
+- ✅ 37 novos testes para o service de Compras + 3 novos testes de integração no registry
+- ✅ `integration.ts` atualizado: Compras, FOPAG e Financeiro marcados como `integrated`
+
+## Fase 10 — Concluída (2026-03-26)
+
+- ✅ Fiscal integrado: dashboard, entradas, saídas, detalhe de documento (4 endpoints)
+- ✅ Relatórios integrado: dashboard, categorias/:categoria (2 endpoints)
+- ✅ 35 novos testes para Fiscal + 37 novos testes para Relatórios
+- ✅ `integration.ts` atualizado: Fiscal e Relatórios marcados como `integrated`
+- ✅ 11 módulos agora integrados (de 9 na Fase 9)
+
+## Próximos passos (Fase 11)
+
+Candidato principal: **Estoque**
+- `GET /estoque/dashboard`
+- `GET /estoque/movimentacoes`
+- `GET /estoque/itens/:id` (avaliar maturidade do contrato de detalhe)
+
+Candidato secundário: **Medições** (mesma estrutura de maturidade)
+
+Demais pendências:
+- Completar contratos parciais: documentos gestão, admin CRUD
 - Desabilitar fallback gradualmente por módulo (`VITE_API_FALLBACK=false`)
 - Code-splitting com React.lazy para reduzir bundle size
 - Testes de integração end-to-end com API real
-- Completar contratos parciais: estoque detalhe, medições detalhe, documentos gestão, admin CRUD
 
-## Estado atual (2026-03-26)
+## Estado atual (2026-03-26 — Fase 10)
 
 **Resultado dos comandos de validação:**
 - `npm run build`: 0 erros TypeScript, build completo com sucesso
 - `npm run lint`: 0 erros
-- `npm run test`: 49 arquivos de teste, 621 testes passando
+- `npm run test`: 52 arquivos de teste, 715 testes passando
 - `npm audit`: 0 vulnerabilidades
 
-**Testes encontrados vs declarados:**
-- Arquivos de teste no repositório: 49 (22 `.test.ts` + 27 `.test.tsx`)
-- Testes executados pelo Vitest: 621 em 49 arquivos — todos passando
-- Padrão de include: `src/**/*.test.{ts,tsx}` — correto e abrangente
-
-**Endpoints efetivamente integrados (Fase 5 + 6 + 7 + 8):**
+**Endpoints efetivamente integrados (Fases 5–10):**
 - `POST /auth/login` — login real com fallback mock
 - `GET /auth/me` — restauração de sessão com fallback mock
 - `POST /auth/logout` — logout com fallback mock
@@ -169,10 +185,20 @@
 - `GET /financeiro/contas-pagar` — contas a pagar com fallback mock
 - `GET /financeiro/contas-receber` — contas a receber com fallback mock
 - `GET /financeiro/titulos/:id` — detalhe de título financeiro com fallback mock
+- `GET /compras/solicitacoes` — listagem de solicitações com fallback mock
+- `GET /compras/cotacoes` — listagem de cotações com fallback mock
+- `GET /compras/pedidos` — listagem de pedidos com fallback mock
+- `GET /compras/pedidos/:id` — detalhe do pedido com fallback mock
+- `GET /compras/dashboard` — dashboard consolidado de compras com fallback mock
+- `GET /fiscal/dashboard` — dashboard fiscal com fallback mock
+- `GET /fiscal/entradas` — documentos de entrada com fallback mock
+- `GET /fiscal/saidas` — documentos de saída com fallback mock
+- `GET /fiscal/documentos/:id` — detalhe de documento fiscal com fallback mock
+- `GET /relatorios/dashboard` — dashboard de relatórios com fallback mock
+- `GET /relatorios/categorias/:categoria` — relatórios por categoria com fallback mock
 
-**Módulos que continuam apenas preparados:**
-- Compras, Fiscal, Relatórios (serviços com mock, prontos para withApiFallback — Fase 9)
-- Estoque, Medições, Documentos, Admin (parcialmente prontos)
+**Módulos que continuam apenas preparados (partial):**
+- Estoque, Medições, Documentos, Admin (parcialmente prontos — candidatos à Fase 11)
 
 **Rotas implementadas:**
 - `/horas-extras/lancamentos` — lista de lançamentos

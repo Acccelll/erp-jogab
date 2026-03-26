@@ -135,6 +135,29 @@ describe('getModuleReadiness', () => {
     expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
   });
 
+  it('returns readiness for fopag module as integrated', () => {
+    const result = getModuleReadiness('fopag');
+    expect(result).toBeDefined();
+    expect(result?.integrationStatus).toBe('integrated');
+    expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
+  });
+
+  it('returns readiness for financeiro module as integrated', () => {
+    const result = getModuleReadiness('financeiro');
+    expect(result).toBeDefined();
+    expect(result?.integrationStatus).toBe('integrated');
+    expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
+  });
+
+  it('returns readiness for compras module as integrated with all 5 endpoints', () => {
+    const result = getModuleReadiness('compras');
+    expect(result).toBeDefined();
+    expect(result?.module).toBe('compras');
+    expect(result?.integrationStatus).toBe('integrated');
+    expect(result?.endpoints).toHaveLength(5);
+    expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
+  });
+
   it('returns undefined for a nonexistent module', () => {
     expect(getModuleReadiness('nonexistent')).toBeUndefined();
   });
@@ -151,7 +174,7 @@ describe('getReadyModules', () => {
     }
   });
 
-  it('includes the 12 modules that are ready (including auth and context)', () => {
+  it('includes the 15 modules that are ready (all integrated now)', () => {
     const readyNames = getReadyModules().map((m) => m.module);
     expect(readyNames).toContain('auth');
     expect(readyNames).toContain('context');
@@ -164,13 +187,15 @@ describe('getReadyModules', () => {
     expect(readyNames).toContain('financeiro');
     expect(readyNames).toContain('fiscal');
     expect(readyNames).toContain('relatorios');
+    expect(readyNames).toContain('estoque');
+    expect(readyNames).toContain('medicoes');
+    expect(readyNames).toContain('documentos');
+    expect(readyNames).toContain('admin');
   });
 
-  it('does not include partial modules', () => {
-    const readyNames = getReadyModules().map((m) => m.module);
-    expect(readyNames).not.toContain('estoque');
-    expect(readyNames).not.toContain('medicoes');
-    expect(readyNames).not.toContain('documentos');
+  it('no longer has partial modules — all are integrated in Fase 11', () => {
+    const partialModules = MODULE_READINESS.filter((m) => m.status === 'partial');
+    expect(partialModules).toHaveLength(0);
   });
 });
 
@@ -185,7 +210,7 @@ describe('getIntegratedModules', () => {
     }
   });
 
-  it('includes auth, context, dashboard, obras, rh, and horas-extras as integrated modules', () => {
+  it('includes all 15 modules as integrated (Fase 11)', () => {
     const integratedNames = getIntegratedModules().map((m) => m.module);
     expect(integratedNames).toContain('auth');
     expect(integratedNames).toContain('context');
@@ -193,6 +218,15 @@ describe('getIntegratedModules', () => {
     expect(integratedNames).toContain('obras');
     expect(integratedNames).toContain('rh');
     expect(integratedNames).toContain('horas-extras');
-    expect(integratedNames).toHaveLength(6);
+    expect(integratedNames).toContain('fopag');
+    expect(integratedNames).toContain('financeiro');
+    expect(integratedNames).toContain('compras');
+    expect(integratedNames).toContain('fiscal');
+    expect(integratedNames).toContain('relatorios');
+    expect(integratedNames).toContain('estoque');
+    expect(integratedNames).toContain('medicoes');
+    expect(integratedNames).toContain('documentos');
+    expect(integratedNames).toContain('admin');
+    expect(integratedNames).toHaveLength(15);
   });
 });
