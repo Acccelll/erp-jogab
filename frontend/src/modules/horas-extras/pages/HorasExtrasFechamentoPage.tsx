@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { CalendarCheck2, SendHorizonal, CheckCircle2, AlertCircle } from 'lucide-react';
+import { CalendarCheck2 } from 'lucide-react';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { fetchFechamentosCompetencia } from '../services/horasExtras.service';
 import { useFecharCompetenciaHorasExtras } from '../hooks';
