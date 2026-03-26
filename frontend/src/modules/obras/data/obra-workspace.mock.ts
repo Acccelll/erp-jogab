@@ -22,6 +22,12 @@ const cronogramaPorObra: Record<string, ObraCronogramaItem[]> = {
     { id: 'cro-4', etapa: 'Terraplanagem', responsavel: 'Ana Souza', inicioPrevisto: '2026-01-15', fimPrevisto: '2026-03-30', percentual: 82, status: 'em_dia' },
     { id: 'cro-5', etapa: 'Drenagem principal', responsavel: 'Marcelo Dias', inicioPrevisto: '2026-02-20', fimPrevisto: '2026-04-25', percentual: 47, status: 'atencao' },
   ],
+  'obra-8': [
+    { id: 'cro-9', etapa: 'Piso Industrial', responsavel: 'Beatriz Costa', inicioPrevisto: '2026-03-01', fimPrevisto: '2026-04-15', percentual: 35, status: 'em_dia' },
+  ],
+  'obra-10': [
+    { id: 'cro-10', etapa: 'Lançamento de Vigas', responsavel: 'Felipe Rocha', inicioPrevisto: '2026-03-10', fimPrevisto: '2026-05-20', percentual: 5, status: 'em_dia' },
+  ],
 };
 
 const equipePorObra: Record<string, ObraEquipeItem[]> = {
@@ -33,6 +39,12 @@ const equipePorObra: Record<string, ObraEquipeItem[]> = {
   'obra-4': [
     { id: 'eq-4', nome: 'Marcos Santos', funcao: 'Coordenador de Obra', equipe: 'Gestão', status: 'alocado', jornada: '44h semanais', funcionarioId: 'func-4', funcionarioNome: 'Marcos Santos', centroCustoNome: 'CC Infraestrutura', percentual: 100 },
     { id: 'eq-5', nome: 'Luan Ferreira', funcao: 'Operador de Equipamentos', equipe: 'Infraestrutura', status: 'desmobilizando', jornada: '12x36', funcionarioId: 'func-5', funcionarioNome: 'Luan Ferreira', centroCustoNome: 'CC Infraestrutura', percentual: 60 },
+  ],
+  'obra-8': [
+    { id: 'eq-8', nome: 'Beatriz Costa', funcao: 'Analista de Operações', equipe: 'Logística', status: 'alocado', jornada: '44h semanais', funcionarioId: 'func-13', funcionarioNome: 'Beatriz Costa', centroCustoNome: 'Logistics — Operações', percentual: 100 },
+  ],
+  'obra-10': [
+    { id: 'eq-9', nome: 'Felipe Rocha', funcao: 'Consultor', equipe: 'Planejamento', status: 'alocado', jornada: '40h semanais', funcionarioId: 'func-16', funcionarioNome: 'Felipe Rocha', centroCustoNome: 'Viaduto — Planejamento', percentual: 100 },
   ],
 };
 
@@ -54,6 +66,9 @@ const financeiroPorObra: Record<string, ObraFinanceiroItem[]> = {
   'obra-2': [
     { id: 'fin-3', codigo: 'TIT-2026-003', descricao: 'Medição parcial do contrato CP-88', tipo: 'receber', status: 'previsto', competencia: '2026-03', valor: 245000 },
     { id: 'fin-4', codigo: 'TIT-2026-006', descricao: 'Locação de equipamentos de içamento', tipo: 'pagar', status: 'pago', competencia: '2026-03', valor: 52640 },
+  ],
+  'obra-8': [
+    { id: 'fin-7', codigo: 'TIT-2026-040', descricao: 'Selante de Piso - Sigma', tipo: 'pagar', status: 'pago', competencia: '2026-03', valor: 9250 },
   ],
 };
 

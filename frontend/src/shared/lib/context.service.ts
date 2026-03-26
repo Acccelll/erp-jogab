@@ -74,6 +74,38 @@ const obras: (ObraResumo & { label: string })[] = [
     filialId: 'fil-3',
     label: 'OBR-006 — Galpão Industrial Sigma',
   },
+  {
+    id: 'obra-7',
+    codigo: 'OBR-007',
+    nome: 'Hospital da Luz',
+    status: 'ativo',
+    filialId: 'fil-1',
+    label: 'OBR-007 — Hospital da Luz',
+  },
+  {
+    id: 'obra-8',
+    codigo: 'OBR-008',
+    nome: 'Galpão Logístico Sigma',
+    status: 'ativo',
+    filialId: 'fil-3',
+    label: 'OBR-008 — Galpão Logístico Sigma',
+  },
+  {
+    id: 'obra-9',
+    codigo: 'OBR-009',
+    nome: 'Solaris Residences',
+    status: 'pendente',
+    filialId: 'fil-2',
+    label: 'OBR-009 — Solaris Residences',
+  },
+  {
+    id: 'obra-10',
+    codigo: 'OBR-010',
+    nome: 'Viaduto do Trabalhador',
+    status: 'ativo',
+    filialId: 'fil-1',
+    label: 'OBR-010 — Viaduto do Trabalhador',
+  },
 ];
 
 const competencias: SelectOption[] = [

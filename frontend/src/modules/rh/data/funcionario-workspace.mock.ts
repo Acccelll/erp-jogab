@@ -51,6 +51,24 @@ const contratosPorFuncionario: Record<
       },
     ],
   },
+  'func-12': {
+    contratoId: 'CTR-RH-012',
+    tipoContrato: 'CLT — prazo indeterminado',
+    situacao: 'ativo',
+    inicioVigencia: '2025-01-10',
+    centroCusto: 'Hospital — Engenharia',
+    obraPrincipal: { id: 'obra-7', nome: 'Hospital da Luz' },
+    gestor: 'Roberto Lima',
+    historico: [
+      {
+        id: 'hist-12-1',
+        data: '2025-01-10',
+        tipo: 'admissao',
+        descricao: 'Admissão para coordenação de instalações hospitalares',
+        responsavel: 'RH Matriz',
+      },
+    ],
+  },
   'func-2': {
     contratoId: 'CTR-RH-002',
     tipoContrato: 'CLT — prazo indeterminado',
@@ -124,6 +142,18 @@ const alocacoesPorFuncionario: Record<string, FuncionarioAlocacaoItem[]> = {
       status: 'planejada',
     },
   ],
+  'func-12': [
+    {
+      id: 'alo-12',
+      obraId: 'obra-7',
+      obraNome: 'Hospital da Luz',
+      funcao: 'Engenheiro Hospitalar',
+      periodoInicio: '2025-01-10',
+      percentual: 100,
+      centroCusto: 'Hospital — Engenharia',
+      status: 'ativa',
+    },
+  ],
 };
 
 const provisoesPorFuncionario: Record<string, FuncionarioProvisaoItem[]> = {
@@ -179,6 +209,24 @@ const provisoesPorFuncionario: Record<string, FuncionarioProvisaoItem[]> = {
       observacao: 'Apropriação mensal padrão',
     },
   ],
+  'func-12': [
+    {
+      id: 'prov-7',
+      competencia: '2026-03',
+      categoria: 'ferias',
+      status: 'consolidada',
+      valor: 3591,
+      observacao: 'Provisão férias Engenheiro',
+    },
+    {
+      id: 'prov-8',
+      competencia: '2026-03',
+      categoria: 'decimo_terceiro',
+      status: 'consolidada',
+      valor: 1125,
+      observacao: 'Provisão 13º Engenheiro',
+    },
+  ],
 };
 
 const horasExtrasPorFuncionario: Record<string, FuncionarioHorasExtrasItem[]> = {
@@ -224,6 +272,18 @@ const horasExtrasPorFuncionario: Record<string, FuncionarioHorasExtrasItem[]> = 
       status: 'aprovada',
       quantidadeHoras: 10,
       valorEstimado: 1250,
+    },
+  ],
+  'func-12': [
+    {
+      id: 'he-5',
+      competencia: '2026-03',
+      obraId: 'obra-7',
+      obraNome: 'Hospital da Luz',
+      tipo: 'he_50',
+      status: 'pendente_aprovacao',
+      quantidadeHoras: 3,
+      valorEstimado: 325.5,
     },
   ],
 };
@@ -314,6 +374,16 @@ const historicoSalarialPorFuncionario: Record<string, FuncionarioHistoricoSalari
       motivo: 'promocao',
       cargo: 'Engenheiro de Obra Sr.',
       responsavel: 'Carlos Oliveira',
+    },
+  ],
+  'func-12': [
+    {
+      id: 'sal-12',
+      vigencia: '2025-01-10',
+      salario: 13500,
+      motivo: 'admissao',
+      cargo: 'Engenheiro de Instalações',
+      responsavel: 'RH Matriz',
     },
   ],
   'func-4': [

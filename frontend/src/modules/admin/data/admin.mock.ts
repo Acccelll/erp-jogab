@@ -17,6 +17,8 @@ export const adminUsuarios: AdminUsuario[] = [
   { id: 'usr-1', nome: 'Camila Freitas', email: 'camila@jogab.com', perfilNome: 'Administradora ERP', status: 'ativo', obraEscopo: 'Todas as obras', ultimoAcessoEm: '2026-03-21 09:12' },
   { id: 'usr-2', nome: 'Rafael Prado', email: 'rafael@jogab.com', perfilNome: 'Coordenador RH', status: 'ativo', obraEscopo: 'RH Corporativo', ultimoAcessoEm: '2026-03-20 18:02' },
   { id: 'usr-3', nome: 'Lia Gomes', email: 'lia@jogab.com', perfilNome: 'Auditoria', status: 'pendente', obraEscopo: 'Matriz', ultimoAcessoEm: '2026-03-19 11:40' },
+  { id: 'usr-4', nome: 'Carlos Oliveira', email: 'carlos.oliveira@jogab.com.br', perfilNome: 'Gestor de Obras', status: 'ativo', obraEscopo: 'OBR-001, OBR-006, OBR-010', ultimoAcessoEm: '2026-03-21 14:30' },
+  { id: 'usr-5', nome: 'Beatriz Costa', email: 'beatriz.costa@jogab.com.br', perfilNome: 'Operacional', status: 'ativo', obraEscopo: 'OBR-008', ultimoAcessoEm: '2026-03-21 16:45' },
 ];
 export const adminPerfis: AdminPerfil[] = [
   { id: 'prf-1', nome: 'Administradora ERP', descricao: 'Acesso amplo a governança e parametrizações.', usuarios: 2, status: 'ativo' },

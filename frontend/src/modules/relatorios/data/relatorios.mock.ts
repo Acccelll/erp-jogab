@@ -196,6 +196,24 @@ const relatorios: RelatorioItem[] = [
     },
     ultimaAtualizacaoEm: '2026-03-16',
   },
+  {
+    id: 'rel-hos-001',
+    codigo: 'REL-HOS-001',
+    nome: 'Dossiê Técnico Hospital da Luz',
+    categoria: 'obras',
+    disponibilidade: 'disponivel',
+    descricao: 'Relatório consolidado de instalações e equipamentos especiais para OBR-007.',
+    origemDados: ['Obras', 'Compras', 'Fiscal'],
+    output: {
+      formatos: ['pdf'],
+      agendavel: false,
+      permiteComparativo: false,
+      formatoPrincipal: 'pdf',
+      tempoEstimado: 'até 10s',
+      recorrenciaSugerida: 'Sob demanda',
+    },
+    ultimaAtualizacaoEm: '2026-03-20',
+  },
 ];
 
 function matchesFilters(item: RelatorioItem, filters?: RelatoriosFiltersData) {
