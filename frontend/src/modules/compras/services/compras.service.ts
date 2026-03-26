@@ -1,8 +1,11 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import type {
+  CompraCategoria,
   CompraFiltersData,
+  CompraPrioridade,
   ComprasDashboardData,
   ComprasKpis,
+  CompraStatus,
   CotacaoCompra,
   PedidoCompra,
   PedidoCompraDetalhe,
@@ -139,5 +142,142 @@ export async function fetchComprasDashboard(filters?: CompraFiltersData): Promis
       return normalizeComprasDashboardData(raw);
     },
     () => fetchComprasDashboardMock(filters),
+  );
+}
+
+export interface CreateSolicitacaoPayload {
+  titulo: string;
+  descricao: string;
+  obraId: string;
+  categoria: CompraCategoria;
+  prioridade: CompraPrioridade;
+  valorEstimado: number;
+  prazoNecessidade: string;
+  itens: number;
+}
+
+export interface UpdateSolicitacaoPayload {
+  titulo?: string;
+  descricao?: string;
+  prioridade?: CompraPrioridade;
+  valorEstimado?: number;
+  prazoNecessidade?: string;
+  status?: CompraStatus;
+}
+
+export interface CreateCotacaoPayload {
+  solicitacaoId: string;
+  objeto: string;
+  obraId: string;
+  categoria: CompraCategoria;
+  fornecedorPrincipal: string;
+  valorCotado: number;
+  melhorPrazoEntrega: string;
+}
+
+export interface UpdateCotacaoPayload {
+  objeto?: string;
+  fornecedorPrincipal?: string;
+  valorCotado?: number;
+  melhorPrazoEntrega?: string;
+  status?: CompraStatus;
+}
+
+export interface CreatePedidoPayload {
+  solicitacaoId: string;
+  cotacaoId?: string;
+  fornecedorId: string;
+  fornecedorNome: string;
+  obraId: string;
+  categoria: CompraCategoria;
+  prioridade: CompraPrioridade;
+  valorPedido: number;
+  previsaoEntrega: string;
+}
+
+export interface UpdatePedidoPayload {
+  status?: CompraStatus;
+  previsaoEntrega?: string;
+  valorPedido?: number;
+  observacao?: string;
+}
+
+export async function createSolicitacao(payload: CreateSolicitacaoPayload): Promise<SolicitacaoCompra> {
+  return withApiFallback(
+    () => api.post(COMPRAS_API_ENDPOINTS.solicitacoes, payload).then(unwrapApiResponse),
+    () =>
+      Promise.resolve({
+        id: crypto.randomUUID(),
+        codigo: `SOL-${Date.now()}`,
+        ...payload,
+        solicitanteNome: 'Usuário',
+        obraNome: payload.obraId,
+        centroCustoNome: 'Centro Custo',
+        competencia: new Date().toISOString().slice(0, 7),
+        status: 'rascunho' as CompraStatus,
+        createdAt: new Date().toISOString(),
+        integracaoFiscal: false,
+        integracaoFinanceiro: false,
+      }),
+  );
+}
+
+export async function updateSolicitacao(id: string, payload: UpdateSolicitacaoPayload): Promise<SolicitacaoCompra> {
+  return withApiFallback(
+    () => api.put(`${COMPRAS_API_ENDPOINTS.solicitacoes}/${id}`, payload).then(unwrapApiResponse),
+    () => fetchSolicitacoesCompra().then((list) => list.find((s) => s.id === id) ?? list[0]),
+  );
+}
+
+export async function createCotacao(payload: CreateCotacaoPayload): Promise<CotacaoCompra> {
+  return withApiFallback(
+    () => api.post(COMPRAS_API_ENDPOINTS.cotacoes, payload).then(unwrapApiResponse),
+    () =>
+      Promise.resolve({
+        id: crypto.randomUUID(),
+        codigo: `COT-${Date.now()}`,
+        ...payload,
+        obraNome: payload.obraId,
+        competencia: new Date().toISOString().slice(0, 7),
+        quantidadeFornecedores: 1,
+        status: 'em_cotacao' as CompraStatus,
+        createdAt: new Date().toISOString(),
+      }),
+  );
+}
+
+export async function updateCotacao(id: string, payload: UpdateCotacaoPayload): Promise<CotacaoCompra> {
+  return withApiFallback(
+    () => api.put(`${COMPRAS_API_ENDPOINTS.cotacoes}/${id}`, payload).then(unwrapApiResponse),
+    () => fetchCotacoesCompra().then((list) => list.find((c) => c.id === id) ?? list[0]),
+  );
+}
+
+export async function createPedido(payload: CreatePedidoPayload): Promise<PedidoCompra> {
+  return withApiFallback(
+    () => api.post(COMPRAS_API_ENDPOINTS.pedidos, payload).then(unwrapApiResponse),
+    () =>
+      Promise.resolve({
+        id: crypto.randomUUID(),
+        codigo: `PED-${Date.now()}`,
+        cotacaoId: payload.cotacaoId ?? null,
+        ...payload,
+        obraNome: payload.obraId,
+        centroCustoNome: 'Centro Custo',
+        competencia: new Date().toISOString().slice(0, 7),
+        status: 'pedido_emitido' as CompraStatus,
+        valorComprometidoFinanceiro: payload.valorPedido,
+        fiscalStatus: 'nao_iniciado' as const,
+        financeiroStatus: 'nao_programado' as const,
+        itens: 0,
+        createdAt: new Date().toISOString(),
+      }),
+  );
+}
+
+export async function updatePedido(id: string, payload: UpdatePedidoPayload): Promise<PedidoCompra> {
+  return withApiFallback(
+    () => api.put(`${COMPRAS_API_ENDPOINTS.pedidos}/${id}`, payload).then(unwrapApiResponse),
+    () => fetchPedidosCompra().then((list) => list.find((p) => p.id === id) ?? list[0]),
   );
 }

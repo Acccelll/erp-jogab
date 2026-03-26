@@ -1,6 +1,14 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { estoqueFiltersSchema } from '../types';
-import type { EstoqueDashboardData, EstoqueFiltersData } from '../types';
+import type {
+  EstoqueDashboardData,
+  EstoqueFiltersData,
+  EstoqueItem,
+  EstoqueMovimentacao,
+  EstoqueMovimentacaoTipo,
+  EstoqueOrigem,
+  EstoqueStatus,
+} from '../types';
 import { getMockEstoqueDashboard, getMockItemEstoqueById, getMockMovimentacoesEstoque } from '../data/estoque.mock';
 
 export const ESTOQUE_API_ENDPOINTS = {
@@ -91,5 +99,55 @@ export async function fetchItemEstoqueById(itemId: string) {
       return unwrapApiResponse<Awaited<ReturnType<typeof fetchItemEstoqueByIdMock>>>(response.data);
     },
     () => fetchItemEstoqueByIdMock(itemId),
+  );
+}
+
+export interface CreateMovimentacaoEstoquePayload {
+  itemId: string;
+  tipo: EstoqueMovimentacaoTipo;
+  obraId: string;
+  localId: string;
+  centroCusto: string;
+  quantidade: number;
+  unidade: string;
+  valorMovimento: number;
+  documentoReferencia?: string;
+  observacao: string;
+}
+
+export interface UpdateItemEstoquePayload {
+  descricao?: string;
+  status?: EstoqueStatus;
+  fornecedorPrincipal?: string;
+  observacao?: string;
+}
+
+export async function createMovimentacaoEstoque(
+  payload: CreateMovimentacaoEstoquePayload,
+): Promise<EstoqueMovimentacao> {
+  return withApiFallback(
+    () => api.post(ESTOQUE_API_ENDPOINTS.movimentacoes, payload).then(unwrapApiResponse),
+    () =>
+      Promise.resolve({
+        id: crypto.randomUUID(),
+        itemCodigo: payload.itemId,
+        itemDescricao: 'Item de Estoque',
+        origem: 'manual' as EstoqueOrigem,
+        status: 'ativo' as EstoqueStatus,
+        obraNome: payload.obraId,
+        localNome: payload.localId,
+        competencia: new Date().toISOString().slice(0, 7),
+        saldoAposMovimento: 0,
+        responsavelNome: 'Usuário',
+        dataMovimentacao: new Date().toISOString(),
+        ...payload,
+      }),
+  );
+}
+
+export async function updateItemEstoque(id: string, payload: UpdateItemEstoquePayload): Promise<EstoqueItem> {
+  return withApiFallback(
+    () => api.put(ESTOQUE_API_ENDPOINTS.itemDetail(id), payload).then(unwrapApiResponse),
+    () => fetchItemEstoqueById(id),
   );
 }

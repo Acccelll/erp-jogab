@@ -1,7 +1,15 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { getMockDocumentoFiscalById, getMockFiscalDashboard } from '../data/fiscal.mock';
 import { fiscalFiltersSchema } from '../types';
-import type { FiscalDashboardData, FiscalFiltersData } from '../types';
+import type {
+  DocumentoFiscal,
+  FiscalDashboardData,
+  FiscalDocumentoTipo,
+  FiscalFiltersData,
+  FiscalIntegracaoStatus,
+  FiscalStatus,
+  FiscalTipoOperacao,
+} from '../types';
 
 export const FISCAL_API_ENDPOINTS = {
   dashboard: '/fiscal/dashboard',
@@ -104,5 +112,71 @@ export async function fetchDocumentoFiscalById(documentoId: string) {
       return unwrapApiResponse<Awaited<ReturnType<typeof fetchDocumentoFiscalByIdMock>>>(response.data);
     },
     () => fetchDocumentoFiscalByIdMock(documentoId),
+  );
+}
+
+export interface CreateDocumentoFiscalPayload {
+  numero: string;
+  serie?: string;
+  tipoOperacao: FiscalTipoOperacao;
+  documentoTipo: FiscalDocumentoTipo;
+  emitenteNome: string;
+  destinatarioNome: string;
+  obraId?: string;
+  competencia: string;
+  emissao: string;
+  vencimento?: string;
+  valorDocumento: number;
+  chaveAcesso?: string;
+}
+
+export interface UpdateDocumentoFiscalPayload {
+  status?: FiscalStatus;
+  vencimento?: string;
+  observacao?: string;
+}
+
+export async function createDocumentoFiscal(payload: CreateDocumentoFiscalPayload): Promise<DocumentoFiscal> {
+  return withApiFallback(
+    () => api.post(FISCAL_API_ENDPOINTS.entradas, payload).then(unwrapApiResponse),
+    () =>
+      Promise.resolve({
+        id: crypto.randomUUID(),
+        codigo: `NF-${Date.now()}`,
+        numero: payload.numero,
+        serie: payload.serie,
+        tipoOperacao: payload.tipoOperacao,
+        documentoTipo: payload.documentoTipo,
+        status: 'pendente' as FiscalStatus,
+        emitenteNome: payload.emitenteNome,
+        destinatarioNome: payload.destinatarioNome,
+        obraId: payload.obraId,
+        obraNome: payload.obraId,
+        competencia: payload.competencia,
+        emissao: payload.emissao,
+        lancamento: new Date().toISOString(),
+        vencimento: payload.vencimento,
+        valorDocumento: payload.valorDocumento,
+        chaveAcesso: payload.chaveAcesso,
+        resumo: `Documento fiscal ${payload.numero}`,
+        impostos: {
+          baseCalculo: payload.valorDocumento,
+          valorTotalImpostos: 0,
+        },
+        vinculos: {
+          estoqueStatus: 'nao_integrado' as FiscalIntegracaoStatus,
+          financeiroStatus: 'nao_integrado' as FiscalIntegracaoStatus,
+        },
+      }),
+  );
+}
+
+export async function updateDocumentoFiscal(
+  id: string,
+  payload: UpdateDocumentoFiscalPayload,
+): Promise<DocumentoFiscal> {
+  return withApiFallback(
+    () => api.put(FISCAL_API_ENDPOINTS.documentoDetail(id), payload).then(unwrapApiResponse),
+    () => fetchDocumentoFiscalById(id),
   );
 }
