@@ -29,7 +29,7 @@ export function HoraExtraFormDrawer() {
   const { closeDrawer } = useDrawerStore();
   const { addNotification } = useNotificationStore();
   const { mutate: createHoraExtra, isPending } = useCreateHoraExtra();
-  const { contexto } = useContextStore();
+  const { obraId, filialId, competencia, options } = useContextStore();
 
   const {
     register,
@@ -40,9 +40,9 @@ export function HoraExtraFormDrawer() {
   } = useForm<HoraExtraFormData>({
     resolver: zodResolver(horaExtraFormSchema),
     defaultValues: {
-      obraId: contexto.obraId ?? '',
-      filialId: contexto.filialId ?? '',
-      competencia: contexto.competencia ?? '',
+      obraId: obraId ?? '',
+      filialId: filialId ?? '',
+      competencia: competencia ?? '',
       dataLancamento: new Date().toISOString().split('T')[0],
       quantidadeHoras: 1,
       tipo: 'he_50',
@@ -56,8 +56,10 @@ export function HoraExtraFormDrawer() {
   // Auto-fill obra and centro de custo based on employee allocation
   useEffect(() => {
     if (selectedFuncionarioId) {
-      const funcionario = mockFuncionarios.find(f => f.id === selectedFuncionarioId);
-      const alocacao = mockAlocacoes.find(a => a.funcionarioId === selectedFuncionarioId && a.status === 'ativa');
+      const funcionario = mockFuncionarios.find((f) => f.id === selectedFuncionarioId);
+      const alocacao = mockAlocacoes.find(
+        (a) => a.funcionarioId === selectedFuncionarioId && a.status === 'ativa',
+      );
 
       if (alocacao) {
         setValue('obraId', alocacao.obraId);
@@ -71,15 +73,15 @@ export function HoraExtraFormDrawer() {
   }, [selectedFuncionarioId, setValue]);
 
   const filteredCentrosCusto = useMemo(() => {
-    const obraId = watch('obraId');
-    return mockCentrosCusto.filter(cc => cc.obraId === obraId);
+    const currentObraId = watch('obraId');
+    return mockCentrosCusto.filter((cc) => cc.obraId === currentObraId);
   }, [watch('obraId')]);
 
   const onSubmit = (data: HoraExtraFormData) => {
-    const funcionario = mockFuncionarios.find(f => f.id === data.funcionarioId)!;
-    const obra = contexto.options.obras.find(o => o.value === data.obraId)!;
-    const centroCusto = mockCentrosCusto.find(cc => cc.id === data.centroCustoId)!;
-    const filial = contexto.options.filiais.find(f => f.value === data.filialId)!;
+    const funcionario = mockFuncionarios.find((f) => f.id === data.funcionarioId)!;
+    const obra = options?.obras.find((o) => o.value === data.obraId)!;
+    const centroCusto = mockCentrosCusto.find((cc) => cc.id === data.centroCustoId)!;
+    const filial = options?.filiais.find((f) => f.value === data.filialId)!;
 
     createHoraExtra(
       {
@@ -122,7 +124,7 @@ export function HoraExtraFormDrawer() {
           className="mt-1 block w-full rounded-md border border-border-default bg-white px-3 py-2 text-sm outline-none focus:border-jogab-500"
         >
           <option value="">Selecione um funcionário</option>
-          {mockFuncionarios.map(f => (
+          {mockFuncionarios.map((f) => (
             <option key={f.id} value={f.id}>
               {f.nome} ({f.matricula})
             </option>
@@ -139,7 +141,7 @@ export function HoraExtraFormDrawer() {
             className="mt-1 block w-full rounded-md border border-border-default bg-white px-3 py-2 text-sm outline-none focus:border-jogab-500"
           >
             <option value="">Selecione a obra</option>
-            {contexto.options.obras.map(o => (
+            {options?.obras.map((o) => (
               <option key={o.value} value={o.value}>
                 {o.label}
               </option>
@@ -155,7 +157,7 @@ export function HoraExtraFormDrawer() {
             className="mt-1 block w-full rounded-md border border-border-default bg-white px-3 py-2 text-sm outline-none focus:border-jogab-500"
           >
             <option value="">Selecione o CC</option>
-            {filteredCentrosCusto.map(cc => (
+            {filteredCentrosCusto.map((cc) => (
               <option key={cc.id} value={cc.id}>
                 {cc.nome}
               </option>
@@ -206,7 +208,7 @@ export function HoraExtraFormDrawer() {
             {...register('regraId')}
             className="mt-1 block w-full rounded-md border border-border-default bg-white px-3 py-2 text-sm outline-none focus:border-jogab-500"
           >
-            {mockHoraExtraRegras.map(r => (
+            {mockHoraExtraRegras.map((r) => (
               <option key={r.id} value={r.id}>
                 {r.nome}
               </option>
