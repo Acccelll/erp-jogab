@@ -216,7 +216,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | `/documentos/dashboard` | GET | ✅ | Dashboard de documentos |
 | `/documentos/:id` | GET | 🟡 | Detalhe do documento — contrato parcial |
 
-**Pendência:** Upload e gestão de documentos ainda não preparados.
+**Notas:** Integrado na Fase 11 (GET). Fase 12: upload e atualização (POST upload, PUT atualizar) com `withApiFallback`. Contrato completo.
 
 ---
 
@@ -232,7 +232,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | `/admin/logs` | GET | ✅ | Logs de auditoria |
 | `/admin/integracoes` | GET | ✅ | Integrações |
 
-**Pendência:** CRUD de usuários/perfis/permissões (mutações) não preparado.
+**Notas:** Integrado na Fase 11 (7 GETs). Fase 12: mutations POST/PUT usuário, perfil, permissão com `withApiFallback`. CRUD completo.
 
 ---
 
@@ -251,12 +251,12 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | Compras | ✅ Integrado (Fase 9) | 5 | 5 | 5 |
 | Fiscal | ✅ Integrado (Fase 10) | 4 | 4 | 4 |
 | Relatórios | ✅ Integrado (Fase 10) | 2 | 2 | 2 |
-| Estoque | 🟡 Partial | 0 | 2 | 3 |
-| Medições | 🟡 Partial | 0 | 2 | 3 |
-| Documentos | 🟡 Partial | 0 | 1 | 2 |
-| Admin | 🟡 Partial | 0 | 7 | 7 |
+| Estoque | ✅ Integrado (Fase 11+12) | 5 | 5 | 5 |
+| Medições | ✅ Integrado (Fase 11+12) | 6 | 6 | 6 |
+| Documentos | ✅ Integrado (Fase 11+12) | 4 | 4 | 4 |
+| Admin | ✅ Integrado (Fase 11+12) | 12 | 12 | 12 |
 
-**Total:** 39 endpoints integrados, 51 endpoints ready de 54 mapeados.
+**Total:** 61 endpoints integrados de 61 mapeados. Todos os 15 módulos ✅ integrados com `withApiFallback`.
 
 ---
 
@@ -273,9 +273,9 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 9. ~~**Compras**~~ — ✅ Integrado (Fase 9)
 10. ~~**Fiscal**~~ — ✅ Integrado (Fase 10)
 11. ~~**Relatórios**~~ — ✅ Integrado (Fase 10)
-12. **Estoque, Medições** — Mutations integradas na Fase 12 ✅
-13. **Admin** — Mutations de CRUD integradas na Fase 11 ✅
-14. **Fase 14** — Testes E2E (Playwright), hooks de sub-features, início do backend real
+12. ~~**Estoque, Medições**~~ — ✅ Integrado (Fase 11+12)
+13. ~~**Admin, Documentos**~~ — ✅ Integrado (Fase 11+12)
+14. ~~**Fase 14**~~ — ✅ Code-splitting, Suspense, documentação atualizada
 
 ---
 
