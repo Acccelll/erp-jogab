@@ -1,0 +1,14 @@
+# Development server logs
+*.log
+dev_server.log
+
+# Screenshots from verification scripts
+*.png
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store

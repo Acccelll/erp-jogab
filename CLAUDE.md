@@ -13,6 +13,9 @@ Leia obrigatoriamente, nesta ordem:
 7. `docs/06-arquitetura-de-telas.md`
 8. `docs/07-regras-de-implementacao.md`
 9. `docs/08-roadmap.md`
+10. `docs/10-readiness-modulos.md`
+11. `docs/15-ux-arquitetura.md` (se existir)
+12. `docs/16-integracao-fase9.md` (se existir)
 
 ## Regras obrigatórias
 - Não mude a stack definida.
@@ -59,21 +62,22 @@ Leia obrigatoriamente, nesta ordem:
 - `src/assets`
 
 ## Layout obrigatório
-- `AppLayout`
-- `Sidebar`
-- `Topbar`
-- `ContextBar`
-- `ModuleLayout`
-- `ObraWorkspaceLayout`
+O shell autenticado é composto por:
+- `AppLayout` — layout raiz: Sidebar + Topbar + Outlet + SideDrawer
+- `Sidebar` — navegação lateral (52px colapsado, 220px expandido)
+- `Topbar` — barra superior com breadcrumbs, seletores de Obra e Competência, notificações e menu do usuário
+- `ModuleLayout` — wrapper de módulos com padding e scroll
+- `ObraWorkspaceLayout` — layout do workspace de obra com `ObraHeader` + `OverflowTabs` (7 abas visíveis)
+
+> **Nota:** `ContextBar.tsx` existe no código mas **não está renderizado no shell global**. Os seletores de contexto (Obra e Competência) estão integrados diretamente na `Topbar`. Não renderize `ContextBar` em páginas individuais sem necessidade explícita.
 
 ## Padrão de tela obrigatório
 Cada tela principal deve seguir a ordem:
-1. `PageHeader`
-2. `ContextBar`
-3. `FilterBar`
-4. `KPISection`
-5. `MainContent`
-6. `SideDrawer` quando aplicável
+1. `PageHeader` (quando aplicável)
+2. `FilterBar` / `QuickFilterChips`
+3. `KPISection` (quando aplicável)
+4. `MainContent` (tabela, cards, gráficos)
+5. `SideDrawer` quando aplicável
 
 ## Critérios mínimos de qualidade
 - TypeScript sem tipagem solta desnecessária
