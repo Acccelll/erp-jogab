@@ -1,8 +1,9 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useFormDirty } from '@/shared/hooks';
 import { useCreateHoraExtra } from '../hooks/useHorasExtrasMutations';
-import { useDrawerStore, useNotificationStore, useContextStore } from '@/shared/stores';
+import { useDrawerStore, useNotificationStore, useContextStore, useDirtyStore } from '@/shared/stores';
 import { HORA_EXTRA_TIPO_LABELS, type HoraExtraTipo, type HoraExtraOrigem } from '../types';
 import { mockFuncionarios } from '../../rh/data/funcionarios.mock';
 import { mockCentrosCusto, mockAlocacoes } from '@/shared/lib/erpRelations';
@@ -27,6 +28,7 @@ type HoraExtraFormData = z.infer<typeof horaExtraFormSchema>;
 
 export function HoraExtraFormDrawer() {
   const { closeDrawer } = useDrawerStore();
+  const { resetDirty } = useDirtyStore();
   const { addNotification } = useNotificationStore();
   const { mutate: createHoraExtra, isPending } = useCreateHoraExtra();
   const { obraId, filialId, competencia, options } = useContextStore();
@@ -36,7 +38,7 @@ export function HoraExtraFormDrawer() {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<HoraExtraFormData>({
     resolver: zodResolver(horaExtraFormSchema),
     defaultValues: {
@@ -51,7 +53,10 @@ export function HoraExtraFormDrawer() {
     },
   });
 
+  useFormDirty(isDirty);
+
   const selectedFuncionarioId = watch('funcionarioId');
+  const currentObraId = watch('obraId');
 
   // Auto-fill obra and centro de custo based on employee allocation
   useEffect(() => {
@@ -73,15 +78,16 @@ export function HoraExtraFormDrawer() {
   }, [selectedFuncionarioId, setValue]);
 
   const filteredCentrosCusto = useMemo(() => {
-    const currentObraId = watch('obraId');
     return mockCentrosCusto.filter((cc) => cc.obraId === currentObraId);
-  }, [watch('obraId')]);
+  }, [currentObraId]);
 
   const onSubmit = (data: HoraExtraFormData) => {
-    const funcionario = mockFuncionarios.find((f) => f.id === data.funcionarioId)!;
-    const obra = options?.obras.find((o) => o.value === data.obraId)!;
-    const centroCusto = mockCentrosCusto.find((cc) => cc.id === data.centroCustoId)!;
-    const filial = options?.filiais.find((f) => f.value === data.filialId)!;
+    const funcionario = mockFuncionarios.find((f) => f.id === data.funcionarioId);
+    const obra = options?.obras.find((o) => o.value === data.obraId);
+    const centroCusto = mockCentrosCusto.find((cc) => cc.id === data.centroCustoId);
+    const filial = options?.filiais.find((f) => f.value === data.filialId);
+
+    if (!funcionario || !obra || !centroCusto || !filial) return;
 
     createHoraExtra(
       {
@@ -102,6 +108,7 @@ export function HoraExtraFormDrawer() {
             message: 'O lançamento de hora extra foi registrado com sucesso.',
             type: 'success',
           });
+          resetDirty();
           closeDrawer();
         },
         onError: () => {
@@ -258,7 +265,10 @@ export function HoraExtraFormDrawer() {
       <div className="mt-4 flex justify-end gap-3 border-t border-border-default pt-4">
         <button
           type="button"
-          onClick={closeDrawer}
+          onClick={() => {
+            // Close handled by SideDrawer with confirm if dirty
+            closeDrawer();
+          }}
           className="rounded-md border border-border-default px-4 py-2 text-sm font-medium text-text-body hover:bg-surface-soft"
         >
           Cancelar

@@ -10,4 +10,6 @@ export { ModulePlaceholder } from './ModulePlaceholder';
 export { NotFoundPage } from './NotFoundPage';
 export { QuickFilterChips } from './QuickFilterChips';
 export { OverflowTabs } from './OverflowTabs';
+export { BulkActionBar } from './BulkActionBar';
+export { NavigationBlocker } from './NavigationBlocker';
 export { TableCellStack } from './TableCellStack';
