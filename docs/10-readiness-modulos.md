@@ -130,69 +130,82 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### 9. Compras (Fase 9)
+### 9. Compras (Fase 9 + Fase 12)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
 | `/compras/solicitacoes` | GET | ✅ Integrado | Solicitações de compra |
+| `/compras/solicitacoes` | POST | ✅ Integrado | Criar solicitação (Fase 12) |
+| `/compras/solicitacoes/:id` | PUT | ✅ Integrado | Atualizar solicitação (Fase 12) |
 | `/compras/cotacoes` | GET | ✅ Integrado | Cotações em andamento |
+| `/compras/cotacoes` | POST | ✅ Integrado | Criar cotação (Fase 12) |
+| `/compras/cotacoes/:id` | PUT | ✅ Integrado | Atualizar cotação (Fase 12) |
 | `/compras/pedidos` | GET | ✅ Integrado | Pedidos de compra |
+| `/compras/pedidos` | POST | ✅ Integrado | Emitir pedido (Fase 12) |
 | `/compras/pedidos/:id` | GET | ✅ Integrado | Detalhe do pedido |
+| `/compras/pedidos/:id` | PUT | ✅ Integrado | Atualizar pedido (Fase 12) |
 | `/compras/dashboard` | GET | ✅ Integrado | Dashboard consolidado (3 etapas) |
 
 **Normalizador:** `normalizeComprasDashboardData`.
-**Validação Zod:** `compraStatusSchema`, `compraCategoriaSchema`, `compraPrioridadeSchema`, `compraFiltersSchema`.
-**Notas:** Integrado na Fase 9. Fluxo de 3 etapas (solicitação → cotação → pedido) com `withApiFallback`.
+**Notas:** Integrado na Fase 9 (GET). Fase 12: mutations POST/PUT para solicitações, cotações e pedidos com `withApiFallback`.
 
 ---
 
-### 10. Fiscal
+### 10. Fiscal (Fase 10 + Fase 12)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
 | `/fiscal/dashboard` | GET | ✅ | Dashboard fiscal |
 | `/fiscal/entradas` | GET | ✅ | Documentos de entrada (NF-e recebidas) |
+| `/fiscal/entradas` | POST | ✅ | Criar documento fiscal de entrada (Fase 12) |
 | `/fiscal/saidas` | GET | ✅ | Documentos de saída (NF-e emitidas) |
 | `/fiscal/documentos/:id` | GET | ✅ | Detalhe de documento fiscal |
+| `/fiscal/documentos/:id` | PUT | ✅ | Atualizar documento fiscal (Fase 12) |
 
-**Notas:** Integrado na Fase 10. Módulo de leitura com contratos estáveis e `withApiFallback` em todos os endpoints.
+**Notas:** Integrado na Fase 10 (GET). Fase 12: mutations POST/PUT com `withApiFallback`.
 
 ---
 
-### 11. Relatórios
+### 11. Relatórios (Fase 10 + Fase 12)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
 | `/relatorios/dashboard` | GET | ✅ | Dashboard com categorias e resumo |
 | `/relatorios/categorias/:categoria` | GET | ✅ | Relatórios por categoria |
+| `/relatorios/gerar` | POST | ✅ | Gerar relatório sob demanda (Fase 12) |
 
-**Notas:** Integrado na Fase 10. Módulo de leitura com normalizadores completos e `withApiFallback` em todos os endpoints.
+**Notas:** Integrado na Fase 10 (GET). Fase 12: mutation POST gerar relatório com `withApiFallback`.
 
 ---
 
-## Módulos parcialmente prontos (Partial)
+## Módulos integrados — Fase 11
 
-### 12. Estoque
+### 12. Estoque (Fase 11 + Fase 12)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
 | `/estoque/dashboard` | GET | ✅ | Dashboard de estoque |
 | `/estoque/movimentacoes` | GET | ✅ | Movimentações de estoque |
-| `/estoque/itens/:id` | GET | 🟡 | Detalhe de item — contrato parcial |
+| `/estoque/movimentacoes` | POST | ✅ | Registrar movimentação (Fase 12) |
+| `/estoque/itens/:id` | GET | ✅ | Detalhe de item |
+| `/estoque/itens/:id` | PUT | ✅ | Atualizar item de estoque (Fase 12) |
 
-**Pendência:** Detalhe de item com contrato a refinar.
+**Notas:** Integrado na Fase 11 (GET). Fase 12: mutations POST movimentação e PUT item com `withApiFallback`.
 
 ---
 
-### 13. Medições
+### 13. Medições (Fase 11 + Fase 12)
 
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
 | `/medicoes/dashboard` | GET | ✅ | Dashboard de medições |
 | `/medicoes` | GET | ✅ | Listagem de medições |
-| `/medicoes/:id` | GET | 🟡 | Detalhe — contrato parcial |
+| `/medicoes` | POST | ✅ | Criar medição (Fase 12) |
+| `/medicoes/:id` | GET | ✅ | Detalhe de medição |
+| `/medicoes/:id` | PUT | ✅ | Atualizar medição (Fase 12) |
+| `/medicoes/:id/aprovar` | POST | ✅ | Aprovar medição (Fase 12) |
 
-**Pendência:** Detalhe de medição a consolidar.
+**Notas:** Integrado na Fase 11 (GET). Fase 12: mutations POST criar, PUT atualizar, POST aprovar com `withApiFallback`.
 
 ---
 
@@ -260,8 +273,9 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 9. ~~**Compras**~~ — ✅ Integrado (Fase 9)
 10. ~~**Fiscal**~~ — ✅ Integrado (Fase 10)
 11. ~~**Relatórios**~~ — ✅ Integrado (Fase 10)
-12. **Estoque, Medições, Documentos** — Completar contratos parciais
-13. **Admin** — Adicionar mutações de CRUD
+12. **Estoque, Medições** — Mutations integradas na Fase 12 ✅
+13. **Admin** — Mutations de CRUD integradas na Fase 11 ✅
+14. **Fase 14** — Testes E2E (Playwright), hooks de sub-features, início do backend real
 
 ---
 
