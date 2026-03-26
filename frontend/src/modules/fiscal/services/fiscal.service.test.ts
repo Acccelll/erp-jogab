@@ -6,6 +6,8 @@ import {
   fetchFiscalSaidas,
   fetchDocumentoFiscalById,
   normalizeFiscalDashboardData,
+  createDocumentoFiscal,
+  updateDocumentoFiscal,
   FISCAL_API_ENDPOINTS,
 } from './fiscal.service';
 import { fiscalDocumentos, getMockFiscalDashboard } from '../data/fiscal.mock';
@@ -16,11 +18,15 @@ vi.mock('@/shared/lib/api', async () => {
     ...actual,
     api: {
       get: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
     },
   };
 });
 
 const mockApiGet = vi.mocked(api.get);
+const mockApiPost = vi.mocked(api.post);
+const mockApiPut = vi.mocked(api.put);
 
 describe('FiscalService', () => {
   beforeEach(() => {
@@ -284,6 +290,79 @@ describe('FiscalService', () => {
 
       expect(result.documentos.length).toBeGreaterThan(0);
       expect(result.kpis.totalDocumentos).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // createDocumentoFiscal (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('createDocumentoFiscal', () => {
+    const payload = {
+      numero: '001234',
+      serie: '1',
+      tipoOperacao: 'entrada' as const,
+      documentoTipo: 'nfe' as const,
+      emitenteNome: 'Fornecedor XPTO',
+      destinatarioNome: 'JOGAB Construções',
+      obraId: 'obra-001',
+      competencia: '2026-03',
+      emissao: '2026-03-20',
+      valorDocumento: 25000,
+    };
+
+    it('should call POST /fiscal/entradas with payload', async () => {
+      const created = { ...fiscalDocumentos[0], numero: payload.numero };
+      mockApiPost.mockResolvedValueOnce({ data: { data: created } });
+
+      const result = await createDocumentoFiscal(payload);
+
+      expect(mockApiPost).toHaveBeenCalledWith(FISCAL_API_ENDPOINTS.entradas, payload);
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on HTTP 503 and return valid shape', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, response: { status: 503, data: {} } });
+
+      const result = await createDocumentoFiscal(payload);
+
+      expect(result.id).toBeDefined();
+      expect(result.numero).toBe(payload.numero);
+      expect(result.tipoOperacao).toBe(payload.tipoOperacao);
+      expect(result.valorDocumento).toBe(payload.valorDocumento);
+    });
+
+    it('should fallback to mock on network error', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, code: 'ERR_NETWORK' });
+
+      const result = await createDocumentoFiscal(payload);
+
+      expect(result.impostos).toBeDefined();
+      expect(result.vinculos).toBeDefined();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // updateDocumentoFiscal (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('updateDocumentoFiscal', () => {
+    it('should call PUT /fiscal/documentos/:id with payload', async () => {
+      const updated = { ...fiscalDocumentos[0] };
+      mockApiPut.mockResolvedValueOnce({ data: { data: updated } });
+
+      const result = await updateDocumentoFiscal('doc-001', { status: 'validado' as const });
+
+      expect(mockApiPut).toHaveBeenCalledWith(FISCAL_API_ENDPOINTS.documentoDetail('doc-001'), { status: 'validado' });
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on HTTP 502', async () => {
+      mockApiGet.mockResolvedValueOnce({ data: { data: fiscalDocumentos[0] } });
+      mockApiPut.mockRejectedValueOnce({ isAxiosError: true, response: { status: 502, data: {} } });
+
+      const result = await updateDocumentoFiscal('doc-001', { observacao: 'Revisado' });
+
+      expect(result).toBeDefined();
+      expect(result.id).toBeDefined();
     });
   });
 });

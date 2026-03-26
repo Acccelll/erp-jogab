@@ -5,16 +5,20 @@ import {
   fetchMovimentacoesEstoque,
   fetchItemEstoqueById,
   normalizeEstoqueDashboardData,
+  createMovimentacaoEstoque,
+  updateItemEstoque,
   ESTOQUE_API_ENDPOINTS,
 } from './estoque.service';
 import { getMockEstoqueDashboard, getMockMovimentacoesEstoque } from '../data/estoque.mock';
 
 vi.mock('@/shared/lib/api', async () => {
   const actual = await vi.importActual('@/shared/lib/api');
-  return { ...actual, api: { get: vi.fn() } };
+  return { ...actual, api: { get: vi.fn(), post: vi.fn(), put: vi.fn() } };
 });
 
 const mockApiGet = vi.mocked(api.get);
+const mockApiPost = vi.mocked(api.post);
+const mockApiPut = vi.mocked(api.put);
 
 describe('EstoqueService', () => {
   beforeEach(() => vi.clearAllMocks());
@@ -208,6 +212,73 @@ describe('EstoqueService', () => {
 
       expect(result.itens.length).toBeGreaterThan(0);
       expect(result.kpis).toBeDefined();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // createMovimentacaoEstoque (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('createMovimentacaoEstoque', () => {
+    const payload = {
+      itemId: 'item-001',
+      tipo: 'entrada' as const,
+      obraId: 'obra-001',
+      localId: 'local-001',
+      centroCusto: 'CC-001',
+      quantidade: 50,
+      unidade: 'sc',
+      valorMovimento: 2500,
+      observacao: 'Entrada de material',
+    };
+
+    it('should call POST /estoque/movimentacoes with payload', async () => {
+      const movs = getMockMovimentacoesEstoque();
+      const created = { ...movs[0], ...payload };
+      mockApiPost.mockResolvedValueOnce({ data: { data: created } });
+
+      const result = await createMovimentacaoEstoque(payload);
+
+      expect(mockApiPost).toHaveBeenCalledWith(ESTOQUE_API_ENDPOINTS.movimentacoes, payload);
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on HTTP 503 and return valid shape', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, response: { status: 503, data: {} } });
+
+      const result = await createMovimentacaoEstoque(payload);
+
+      expect(result.id).toBeDefined();
+      expect(result.itemId).toBe(payload.itemId);
+      expect(result.quantidade).toBe(payload.quantidade);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // updateItemEstoque (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('updateItemEstoque', () => {
+    it('should call PUT /estoque/itens/:id with payload', async () => {
+      const dashboard = getMockEstoqueDashboard();
+      const item = dashboard.itens[0];
+      mockApiPut.mockResolvedValueOnce({ data: { data: item } });
+
+      const result = await updateItemEstoque('item-001', { descricao: 'Cimento atualizado' });
+
+      expect(mockApiPut).toHaveBeenCalledWith(ESTOQUE_API_ENDPOINTS.itemDetail('item-001'), {
+        descricao: 'Cimento atualizado',
+      });
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on HTTP 502', async () => {
+      const dashboard = getMockEstoqueDashboard();
+      mockApiGet.mockResolvedValueOnce({ data: { data: dashboard.itens[0] } });
+      mockApiPut.mockRejectedValueOnce({ isAxiosError: true, response: { status: 502, data: {} } });
+
+      const result = await updateItemEstoque('item-001', { status: 'inativo' as const });
+
+      expect(result).toBeDefined();
+      expect(result.id).toBeDefined();
     });
   });
 });
