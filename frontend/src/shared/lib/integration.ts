@@ -331,38 +331,39 @@ export const MODULE_READINESS: ModuleReadiness[] = [
   {
     module: 'fiscal',
     status: 'ready',
-    integrationStatus: 'ready',
+    integrationStatus: 'integrated',
     endpoints: [
       {
         path: '/fiscal/dashboard',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Dashboard fiscal',
       },
       {
         path: '/fiscal/entradas',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Documentos de entrada',
       },
       {
         path: '/fiscal/saidas',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Documentos de saída',
       },
       {
         path: '/fiscal/documentos/:id',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Detalhe de documento fiscal',
       },
     ],
-    notes: 'Módulo de leitura com normalizadores completos.',
+    notes:
+      'Integrado na Fase 10. Módulo de leitura com normalizadores completos e withApiFallback em todos os endpoints.',
   },
   {
     module: 'estoque',
@@ -441,24 +442,24 @@ export const MODULE_READINESS: ModuleReadiness[] = [
   {
     module: 'relatorios',
     status: 'ready',
-    integrationStatus: 'ready',
+    integrationStatus: 'integrated',
     endpoints: [
       {
         path: '/relatorios/dashboard',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Dashboard de relatórios',
       },
       {
         path: '/relatorios/categorias/:categoria',
         method: 'GET',
         readiness: 'ready',
-        integrated: false,
+        integrated: true,
         description: 'Relatórios por categoria',
       },
     ],
-    notes: 'Contrato de leitura estável com normalizadores.',
+    notes: 'Integrado na Fase 10. Contrato de leitura estável com normalizadores e withApiFallback.',
   },
   {
     module: 'admin',

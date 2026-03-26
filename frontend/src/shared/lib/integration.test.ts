@@ -208,7 +208,7 @@ describe('getIntegratedModules', () => {
     }
   });
 
-  it('includes auth, context, dashboard, obras, rh, horas-extras, fopag, financeiro, and compras as integrated modules', () => {
+  it('includes auth, context, dashboard, obras, rh, horas-extras, fopag, financeiro, compras, fiscal, and relatorios as integrated modules', () => {
     const integratedNames = getIntegratedModules().map((m) => m.module);
     expect(integratedNames).toContain('auth');
     expect(integratedNames).toContain('context');
@@ -219,6 +219,8 @@ describe('getIntegratedModules', () => {
     expect(integratedNames).toContain('fopag');
     expect(integratedNames).toContain('financeiro');
     expect(integratedNames).toContain('compras');
-    expect(integratedNames).toHaveLength(9);
+    expect(integratedNames).toContain('fiscal');
+    expect(integratedNames).toContain('relatorios');
+    expect(integratedNames).toHaveLength(11);
   });
 });

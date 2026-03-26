@@ -19,6 +19,7 @@ Este pacote foi preparado para uso com GitHub Copilot Agent ou Claude Code.
 14. `docs/13-integracao-fase7.md`
 15. `docs/14-integracao-fase8.md`
 16. `docs/16-integracao-fase9.md`
+17. `docs/15-integracao-fase10.md`
 
 ## Objetivo do pacote
 Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura definida, sem improvisar stack, rotas, organização por domínio ou regras centrais do negócio.
@@ -30,7 +31,7 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 
 ## Estado atual do frontend
 
-Todas as 8 fases do roadmap original estão completas, além de 9 fases de alinhamento/integração. Os 14 módulos possuem páginas, services, hooks, types e mock data implementados. A Fase 5 conectou auth, contexto global e dashboard à API real via `withApiFallback`. A Fase 6 integrou Obras (CRUD completo) e RH (leitura) à API real. A Fase 7 completou RH (mutações POST/PUT) e integrou Horas Extras (fluxo completo). A Fase 8 integrou FOPAG e Financeiro (cadeia HE→FOPAG→Financeiro). A Fase 9 integrou Compras (fluxo solicitação→cotação→pedido). Detalhes em `docs/08-roadmap.md` e `docs/16-integracao-fase9.md`.
+Todas as 8 fases do roadmap original estão completas, além de 10 fases de alinhamento/integração. Os 14 módulos possuem páginas, services, hooks, types e mock data implementados. A Fase 5 conectou auth, contexto global e dashboard à API real via `withApiFallback`. A Fase 6 integrou Obras (CRUD completo) e RH (leitura) à API real. A Fase 7 completou RH (mutações POST/PUT) e integrou Horas Extras (fluxo completo). A Fase 8 integrou FOPAG e Financeiro (cadeia HE→FOPAG→Financeiro). A Fase 9 integrou Compras (fluxo solicitação→cotação→pedido). A Fase 10 integrou Fiscal e Relatórios (módulos de leitura com normalizadores completos). Detalhes em `docs/08-roadmap.md` e `docs/15-integracao-fase10.md`.
 
 ### Módulos implementados
 
@@ -153,15 +154,14 @@ A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`
 
 | Status | Módulos | Qtd |
 |--------|---------|-----|
-| ✅ Integrado | Auth, Contexto, Dashboard, Obras, RH, Horas Extras, FOPAG, Financeiro, Compras | 9 |
-| 🔵 Ready | Fiscal, Relatórios | 2 |
+| ✅ Integrado | Auth, Contexto, Dashboard, Obras, RH, Horas Extras, FOPAG, Financeiro, Compras, Fiscal, Relatórios | 11 |
 | 🟡 Partial | Estoque, Medições, Documentos, Admin | 4 |
 
 - **Integrado:** conectado à API real com `withApiFallback`, normalizers e testes de integração.
 - **Ready:** contrato estável, normalizer completo, `withApiFallback` implementado — pronto para API real.
 - **Partial:** service com `withApiFallback`, mas contrato de detalhe ou mutação parcial.
 
-**Total:** 33 endpoints integrados de 54 mapeados. Detalhes em `docs/10-readiness-modulos.md`.
+**Total:** 39 endpoints integrados de 54 mapeados. Detalhes em `docs/10-readiness-modulos.md`.
 
 ---
 

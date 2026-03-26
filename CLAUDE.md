@@ -15,7 +15,8 @@ Leia obrigatoriamente, nesta ordem:
 9. `docs/08-roadmap.md`
 10. `docs/10-readiness-modulos.md`
 11. `docs/15-ux-arquitetura.md` (se existir)
-12. `docs/16-integracao-fase9.md` (se existir)
+12. `docs/15-integracao-fase10.md` (se existir)
+13. `docs/16-integracao-fase9.md` (se existir)
 
 ## Regras obrigatórias
 - Não mude a stack definida.

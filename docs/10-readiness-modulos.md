@@ -155,8 +155,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | `/fiscal/saidas` | GET | ✅ | Documentos de saída (NF-e emitidas) |
 | `/fiscal/documentos/:id` | GET | ✅ | Detalhe de documento fiscal |
 
-**Normalizador:** `normalizeFiscalDashboardData`.
-**Notas:** Módulo de leitura com contratos estáveis.
+**Notas:** Integrado na Fase 10. Módulo de leitura com contratos estáveis e `withApiFallback` em todos os endpoints.
 
 ---
 
@@ -167,8 +166,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | `/relatorios/dashboard` | GET | ✅ | Dashboard com categorias e resumo |
 | `/relatorios/categorias/:categoria` | GET | ✅ | Relatórios por categoria |
 
-**Normalizador:** `normalizeRelatoriosDashboardData`, `normalizeRelatorioCategoriaData`.
-**Notas:** Módulo de leitura com normalizadores completos.
+**Notas:** Integrado na Fase 10. Módulo de leitura com normalizadores completos e `withApiFallback` em todos os endpoints.
 
 ---
 
@@ -238,14 +236,14 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 | FOPAG | ✅ Integrado | 2 | 2 | 2 |
 | Financeiro | ✅ Integrado | 6 | 6 | 6 |
 | Compras | ✅ Integrado (Fase 9) | 5 | 5 | 5 |
-| Fiscal | 🔵 Ready | 0 | 4 | 4 |
-| Relatórios | 🔵 Ready | 0 | 2 | 2 |
+| Fiscal | ✅ Integrado (Fase 10) | 4 | 4 | 4 |
+| Relatórios | ✅ Integrado (Fase 10) | 2 | 2 | 2 |
 | Estoque | 🟡 Partial | 0 | 2 | 3 |
 | Medições | 🟡 Partial | 0 | 2 | 3 |
 | Documentos | 🟡 Partial | 0 | 1 | 2 |
 | Admin | 🟡 Partial | 0 | 7 | 7 |
 
-**Total:** 33 endpoints integrados, 51 endpoints ready de 54 mapeados.
+**Total:** 39 endpoints integrados, 51 endpoints ready de 54 mapeados.
 
 ---
 
@@ -260,10 +258,10 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 7. ~~**FOPAG**~~ — ✅ Integrado (Fase 8)
 8. ~~**Financeiro**~~ — ✅ Integrado (Fase 8)
 9. ~~**Compras**~~ — ✅ Integrado (Fase 9)
-10. **Fiscal** — Módulo de leitura
-9. **Relatórios** — Consolidação de dados
-10. **Estoque, Medições, Documentos** — Completar contratos parciais
-11. **Admin** — Adicionar mutações de CRUD
+10. ~~**Fiscal**~~ — ✅ Integrado (Fase 10)
+11. ~~**Relatórios**~~ — ✅ Integrado (Fase 10)
+12. **Estoque, Medições, Documentos** — Completar contratos parciais
+13. **Admin** — Adicionar mutações de CRUD
 
 ---
 
