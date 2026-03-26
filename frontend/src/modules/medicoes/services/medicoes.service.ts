@@ -125,7 +125,10 @@ export interface AprovarMedicaoPayload {
 
 export async function createMedicao(payload: CreateMedicaoPayload): Promise<Medicao> {
   return withApiFallback(
-    () => api.post(MEDICOES_API_ENDPOINTS.list, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.post(MEDICOES_API_ENDPOINTS.list, payload);
+      return unwrapApiResponse<Medicao>(response.data);
+    },
     () =>
       Promise.resolve({
         id: crypto.randomUUID(),
@@ -152,14 +155,28 @@ export async function createMedicao(payload: CreateMedicaoPayload): Promise<Medi
 
 export async function updateMedicao(id: string, payload: UpdateMedicaoPayload): Promise<Medicao> {
   return withApiFallback(
-    () => api.put(MEDICOES_API_ENDPOINTS.detail(id), payload).then(unwrapApiResponse),
-    () => fetchMedicaoById(id),
+    async () => {
+      const response = await api.put(MEDICOES_API_ENDPOINTS.detail(id), payload);
+      return unwrapApiResponse<Medicao>(response.data);
+    },
+    async () => {
+      const detail = await fetchMedicaoById(id);
+      if (detail?.medicao) return detail.medicao;
+      throw new Error(`Medição ${id} not found`);
+    },
   );
 }
 
 export async function aprovarMedicao(id: string, payload: AprovarMedicaoPayload): Promise<Medicao> {
   return withApiFallback(
-    () => api.post(`${MEDICOES_API_ENDPOINTS.detail(id)}/aprovar`, payload).then(unwrapApiResponse),
-    () => fetchMedicaoById(id),
+    async () => {
+      const response = await api.post(`${MEDICOES_API_ENDPOINTS.detail(id)}/aprovar`, payload);
+      return unwrapApiResponse<Medicao>(response.data);
+    },
+    async () => {
+      const detail = await fetchMedicaoById(id);
+      if (detail?.medicao) return detail.medicao;
+      throw new Error(`Medição ${id} not found`);
+    },
   );
 }

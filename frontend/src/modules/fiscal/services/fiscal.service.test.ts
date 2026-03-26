@@ -10,7 +10,7 @@ import {
   updateDocumentoFiscal,
   FISCAL_API_ENDPOINTS,
 } from './fiscal.service';
-import { fiscalDocumentos, getMockFiscalDashboard } from '../data/fiscal.mock';
+import { fiscalDocumentos, getMockFiscalDashboard, getMockDocumentoFiscalById } from '../data/fiscal.mock';
 
 vi.mock('@/shared/lib/api', async () => {
   const actual = await vi.importActual('@/shared/lib/api');
@@ -356,7 +356,8 @@ describe('FiscalService', () => {
     });
 
     it('should fallback to mock on HTTP 502', async () => {
-      mockApiGet.mockResolvedValueOnce({ data: { data: fiscalDocumentos[0] } });
+      const detail = getMockDocumentoFiscalById('doc-fis-001');
+      mockApiGet.mockResolvedValueOnce({ data: { data: detail } });
       mockApiPut.mockRejectedValueOnce({ isAxiosError: true, response: { status: 502, data: {} } });
 
       const result = await updateDocumentoFiscal('doc-001', { observacao: 'Revisado' });

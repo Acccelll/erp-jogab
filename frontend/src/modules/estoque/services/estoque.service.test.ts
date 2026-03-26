@@ -9,7 +9,7 @@ import {
   updateItemEstoque,
   ESTOQUE_API_ENDPOINTS,
 } from './estoque.service';
-import { getMockEstoqueDashboard, getMockMovimentacoesEstoque } from '../data/estoque.mock';
+import { getMockEstoqueDashboard, getMockMovimentacoesEstoque, getMockItemEstoqueById } from '../data/estoque.mock';
 
 vi.mock('@/shared/lib/api', async () => {
   const actual = await vi.importActual('@/shared/lib/api');
@@ -271,8 +271,8 @@ describe('EstoqueService', () => {
     });
 
     it('should fallback to mock on HTTP 502', async () => {
-      const dashboard = getMockEstoqueDashboard();
-      mockApiGet.mockResolvedValueOnce({ data: { data: dashboard.itens[0] } });
+      const detail = getMockItemEstoqueById('item-001');
+      mockApiGet.mockResolvedValueOnce({ data: { data: detail } });
       mockApiPut.mockRejectedValueOnce({ isAxiosError: true, response: { status: 502, data: {} } });
 
       const result = await updateItemEstoque('item-001', { status: 'inativo' as const });

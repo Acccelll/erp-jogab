@@ -204,7 +204,10 @@ export interface UpdatePedidoPayload {
 
 export async function createSolicitacao(payload: CreateSolicitacaoPayload): Promise<SolicitacaoCompra> {
   return withApiFallback(
-    () => api.post(COMPRAS_API_ENDPOINTS.solicitacoes, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.post(COMPRAS_API_ENDPOINTS.solicitacoes, payload);
+      return unwrapApiResponse<SolicitacaoCompra>(response.data);
+    },
     () =>
       Promise.resolve({
         id: crypto.randomUUID(),
@@ -224,19 +227,26 @@ export async function createSolicitacao(payload: CreateSolicitacaoPayload): Prom
 
 export async function updateSolicitacao(id: string, payload: UpdateSolicitacaoPayload): Promise<SolicitacaoCompra> {
   return withApiFallback(
-    () => api.put(`${COMPRAS_API_ENDPOINTS.solicitacoes}/${id}`, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.put(`${COMPRAS_API_ENDPOINTS.solicitacoes}/${id}`, payload);
+      return unwrapApiResponse<SolicitacaoCompra>(response.data);
+    },
     () => fetchSolicitacoesCompra().then((list) => list.find((s) => s.id === id) ?? list[0]),
   );
 }
 
 export async function createCotacao(payload: CreateCotacaoPayload): Promise<CotacaoCompra> {
   return withApiFallback(
-    () => api.post(COMPRAS_API_ENDPOINTS.cotacoes, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.post(COMPRAS_API_ENDPOINTS.cotacoes, payload);
+      return unwrapApiResponse<CotacaoCompra>(response.data);
+    },
     () =>
       Promise.resolve({
         id: crypto.randomUUID(),
         codigo: `COT-${Date.now()}`,
         ...payload,
+        prioridade: 'media' as CompraPrioridade,
         obraNome: payload.obraId,
         competencia: new Date().toISOString().slice(0, 7),
         quantidadeFornecedores: 1,
@@ -248,14 +258,20 @@ export async function createCotacao(payload: CreateCotacaoPayload): Promise<Cota
 
 export async function updateCotacao(id: string, payload: UpdateCotacaoPayload): Promise<CotacaoCompra> {
   return withApiFallback(
-    () => api.put(`${COMPRAS_API_ENDPOINTS.cotacoes}/${id}`, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.put(`${COMPRAS_API_ENDPOINTS.cotacoes}/${id}`, payload);
+      return unwrapApiResponse<CotacaoCompra>(response.data);
+    },
     () => fetchCotacoesCompra().then((list) => list.find((c) => c.id === id) ?? list[0]),
   );
 }
 
 export async function createPedido(payload: CreatePedidoPayload): Promise<PedidoCompra> {
   return withApiFallback(
-    () => api.post(COMPRAS_API_ENDPOINTS.pedidos, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.post(COMPRAS_API_ENDPOINTS.pedidos, payload);
+      return unwrapApiResponse<PedidoCompra>(response.data);
+    },
     () =>
       Promise.resolve({
         id: crypto.randomUUID(),
@@ -277,7 +293,10 @@ export async function createPedido(payload: CreatePedidoPayload): Promise<Pedido
 
 export async function updatePedido(id: string, payload: UpdatePedidoPayload): Promise<PedidoCompra> {
   return withApiFallback(
-    () => api.put(`${COMPRAS_API_ENDPOINTS.pedidos}/${id}`, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.put(`${COMPRAS_API_ENDPOINTS.pedidos}/${id}`, payload);
+      return unwrapApiResponse<PedidoCompra>(response.data);
+    },
     () => fetchPedidosCompra().then((list) => list.find((p) => p.id === id) ?? list[0]),
   );
 }

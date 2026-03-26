@@ -138,7 +138,10 @@ export interface UpdateDocumentoFiscalPayload {
 
 export async function createDocumentoFiscal(payload: CreateDocumentoFiscalPayload): Promise<DocumentoFiscal> {
   return withApiFallback(
-    () => api.post(FISCAL_API_ENDPOINTS.entradas, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.post(FISCAL_API_ENDPOINTS.entradas, payload);
+      return unwrapApiResponse<DocumentoFiscal>(response.data);
+    },
     () =>
       Promise.resolve({
         id: crypto.randomUUID(),
@@ -176,7 +179,14 @@ export async function updateDocumentoFiscal(
   payload: UpdateDocumentoFiscalPayload,
 ): Promise<DocumentoFiscal> {
   return withApiFallback(
-    () => api.put(FISCAL_API_ENDPOINTS.documentoDetail(id), payload).then(unwrapApiResponse),
-    () => fetchDocumentoFiscalById(id),
+    async () => {
+      const response = await api.put(FISCAL_API_ENDPOINTS.documentoDetail(id), payload);
+      return unwrapApiResponse<DocumentoFiscal>(response.data);
+    },
+    async () => {
+      const detail = await fetchDocumentoFiscalById(id);
+      if (detail?.documento) return detail.documento;
+      throw new Error(`Documento ${id} not found`);
+    },
   );
 }

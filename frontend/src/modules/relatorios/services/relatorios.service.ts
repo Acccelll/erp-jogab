@@ -118,7 +118,10 @@ export interface RelatorioGeradoResult {
 
 export async function gerarRelatorio(payload: GerarRelatorioPayload): Promise<RelatorioGeradoResult> {
   return withApiFallback(
-    () => api.post(`${RELATORIOS_API_ENDPOINTS.dashboard}/gerar`, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.post(`${RELATORIOS_API_ENDPOINTS.dashboard}/gerar`, payload);
+      return unwrapApiResponse<RelatorioGeradoResult>(response.data);
+    },
     () =>
       Promise.resolve({
         id: crypto.randomUUID(),

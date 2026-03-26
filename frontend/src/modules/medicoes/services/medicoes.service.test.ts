@@ -5,16 +5,21 @@ import {
   fetchMedicoes,
   fetchMedicaoById,
   normalizeMedicoesDashboardData,
+  createMedicao,
+  updateMedicao,
+  aprovarMedicao,
   MEDICOES_API_ENDPOINTS,
 } from './medicoes.service';
-import { getMockMedicoesDashboard, getMockMedicoes } from '../data/medicoes.mock';
+import { getMockMedicoesDashboard, getMockMedicoes, getMockMedicaoById } from '../data/medicoes.mock';
 
 vi.mock('@/shared/lib/api', async () => {
   const actual = await vi.importActual('@/shared/lib/api');
-  return { ...actual, api: { get: vi.fn() } };
+  return { ...actual, api: { get: vi.fn(), post: vi.fn(), put: vi.fn() } };
 });
 
 const mockApiGet = vi.mocked(api.get);
+const mockApiPost = vi.mocked(api.post);
+const mockApiPut = vi.mocked(api.put);
 
 describe('MedicoesService', () => {
   beforeEach(() => vi.clearAllMocks());
@@ -214,6 +219,110 @@ describe('MedicoesService', () => {
 
       expect(result.medicoes.length).toBeGreaterThan(0);
       expect(result.kpis).toBeDefined();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // createMedicao (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('createMedicao', () => {
+    const payload = {
+      obraId: 'obra-001',
+      contratoId: 'contrato-001',
+      clienteNome: 'Cliente XPTO',
+      competencia: '2026-03',
+      periodoInicio: '2026-03-01',
+      periodoFim: '2026-03-31',
+      percentualAvanco: 25,
+      valorContrato: 500000,
+      centroCusto: 'CC-001',
+      responsavelNome: 'Responsável',
+    };
+
+    it('should call POST /medicoes with payload', async () => {
+      const medicoes = getMockMedicoes();
+      const created = { ...medicoes[0], ...payload };
+      mockApiPost.mockResolvedValueOnce({ data: { data: created } });
+
+      const result = await createMedicao(payload);
+
+      expect(mockApiPost).toHaveBeenCalledWith(MEDICOES_API_ENDPOINTS.list, payload);
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on HTTP 503 and return valid shape', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, response: { status: 503, data: {} } });
+
+      const result = await createMedicao(payload);
+
+      expect(result.id).toBeDefined();
+      expect(result.status).toBe('rascunho');
+      expect(result.obraId).toBe(payload.obraId);
+    });
+
+    it('should fallback to mock on network error', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, code: 'ERR_NETWORK' });
+
+      const result = await createMedicao(payload);
+
+      expect(result.id).toBeDefined();
+      expect(result.competencia).toBe(payload.competencia);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // updateMedicao (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('updateMedicao', () => {
+    it('should call PUT /medicoes/:id with payload', async () => {
+      const medicoes = getMockMedicoes();
+      mockApiPut.mockResolvedValueOnce({ data: { data: medicoes[0] } });
+
+      const result = await updateMedicao('med-001', { percentualAvanco: 50 });
+
+      expect(mockApiPut).toHaveBeenCalledWith(MEDICOES_API_ENDPOINTS.detail('med-001'), {
+        percentualAvanco: 50,
+      });
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on HTTP 502', async () => {
+      const detail = getMockMedicaoById('med-001');
+      mockApiGet.mockResolvedValueOnce({ data: { data: detail } });
+      mockApiPut.mockRejectedValueOnce({ isAxiosError: true, response: { status: 502, data: {} } });
+
+      const result = await updateMedicao('med-001', { status: 'aprovada' as const });
+
+      expect(result).toBeDefined();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // aprovarMedicao (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('aprovarMedicao', () => {
+    it('should call POST /medicoes/:id/aprovar with payload', async () => {
+      const medicoes = getMockMedicoes();
+      mockApiPost.mockResolvedValueOnce({ data: { data: medicoes[0] } });
+
+      const result = await aprovarMedicao('med-001', { aprovadorNome: 'Gestor', observacao: 'Aprovado' });
+
+      expect(mockApiPost).toHaveBeenCalledWith(`${MEDICOES_API_ENDPOINTS.detail('med-001')}/aprovar`, {
+        aprovadorNome: 'Gestor',
+        observacao: 'Aprovado',
+      });
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on HTTP 503', async () => {
+      const detail = getMockMedicaoById('med-001');
+      mockApiGet.mockResolvedValueOnce({ data: { data: detail } });
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, response: { status: 503, data: {} } });
+
+      const result = await aprovarMedicao('med-001', { aprovadorNome: 'Gestor' });
+
+      expect(result).toBeDefined();
+      expect(result.id).toBeDefined();
     });
   });
 });

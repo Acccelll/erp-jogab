@@ -126,7 +126,10 @@ export async function createMovimentacaoEstoque(
   payload: CreateMovimentacaoEstoquePayload,
 ): Promise<EstoqueMovimentacao> {
   return withApiFallback(
-    () => api.post(ESTOQUE_API_ENDPOINTS.movimentacoes, payload).then(unwrapApiResponse),
+    async () => {
+      const response = await api.post(ESTOQUE_API_ENDPOINTS.movimentacoes, payload);
+      return unwrapApiResponse<EstoqueMovimentacao>(response.data);
+    },
     () =>
       Promise.resolve({
         id: crypto.randomUUID(),
@@ -147,7 +150,14 @@ export async function createMovimentacaoEstoque(
 
 export async function updateItemEstoque(id: string, payload: UpdateItemEstoquePayload): Promise<EstoqueItem> {
   return withApiFallback(
-    () => api.put(ESTOQUE_API_ENDPOINTS.itemDetail(id), payload).then(unwrapApiResponse),
-    () => fetchItemEstoqueById(id),
+    async () => {
+      const response = await api.put(ESTOQUE_API_ENDPOINTS.itemDetail(id), payload);
+      return unwrapApiResponse<EstoqueItem>(response.data);
+    },
+    async () => {
+      const detail = await fetchItemEstoqueById(id);
+      if (detail?.item) return detail.item;
+      throw new Error(`Item ${id} not found`);
+    },
   );
 }

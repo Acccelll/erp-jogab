@@ -149,12 +149,12 @@ describe('getModuleReadiness', () => {
     expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
   });
 
-  it('returns readiness for compras module as integrated with all 5 endpoints', () => {
+  it('returns readiness for compras module as integrated with all 11 endpoints', () => {
     const result = getModuleReadiness('compras');
     expect(result).toBeDefined();
     expect(result?.module).toBe('compras');
     expect(result?.integrationStatus).toBe('integrated');
-    expect(result?.endpoints).toHaveLength(5);
+    expect(result?.endpoints).toHaveLength(11);
     expect(result?.endpoints.every((ep) => ep.integrated)).toBe(true);
   });
 
