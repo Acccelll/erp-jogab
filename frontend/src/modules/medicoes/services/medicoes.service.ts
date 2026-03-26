@@ -1,6 +1,14 @@
 import { api, unwrapApiResponse, withApiFallback } from '@/shared/lib/api';
 import { medicoesFiltersSchema } from '../types';
-import type { MedicoesDashboardData, MedicoesFiltersData } from '../types';
+import type {
+  Medicao,
+  MedicaoAprovacaoStatus,
+  MedicaoFaturamentoStatus,
+  MedicoesDashboardData,
+  MedicoesFiltersData,
+  MedicaoOrigem,
+  MedicaoStatus,
+} from '../types';
 import { getMockMedicaoById, getMockMedicoes, getMockMedicoesDashboard } from '../data/medicoes.mock';
 
 export const MEDICOES_API_ENDPOINTS = {
@@ -88,5 +96,87 @@ export async function fetchMedicaoById(medicaoId: string) {
       return unwrapApiResponse<Awaited<ReturnType<typeof fetchMedicaoByIdMock>>>(response.data);
     },
     () => fetchMedicaoByIdMock(medicaoId),
+  );
+}
+
+export interface CreateMedicaoPayload {
+  obraId: string;
+  contratoId: string;
+  clienteNome: string;
+  competencia: string;
+  periodoInicio: string;
+  periodoFim: string;
+  percentualAvanco: number;
+  valorContrato: number;
+  centroCusto: string;
+  responsavelNome: string;
+}
+
+export interface UpdateMedicaoPayload {
+  status?: MedicaoStatus;
+  percentualAvanco?: number;
+  observacao?: string;
+}
+
+export interface AprovarMedicaoPayload {
+  aprovadorNome: string;
+  observacao?: string;
+}
+
+export async function createMedicao(payload: CreateMedicaoPayload): Promise<Medicao> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(MEDICOES_API_ENDPOINTS.list, payload);
+      return unwrapApiResponse<Medicao>(response.data);
+    },
+    () =>
+      Promise.resolve({
+        id: crypto.randomUUID(),
+        codigo: `MED-${Date.now()}`,
+        numeroMedicao: 1,
+        obraNome: payload.obraId,
+        contratoCodigo: payload.contratoId,
+        status: 'rascunho' as MedicaoStatus,
+        origem: 'manual' as MedicaoOrigem,
+        aprovacaoStatus: 'pendente' as MedicaoAprovacaoStatus,
+        faturamentoStatus: 'nao_faturado' as MedicaoFaturamentoStatus,
+        resumoFinanceiro: {
+          valorMedido: 0,
+          valorRetido: 0,
+          valorLiberadoFaturamento: 0,
+          valorFaturado: 0,
+          valorRecebido: 0,
+        },
+        updatedAt: new Date().toISOString(),
+        ...payload,
+      }),
+  );
+}
+
+export async function updateMedicao(id: string, payload: UpdateMedicaoPayload): Promise<Medicao> {
+  return withApiFallback(
+    async () => {
+      const response = await api.put(MEDICOES_API_ENDPOINTS.detail(id), payload);
+      return unwrapApiResponse<Medicao>(response.data);
+    },
+    async () => {
+      const detail = await fetchMedicaoById(id);
+      if (detail?.medicao) return detail.medicao;
+      throw new Error(`Medição ${id} not found`);
+    },
+  );
+}
+
+export async function aprovarMedicao(id: string, payload: AprovarMedicaoPayload): Promise<Medicao> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(`${MEDICOES_API_ENDPOINTS.detail(id)}/aprovar`, payload);
+      return unwrapApiResponse<Medicao>(response.data);
+    },
+    async () => {
+      const detail = await fetchMedicaoById(id);
+      if (detail?.medicao) return detail.medicao;
+      throw new Error(`Medição ${id} not found`);
+    },
   );
 }

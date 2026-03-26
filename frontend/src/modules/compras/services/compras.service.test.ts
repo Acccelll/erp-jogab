@@ -7,6 +7,13 @@ import {
   fetchPedidoCompraById,
   fetchComprasDashboard,
   normalizeComprasDashboardData,
+  createSolicitacao,
+  updateSolicitacao,
+  createCotacao,
+  updateCotacao,
+  createPedido,
+  updatePedido,
+  COMPRAS_API_ENDPOINTS,
 } from './compras.service';
 import { mockSolicitacoesCompra, mockCotacoesCompra, mockPedidosCompra } from '../data/compras.mock';
 
@@ -16,11 +23,15 @@ vi.mock('@/shared/lib/api', async () => {
     ...actual,
     api: {
       get: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
     },
   };
 });
 
 const mockApiGet = vi.mocked(api.get);
+const mockApiPost = vi.mocked(api.post);
+const mockApiPut = vi.mocked(api.put);
 
 describe('ComprasService', () => {
   beforeEach(() => {
@@ -496,6 +507,203 @@ describe('ComprasService', () => {
       expect(result.kpis.totalSolicitacoes).toBe(10);
       expect(result.kpis.solicitacoesPendentes).toBe(0);
       expect(result.kpis.valorAguardandoFiscal).toBe(0);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // createSolicitacao (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('createSolicitacao', () => {
+    const payload = {
+      titulo: 'Compra de cimento',
+      descricao: 'Cimento CP-II para obra',
+      obraId: 'obra-001',
+      categoria: 'material_obra' as const,
+      prioridade: 'alta' as const,
+      valorEstimado: 15000,
+      prazoNecessidade: '2026-04-15',
+      itens: 3,
+    };
+
+    it('should call POST /compras/solicitacoes with payload', async () => {
+      const created = { ...mockSolicitacoesCompra[0], ...payload };
+      mockApiPost.mockResolvedValueOnce({ data: { data: created } });
+
+      const result = await createSolicitacao(payload);
+
+      expect(mockApiPost).toHaveBeenCalledWith(COMPRAS_API_ENDPOINTS.solicitacoes, payload);
+      expect(result.titulo).toBe(payload.titulo);
+    });
+
+    it('should fallback to mock on HTTP 503', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, response: { status: 503, data: {} } });
+
+      const result = await createSolicitacao(payload);
+
+      expect(result.id).toBeDefined();
+      expect(result.status).toBe('rascunho');
+      expect(result.obraId).toBe(payload.obraId);
+    });
+
+    it('should fallback to mock on network error', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, code: 'ERR_NETWORK' });
+
+      const result = await createSolicitacao(payload);
+
+      expect(result.id).toBeDefined();
+      expect(result.titulo).toBe(payload.titulo);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // updateSolicitacao (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('updateSolicitacao', () => {
+    it('should call PUT /compras/solicitacoes/:id with payload', async () => {
+      const updated = { ...mockSolicitacoesCompra[0], prioridade: 'critica' as const };
+      mockApiPut.mockResolvedValueOnce({ data: { data: updated } });
+
+      const result = await updateSolicitacao('sol-001', { prioridade: 'critica' });
+
+      expect(mockApiPut).toHaveBeenCalledWith(`${COMPRAS_API_ENDPOINTS.solicitacoes}/sol-001`, {
+        prioridade: 'critica',
+      });
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on HTTP 503', async () => {
+      mockApiGet.mockResolvedValueOnce({ data: { data: mockSolicitacoesCompra } });
+      mockApiPut.mockRejectedValueOnce({ isAxiosError: true, response: { status: 503, data: {} } });
+
+      const result = await updateSolicitacao('sol-001', { status: 'cancelada' });
+
+      expect(result).toBeDefined();
+      expect(result.id).toBeDefined();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // createCotacao (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('createCotacao', () => {
+    const payload = {
+      solicitacaoId: 'sol-001',
+      objeto: 'Cimento CP-II 50kg',
+      obraId: 'obra-001',
+      categoria: 'material_obra' as const,
+      fornecedorPrincipal: 'Fornecedor XPTO',
+      valorCotado: 14500,
+      melhorPrazoEntrega: '2026-04-20',
+    };
+
+    it('should call POST /compras/cotacoes with payload', async () => {
+      const created = { ...mockCotacoesCompra[0], ...payload };
+      mockApiPost.mockResolvedValueOnce({ data: { data: created } });
+
+      const result = await createCotacao(payload);
+
+      expect(mockApiPost).toHaveBeenCalledWith(COMPRAS_API_ENDPOINTS.cotacoes, payload);
+      expect(result.solicitacaoId).toBe(payload.solicitacaoId);
+    });
+
+    it('should fallback to mock on HTTP 503 and return valid shape', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, response: { status: 503, data: {} } });
+
+      const result = await createCotacao(payload);
+
+      expect(result.id).toBeDefined();
+      expect(result.status).toBe('em_cotacao');
+      expect(result.fornecedorPrincipal).toBe(payload.fornecedorPrincipal);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // updateCotacao (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('updateCotacao', () => {
+    it('should call PUT /compras/cotacoes/:id with payload', async () => {
+      const updated = { ...mockCotacoesCompra[0] };
+      mockApiPut.mockResolvedValueOnce({ data: { data: updated } });
+
+      const result = await updateCotacao('cot-001', { valorCotado: 13000 });
+
+      expect(mockApiPut).toHaveBeenCalledWith(`${COMPRAS_API_ENDPOINTS.cotacoes}/cot-001`, {
+        valorCotado: 13000,
+      });
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on timeout', async () => {
+      mockApiGet.mockResolvedValueOnce({ data: { data: mockCotacoesCompra } });
+      mockApiPut.mockRejectedValueOnce({ isAxiosError: true, code: 'ECONNABORTED' });
+
+      const result = await updateCotacao('cot-001', { status: 'cotada' });
+
+      expect(result).toBeDefined();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // createPedido (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('createPedido', () => {
+    const payload = {
+      solicitacaoId: 'sol-001',
+      cotacaoId: 'cot-001',
+      fornecedorId: 'forn-001',
+      fornecedorNome: 'Fornecedor XPTO',
+      obraId: 'obra-001',
+      categoria: 'material_obra' as const,
+      prioridade: 'alta' as const,
+      valorPedido: 14500,
+      previsaoEntrega: '2026-04-20',
+    };
+
+    it('should call POST /compras/pedidos with payload', async () => {
+      const created = { ...mockPedidosCompra[0], ...payload };
+      mockApiPost.mockResolvedValueOnce({ data: { data: created } });
+
+      const result = await createPedido(payload);
+
+      expect(mockApiPost).toHaveBeenCalledWith(COMPRAS_API_ENDPOINTS.pedidos, payload);
+      expect(result.fornecedorNome).toBe(payload.fornecedorNome);
+    });
+
+    it('should fallback to mock on HTTP 503 and return valid shape', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, response: { status: 503, data: {} } });
+
+      const result = await createPedido(payload);
+
+      expect(result.id).toBeDefined();
+      expect(result.status).toBe('pedido_emitido');
+      expect(result.valorPedido).toBe(payload.valorPedido);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // updatePedido (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('updatePedido', () => {
+    it('should call PUT /compras/pedidos/:id with payload', async () => {
+      const updated = { ...mockPedidosCompra[0] };
+      mockApiPut.mockResolvedValueOnce({ data: { data: updated } });
+
+      const result = await updatePedido('ped-001', { status: 'concluida' });
+
+      expect(mockApiPut).toHaveBeenCalledWith(`${COMPRAS_API_ENDPOINTS.pedidos}/ped-001`, {
+        status: 'concluida',
+      });
+      expect(result.id).toBeDefined();
+    });
+
+    it('should fallback to mock on HTTP 502', async () => {
+      mockApiGet.mockResolvedValueOnce({ data: { data: mockPedidosCompra } });
+      mockApiPut.mockRejectedValueOnce({ isAxiosError: true, response: { status: 502, data: {} } });
+
+      const result = await updatePedido('ped-001', { observacao: 'Entrega confirmada' });
+
+      expect(result).toBeDefined();
+      expect(result.id).toBeDefined();
     });
   });
 });

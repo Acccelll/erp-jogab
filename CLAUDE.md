@@ -14,9 +14,10 @@ Leia obrigatoriamente, nesta ordem:
 8. `docs/07-regras-de-implementacao.md`
 9. `docs/08-roadmap.md`
 10. `docs/10-readiness-modulos.md`
-11. `docs/15-ux-arquitetura.md` (se existir)
-12. `docs/15-integracao-fase10.md` (se existir)
-13. `docs/16-integracao-fase9.md` (se existir)
+11. `docs/18-qualidade-fase13.md` (se existir)
+12. `docs/15-ux-arquitetura.md` (se existir)
+13. `docs/15-integracao-fase10.md` (se existir)
+14. `docs/16-integracao-fase9.md` (se existir)
 
 ## Regras obrigatórias
 - Não mude a stack definida.
@@ -64,13 +65,14 @@ Leia obrigatoriamente, nesta ordem:
 
 ## Layout obrigatório
 O shell autenticado é composto por:
-- `AppLayout` — layout raiz: Sidebar + Topbar + Outlet + SideDrawer
+- `AppLayout` — layout raiz: Sidebar + Topbar + ContextBar + Outlet + SideDrawer
 - `Sidebar` — navegação lateral (52px colapsado, 220px expandido)
-- `Topbar` — barra superior com breadcrumbs, seletores de Obra e Competência, notificações e menu do usuário
+- `Topbar` — barra superior com breadcrumbs, ações, notificações e menu do usuário
+- `ContextBar` — barra de contexto global (Empresa, Filial, Obra, Centro de Custo, Competência) — renderizada no AppLayout, abaixo da Topbar
 - `ModuleLayout` — wrapper de módulos com padding e scroll
 - `ObraWorkspaceLayout` — layout do workspace de obra com `ObraHeader` + `OverflowTabs` (7 abas visíveis)
 
-> **Nota:** `ContextBar.tsx` existe no código mas **não está renderizado no shell global**. Os seletores de contexto (Obra e Competência) estão integrados diretamente na `Topbar`. Não renderize `ContextBar` em páginas individuais sem necessidade explícita.
+> **Regra:** `ContextBar` é renderizado globalmente no `AppLayout`. Páginas individuais **não** devem renderizar `ContextBar` diretamente — ele já está no shell.
 
 ## Padrão de tela obrigatório
 Cada tela principal deve seguir a ordem:

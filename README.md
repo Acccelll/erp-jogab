@@ -17,9 +17,11 @@ Este pacote foi preparado para uso com GitHub Copilot Agent ou Claude Code.
 12. `docs/11-integracao-fase5.md`
 13. `docs/12-integracao-fase6.md`
 14. `docs/13-integracao-fase7.md`
+15. `docs/14-integracao-fase8.md`
 16. `docs/15-integracao-fase10.md`
 17. `docs/16-integracao-fase9.md`
 18. `docs/17-integracao-fase11.md`
+19. `docs/18-qualidade-fase13.md`
 
 ## Objetivo do pacote
 Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura definida, sem improvisar stack, rotas, organização por domínio ou regras centrais do negócio.
@@ -31,7 +33,7 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 
 ## Estado atual do frontend
 
-Todas as 8 fases do roadmap original estão completas, além de 11 fases de alinhamento/integração. Os 15 módulos possuem pages, services, hooks, types e mock data implementados e todos estão integrados à API real com `withApiFallback`. A Fase 11 fechou os últimos módulos parciais: Estoque, Medições, Documentos (com upload/gestão) e Admin (com CRUD de usuários/perfis/permissões). Detalhes em `docs/08-roadmap.md` e `docs/17-integracao-fase11.md`.
+Todas as 8 fases do roadmap original estão completas, além de 13 fases de alinhamento/integração/qualidade. Os 15 módulos possuem pages, services, hooks, types e mock data implementados e todos estão integrados à API real com `withApiFallback`. A Fase 11 fechou os últimos módulos parciais. A Fase 12 adicionou mutations (POST/PUT) a Compras, Fiscal, Estoque, Medições e Relatórios. A Fase 13 corrigiu os contratos de mutation, expandiu a cobertura de testes para hooks de todos os módulos secundários e corrigiu a arquitetura de contexto global: `ContextBar` é agora renderizado no `AppLayout`, e a `Topbar` ficou focada em breadcrumbs, ações e menu do usuário (63 arquivos, 880 testes). Detalhes em `docs/08-roadmap.md` e `docs/18-qualidade-fase13.md`.
 
 ### Módulos implementados
 
@@ -73,10 +75,10 @@ Todas as 8 fases do roadmap original estão completas, além de 11 fases de alin
 | Utilitários compartilhados | 5 | 109 | HTTP client (api.ts), helpers (utils.ts), módulo de integração (integration.ts), auth service, context service |
 | Stores Zustand | 5 | 39 | contextStore, notificationStore, filtersStore, uiStore, drawerStore |
 | Componentes compartilhados | 5 | 37 | KPISection, StatusBadge, EmptyState, PageHeader, FilterBar |
-| Hooks TanStack Query | 8 | 32 | Dashboard, Obras (list, detail, mutations), RH, FOPAG, Compras, Horas Extras |
-| Services de módulos | 5 | 81 | Obras service (24), workspace (12), RH service (25), HE service (20), HE aprovação (9) |
+| Hooks TanStack Query | 15 | 60 | Dashboard, Obras, RH, FOPAG, Compras, HE + Financeiro, Fiscal, Estoque, Medições, Documentos, Relatorios, Admin (Fase 13) |
+| Services de módulos | 15 | 396 | Obras, RH, HE, Compras (GET+POST+PUT), Fiscal (GET+POST+PUT), Estoque (GET+POST+PUT), Medições (GET+POST+PUT), Relatorios (GET+POST), Admin (GET+POST+PUT) |
 
-**Total: 46 arquivos, 553 testes**
+**Total: 63 arquivos, 880 testes**
 
 ### Comandos
 
@@ -89,12 +91,11 @@ npm run build         # TypeScript + Vite build
 npm run lint          # ESLint
 ```
 
-### Gaps de cobertura restantes
+### Gaps de cobertura restantes (pós-Fase 13)
 
-- **Backend:** Repositório sem diretório backend — testes de integração de API dependem da implementação do backend
-- **Hooks de módulos secundários:** Hooks de Financeiro, Fiscal, Estoque, Medições, Documentos, Relatórios e Admin sem testes unitários isolados
+- **Backend real:** Repositório sem diretório backend — testes de integração E2E dependem de backend funcional
 - **Componentes específicos de módulo:** Filtros, tabelas e cards internos de cada módulo sem testes dedicados
-- **Testes end-to-end:** Ainda sem testes de integração E2E
+- **Testes end-to-end:** Ainda sem testes E2E (Playwright/Cypress) — previsto para Fase 14
 
 ---
 

@@ -1,17 +1,19 @@
 /**
- * AppLayout — Layout principal do ERP JOGAB (Fase 2).
+ * AppLayout — Layout principal do ERP JOGAB.
  *
- * Renderiza explicitamente os componentes obrigatórios do shell:
+ * Renderiza os componentes obrigatórios do shell autenticado:
  *   1. <Sidebar />    — navegação lateral com módulos em 3 grupos
- *   2. <Topbar />     — breadcrumbs, contexto (Obra+Competência), menu do usuário
- *   3. <Outlet />     — conteúdo da rota ativa (ModuleLayout / ObraWorkspaceLayout)
- *   4. <SideDrawer /> — drawer lateral global para detalhes e formulários
+ *   2. <Topbar />     — breadcrumbs, ações, notificações e menu do usuário
+ *   3. <ContextBar /> — seletores de contexto global (Empresa, Filial, Obra, Centro de Custo, Competência)
+ *   4. <Outlet />     — conteúdo da rota ativa (ModuleLayout / ObraWorkspaceLayout)
+ *   5. <SideDrawer /> — drawer lateral global para detalhes e formulários
  *
  * Referência: CLAUDE.md "Layout obrigatório", JOGAB_MASTER_SPEC §6.
  */
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
+import { ContextBar } from '@/shared/components';
 import { SideDrawer } from '@/shared/components/SideDrawer';
 import { useUIStore } from '@/shared/stores';
 
@@ -47,16 +49,19 @@ export function AppLayout() {
 
       {/* ── Área principal ── */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* ── 2. Topbar — barra superior com contexto integrado ── */}
+        {/* ── 2. Topbar — breadcrumbs, ações e menu do usuário ── */}
         <Topbar />
 
-        {/* ── 3. Outlet — conteúdo da rota ativa ── */}
+        {/* ── 3. ContextBar — seletores de contexto global ── */}
+        <ContextBar />
+
+        {/* ── 4. Outlet — conteúdo da rota ativa ── */}
         <main className="flex flex-1 flex-col overflow-hidden">
           <Outlet />
         </main>
       </div>
 
-      {/* ── 4. SideDrawer — drawer lateral global ── */}
+      {/* ── 5. SideDrawer — drawer lateral global ── */}
       <SideDrawer />
     </div>
   );

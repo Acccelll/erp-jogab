@@ -5,6 +5,7 @@ import {
   fetchRelatorioCategoria,
   normalizeRelatoriosDashboardData,
   normalizeRelatorioCategoriaData,
+  gerarRelatorio,
   RELATORIOS_API_ENDPOINTS,
 } from './relatorios.service';
 import { getMockRelatoriosDashboard, getMockRelatorioCategoria } from '../data/relatorios.mock';
@@ -16,11 +17,13 @@ vi.mock('@/shared/lib/api', async () => {
     ...actual,
     api: {
       get: vi.fn(),
+      post: vi.fn(),
     },
   };
 });
 
 const mockApiGet = vi.mocked(api.get);
+const mockApiPost = vi.mocked(api.post);
 
 describe('RelatoriosService', () => {
   beforeEach(() => {
@@ -290,6 +293,56 @@ describe('RelatoriosService', () => {
       const result = normalizeRelatorioCategoriaData(mockData, categoria);
 
       expect(result.itens.length).toBeGreaterThan(0);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // gerarRelatorio (Phase 12 mutation)
+  // ---------------------------------------------------------------------------
+  describe('gerarRelatorio', () => {
+    const payload = {
+      relatorioId: 'rel-001',
+      formato: 'pdf' as const,
+      filtros: { status: 'ativo' },
+    };
+
+    it('should call POST /relatorios/dashboard/gerar with payload', async () => {
+      const mockResult = {
+        id: 'gen-001',
+        relatorioId: payload.relatorioId,
+        titulo: 'Relatório rel-001',
+        formato: payload.formato,
+        status: 'concluido' as const,
+        url: '/relatorios/download/gen-001',
+        geradoEm: new Date().toISOString(),
+        expiracaoEm: new Date().toISOString(),
+      };
+      mockApiPost.mockResolvedValueOnce({ data: { data: mockResult } });
+
+      const result = await gerarRelatorio(payload);
+
+      expect(mockApiPost).toHaveBeenCalledWith(`${RELATORIOS_API_ENDPOINTS.dashboard}/gerar`, payload);
+      expect(result.id).toBeDefined();
+      expect(result.relatorioId).toBe(payload.relatorioId);
+    });
+
+    it('should fallback to mock on HTTP 503 and return valid shape', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, response: { status: 503, data: {} } });
+
+      const result = await gerarRelatorio(payload);
+
+      expect(result.id).toBeDefined();
+      expect(result.formato).toBe(payload.formato);
+      expect(result.status).toBe('concluido');
+    });
+
+    it('should fallback to mock on network error', async () => {
+      mockApiPost.mockRejectedValueOnce({ isAxiosError: true, code: 'ERR_NETWORK' });
+
+      const result = await gerarRelatorio(payload);
+
+      expect(result.relatorioId).toBe(payload.relatorioId);
+      expect(result.url).toBeDefined();
     });
   });
 });

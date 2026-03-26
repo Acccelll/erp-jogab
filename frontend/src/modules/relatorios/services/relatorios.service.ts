@@ -6,6 +6,7 @@ import type {
   RelatoriosDashboardData,
   RelatoriosFiltersData,
   RelatoriosResumoExecutivo,
+  RelatorioSaida,
 } from '../types';
 import { getMockRelatorioCategoria, getMockRelatoriosDashboard } from '../data/relatorios.mock';
 
@@ -92,5 +93,45 @@ export async function fetchRelatorioCategoria(
       return normalizeRelatorioCategoriaData(raw, categoria);
     },
     () => fetchRelatorioCategoriasMock(categoria, filters),
+  );
+}
+
+export interface GerarRelatorioPayload {
+  relatorioId: string;
+  formato: RelatorioSaida;
+  filtros?: Record<string, unknown>;
+  periodoInicio?: string;
+  periodoFim?: string;
+  obraId?: string;
+}
+
+export interface RelatorioGeradoResult {
+  id: string;
+  relatorioId: string;
+  titulo: string;
+  formato: RelatorioSaida;
+  status: 'processando' | 'concluido' | 'erro';
+  url?: string;
+  geradoEm: string;
+  expiracaoEm: string;
+}
+
+export async function gerarRelatorio(payload: GerarRelatorioPayload): Promise<RelatorioGeradoResult> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(`${RELATORIOS_API_ENDPOINTS.dashboard}/gerar`, payload);
+      return unwrapApiResponse<RelatorioGeradoResult>(response.data);
+    },
+    () =>
+      Promise.resolve({
+        id: crypto.randomUUID(),
+        relatorioId: payload.relatorioId,
+        titulo: `Relatório ${payload.relatorioId}`,
+        formato: payload.formato,
+        status: 'concluido' as const,
+        url: `/relatorios/download/${crypto.randomUUID()}`,
+        geradoEm: new Date().toISOString(),
+        expiracaoEm: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      }),
   );
 }

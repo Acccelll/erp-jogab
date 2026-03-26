@@ -133,22 +133,38 @@
 - ✅ `integration.ts` atualizado: Fiscal e Relatórios marcados como `integrated`
 - ✅ 11 módulos agora integrados (de 9 na Fase 9)
 
-## Próximos passos (Fase 11)
+## Fase 12 — Concluída (2026-03-26)
 
-Candidato principal: **Estoque**
-- `GET /estoque/dashboard`
-- `GET /estoque/movimentacoes`
-- `GET /estoque/itens/:id` (avaliar maturidade do contrato de detalhe)
+- ✅ Mutations (POST/PUT) adicionadas: Compras (6), Fiscal (2), Estoque (2), Medições (3), Relatórios (1)
+- ✅ `integration.ts` atualizado: 5 módulos com endpoints de mutation registrados
+- ✅ Testes de mutation adicionados a compras, fiscal e estoque service tests
+- ✅ 842 testes passando em 56 arquivos
 
-Candidato secundário: **Medições** (mesma estrutura de maturidade)
+## Fase 13 — Concluída (2026-03-26)
 
-Demais pendências:
-- Completar contratos parciais: documentos gestão, admin CRUD
-- Desabilitar fallback gradualmente por módulo (`VITE_API_FALLBACK=false`)
-- Code-splitting com React.lazy para reduzir bundle size
-- Testes de integração end-to-end com API real
+- ✅ Bug fix: padrão de `unwrapApiResponse` corrigido em todas as mutations da Fase 12
+- ✅ TypeScript: corrigidos erros de tipo nas funções fallback de update
+- ✅ 7 novos arquivos de teste de hooks: Financeiro, Fiscal, Estoque, Medições, Documentos, Relatórios, Admin
+- ✅ Testes de mutation adicionados a medicoes e relatorios service tests
+- ✅ README e documentação atualizados
+- ✅ **880 testes passando em 63 arquivos**
 
-## Estado atual (2026-03-26 — Fase 10)
+## Estado atual (2026-03-26 — Fase 13)
+
+**Resultado dos comandos de validação:**
+- `npm run build`: 0 erros TypeScript, build completo com sucesso
+- `npm run lint`: 0 erros
+- `npm run test`: 63 arquivos de teste, 880 testes passando
+- `npm audit`: 0 vulnerabilidades
+
+## Próximos passos (Fase 14)
+
+- Setup E2E básico (Playwright) com fluxos: login → dashboard → obras → detalhes
+- Cobertura de hooks de sub-features: `useContasPagar`, `useFluxoCaixa`, `useFiscalEntradas`, etc.
+- Início do backend real (Node/Express) com endpoints prioritários
+- Code-splitting com React.lazy (bundle atual ~1MB, warning de >500 kB)
+
+
 
 **Resultado dos comandos de validação:**
 - `npm run build`: 0 erros TypeScript, build completo com sucesso
