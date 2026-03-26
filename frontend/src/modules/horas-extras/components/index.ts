@@ -9,3 +9,4 @@ export { HorasExtrasKpiBar } from './HorasExtrasKpiBar';
 export { HorasExtrasResumoCard } from './HorasExtrasResumoCard';
 export { HorasExtrasSectionHeader } from './HorasExtrasSectionHeader';
 export { HorasExtrasTable } from './HorasExtrasTable';
+export { HoraExtraFormDrawer } from './HoraExtraFormDrawer';

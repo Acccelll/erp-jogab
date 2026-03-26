@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { Plus, ArrowLeft } from 'lucide-react';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { useHorasExtras, useHorasExtrasFilters } from '../hooks';
-import { HorasExtrasFilters } from '../components';
+import { HorasExtrasFilters, HoraExtraFormDrawer } from '../components';
 import type { HoraExtraListItem } from '../types';
+import { useDrawerStore } from '@/shared/stores';
 import { HORA_EXTRA_TIPO_LABELS, HORA_EXTRA_STATUS_LABELS, HORA_EXTRA_STATUS_VARIANTS } from '../types';
 
 function StatusBadgeInline({ status }: { status: HoraExtraListItem['status'] }) {
@@ -27,6 +28,7 @@ function StatusBadgeInline({ status }: { status: HoraExtraListItem['status'] }) 
 }
 
 export function HorasExtrasLancamentosPage() {
+  const { openDrawer } = useDrawerStore();
   const { filters, setSearch, setStatus, setTipo, setCompetencia, clearFilters, hasActiveFilters } =
     useHorasExtrasFilters();
 
@@ -50,6 +52,7 @@ export function HorasExtrasLancamentosPage() {
             </Link>
             <button
               type="button"
+              onClick={() => openDrawer({ title: 'Novo Lançamento de Hora Extra', content: <HoraExtraFormDrawer />, width: '560px' })}
               className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-800"
             >
               <Plus size={16} />

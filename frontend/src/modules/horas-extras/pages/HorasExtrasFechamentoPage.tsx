@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { CalendarCheck2, SendHorizonal } from 'lucide-react';
+import { CalendarCheck2, SendHorizonal, CheckCircle2, AlertCircle } from 'lucide-react';
 import { EmptyState, MainContent, PageHeader } from '@/shared/components';
 import { fetchFechamentosCompetencia } from '../services/horasExtras.service';
 import { useFecharCompetenciaHorasExtras } from '../hooks';
@@ -17,15 +17,6 @@ export function HorasExtrasFechamentoPage() {
       <PageHeader
         title="Fechamento de Horas Extras"
         subtitle="Consolidação por competência para envio futuro à FOPAG e reflexo financeiro por obra."
-        actions={
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 rounded-md bg-jogab-700 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-jogab-800"
-          >
-            <SendHorizonal size={16} />
-            Fechar competência
-          </button>
-        }
       />
 
       <MainContent className="space-y-6">
@@ -72,6 +63,14 @@ export function HorasExtrasFechamentoPage() {
         {!isLoading && !isError && data && (
           <>
             <section className="grid gap-4 xl:grid-cols-2">
+              {data.length === 0 && (
+                <div className="col-span-full">
+                  <EmptyState
+                    title="Nenhum fechamento processado"
+                    description="Não existem competências com lançamentos para exibir nesta visão."
+                  />
+                </div>
+              )}
               {data.map((fechamento) => (
                 <HorasExtrasFechamentoCard
                   key={fechamento.id}

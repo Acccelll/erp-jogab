@@ -12,6 +12,8 @@ import type {
 import type { HorasExtrasFiltersData } from '../types';
 import {
   approveHoraExtraMock,
+  rejectHoraExtraMock,
+  createHoraExtraMock,
   calcularHorasExtrasKpis,
   fecharCompetenciaMock,
   gerarHorasExtrasResumoCards,
@@ -23,9 +25,11 @@ import { registrarHoraExtraHistorico } from '../data/horas-extras-aprovacao.mock
 
 export const HORAS_EXTRAS_API_ENDPOINTS = {
   list: '/horas-extras',
+  create: '/horas-extras',
   detail: (id: string) => `/horas-extras/${id}`,
   dashboard: '/horas-extras/dashboard',
   aprovar: (id: string) => `/horas-extras/${id}/aprovar`,
+  rejeitar: (id: string) => `/horas-extras/${id}/rejeitar`,
   fechamento: '/horas-extras/fechamento',
   fechamentos: '/horas-extras/fechamentos',
 } as const;
@@ -110,6 +114,22 @@ async function fetchHorasExtrasDashboardMock(filters?: HorasExtrasFiltersData): 
   };
 }
 
+async function createHoraExtraServiceMock(payload: Omit<HoraExtraLancamento, 'id' | 'valorCalculado' | 'status' | 'aprovadorNome'>): Promise<HoraExtraMutationResponse> {
+  await delay(180);
+  const result = createHoraExtraMock(payload);
+  registrarHoraExtraHistorico({
+    horaExtraId: result.lancamento.id,
+    competencia: result.lancamento.competencia,
+    funcionarioNome: result.lancamento.funcionarioNome,
+    obraNome: result.lancamento.obraNome,
+    evento: 'lancada',
+    responsavel: 'Portal de Lançamentos',
+    destino: 'obra',
+    descricao: 'Novo lançamento registrado para conferência e aprovação.',
+  });
+  return result;
+}
+
 async function approveHoraExtraServiceMock(id: string): Promise<HoraExtraMutationResponse> {
   await delay(180);
   const result = approveHoraExtraMock(id);
@@ -122,6 +142,22 @@ async function approveHoraExtraServiceMock(id: string): Promise<HoraExtraMutatio
     responsavel: result.lancamento.aprovadorNome ?? 'Gestor da Competência',
     destino: 'horas_extras',
     descricao: 'Lançamento aprovado e liberado para o fechamento da competência.',
+  });
+  return result;
+}
+
+async function rejectHoraExtraServiceMock(id: string, observacao?: string): Promise<HoraExtraMutationResponse> {
+  await delay(180);
+  const result = rejectHoraExtraMock(id, observacao);
+  registrarHoraExtraHistorico({
+    horaExtraId: id,
+    competencia: result.lancamento.competencia,
+    funcionarioNome: result.lancamento.funcionarioNome,
+    obraNome: result.lancamento.obraNome,
+    evento: 'rejeitada',
+    responsavel: result.lancamento.aprovadorNome ?? 'Gestor da Competência',
+    destino: 'rh',
+    descricao: `Lançamento rejeitado. ${observacao || 'Motivo não informado.'}`,
   });
   return result;
 }
@@ -233,6 +269,16 @@ export async function fetchHorasExtrasDashboard(filters?: HorasExtrasFiltersData
   );
 }
 
+export async function createHoraExtra(payload: Omit<HoraExtraLancamento, 'id' | 'valorCalculado' | 'status' | 'aprovadorNome'>): Promise<HoraExtraMutationResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(HORAS_EXTRAS_API_ENDPOINTS.create, payload);
+      return unwrapApiResponse<HoraExtraMutationResponse>(response.data);
+    },
+    () => createHoraExtraServiceMock(payload),
+  );
+}
+
 export async function approveHoraExtra(id: string): Promise<HoraExtraMutationResponse> {
   return withApiFallback(
     async () => {
@@ -240,6 +286,16 @@ export async function approveHoraExtra(id: string): Promise<HoraExtraMutationRes
       return unwrapApiResponse<HoraExtraMutationResponse>(response.data);
     },
     () => approveHoraExtraServiceMock(id),
+  );
+}
+
+export async function rejectHoraExtra(id: string, observacao?: string): Promise<HoraExtraMutationResponse> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(HORAS_EXTRAS_API_ENDPOINTS.rejeitar(id), { observacao });
+      return unwrapApiResponse<HoraExtraMutationResponse>(response.data);
+    },
+    () => rejectHoraExtraServiceMock(id, observacao),
   );
 }
 
