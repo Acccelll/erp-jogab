@@ -1,88 +1,28 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Building2,
-  Users,
-  Clock,
-  Receipt,
-  ShoppingCart,
-  FileText,
-  Banknote,
-  Package,
-  Ruler,
-  FolderOpen,
-  BarChart2,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
-import { useUIStore } from '@/shared/stores';
+import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { useUIStore, usePreferencesStore } from '@/shared/stores';
 import { cn } from '@/shared/lib/utils';
-import type { LucideIcon } from 'lucide-react';
-
-interface SidebarNavItem {
-  label: string;
-  path: string;
-  icon: LucideIcon;
-}
-
-/** Grupo 1 — Core (always prominent) */
-const coreItems: SidebarNavItem[] = [
-  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { label: 'Obras', path: '/obras', icon: Building2 },
-];
-
-/** Grupo 2 — Pessoas (primary operational) */
-const pessoasItems: SidebarNavItem[] = [
-  { label: 'Funcionários', path: '/rh/funcionarios', icon: Users },
-  { label: 'Horas Extras', path: '/horas-extras', icon: Clock },
-  { label: 'FOPAG', path: '/fopag', icon: Receipt },
-];
-
-/** Grupo 3 — Operacional (secondary) */
-const operacionalItems: SidebarNavItem[] = [
-  { label: 'Compras', path: '/compras', icon: ShoppingCart },
-  { label: 'Fiscal', path: '/fiscal', icon: FileText },
-  { label: 'Financeiro', path: '/financeiro', icon: Banknote },
-  { label: 'Estoque', path: '/estoque', icon: Package },
-  { label: 'Medições', path: '/medicoes', icon: Ruler },
-  { label: 'Documentos', path: '/documentos', icon: FolderOpen },
-];
-
-/** Rodapé (utility — lowest hierarchy) */
-const footerItems: SidebarNavItem[] = [
-  { label: 'Relatórios', path: '/relatorios', icon: BarChart2 },
-  { label: 'Administração', path: '/admin', icon: Settings },
-];
+import { menuConfig, type MenuItem, type MenuGroup } from '@/config/menu';
 
 function Divider() {
   return <div className="mx-2 my-1 h-px bg-sidebar-border/50" />;
 }
 
-function GroupLabel({ label, collapsed }: { label: string; collapsed: boolean }) {
-  if (collapsed) return null;
-  return (
-    <p className="mt-3 px-2.5 pb-0.5 pt-2 text-[10px] font-medium uppercase tracking-widest text-sidebar-group/30">
-      {label}
-    </p>
-  );
-}
-
 function NavItem({
   item,
   collapsed,
-  tier = 'primary',
+  isSubItem = false,
 }: {
-  item: SidebarNavItem;
+  item: MenuItem;
   collapsed: boolean;
-  tier?: 'primary' | 'secondary' | 'utility';
+  isSubItem?: boolean;
 }) {
   const location = useLocation();
-  const { icon: Icon, label, path } = item;
+  const { icon: Icon, label, path, tier = 'primary' } = item;
   const isActive = location.pathname === path || location.pathname.startsWith(`${path}/`);
 
-  const iconSize = tier === 'primary' ? 20 : 16;
+  const iconSize = isSubItem ? 14 : tier === 'primary' ? 20 : 16;
 
   return (
     <li>
@@ -94,10 +34,11 @@ function NavItem({
             ? 'bg-sidebar-active text-sidebar-text-active shadow-sm font-semibold'
             : tier === 'utility'
               ? 'text-sidebar-text/30 hover:bg-sidebar-hover hover:text-white text-[13px]'
-              : tier === 'secondary'
+              : tier === 'secondary' || isSubItem
                 ? 'text-sidebar-text/50 hover:bg-sidebar-hover hover:text-white text-[13px]'
                 : 'text-sidebar-text/80 hover:bg-sidebar-hover hover:text-white text-sm font-medium',
           collapsed && 'justify-center px-0',
+          isSubItem && !collapsed && 'ml-4',
         )}
         title={label}
       >
@@ -114,6 +55,63 @@ function NavItem({
         )}
       </NavLink>
     </li>
+  );
+}
+
+function CollapsibleGroup({
+  group,
+  collapsed,
+}: {
+  group: MenuGroup;
+  collapsed: boolean;
+}) {
+  const location = useLocation();
+  const { sidebarGroupsCollapsed, toggleSidebarGroup } = usePreferencesStore();
+
+  const isGroupCollapsed = !!sidebarGroupsCollapsed[group.id];
+  const isAnyItemActive = group.items.some(
+    (item) => location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+  );
+
+  // Auto-expand if an item is active but group is collapsed
+  useEffect(() => {
+    if (isAnyItemActive && isGroupCollapsed) {
+      toggleSidebarGroup(group.id);
+    }
+  }, [isAnyItemActive, isGroupCollapsed, group.id, toggleSidebarGroup]);
+
+  if (collapsed) {
+    return (
+      <>
+        {group.items.map((item) => (
+          <NavItem key={item.id} item={item} collapsed={collapsed} />
+        ))}
+      </>
+    );
+  }
+
+  return (
+    <div className="space-y-0.5">
+      <button
+        type="button"
+        onClick={() => toggleSidebarGroup(group.id)}
+        className="flex w-full items-center justify-between rounded-md px-2.5 py-2 text-[10px] font-medium uppercase tracking-widest text-sidebar-group/40 transition-colors hover:bg-sidebar-hover hover:text-white"
+      >
+        <span>{group.label}</span>
+        <ChevronDown
+          size={12}
+          className={cn('transition-transform duration-200', isGroupCollapsed && '-rotate-90')}
+        />
+      </button>
+
+      {!isGroupCollapsed && (
+        <ul className="space-y-0.5">
+          {group.items.map((item) => (
+            <NavItem key={item.id} item={item} collapsed={collapsed} isSubItem />
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
@@ -162,43 +160,29 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex flex-1 flex-col overflow-y-auto px-1.5 py-1">
-        {/* Core — highest prominence */}
-        <ul className="space-y-0.5">
-          {coreItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} tier="primary" />
-          ))}
-        </ul>
+        <div className="space-y-1">
+          {menuConfig.map((itemOrGroup, idx) => {
+            const isGroup = 'items' in itemOrGroup;
 
-        <Divider />
+            if (isGroup) {
+              return (
+                <div key={itemOrGroup.id}>
+                  {idx > 0 && <Divider />}
+                  <CollapsibleGroup group={itemOrGroup} collapsed={collapsed} />
+                </div>
+              );
+            }
 
-        {/* Pessoas */}
-        <GroupLabel label="Pessoas" collapsed={collapsed} />
-        <ul className="space-y-0.5">
-          {pessoasItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} tier="primary" />
-          ))}
-        </ul>
-
-        <Divider />
-
-        {/* Operacional — visually recessed */}
-        <GroupLabel label="Operacional" collapsed={collapsed} />
-        <ul className="space-y-0">
-          {operacionalItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} tier="secondary" />
-          ))}
-        </ul>
+            return (
+              <ul key={itemOrGroup.id} className="space-y-0.5">
+                <NavItem item={itemOrGroup} collapsed={collapsed} />
+              </ul>
+            );
+          })}
+        </div>
 
         {/* Spacer */}
         <div className="flex-1" />
-
-        {/* Footer — utility tier */}
-        <Divider />
-        <ul className="space-y-0">
-          {footerItems.map((item) => (
-            <NavItem key={item.path} item={item} collapsed={collapsed} tier="utility" />
-          ))}
-        </ul>
       </nav>
 
       {/* Toggle pin button */}
