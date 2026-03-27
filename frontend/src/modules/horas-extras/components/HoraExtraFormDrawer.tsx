@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useFormDirty } from '@/shared/hooks';
@@ -36,7 +36,7 @@ export function HoraExtraFormDrawer() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isDirty },
   } = useForm<HoraExtraFormData>({
@@ -55,16 +55,14 @@ export function HoraExtraFormDrawer() {
 
   useFormDirty(isDirty);
 
-  const selectedFuncionarioId = watch('funcionarioId');
-  const currentObraId = watch('obraId');
+  const selectedFuncionarioId = useWatch({ control, name: 'funcionarioId' });
+  const currentObraId = useWatch({ control, name: 'obraId' });
 
   // Auto-fill obra and centro de custo based on employee allocation
   useEffect(() => {
     if (selectedFuncionarioId) {
       const funcionario = mockFuncionarios.find((f) => f.id === selectedFuncionarioId);
-      const alocacao = mockAlocacoes.find(
-        (a) => a.funcionarioId === selectedFuncionarioId && a.status === 'ativa',
-      );
+      const alocacao = mockAlocacoes.find((a) => a.funcionarioId === selectedFuncionarioId && a.status === 'ativa');
 
       if (alocacao) {
         setValue('obraId', alocacao.obraId);
@@ -78,13 +76,23 @@ export function HoraExtraFormDrawer() {
   }, [selectedFuncionarioId, setValue]);
 
   const filteredCentrosCusto = useMemo(() => {
+    const centrosDoContexto = (options?.centrosCusto ?? [])
+      .filter((cc) => cc.obraId === currentObraId)
+      .map((cc) => ({
+        id: cc.value,
+        nome: cc.label,
+      }));
+
+    if (centrosDoContexto.length > 0) return centrosDoContexto;
     return mockCentrosCusto.filter((cc) => cc.obraId === currentObraId);
-  }, [currentObraId]);
+  }, [options?.centrosCusto, currentObraId]);
 
   const onSubmit = (data: HoraExtraFormData) => {
     const funcionario = mockFuncionarios.find((f) => f.id === data.funcionarioId);
     const obra = options?.obras.find((o) => o.value === data.obraId);
-    const centroCusto = mockCentrosCusto.find((cc) => cc.id === data.centroCustoId);
+    const centroCusto =
+      filteredCentrosCusto.find((cc) => cc.id === data.centroCustoId) ??
+      mockCentrosCusto.find((cc) => cc.id === data.centroCustoId);
     const filial = options?.filiais.find((f) => f.value === data.filialId);
 
     if (!funcionario || !obra || !centroCusto || !filial) return;
@@ -118,7 +126,7 @@ export function HoraExtraFormDrawer() {
             type: 'error',
           });
         },
-      }
+      },
     );
   };
 

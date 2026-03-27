@@ -15,6 +15,7 @@ export const FISCAL_API_ENDPOINTS = {
   dashboard: '/fiscal/dashboard',
   entradas: '/fiscal/entradas',
   saidas: '/fiscal/saidas',
+  documentos: '/fiscal/documentos',
   documentoDetail: (id: string) => `/fiscal/documentos/${id}`,
 } as const;
 
@@ -139,7 +140,7 @@ export interface UpdateDocumentoFiscalPayload {
 export async function createDocumentoFiscal(payload: CreateDocumentoFiscalPayload): Promise<DocumentoFiscal> {
   return withApiFallback(
     async () => {
-      const response = await api.post(FISCAL_API_ENDPOINTS.entradas, payload);
+      const response = await api.post(FISCAL_API_ENDPOINTS.documentos, payload);
       return unwrapApiResponse<DocumentoFiscal>(response.data);
     },
     () =>

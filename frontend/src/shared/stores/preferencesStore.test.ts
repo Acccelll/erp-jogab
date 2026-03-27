@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { usePreferencesStore } from './preferencesStore';
+import type { ColumnPreference, ModuleId, SavedFilter } from './preferencesStore';
 
 describe('preferencesStore', () => {
   beforeEach(() => {
     usePreferencesStore.setState({
-      columns: {} as any,
-      savedFilters: {} as any,
+      columns: {} as Record<ModuleId, ColumnPreference[]>,
+      savedFilters: {} as Record<ModuleId, SavedFilter[]>,
     });
   });
 

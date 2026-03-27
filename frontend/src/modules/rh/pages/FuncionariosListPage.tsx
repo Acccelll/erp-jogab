@@ -24,14 +24,11 @@ import { FuncionarioStatusBadge } from '../components/FuncionarioStatusBadge';
 import { FuncionarioMutationDrawerForm } from '../components/FuncionarioMutationDrawerForm';
 import { useFuncionarios } from '../hooks/useFuncionarios';
 import { useFuncionarioFilters } from '../hooks/useFuncionarioFilters';
-import {
-  deleteFuncionarios,
-  bulkUpdateFuncionarioStatus,
-  restoreFuncionario,
-} from '../services/funcionarios.service';
+import { deleteFuncionarios, bulkUpdateFuncionarioStatus, restoreFuncionario } from '../services/funcionarios.service';
 import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
 import { cn } from '@/shared/lib/utils';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
+import type { Funcionario } from '../types';
 
 const DEFAULT_FUNC_COLUMNS: ColumnPreference[] = [
   { id: 'nome', label: 'Nome', visible: true },
@@ -43,6 +40,24 @@ const DEFAULT_FUNC_COLUMNS: ColumnPreference[] = [
   { id: 'tipoContrato', label: 'Contrato', visible: false },
   { id: 'dataAdmissao', label: 'Admissão', visible: false },
 ];
+
+function escapeCsvValue(value: string | number | null | undefined) {
+  const normalized = value == null ? '' : String(value);
+  const escaped = normalized.replaceAll('"', '""');
+  return `"${escaped}"`;
+}
+
+function downloadCsv(filename: string, content: string) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 export function FuncionariosListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
@@ -276,7 +291,7 @@ export function FuncionariosListPage() {
                     key={func.id}
                     className={cn(
                       'hover:bg-surface-soft transition-colors',
-                      isSelected(func.id) && 'bg-brand-primary/[0.02]'
+                      isSelected(func.id) && 'bg-brand-primary/[0.02]',
                     )}
                   >
                     <td className="px-4 py-1.5">
@@ -372,8 +387,8 @@ export function FuncionariosListPage() {
                 await queryClient.invalidateQueries({ queryKey: ['funcionarios'] });
                 toast.success(message);
                 clearSelection();
-              } catch (error: any) {
-                toast.error(error.message || 'Erro ao ativar funcionários');
+              } catch (error: unknown) {
+                toast.error(error instanceof Error ? error.message : 'Erro ao ativar funcionários');
               }
             },
             variant: 'success',
@@ -382,7 +397,43 @@ export function FuncionariosListPage() {
             label: 'Exportar',
             icon: <Download size={16} />,
             onClick: () => {
-              toast.info('Exportação em desenvolvimento');
+              const funcionariosToExport = funcionarios.filter((funcionario) => selectedIds.includes(funcionario.id));
+              if (funcionariosToExport.length === 0) {
+                toast.warning('Selecione ao menos um funcionário para exportar.');
+                return;
+              }
+
+              const headers = [
+                'matricula',
+                'nome',
+                'cargo',
+                'status',
+                'obraAlocadoNome',
+                'departamento',
+                'tipoContrato',
+                'dataAdmissao',
+                'salarioBase',
+              ];
+
+              const lines = funcionariosToExport.map((funcionario) =>
+                [
+                  funcionario.matricula,
+                  funcionario.nome,
+                  funcionario.cargo,
+                  funcionario.status,
+                  funcionario.obraAlocadoNome,
+                  funcionario.departamento,
+                  funcionario.tipoContrato,
+                  funcionario.dataAdmissao,
+                  funcionario.salarioBase,
+                ]
+                  .map(escapeCsvValue)
+                  .join(';'),
+              );
+
+              const csv = [headers.join(';'), ...lines].join('\n');
+              downloadCsv(`funcionarios-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+              toast.success(`${funcionariosToExport.length} funcionário(s) exportado(s) com sucesso.`);
               clearSelection();
             },
           },
@@ -404,18 +455,18 @@ export function FuncionariosListPage() {
                     onClick: async () => {
                       try {
                         for (const item of itemsToDelete) {
-                          await restoreFuncionario(item as any);
+                          await restoreFuncionario(item as Funcionario);
                         }
                         await queryClient.invalidateQueries({ queryKey: ['funcionarios'] });
                         toast.success('Exclusão desfeita com sucesso.');
-                      } catch (err: any) {
+                      } catch {
                         toast.error('Erro ao desfazer exclusão.');
                       }
                     },
                   },
                 });
-              } catch (error: any) {
-                toast.error(error.message || 'Erro ao excluir funcionários');
+              } catch (error: unknown) {
+                toast.error(error instanceof Error ? error.message : 'Erro ao excluir funcionários');
               }
             },
             variant: 'danger',

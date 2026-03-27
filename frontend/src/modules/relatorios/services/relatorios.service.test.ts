@@ -306,7 +306,7 @@ describe('RelatoriosService', () => {
       filtros: { status: 'ativo' },
     };
 
-    it('should call POST /relatorios/dashboard/gerar with payload', async () => {
+    it('should call POST /relatorios/gerar with payload', async () => {
       const mockResult = {
         id: 'gen-001',
         relatorioId: payload.relatorioId,
@@ -321,7 +321,7 @@ describe('RelatoriosService', () => {
 
       const result = await gerarRelatorio(payload);
 
-      expect(mockApiPost).toHaveBeenCalledWith(`${RELATORIOS_API_ENDPOINTS.dashboard}/gerar`, payload);
+      expect(mockApiPost).toHaveBeenCalledWith(RELATORIOS_API_ENDPOINTS.gerar, payload);
       expect(result.id).toBeDefined();
       expect(result.relatorioId).toBe(payload.relatorioId);
     });
