@@ -83,6 +83,27 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
+### Endpoints complementares de workspace (Obras + RH)
+
+Além dos endpoints CRUD listados acima, os workspaces operacionais também usam endpoints reais com `withApiFallback`:
+
+| Domínio | Endpoint | Método | Status | Descrição |
+|---------|----------|--------|--------|-----------|
+| Obras | `/obras/:id/cronograma` | GET | ✅ Integrado | Aba de cronograma da obra |
+| Obras | `/obras/:id/equipe` | GET | ✅ Integrado | Aba de equipe da obra |
+| Obras | `/obras/:id/contratos` | GET | ✅ Integrado | Aba de contratos da obra |
+| Obras | `/obras/:id/rh` | GET | ✅ Integrado | Aba de RH da obra |
+| Obras | `/obras/:id/alocacoes` | GET | ✅ Integrado | Alocações vinculadas à obra |
+| RH | `/rh/funcionarios/:id/contrato` | GET | ✅ Integrado | Aba de contrato do funcionário |
+| RH | `/rh/funcionarios/:id/alocacoes` | GET | ✅ Integrado | Aba de alocações do funcionário |
+| RH | `/rh/funcionarios/:id/horas-extras` | GET | ✅ Integrado | Aba de horas extras do funcionário |
+| RH | `/rh/funcionarios/:id/fopag` | GET | ✅ Integrado | Aba de FOPAG do funcionário |
+| RH | `/rh/alocacoes` | POST | ✅ Integrado | Criar alocação |
+| RH | `/rh/alocacoes/:id` | PUT | ✅ Integrado | Atualizar alocação |
+| RH | `/rh/alocacoes/:id/encerrar` | PATCH | ✅ Integrado | Encerrar alocação |
+
+---
+
 ## Módulos prontos para integração imediata (Ready)
 
 ### 6. Horas Extras (Fase 7)
@@ -157,7 +178,7 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 |----------|--------|--------|-----------|
 | `/fiscal/dashboard` | GET | ✅ | Dashboard fiscal |
 | `/fiscal/entradas` | GET | ✅ | Documentos de entrada (NF-e recebidas) |
-| `/fiscal/entradas` | POST | ✅ | Criar documento fiscal de entrada (Fase 12) |
+| `/fiscal/documentos` | POST | ✅ | Criar documento fiscal (Fase 12) |
 | `/fiscal/saidas` | GET | ✅ | Documentos de saída (NF-e emitidas) |
 | `/fiscal/documentos/:id` | GET | ✅ | Detalhe de documento fiscal |
 | `/fiscal/documentos/:id` | PUT | ✅ | Atualizar documento fiscal (Fase 12) |
