@@ -41,6 +41,11 @@ export interface ExecutiveManagementSnapshot {
     alocadosEmObra: number;
     maiorObra: string | null;
   };
+  charts: {
+    overtimeByDepartment: Array<{ label: string; value: number }>;
+    financialEvolution: Array<{ label: string; previsto: number; realizado: number }>;
+    obraStatusDistribution: Array<{ label: string; value: number }>;
+  };
 }
 
 export function buildExecutiveManagementSnapshot(competencia = '2026-03'): ExecutiveManagementSnapshot {
@@ -94,6 +99,29 @@ export function buildExecutiveManagementSnapshot(competencia = '2026-03'): Execu
       afastados: mockFuncionarios.filter((item) => item.status === 'afastado').length,
       alocadosEmObra: alocados.length,
       maiorObra,
+    },
+    charts: {
+      overtimeByDepartment: [
+        { label: 'Produção', value: 45 },
+        { label: 'Engenharia', value: 12 },
+        { label: 'Segurança', value: 8 },
+        { label: 'Logística', value: 15 },
+        { label: 'Projetos', value: 5 },
+      ],
+      financialEvolution: [
+        { label: 'Out/25', previsto: 1850000, realizado: 1800000 },
+        { label: 'Nov/25', previsto: 1900000, realizado: 1950000 },
+        { label: 'Dez/25', previsto: 2100000, realizado: 2050000 },
+        { label: 'Jan/26', previsto: 2050000, realizado: 2100000 },
+        { label: 'Fev/26', previsto: 2200000, realizado: 2150000 },
+        { label: 'Mar/26', previsto: pessoal.valorPrevisto, realizado: pessoal.valorRealizado },
+      ],
+      obraStatusDistribution: [
+        { label: 'Em andamento', value: 8 },
+        { label: 'Concluídas', value: 15 },
+        { label: 'Paralisadas', value: 2 },
+        { label: 'Planejamento', value: 5 },
+      ],
     },
   };
 }

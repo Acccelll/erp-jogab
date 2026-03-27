@@ -20,6 +20,10 @@ vi.mock('@/shared/stores', () => ({
     dashboardSectionsOpen: {},
     setDashboardSectionOpen: vi.fn(),
   }),
+  usePreferencesStore: () => ({
+    visibleKpiIds: ['kpi-1', 'kpi-2', 'kpi-previsto', 'kpi-realizado', 'kpi-he', 'kpi-fopag', 'kpi-obras'],
+    setVisibleKpiIds: vi.fn(),
+  }),
 }));
 
 // Mock child components that aren't relevant to these tests
@@ -33,6 +37,8 @@ vi.mock('../components', () => ({
       {children}
     </div>
   ),
+  DashboardAlertsPanel: () => <div data-testid="alerts-panel" />,
+  KpiCustomizationDrawer: () => <div data-testid="kpi-drawer" />,
 }));
 
 import { useDashboardSummary } from '@/modules/dashboard/hooks';
@@ -46,13 +52,14 @@ const mockSummary: DashboardSummary = {
   generatedAt: new Date().toISOString(),
   kpis: [
     {
+          id: 'kpi-previsto',
       label: 'Custo pessoal previsto',
       value: 120000,
       format: 'currency',
       subtitle: 'Competência 2026-03',
       trend: 'up',
     },
-    { label: 'Obras impactadas', value: 3, format: 'number', subtitle: '5 centros de custo', trend: 'neutral' },
+    { id: 'kpi-2', label: 'Obras impactadas', value: 3, format: 'number', subtitle: '5 centros de custo', trend: 'neutral' },
   ],
   obras: [
     {
@@ -161,14 +168,23 @@ describe('DashboardPage', () => {
       generatedAt: new Date().toISOString(),
       kpis: [
         {
+          id: 'kpi-previsto',
           label: 'Custo pessoal previsto',
           value: 50000,
           format: 'currency' as const,
           subtitle: 'Parcial',
           trend: 'neutral' as const,
         },
+        {
+          id: 'kpi-obras',
+          label: 'Obras impactadas',
+          value: 3,
+          format: 'number' as const,
+          subtitle: 'Test',
+          trend: 'neutral' as const,
+        }
       ],
-    } as DashboardSummary;
+    } as unknown as DashboardSummary;
 
     mockUseDashboardSummary.mockReturnValue({
       data: partialSummary,
@@ -182,6 +198,7 @@ describe('DashboardPage', () => {
 
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('Custo pessoal previsto')).toBeInTheDocument();
+    expect(screen.getByText('Obras impactadas')).toBeInTheDocument();
     // Section groups should still render (with empty content)
     expect(screen.getByText('Obras')).toBeInTheDocument();
     expect(screen.getByText('RH')).toBeInTheDocument();

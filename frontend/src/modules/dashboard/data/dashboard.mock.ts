@@ -21,11 +21,11 @@ export function buildDashboardSummaryMock(competencia = '2026-03'): DashboardSum
   return {
     generatedAt: new Date().toISOString(),
     kpis: [
-      { label: 'Custo pessoal previsto', value: snapshot.pessoal.valorPrevisto, format: 'currency', subtitle: `Competência ${competencia}`, trend: 'up' },
-      { label: 'Custo pessoal realizado', value: snapshot.pessoal.valorRealizado, format: 'currency', subtitle: fechamentoLabel, trend: 'neutral' },
-      { label: 'Horas extras', value: Number(snapshot.horasExtras.totalHoras.toFixed(1)), format: 'number', subtitle: `${snapshot.horasExtras.totalLancamentos} lançamento(s)`, trend: snapshot.horasExtras.pendentesAprovacao > 0 ? 'up' : 'neutral' },
-      { label: 'FOPAG consolidada', value: snapshot.fopag.competencia.valorPrevisto, format: 'currency', subtitle: `${snapshot.fopag.competencia.totalFuncionarios} funcionários`, trend: 'up' },
-      { label: 'Obras impactadas', value: snapshot.pessoal.totalObras, format: 'number', subtitle: `${snapshot.pessoal.totalCentrosCusto} centros de custo`, trend: 'neutral' },
+      { id: 'kpi-previsto', label: 'Custo pessoal previsto', value: snapshot.pessoal.valorPrevisto, format: 'currency', subtitle: `Competência ${competencia}`, trend: 'up' },
+      { id: 'kpi-realizado', label: 'Custo pessoal realizado', value: snapshot.pessoal.valorRealizado, format: 'currency', subtitle: fechamentoLabel, trend: 'neutral' },
+      { id: 'kpi-he', label: 'Horas extras', value: Number(snapshot.horasExtras.totalHoras.toFixed(1)), format: 'number', subtitle: `${snapshot.horasExtras.totalLancamentos} lançamento(s)`, trend: snapshot.horasExtras.pendentesAprovacao > 0 ? 'up' : 'neutral' },
+      { id: 'kpi-fopag', label: 'FOPAG consolidada', value: snapshot.fopag.competencia.valorPrevisto, format: 'currency', subtitle: `${snapshot.fopag.competencia.totalFuncionarios} funcionários`, trend: 'up' },
+      { id: 'kpi-obras', label: 'Obras impactadas', value: snapshot.pessoal.totalObras, format: 'number', subtitle: `${snapshot.pessoal.totalCentrosCusto} centros de custo`, trend: 'neutral' },
     ],
     obras: [
       {
@@ -136,5 +136,8 @@ export function buildDashboardSummaryMock(competencia = '2026-03'): DashboardSum
         actionTo: principalObra ? `/obras/${principalObra.id}/financeiro` : '/obras',
       },
     ],
+    overtimeByDepartment: snapshot.charts.overtimeByDepartment,
+    financialEvolution: snapshot.charts.financialEvolution.map(d => ({ label: d.label, value: d.previsto, secondaryValue: d.realizado })),
+    obraStatusDistribution: snapshot.charts.obraStatusDistribution,
   };
 }
