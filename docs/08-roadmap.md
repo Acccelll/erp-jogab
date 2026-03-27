@@ -174,7 +174,7 @@
 - `npm run test`: 63 arquivos de teste, 880 testes passando
 - `npm audit`: 0 vulnerabilidades
 
-**Todos os 61 endpoints integrados (Fases 5–14):**
+**Todos os 87 endpoints integrados (Fases 5–14 + complementares de workspace/alocações):**
 
 | Módulo | Endpoints integrados |
 |--------|---------------------|
@@ -196,9 +196,11 @@
 
 Todos os módulos usam `withApiFallback` — fallback gracioso para mock local quando API não está disponível.
 
+> Observação: a tabela acima resume os **61 endpoints-base** por módulo. Somam-se a eles **26 endpoints complementares** (workspaces de Obras/RH e ciclo de alocações), totalizando **87 endpoints integrados**.
+
 ## Próximos passos (pós-Fase 14)
 
-- **Backend real** — implementar Node/Express com os 61 endpoints mapeados
+- **Backend real** — implementar Node/Express com os 87 endpoints mapeados (incluindo complementares de workspace/alocações)
 - **Testes E2E** — Playwright com fluxos: login → dashboard → obras → detalhe
 - **Autenticação real** — JWT com refresh token
 - **Permissões** — guard por perfil usando dados de `/admin/permissoes`
