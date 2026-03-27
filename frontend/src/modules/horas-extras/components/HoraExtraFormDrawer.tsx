@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useFormDirty } from '@/shared/hooks';
@@ -36,7 +36,7 @@ export function HoraExtraFormDrawer() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isDirty },
   } = useForm<HoraExtraFormData>({
@@ -55,8 +55,8 @@ export function HoraExtraFormDrawer() {
 
   useFormDirty(isDirty);
 
-  const selectedFuncionarioId = watch('funcionarioId');
-  const currentObraId = watch('obraId');
+  const selectedFuncionarioId = useWatch({ control, name: 'funcionarioId' });
+  const currentObraId = useWatch({ control, name: 'obraId' });
 
   // Auto-fill obra and centro de custo based on employee allocation
   useEffect(() => {
