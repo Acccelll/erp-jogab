@@ -27,6 +27,7 @@ import { useFuncionarioFilters } from '../hooks/useFuncionarioFilters';
 import { deleteFuncionarios, bulkUpdateFuncionarioStatus, restoreFuncionario } from '../services/funcionarios.service';
 import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
 import { cn } from '@/shared/lib/utils';
+import { escapeCsvValue, downloadCsv } from '@/shared/lib/csv';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 import type { Funcionario } from '../types';
 
@@ -40,24 +41,6 @@ const DEFAULT_FUNC_COLUMNS: ColumnPreference[] = [
   { id: 'tipoContrato', label: 'Contrato', visible: false },
   { id: 'dataAdmissao', label: 'Admissão', visible: false },
 ];
-
-function escapeCsvValue(value: string | number | null | undefined) {
-  const normalized = value == null ? '' : String(value);
-  const escaped = normalized.replaceAll('"', '""');
-  return `"${escaped}"`;
-}
-
-function downloadCsv(filename: string, content: string) {
-  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', filename);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
 
 export function FuncionariosListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);

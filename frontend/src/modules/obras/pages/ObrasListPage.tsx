@@ -26,6 +26,7 @@ import { useObraFilters } from '../hooks/useObraFilters';
 import { deleteObras, bulkUpdateObraStatus, restoreObra } from '../services/obras.service';
 import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
 import { formatCurrency, cn } from '@/shared/lib/utils';
+import { escapeCsvValue, downloadCsv } from '@/shared/lib/csv';
 import { Link } from 'react-router-dom';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 import type { Obra } from '../types';
@@ -40,24 +41,6 @@ const DEFAULT_OBRA_COLUMNS: ColumnPreference[] = [
   { id: 'cidade', label: 'Cidade/UF', visible: false },
   { id: 'tipo', label: 'Tipo', visible: false },
 ];
-
-function escapeCsvValue(value: string | number | null | undefined) {
-  const normalized = value == null ? '' : String(value);
-  const escaped = normalized.replaceAll('"', '""');
-  return `"${escaped}"`;
-}
-
-function downloadCsv(filename: string, content: string) {
-  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', filename);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
 
 export function ObrasListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
