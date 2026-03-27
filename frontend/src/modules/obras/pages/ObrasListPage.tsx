@@ -44,6 +44,24 @@ const DEFAULT_OBRA_COLUMNS: ColumnPreference[] = [
   { id: 'tipo', label: 'Tipo', visible: false },
 ];
 
+function escapeCsvValue(value: string | number | null | undefined) {
+  const normalized = value == null ? '' : String(value);
+  const escaped = normalized.replaceAll('"', '""');
+  return `"${escaped}"`;
+}
+
+function downloadCsv(filename: string, content: string) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export function ObrasListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
   const queryClient = useQueryClient();
@@ -373,7 +391,45 @@ export function ObrasListPage() {
             label: 'Exportar',
             icon: <Download size={16} />,
             onClick: () => {
-              toast.info('Funcionalidade de exportação em desenvolvimento');
+              const obrasToExport = obras.filter((obra) => selectedIds.includes(obra.id));
+              if (obrasToExport.length === 0) {
+                toast.warning('Selecione ao menos uma obra para exportar.');
+                return;
+              }
+
+              const headers = [
+                'codigo',
+                'nome',
+                'status',
+                'tipo',
+                'cidade',
+                'uf',
+                'percentualConcluido',
+                'orcamentoPrevisto',
+                'custoRealizado',
+                'responsavelNome',
+              ];
+
+              const lines = obrasToExport.map((obra) =>
+                [
+                  obra.codigo,
+                  obra.nome,
+                  obra.status,
+                  obra.tipo,
+                  obra.cidade,
+                  obra.uf,
+                  obra.percentualConcluido,
+                  obra.orcamentoPrevisto,
+                  obra.custoRealizado,
+                  obra.responsavelNome,
+                ]
+                  .map(escapeCsvValue)
+                  .join(';'),
+              );
+
+              const csv = [headers.join(';'), ...lines].join('\n');
+              downloadCsv(`obras-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+              toast.success(`${obrasToExport.length} obra(s) exportada(s) com sucesso.`);
               clearSelection();
             },
           },

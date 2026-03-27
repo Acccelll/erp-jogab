@@ -44,6 +44,24 @@ const DEFAULT_FUNC_COLUMNS: ColumnPreference[] = [
   { id: 'dataAdmissao', label: 'Admissão', visible: false },
 ];
 
+function escapeCsvValue(value: string | number | null | undefined) {
+  const normalized = value == null ? '' : String(value);
+  const escaped = normalized.replaceAll('"', '""');
+  return `"${escaped}"`;
+}
+
+function downloadCsv(filename: string, content: string) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export function FuncionariosListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
   const queryClient = useQueryClient();
@@ -362,7 +380,43 @@ export function FuncionariosListPage() {
             label: 'Exportar',
             icon: <Download size={16} />,
             onClick: () => {
-              toast.info('Exportação em desenvolvimento');
+              const funcionariosToExport = funcionarios.filter((funcionario) => selectedIds.includes(funcionario.id));
+              if (funcionariosToExport.length === 0) {
+                toast.warning('Selecione ao menos um funcionário para exportar.');
+                return;
+              }
+
+              const headers = [
+                'matricula',
+                'nome',
+                'cargo',
+                'status',
+                'obraAlocadoNome',
+                'departamento',
+                'tipoContrato',
+                'dataAdmissao',
+                'salarioBase',
+              ];
+
+              const lines = funcionariosToExport.map((funcionario) =>
+                [
+                  funcionario.matricula,
+                  funcionario.nome,
+                  funcionario.cargo,
+                  funcionario.status,
+                  funcionario.obraAlocadoNome,
+                  funcionario.departamento,
+                  funcionario.tipoContrato,
+                  funcionario.dataAdmissao,
+                  funcionario.salarioBase,
+                ]
+                  .map(escapeCsvValue)
+                  .join(';'),
+              );
+
+              const csv = [headers.join(';'), ...lines].join('\n');
+              downloadCsv(`funcionarios-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+              toast.success(`${funcionariosToExport.length} funcionário(s) exportado(s) com sucesso.`);
               clearSelection();
             },
           },
