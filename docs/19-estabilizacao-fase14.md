@@ -116,7 +116,7 @@ Todos os 15 módulos estão integrados com API real via `withApiFallback`:
 | Documentos | 11+12 | 2 GET | POST upload, PUT atualizar |
 | Admin | 11+12 | 7 GET | POST/PUT usuário, perfil, permissão |
 
-**Total:** 61 endpoints mapeados e integrados.
+**Total:** 87 endpoints mapeados e integrados (incluindo endpoints complementares de workspace/alocações).
 
 ---
 
@@ -197,7 +197,7 @@ npm audit:      0 vulnerabilidades
 
 ## Próximos passos (pós-Fase 14)
 
-1. **Backend real** — implementar Node/Express com os 61 endpoints mapeados
+1. **Backend real** — implementar Node/Express com os 87 endpoints mapeados (incluindo complementares de workspace/alocações)
 2. **Testes E2E** — Playwright com fluxos: login → dashboard → obras → detalhe
 3. **Autenticação real** — JWT com refresh token, integrar com `/auth/me`
 4. **Permissões** — implementar guard por perfil usando dados de `/admin/permissoes`
