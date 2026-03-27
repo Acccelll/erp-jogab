@@ -16,6 +16,8 @@ import {
   BulkActionBar,
   ColumnManager,
   SavedFilters,
+  TableSkeleton,
+  ErrorStateView,
 } from '@/shared/components';
 import { useDrawerStore, usePreferencesStore } from '@/shared/stores';
 import type { ColumnPreference } from '@/shared/stores/preferencesStore';
@@ -26,6 +28,7 @@ import { useObraFilters } from '../hooks/useObraFilters';
 import { deleteObras, bulkUpdateObraStatus, restoreObra } from '../services/obras.service';
 import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
 import { formatCurrency, cn } from '@/shared/lib/utils';
+import { type ApiError } from '@/shared/lib/api';
 import { Link } from 'react-router-dom';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
@@ -46,7 +49,7 @@ export function ObrasListPage() {
   const { filters, setSearch, setStatus, setTipo, setFilters, clearFilters, hasActiveFilters } = useObraFilters();
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const { data, isLoading, isError } = useObras(filters);
+  const { data, isLoading, isError, error, refetch } = useObras(filters);
   const columnsPref = usePreferencesStore((state) => state.columns['obras'] || DEFAULT_OBRA_COLUMNS);
 
   const obras = data?.data ?? [];
@@ -179,33 +182,13 @@ export function ObrasListPage() {
       )}
 
       <MainContent>
-        {/* Loading skeleton */}
-        {isLoading && (
-          <div className="space-y-0">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
-                <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-              </div>
-            ))}
-          </div>
-        )}
+        {isLoading && <TableSkeleton rows={8} cols={visibleColumns.length + 1} />}
 
         {isError && (
-          <EmptyState
-            title="Erro ao carregar obras"
-            description="Não foi possível carregar a lista de obras. Tente novamente."
-            action={
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
-              >
-                Tentar novamente
-              </button>
-            }
+          <ErrorStateView
+            type={(error as ApiError)?.type}
+            status={(error as ApiError)?.status}
+            onRetry={() => void refetch()}
           />
         )}
 

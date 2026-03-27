@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Landmark, TrendingDown, Search, SlidersHorizontal, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { EmptyState, MainContent, StatusBadge, QuickFilterChips, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, StatusBadge, QuickFilterChips, PageHeader, TableSkeleton, ErrorStateView } from '@/shared/components';
+import { type ApiError } from '@/shared/lib/api';
 import { cn, formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { TitulosFinanceirosTable } from '../components';
 import { useFinanceiro, useFinanceiroFilters, useFinanceiroPessoal } from '../hooks';
@@ -114,32 +115,13 @@ export function FinanceiroListPage() {
       )}
 
       <MainContent className="space-y-4">
-        {isLoading && (
-          <div className="space-y-0">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
-                <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-              </div>
-            ))}
-          </div>
-        )}
+        {isLoading && <TableSkeleton rows={8} cols={6} />}
 
         {isError && (
-          <EmptyState
-            title="Erro ao carregar Financeiro"
-            description="Não foi possível montar a visão consolidada de caixa, contas a pagar e contas a receber."
-            action={
-              <button
-                type="button"
-                onClick={() => void refetch()}
-                className="rounded-md bg-brand-primary px-3 py-1.5 text-sm text-white hover:bg-brand-primary-hover"
-              >
-                Tentar novamente
-              </button>
-            }
+          <ErrorStateView
+            type={(data as unknown as ApiError)?.type ?? 'unknown'}
+            status={(data as unknown as ApiError)?.status}
+            onRetry={() => void refetch()}
           />
         )}
 

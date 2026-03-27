@@ -1,6 +1,7 @@
 import { ReceiptText, Wallet } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader, TableSkeleton, CardSkeleton, ErrorStateView } from '@/shared/components';
+import { type ApiError } from '@/shared/lib/api';
 import { useMedicoes, useMedicoesFilters } from '../hooks';
 import { MedicoesFilters, MedicoesKpiBar, MedicoesOverview, MedicoesResumoCard, MedicoesTable } from '../components';
 
@@ -62,27 +63,21 @@ export function MedicoesListPage() {
 
       <MainContent className="space-y-6">
         {isLoading && (
-          <div className="flex flex-1 items-center justify-center py-12">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-              <p className="text-sm text-text-muted">Carregando visão de medições...</p>
+          <div className="space-y-6">
+            <div className="grid gap-4 xl:grid-cols-3">
+              <CardSkeleton rows={2} />
+              <CardSkeleton rows={2} />
+              <CardSkeleton rows={2} />
             </div>
+            <TableSkeleton rows={8} cols={6} />
           </div>
         )}
 
         {isError && (
-          <EmptyState
-            title="Erro ao carregar medições"
-            description="Não foi possível montar a visão principal de medições, aprovação e faturamento."
-            action={
-              <button
-                type="button"
-                onClick={() => void refetch()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
-              >
-                Tentar novamente
-              </button>
-            }
+          <ErrorStateView
+            type={(data as unknown as ApiError)?.type ?? 'unknown'}
+            status={(data as unknown as ApiError)?.status}
+            onRetry={() => void refetch()}
           />
         )}
 

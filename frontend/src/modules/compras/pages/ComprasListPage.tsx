@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FileStack, PackageCheck, ShoppingBag, Search, SlidersHorizontal } from 'lucide-react';
-import { EmptyState, MainContent, QuickFilterChips } from '@/shared/components';
+import { EmptyState, MainContent, QuickFilterChips, TableSkeleton, ErrorStateView } from '@/shared/components';
+import { type ApiError } from '@/shared/lib/api';
 import { useCompraFilters, useCompras } from '../hooks';
 import { PedidosCompraTable, SolicitacoesCompraTable } from '../components';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
@@ -102,31 +103,17 @@ export function ComprasListPage() {
 
       <MainContent className="space-y-6">
         {isLoading && (
-          <div className="space-y-0">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
-                <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-              </div>
-            ))}
+          <div className="grid gap-6 xl:grid-cols-[1.2fr,1fr]">
+            <TableSkeleton rows={5} cols={4} />
+            <TableSkeleton rows={5} cols={4} />
           </div>
         )}
 
         {isError && (
-          <EmptyState
-            title="Erro ao carregar compras"
-            description="Não foi possível montar a visão consolidada de solicitações, cotações e pedidos."
-            action={
-              <button
-                type="button"
-                onClick={() => void refetch()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
-              >
-                Tentar novamente
-              </button>
-            }
+          <ErrorStateView
+            type={(data as unknown as ApiError)?.type ?? 'unknown'}
+            status={(data as unknown as ApiError)?.status}
+            onRetry={() => void refetch()}
           />
         )}
 
