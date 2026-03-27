@@ -17,6 +17,8 @@ import {
   BulkActionBar,
   ColumnManager,
   SavedFilters,
+  TableSkeleton,
+  ErrorStateView,
 } from '@/shared/components';
 import { useDrawerStore, usePreferencesStore } from '@/shared/stores';
 import type { ColumnPreference } from '@/shared/stores/preferencesStore';
@@ -27,7 +29,7 @@ import { useFuncionarioFilters } from '../hooks/useFuncionarioFilters';
 import { deleteFuncionarios, bulkUpdateFuncionarioStatus, restoreFuncionario } from '../services/funcionarios.service';
 import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
 import { cn } from '@/shared/lib/utils';
-import { escapeCsvValue, downloadCsv } from '@/shared/lib/csv';
+import { type ApiError } from '@/shared/lib/api';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 import type { Funcionario } from '../types';
 
@@ -42,6 +44,24 @@ const DEFAULT_FUNC_COLUMNS: ColumnPreference[] = [
   { id: 'dataAdmissao', label: 'Admissão', visible: false },
 ];
 
+function escapeCsvValue(value: string | number | null | undefined) {
+  const normalized = value == null ? '' : String(value);
+  const escaped = normalized.replaceAll('"', '""');
+  return `"${escaped}"`;
+}
+
+function downloadCsv(filename: string, content: string) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export function FuncionariosListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
   const queryClient = useQueryClient();
@@ -49,7 +69,7 @@ export function FuncionariosListPage() {
     useFuncionarioFilters();
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const { data, isLoading, isError } = useFuncionarios(filters);
+  const { data, isLoading, isError, error, refetch } = useFuncionarios(filters);
   const columnsPref = usePreferencesStore((state) => state.columns['funcionarios'] || DEFAULT_FUNC_COLUMNS);
 
   const funcionarios = data?.data ?? [];
@@ -184,33 +204,13 @@ export function FuncionariosListPage() {
       )}
 
       <MainContent>
-        {/* Loading skeleton */}
-        {isLoading && (
-          <div className="space-y-0">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex gap-4 border-b border-border-light px-4 py-3">
-                <div className="h-4 w-2/5 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/4 animate-pulse rounded bg-neutral-200" />
-                <div className="h-4 w-1/6 animate-pulse rounded bg-neutral-200" />
-              </div>
-            ))}
-          </div>
-        )}
+        {isLoading && <TableSkeleton rows={8} cols={visibleColumns.length + 1} />}
 
         {isError && (
-          <EmptyState
-            title="Erro ao carregar funcionários"
-            description="Não foi possível carregar a lista de funcionários. Tente novamente."
-            action={
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="rounded-md bg-brand-primary px-3 py-1.5 text-sm text-white hover:bg-brand-primary-hover"
-              >
-                Tentar novamente
-              </button>
-            }
+          <ErrorStateView
+            type={(error as ApiError)?.type}
+            status={(error as ApiError)?.status}
+            onRetry={() => void refetch()}
           />
         )}
 

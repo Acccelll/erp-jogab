@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeftRight, ExternalLink, ReceiptText } from 'lucide-react';
+import { ArrowLeftRight, ExternalLink } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader, CardSkeleton, ErrorStateView } from '@/shared/components';
+import { type ApiError } from '@/shared/lib/api';
 import { formatCompetencia, formatCurrency } from '@/shared/lib/utils';
 import { FinanceiroStatusBadge } from '../components';
 import { fetchTituloFinanceiroById } from '../services/financeiro.service';
@@ -33,22 +34,18 @@ export function TituloFinanceiroDetailPage() {
       />
 
       <MainContent className="space-y-6">
-        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando detalhe do título...</div>}
+        {isLoading && (
+          <div className="grid gap-6 xl:grid-cols-[1.3fr,0.7fr]">
+            <CardSkeleton rows={8} />
+            <CardSkeleton rows={5} />
+          </div>
+        )}
 
         {isError && (
-          <EmptyState
-            icon={<ReceiptText size={28} />}
-            title="Erro ao carregar título financeiro"
-            description="Não foi possível buscar o detalhe completo do título solicitado."
-            action={
-              <button
-                type="button"
-                onClick={() => void refetch()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
-              >
-                Tentar novamente
-              </button>
-            }
+          <ErrorStateView
+            type={(data as unknown as ApiError)?.type ?? 'unknown'}
+            status={(data as unknown as ApiError)?.status}
+            onRetry={() => void refetch()}
           />
         )}
 

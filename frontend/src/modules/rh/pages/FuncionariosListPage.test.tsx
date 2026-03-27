@@ -97,10 +97,11 @@ describe('FuncionariosListPage', () => {
       data: undefined,
       isLoading: false,
       isError: true,
+      error: { type: 'http', status: 500 } as any,
     } as ReturnType<typeof useFuncionarios>);
 
     renderWithRouter();
-    expect(screen.getByText('Erro ao carregar funcionários')).toBeInTheDocument();
+    expect(screen.getByText('Falha na requisição')).toBeInTheDocument();
   });
 
   it('renders data state with table and quick filter chips', () => {

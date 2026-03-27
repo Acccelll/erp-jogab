@@ -1,6 +1,7 @@
 export type DashboardAlertSeverity = 'critical' | 'warning' | 'info';
 
 export interface DashboardKpi {
+  id: string;
   label: string;
   value: number;
   format?: 'currency' | 'number' | 'percent';
@@ -38,6 +39,12 @@ export interface DashboardAlertItem {
   actionTo?: string;
 }
 
+export interface DashboardChartDataPoint {
+  label: string;
+  value: number;
+  secondaryValue?: number;
+}
+
 export interface DashboardSummary {
   generatedAt: string;
   kpis: DashboardKpi[];
@@ -45,6 +52,10 @@ export interface DashboardSummary {
   rh: DashboardSectionCardData[];
   financeiro: DashboardSectionCardData[];
   alertas: DashboardAlertItem[];
+  // Insights de Gestão (Gráficos)
+  overtimeByDepartment?: DashboardChartDataPoint[];
+  financialEvolution?: DashboardChartDataPoint[];
+  obraStatusDistribution?: DashboardChartDataPoint[];
 }
 
 export interface DashboardContextFilters {

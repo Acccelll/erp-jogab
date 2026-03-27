@@ -29,6 +29,10 @@ interface PreferencesState {
   columns: Record<ModuleId, ColumnPreference[]>;
   /** Filtros salvos por módulo */
   savedFilters: Record<ModuleId, SavedFilter[]>;
+  /** Estado de colapso dos grupos do menu lateral */
+  sidebarGroupsCollapsed: Record<string, boolean>;
+  /** IDs dos KPIs visíveis no dashboard */
+  visibleKpiIds: string[];
 
   /** Atualiza a visibilidade/ordem das colunas de um módulo */
   setColumns: (moduleId: ModuleId, columns: ColumnPreference[]) => void;
@@ -41,6 +45,10 @@ interface PreferencesState {
 
   /** Reseta as colunas para o padrão (vazio, forçando o componente a prover o default) */
   resetColumns: (moduleId: ModuleId) => void;
+  /** Alterna o estado de colapso de um grupo do menu */
+  toggleSidebarGroup: (groupId: string) => void;
+  /** Atualiza os KPIs visíveis */
+  setVisibleKpiIds: (ids: string[]) => void;
 }
 
 export const usePreferencesStore = create<PreferencesState>()(
@@ -48,6 +56,8 @@ export const usePreferencesStore = create<PreferencesState>()(
     (set) => ({
       columns: {} as Record<ModuleId, ColumnPreference[]>,
       savedFilters: {} as Record<ModuleId, SavedFilter[]>,
+      sidebarGroupsCollapsed: {},
+      visibleKpiIds: ['kpi-previsto', 'kpi-realizado', 'kpi-he', 'kpi-fopag', 'kpi-obras'],
 
       setColumns: (moduleId, cols) =>
         set((state) => ({
@@ -80,6 +90,15 @@ export const usePreferencesStore = create<PreferencesState>()(
           delete newColumns[moduleId];
           return { columns: newColumns };
         }),
+
+      toggleSidebarGroup: (groupId) =>
+        set((state) => ({
+          sidebarGroupsCollapsed: {
+            ...state.sidebarGroupsCollapsed,
+            [groupId]: !state.sidebarGroupsCollapsed[groupId],
+          },
+        })),
+      setVisibleKpiIds: (ids: string[]) => set({ visibleKpiIds: ids }),
     }),
     {
       name: 'jogab-preferences',

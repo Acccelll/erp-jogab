@@ -17,5 +17,6 @@ export function useFuncionarioDetails(funcId: string | undefined) {
     isLoading: detailQuery.isLoading,
     isError: detailQuery.isError,
     error: detailQuery.error,
+    refetch: detailQuery.refetch,
   };
 }

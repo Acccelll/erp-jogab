@@ -8,31 +8,49 @@
  */
 import { useParams } from 'react-router-dom';
 import { DollarSign, TrendingUp, Wallet, Users, FileSignature, Clock, Target } from 'lucide-react';
-import { MainContent } from '@/shared/components';
+import { MainContent, CardSkeleton, ErrorStateView, Skeleton } from '@/shared/components';
 import { formatCurrency, cn } from '@/shared/lib/utils';
 import { useObraDetails } from '../hooks/useObraDetails';
 import type { ObraResumoBloco } from '../types';
 
 export function ObraVisaoGeralPage() {
   const { obraId } = useParams<{ obraId: string }>();
-  const { kpis, resumoBlocos, isLoading, isError } = useObraDetails(obraId);
+  const { kpis, resumoBlocos, isLoading, isError, refetch } = useObraDetails(obraId);
 
   if (isLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center py-12">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-          <p className="text-sm text-text-muted">Carregando visão geral...</p>
-        </div>
+      <div className="flex flex-1 flex-col">
+        <MainContent className="space-y-8 px-8 py-8">
+          <div className="flex items-end gap-12">
+            <div className="space-y-2">
+              <Skeleton width={120} height={10} />
+              <Skeleton width={200} height={40} />
+            </div>
+            <div className="flex gap-10">
+              <div className="space-y-2"><Skeleton width={100} height={10} /><Skeleton width={120} height={20} /></div>
+              <div className="space-y-2"><Skeleton width={100} height={10} /><Skeleton width={120} height={20} /></div>
+            </div>
+          </div>
+          <Skeleton height={60} className="w-full" />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <CardSkeleton rows={4} />
+            <CardSkeleton rows={4} />
+            <CardSkeleton rows={4} />
+            <CardSkeleton rows={4} />
+          </div>
+        </MainContent>
       </div>
     );
   }
 
   if (isError || !kpis) {
     return (
-      <div className="flex flex-1 items-center justify-center py-12">
-        <p className="text-sm text-text-muted">Erro ao carregar dados da obra.</p>
-      </div>
+      <ErrorStateView
+        type="http"
+        status={404}
+        onRetry={() => void refetch()}
+        className="flex-1"
+      />
     );
   }
 
