@@ -205,7 +205,7 @@ A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`
 
 - **Integrado:** conectado à API real com `withApiFallback`, normalizers e testes.
 
-**Total:** 61 endpoints integrados de 61 mapeados. Todos os módulos estão integrados. Detalhes em `docs/10-readiness-modulos.md`.
+**Total:** 87 endpoints integrados de 87 mapeados (incluindo endpoints complementares de workspace/alocações). Todos os módulos estão integrados. Detalhes em `docs/10-readiness-modulos.md`.
 
 ---
 
