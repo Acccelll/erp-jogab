@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader, TableSkeleton, ErrorStateView } from '@/shared/components';
+import { type ApiError } from '@/shared/lib/api';
 import { useHorasExtrasAprovacao, useHorasExtrasFilters } from '../hooks';
 import {
   HorasExtrasAprovacaoResumoCard,
@@ -98,21 +99,13 @@ export function HorasExtrasAprovacaoPage() {
           actionHref="/fopag"
         />
 
-        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando fila de aprovação...</div>}
+        {isLoading && <TableSkeleton rows={10} cols={6} />}
 
         {isError && (
-          <EmptyState
-            title="Erro ao carregar aprovação"
-            description="Não foi possível carregar a fila de aprovação e o histórico operacional."
-            action={
-              <button
-                type="button"
-                onClick={() => void refetch()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white"
-              >
-                Tentar novamente
-              </button>
-            }
+          <ErrorStateView
+            type={(data as unknown as ApiError)?.type ?? 'unknown'}
+            status={(data as unknown as ApiError)?.status}
+            onRetry={() => void refetch()}
           />
         )}
 

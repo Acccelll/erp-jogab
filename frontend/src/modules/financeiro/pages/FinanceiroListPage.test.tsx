@@ -65,6 +65,7 @@ describe('FinanceiroListPage', () => {
     } as ReturnType<typeof useFinanceiro>);
 
     const { container } = renderWithRouter();
+    // TableSkeleton uses animate-pulse
     const skeletons = container.querySelectorAll('.animate-pulse');
     expect(skeletons.length).toBeGreaterThan(0);
   });
@@ -80,7 +81,7 @@ describe('FinanceiroListPage', () => {
     } as ReturnType<typeof useFinanceiro>);
 
     renderWithRouter();
-    expect(screen.getByText('Erro ao carregar Financeiro')).toBeInTheDocument();
+    expect(screen.getByText('Algo deu errado')).toBeInTheDocument();
 
     const retryBtn = screen.getByRole('button', { name: /tentar novamente/i });
     await user.click(retryBtn);

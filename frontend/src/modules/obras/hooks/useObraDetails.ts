@@ -18,5 +18,6 @@ export function useObraDetails(obraId: string | undefined) {
     isLoading: detailQuery.isLoading,
     isError: detailQuery.isError,
     error: detailQuery.error,
+    refetch: detailQuery.refetch,
   };
 }
