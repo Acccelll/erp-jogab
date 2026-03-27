@@ -5,23 +5,54 @@
  */
 import { useState, useMemo } from 'react';
 import { Plus, Search, SlidersHorizontal, Trash2, Download, UserCheck } from 'lucide-react';
+import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { MainContent, EmptyState, QuickFilterChips, TableCellStack, PageHeader, BulkActionBar } from '@/shared/components';
-import { useDrawerStore } from '@/shared/stores';
+import {
+  MainContent,
+  EmptyState,
+  QuickFilterChips,
+  TableCellStack,
+  PageHeader,
+  BulkActionBar,
+  ColumnManager,
+  SavedFilters,
+} from '@/shared/components';
+import { useDrawerStore, usePreferencesStore } from '@/shared/stores';
+import type { ColumnPreference } from '@/shared/stores/preferencesStore';
 import { FuncionarioStatusBadge } from '../components/FuncionarioStatusBadge';
 import { FuncionarioMutationDrawerForm } from '../components/FuncionarioMutationDrawerForm';
 import { useFuncionarios } from '../hooks/useFuncionarios';
 import { useFuncionarioFilters } from '../hooks/useFuncionarioFilters';
+import {
+  deleteFuncionarios,
+  bulkUpdateFuncionarioStatus,
+  restoreFuncionario,
+} from '../services/funcionarios.service';
 import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
 import { cn } from '@/shared/lib/utils';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
+const DEFAULT_FUNC_COLUMNS: ColumnPreference[] = [
+  { id: 'nome', label: 'Nome', visible: true },
+  { id: 'cargo', label: 'Cargo', visible: true },
+  { id: 'obra', label: 'Obra', visible: true },
+  { id: 'status', label: 'Status', visible: true },
+  { id: 'matricula', label: 'Matrícula', visible: false },
+  { id: 'departamento', label: 'Departamento', visible: false },
+  { id: 'tipoContrato', label: 'Contrato', visible: false },
+  { id: 'dataAdmissao', label: 'Admissão', visible: false },
+];
+
 export function FuncionariosListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
-  const { filters, setSearch, setStatus, setTipoContrato, clearFilters, hasActiveFilters } = useFuncionarioFilters();
+  const queryClient = useQueryClient();
+  const { filters, setSearch, setStatus, setTipoContrato, setFilters, clearFilters, hasActiveFilters } =
+    useFuncionarioFilters();
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const { data, isLoading, isError } = useFuncionarios(filters);
+  const columnsPref = usePreferencesStore((state) => state.columns['funcionarios'] || DEFAULT_FUNC_COLUMNS);
 
   const funcionarios = data?.data ?? [];
   const {
@@ -54,6 +85,22 @@ export function FuncionariosListPage() {
       width: '760px',
     });
   };
+
+  const openColumnManager = () => {
+    openDrawer({
+      title: 'Configurar colunas',
+      content: (
+        <ColumnManager
+          moduleId="funcionarios"
+          defaultColumns={DEFAULT_FUNC_COLUMNS}
+          onClose={() => useDrawerStore.getState().closeDrawer()}
+        />
+      ),
+      width: '420px',
+    });
+  };
+
+  const visibleColumns = columnsPref.filter((c) => c.visible);
 
   return (
     <div className="flex flex-1 flex-col bg-surface-secondary">
@@ -94,12 +141,25 @@ export function FuncionariosListPage() {
       />
 
       {/* Primary Context / Filter Bar */}
-      <div className="flex items-center border-b border-border-default bg-surface px-6 py-2">
-        <QuickFilterChips
-          chips={statusChips}
-          value={filters.status ?? null}
-          onChange={(v) => setStatus(v as typeof filters.status)}
-        />
+      <div className="flex items-center justify-between border-b border-border-default bg-surface px-6 py-2">
+        <div className="flex items-center gap-4">
+          <QuickFilterChips
+            chips={statusChips}
+            value={filters.status ?? null}
+            onChange={(v) => setStatus(v as typeof filters.status)}
+          />
+          <div className="h-4 w-px bg-border-default" />
+          <SavedFilters moduleId="funcionarios" currentFilters={filters} onApply={setFilters} />
+        </div>
+
+        <button
+          type="button"
+          onClick={openColumnManager}
+          className="flex items-center gap-1.5 rounded-md border border-border-default px-2.5 py-1.5 text-xs font-medium text-text-muted hover:bg-surface-soft hover:text-text-body transition-all"
+        >
+          <SlidersHorizontal size={14} />
+          Colunas
+        </button>
       </div>
 
       {/* Advanced filters */}
@@ -203,10 +263,11 @@ export function FuncionariosListPage() {
                       className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
                     />
                   </th>
-                  <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Nome</th>
-                  <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Cargo</th>
-                  <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Obra</th>
-                  <th className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">Status</th>
+                  {visibleColumns.map((col) => (
+                    <th key={col.id} className="px-4 py-1.5 text-left text-xs font-medium text-text-muted">
+                      {col.label}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-light">
@@ -226,16 +287,70 @@ export function FuncionariosListPage() {
                         className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
                       />
                     </td>
-                    <td className="px-4 py-1.5">
-                      <Link to={`/rh/funcionarios/${func.id}`}>
-                        <TableCellStack primary={func.nome} secondary={`${func.matricula} · ${func.departamento}`} />
-                      </Link>
-                    </td>
-                    <td className="px-4 py-1.5 text-sm text-text-body">{func.cargo}</td>
-                    <td className="px-4 py-1.5 text-sm text-text-muted">{func.obraAlocadoNome ?? '—'}</td>
-                    <td className="px-4 py-1.5">
-                      <FuncionarioStatusBadge status={func.status} />
-                    </td>
+                    {visibleColumns.map((col) => {
+                      if (col.id === 'nome') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5">
+                            <Link to={`/rh/funcionarios/${func.id}`}>
+                              <TableCellStack
+                                primary={func.nome}
+                                secondary={`${func.matricula} · ${func.departamento}`}
+                              />
+                            </Link>
+                          </td>
+                        );
+                      }
+                      if (col.id === 'cargo') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-body">
+                            {func.cargo}
+                          </td>
+                        );
+                      }
+                      if (col.id === 'obra') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-muted">
+                            {func.obraAlocadoNome ?? '—'}
+                          </td>
+                        );
+                      }
+                      if (col.id === 'status') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5">
+                            <FuncionarioStatusBadge status={func.status} />
+                          </td>
+                        );
+                      }
+                      if (col.id === 'matricula') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-body">
+                            {func.matricula}
+                          </td>
+                        );
+                      }
+                      if (col.id === 'departamento') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-muted">
+                            {func.departamento}
+                          </td>
+                        );
+                      }
+                      if (col.id === 'tipoContrato') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-muted uppercase">
+                            {func.tipoContrato}
+                          </td>
+                        );
+                      }
+                      if (col.id === 'dataAdmissao') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-muted">
+                            {new Date(func.dataAdmissao).toLocaleDateString('pt-BR')}
+                          </td>
+                        );
+                      }
+                      return <td key={col.id} className="px-4 py-1.5" />;
+                    })}
                   </tr>
                 ))}
               </tbody>
@@ -251,9 +366,15 @@ export function FuncionariosListPage() {
           {
             label: 'Ativar',
             icon: <UserCheck size={16} />,
-            onClick: () => {
-              console.log('Ativando funcionários:', selectedIds);
-              clearSelection();
+            onClick: async () => {
+              try {
+                const { message } = await bulkUpdateFuncionarioStatus(selectedIds, 'ativo');
+                await queryClient.invalidateQueries({ queryKey: ['funcionarios'] });
+                toast.success(message);
+                clearSelection();
+              } catch (error: any) {
+                toast.error(error.message || 'Erro ao ativar funcionários');
+              }
             },
             variant: 'success',
           },
@@ -261,17 +382,40 @@ export function FuncionariosListPage() {
             label: 'Exportar',
             icon: <Download size={16} />,
             onClick: () => {
-              console.log('Exportando funcionários:', selectedIds);
+              toast.info('Exportação em desenvolvimento');
               clearSelection();
             },
           },
           {
             label: 'Excluir',
             icon: <Trash2 size={16} />,
-            onClick: () => {
-              if (confirm(`Deseja excluir ${selectedCount} funcionário(s) selecionado(s)?`)) {
-                console.log('Excluindo funcionários:', selectedIds);
+            onClick: async () => {
+              const idsToDelete = [...selectedIds];
+              const itemsToDelete = funcionarios.filter((f) => idsToDelete.includes(f.id));
+
+              try {
+                const { message } = await deleteFuncionarios(idsToDelete);
+                await queryClient.invalidateQueries({ queryKey: ['funcionarios'] });
                 clearSelection();
+
+                toast.success(message, {
+                  action: {
+                    label: 'Desfazer',
+                    onClick: async () => {
+                      try {
+                        for (const item of itemsToDelete) {
+                          await restoreFuncionario(item as any);
+                        }
+                        await queryClient.invalidateQueries({ queryKey: ['funcionarios'] });
+                        toast.success('Exclusão desfeita com sucesso.');
+                      } catch (err: any) {
+                        toast.error('Erro ao desfazer exclusão.');
+                      }
+                    },
+                  },
+                });
+              } catch (error: any) {
+                toast.error(error.message || 'Erro ao excluir funcionários');
               }
             },
             variant: 'danger',

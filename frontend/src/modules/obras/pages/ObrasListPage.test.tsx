@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ObrasListPage } from '@/modules/obras/pages/ObrasListPage';
 
 // ---------------------------------------------------------------------------
@@ -8,7 +9,19 @@ import { ObrasListPage } from '@/modules/obras/pages/ObrasListPage';
 // ---------------------------------------------------------------------------
 
 vi.mock('@/shared/stores', () => ({
-  useDrawerStore: () => vi.fn(),
+  useDrawerStore: vi.fn(() => ({
+    openDrawer: vi.fn(),
+    closeDrawer: vi.fn(),
+  })),
+  usePreferencesStore: vi.fn((selector) =>
+    selector({
+      columns: {},
+      savedFilters: {},
+    })
+  ),
+  useNotificationStore: vi.fn(() => ({
+    addNotification: vi.fn(),
+  })),
 }));
 
 vi.mock('../hooks/useObras', () => ({
@@ -43,10 +56,19 @@ const mockUseObras = vi.mocked(useObras);
 // ---------------------------------------------------------------------------
 
 function renderWithRouter() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
   return render(
-    <MemoryRouter>
-      <ObrasListPage />
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <ObrasListPage />
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 

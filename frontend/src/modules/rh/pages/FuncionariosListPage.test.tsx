@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FuncionariosListPage } from '@/modules/rh/pages/FuncionariosListPage';
 
 // ---------------------------------------------------------------------------
@@ -8,7 +9,19 @@ import { FuncionariosListPage } from '@/modules/rh/pages/FuncionariosListPage';
 // ---------------------------------------------------------------------------
 
 vi.mock('@/shared/stores', () => ({
-  useDrawerStore: () => vi.fn(),
+  useDrawerStore: vi.fn(() => ({
+    openDrawer: vi.fn(),
+    closeDrawer: vi.fn(),
+  })),
+  usePreferencesStore: vi.fn((selector) =>
+    selector({
+      columns: {},
+      savedFilters: {},
+    })
+  ),
+  useNotificationStore: vi.fn(() => ({
+    addNotification: vi.fn(),
+  })),
 }));
 
 vi.mock('../hooks/useFuncionarios', () => ({
@@ -43,10 +56,19 @@ const mockUseFuncionarios = vi.mocked(useFuncionarios);
 // ---------------------------------------------------------------------------
 
 function renderWithRouter() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
   return render(
-    <MemoryRouter>
-      <FuncionariosListPage />
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <FuncionariosListPage />
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 

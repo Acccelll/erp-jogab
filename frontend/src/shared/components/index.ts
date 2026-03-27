@@ -12,4 +12,6 @@ export { QuickFilterChips } from './QuickFilterChips';
 export { OverflowTabs } from './OverflowTabs';
 export { BulkActionBar } from './BulkActionBar';
 export { NavigationBlocker } from './NavigationBlocker';
+export { ColumnManager } from './ColumnManager';
+export { SavedFilters } from './SavedFilters';
 export { TableCellStack } from './TableCellStack';

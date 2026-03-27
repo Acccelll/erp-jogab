@@ -81,6 +81,15 @@ export function useFuncionarioFilters() {
 
   const clearFilters = useCallback(() => clearModuleFilters(MODULE_KEY), [clearModuleFilters]);
 
+  const setFilters = useCallback(
+    (newFilters: Partial<FuncionarioFiltersData>) => {
+      Object.entries(newFilters).forEach(([key, value]) => {
+        setFilter(MODULE_KEY, key, value);
+      });
+    },
+    [setFilter]
+  );
+
   const hasActiveFilters = useMemo(() => hasNonContextFilter(filters, contextDefaults), [contextDefaults, filters]);
 
   return {
@@ -92,6 +101,7 @@ export function useFuncionarioFilters() {
     setObraId,
     setCentroCustoId,
     setDepartamento,
+    setFilters,
     clearFilters,
     hasActiveFilters,
   };

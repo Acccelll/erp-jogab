@@ -388,3 +388,62 @@ export async function updateFuncionario(payload: FuncionarioUpdatePayload): Prom
     () => updateFuncionarioMock(payload),
   );
 }
+
+export async function deleteFuncionarios(ids: string[]): Promise<{ message: string }> {
+  return withApiFallback(
+    async () => {
+      const response = await api.delete(RH_API_ENDPOINTS.list, { data: { ids } });
+      return unwrapApiResponse<{ message: string }>(response.data);
+    },
+    async () => {
+      await delay(400);
+      const initialCount = mockFuncionarios.length;
+      for (const id of ids) {
+        const idx = mockFuncionarios.findIndex((f) => f.id === id);
+        if (idx !== -1) mockFuncionarios.splice(idx, 1);
+      }
+      return { message: `${initialCount - mockFuncionarios.length} funcionário(s) excluído(s) com sucesso.` };
+    },
+  );
+}
+
+export async function bulkUpdateFuncionarioStatus(
+  ids: string[],
+  status: Funcionario['status'],
+): Promise<{ message: string }> {
+  return withApiFallback(
+    async () => {
+      const response = await api.patch(`${RH_API_ENDPOINTS.list}/status`, { ids, status });
+      return unwrapApiResponse<{ message: string }>(response.data);
+    },
+    async () => {
+      await delay(300);
+      let count = 0;
+      for (const id of ids) {
+        const func = mockFuncionarios.find((f) => f.id === id);
+        if (func) {
+          func.status = status;
+          if (status === 'desligado') {
+            func.dataDesligamento = new Date().toISOString().slice(0, 10);
+          }
+          count++;
+        }
+      }
+      return { message: `${count} funcionário(s) atualizado(s) para ${status}.` };
+    },
+  );
+}
+
+export async function restoreFuncionario(funcionario: Funcionario): Promise<{ message: string }> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(`${RH_API_ENDPOINTS.list}/restore`, funcionario);
+      return unwrapApiResponse<{ message: string }>(response.data);
+    },
+    async () => {
+      await delay(200);
+      mockFuncionarios.push(funcionario);
+      return { message: `Funcionário ${funcionario.nome} restaurado.` };
+    },
+  );
+}

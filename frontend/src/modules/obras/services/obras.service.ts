@@ -336,3 +336,60 @@ export async function updateObra(payload: ObraUpdatePayload): Promise<ObraMutati
     () => updateObraMock(payload),
   );
 }
+
+export async function deleteObras(ids: string[]): Promise<{ message: string }> {
+  return withApiFallback(
+    async () => {
+      const response = await api.delete(OBRAS_API_ENDPOINTS.list, { data: { ids } });
+      return unwrapApiResponse<{ message: string }>(response.data);
+    },
+    async () => {
+      await delay(400);
+      const initialCount = mockObras.length;
+      for (const id of ids) {
+        const idx = mockObras.findIndex((o) => o.id === id);
+        if (idx !== -1) mockObras.splice(idx, 1);
+      }
+      return { message: `${initialCount - mockObras.length} obra(s) excluída(s) com sucesso.` };
+    },
+  );
+}
+
+export async function bulkUpdateObraStatus(ids: string[], status: Obra['status']): Promise<{ message: string }> {
+  return withApiFallback(
+    async () => {
+      const response = await api.patch(`${OBRAS_API_ENDPOINTS.list}/status`, { ids, status });
+      return unwrapApiResponse<{ message: string }>(response.data);
+    },
+    async () => {
+      await delay(300);
+      let count = 0;
+      for (const id of ids) {
+        const obra = mockObras.find((o) => o.id === id);
+        if (obra) {
+          obra.status = status;
+          if (status === 'concluida') {
+            obra.percentualConcluido = 100;
+            obra.dataFimReal = new Date().toISOString().slice(0, 10);
+          }
+          count++;
+        }
+      }
+      return { message: `${count} obra(s) atualizada(s) para ${status}.` };
+    },
+  );
+}
+
+export async function restoreObra(obra: Obra): Promise<{ message: string }> {
+  return withApiFallback(
+    async () => {
+      const response = await api.post(`${OBRAS_API_ENDPOINTS.list}/restore`, obra);
+      return unwrapApiResponse<{ message: string }>(response.data);
+    },
+    async () => {
+      await delay(200);
+      mockObras.push(obra);
+      return { message: `Obra ${obra.nome} restaurada.` };
+    },
+  );
+}
