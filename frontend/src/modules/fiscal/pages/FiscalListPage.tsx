@@ -1,6 +1,7 @@
 import { ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { EmptyState, MainContent, PageHeader } from '@/shared/components';
+import { EmptyState, MainContent, PageHeader, TableSkeleton, CardSkeleton, ErrorStateView } from '@/shared/components';
+import { type ApiError } from '@/shared/lib/api';
 import { useFiscal, useFiscalFilters } from '../hooks';
 import { FiscalFilters, FiscalKpiBar, FiscalResumoCard, FiscalTable } from '../components';
 
@@ -66,21 +67,22 @@ export function FiscalListPage() {
       {data?.kpis && <FiscalKpiBar kpis={data.kpis} />}
 
       <MainContent className="space-y-6">
-        {isLoading && <div className="py-12 text-center text-sm text-text-muted">Carregando visão fiscal...</div>}
+        {isLoading && (
+          <div className="space-y-6">
+            <div className="grid gap-4 xl:grid-cols-3">
+              <CardSkeleton rows={2} />
+              <CardSkeleton rows={2} />
+              <CardSkeleton rows={2} />
+            </div>
+            <TableSkeleton rows={8} cols={6} />
+          </div>
+        )}
 
         {isError && (
-          <EmptyState
-            title="Erro ao carregar fiscal"
-            description="Não foi possível montar a visão principal de documentos fiscais."
-            action={
-              <button
-                type="button"
-                onClick={() => void refetch()}
-                className="rounded-md bg-jogab-700 px-3 py-1.5 text-sm text-white hover:bg-jogab-800"
-              >
-                Tentar novamente
-              </button>
-            }
+          <ErrorStateView
+            type={(data as unknown as ApiError)?.type ?? 'unknown'}
+            status={(data as unknown as ApiError)?.status}
+            onRetry={() => void refetch()}
           />
         )}
 

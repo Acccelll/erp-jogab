@@ -128,7 +128,7 @@ describe('DashboardPage', () => {
 
     render(<DashboardPage />);
 
-    expect(screen.getByText('Erro ao carregar dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Algo deu errado')).toBeInTheDocument();
 
     const retryBtn = screen.getByRole('button', { name: /tentar novamente/i });
     await user.click(retryBtn);

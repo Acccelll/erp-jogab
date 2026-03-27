@@ -9,30 +9,37 @@
  */
 import { useParams } from 'react-router-dom';
 import { FileSignature, DollarSign, FolderOpen, Building2, Palmtree, Gift, Wallet, Clock, Receipt } from 'lucide-react';
-import { MainContent } from '@/shared/components';
+import { MainContent, CardSkeleton, ErrorStateView } from '@/shared/components';
 import { useFuncionarioDetails } from '../hooks/useFuncionarioDetails';
 import type { FuncionarioResumoBloco } from '../types';
 
 export function FuncionarioVisaoGeralPage() {
   const { funcId } = useParams<{ funcId: string }>();
-  const { funcionario, resumoBlocos, isLoading, isError } = useFuncionarioDetails(funcId);
+  const { funcionario, resumoBlocos, isLoading, isError, refetch } = useFuncionarioDetails(funcId);
 
   if (isLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center py-12">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-jogab-500 border-t-transparent" />
-          <p className="text-sm text-text-muted">Carregando visão geral...</p>
+      <MainContent>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <CardSkeleton rows={4} />
+          <CardSkeleton rows={4} />
+          <CardSkeleton rows={4} />
+          <CardSkeleton rows={4} />
+          <CardSkeleton rows={4} />
+          <CardSkeleton rows={4} />
         </div>
-      </div>
+      </MainContent>
     );
   }
 
   if (isError || !funcionario) {
     return (
-      <div className="flex flex-1 items-center justify-center py-12">
-        <p className="text-sm text-text-muted">Erro ao carregar dados do funcionário.</p>
-      </div>
+      <ErrorStateView
+        type="http"
+        status={404}
+        onRetry={() => void refetch()}
+        className="py-12"
+      />
     );
   }
 

@@ -72,8 +72,10 @@ describe('EstoqueListPage', () => {
       refetch: refetchMock,
     } as ReturnType<typeof useEstoque>);
 
-    renderWithRouter();
-    expect(screen.getByText('Carregando visão de estoque...')).toBeInTheDocument();
+    const { container } = renderWithRouter();
+    // TableSkeleton uses animate-pulse
+    const skeletons = container.querySelectorAll('.animate-pulse');
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it('renders error state with retry button', async () => {
@@ -87,7 +89,7 @@ describe('EstoqueListPage', () => {
     } as ReturnType<typeof useEstoque>);
 
     renderWithRouter();
-    expect(screen.getByText('Erro ao carregar estoque')).toBeInTheDocument();
+    expect(screen.getByText('Algo deu errado')).toBeInTheDocument();
 
     const retryBtn = screen.getByRole('button', { name: /tentar novamente/i });
     await user.click(retryBtn);

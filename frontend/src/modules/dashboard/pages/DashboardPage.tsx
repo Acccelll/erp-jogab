@@ -1,8 +1,9 @@
 import { TrendingUp, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { MainContent, EmptyState, PageHeader } from '@/shared/components';
+import { MainContent, PageHeader, Skeleton, CardSkeleton, ErrorStateView } from '@/shared/components';
 import { formatCurrency, formatCompetencia } from '@/shared/lib/utils';
+import { type ApiError } from '@/shared/lib/api';
 import { useContextStore, useUIStore } from '@/shared/stores';
 import { DashboardSectionCard, DashboardSectionGroup } from '../components';
 import { useDashboardSummary } from '../hooks';
@@ -83,44 +84,35 @@ export function DashboardPage() {
       />
 
       {isLoading && (
-        <div className="space-y-3 p-4">
+        <MainContent className="space-y-8 px-8 py-8">
           {/* KPI skeleton */}
-          <div className="flex flex-wrap items-end gap-x-6 gap-y-2">
-            <div>
-              <div className="h-3 w-20 animate-pulse rounded bg-neutral-200" />
-              <div className="mt-1 h-8 w-32 animate-pulse rounded bg-neutral-200" />
+          <div className="flex flex-wrap items-end gap-x-16 gap-y-6">
+            <div className="space-y-2">
+              <Skeleton width={120} height={10} />
+              <Skeleton width={200} height={40} />
             </div>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i}>
-                <div className="h-2.5 w-16 animate-pulse rounded bg-neutral-200" />
-                <div className="mt-1 h-5 w-20 animate-pulse rounded bg-neutral-200" />
-              </div>
-            ))}
+            <div className="flex gap-10">
+              <div className="space-y-2"><Skeleton width={100} height={10} /><Skeleton width={120} height={20} /></div>
+              <div className="space-y-2"><Skeleton width={100} height={10} /><Skeleton width={120} height={20} /></div>
+            </div>
           </div>
           {/* Section skeleton */}
-          <div className="h-3 w-24 animate-pulse rounded bg-neutral-200" />
-          <div className="grid gap-3 xl:grid-cols-2">
-            {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="h-16 animate-pulse rounded-lg bg-neutral-100" />
-            ))}
+          <div className="space-y-4">
+            <Skeleton width={80} height={12} />
+            <div className="grid gap-6 xl:grid-cols-2">
+              <CardSkeleton rows={2} />
+              <CardSkeleton rows={2} />
+            </div>
           </div>
-        </div>
+        </MainContent>
       )}
 
       {isError && (
         <MainContent>
-          <EmptyState
-            title="Erro ao carregar dashboard"
-            description="Não foi possível carregar a visão executiva inicial. Tente atualizar novamente."
-            action={
-              <button
-                type="button"
-                onClick={() => void refetch()}
-                className="rounded-md bg-brand-primary px-3 py-1.5 text-sm text-white hover:bg-brand-primary-hover"
-              >
-                Tentar novamente
-              </button>
-            }
+          <ErrorStateView
+            type={(safe as unknown as ApiError)?.type ?? 'unknown'}
+            status={(safe as unknown as ApiError)?.status}
+            onRetry={() => void refetch()}
           />
         </MainContent>
       )}
