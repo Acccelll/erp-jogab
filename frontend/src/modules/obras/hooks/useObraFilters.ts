@@ -50,6 +50,15 @@ export function useObraFilters() {
     [clearModuleFilters],
   );
 
+  const setFilters = useCallback(
+    (newFilters: Partial<ObraFiltersData>) => {
+      Object.entries(newFilters).forEach(([key, value]) => {
+        setFilter(MODULE_KEY, key, value);
+      });
+    },
+    [setFilter]
+  );
+
   const hasActiveFilters = !!(
     filters.search ||
     filters.status ||
@@ -63,6 +72,7 @@ export function useObraFilters() {
     setStatus,
     setTipo,
     setFilialId,
+    setFilters,
     clearFilters,
     hasActiveFilters,
   };

@@ -5,23 +5,49 @@
  */
 import { useState, useMemo } from 'react';
 import { Plus, Search, SlidersHorizontal, Trash2, Download, CheckCircle2 } from 'lucide-react';
-import { MainContent, EmptyState, QuickFilterChips, TableCellStack, PageHeader, BulkActionBar } from '@/shared/components';
-import { useDrawerStore } from '@/shared/stores';
+import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  MainContent,
+  EmptyState,
+  QuickFilterChips,
+  TableCellStack,
+  PageHeader,
+  BulkActionBar,
+  ColumnManager,
+  SavedFilters,
+} from '@/shared/components';
+import { useDrawerStore, usePreferencesStore } from '@/shared/stores';
+import type { ColumnPreference } from '@/shared/stores/preferencesStore';
 import { ObraMutationDrawerForm } from '../components/ObraMutationDrawerForm';
 import { ObraStatusBadge } from '../components/ObraStatusBadge';
 import { useObras } from '../hooks/useObras';
 import { useObraFilters } from '../hooks/useObraFilters';
+import { deleteObras, bulkUpdateObraStatus, restoreObra } from '../services/obras.service';
 import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
 import { formatCurrency, cn } from '@/shared/lib/utils';
 import { Link } from 'react-router-dom';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
+const DEFAULT_OBRA_COLUMNS: ColumnPreference[] = [
+  { id: 'nome', label: 'Nome', visible: true },
+  { id: 'status', label: 'Status', visible: true },
+  { id: 'progresso', label: 'Progresso', visible: true },
+  { id: 'valor', label: 'Valor', visible: true },
+  { id: 'prazo', label: 'Prazo', visible: true },
+  { id: 'responsavel', label: 'Responsável', visible: false },
+  { id: 'cidade', label: 'Cidade/UF', visible: false },
+  { id: 'tipo', label: 'Tipo', visible: false },
+];
+
 export function ObrasListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
-  const { filters, setSearch, setStatus, setTipo, clearFilters, hasActiveFilters } = useObraFilters();
+  const queryClient = useQueryClient();
+  const { filters, setSearch, setStatus, setTipo, setFilters, clearFilters, hasActiveFilters } = useObraFilters();
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const { data, isLoading, isError } = useObras(filters);
+  const columnsPref = usePreferencesStore((state) => state.columns['obras'] || DEFAULT_OBRA_COLUMNS);
 
   const obras = data?.data ?? [];
   const {
@@ -53,6 +79,22 @@ export function ObrasListPage() {
       width: '720px',
     });
   };
+
+  const openColumnManager = () => {
+    openDrawer({
+      title: 'Configurar colunas',
+      content: (
+        <ColumnManager
+          moduleId="obras"
+          defaultColumns={DEFAULT_OBRA_COLUMNS}
+          onClose={() => useDrawerStore.getState().closeDrawer()}
+        />
+      ),
+      width: '420px',
+    });
+  };
+
+  const visibleColumns = columnsPref.filter((c) => c.visible);
 
   return (
     <div className="flex flex-1 flex-col bg-surface-secondary">
@@ -92,12 +134,25 @@ export function ObrasListPage() {
       />
 
       {/* Primary Context Bar */}
-      <div className="flex items-center border-b border-border-default bg-surface px-6 py-2">
-        <QuickFilterChips
-          chips={statusChips}
-          value={filters.status ?? null}
-          onChange={(v) => setStatus(v as typeof filters.status)}
-        />
+      <div className="flex items-center justify-between border-b border-border-default bg-surface px-6 py-2">
+        <div className="flex items-center gap-4">
+          <QuickFilterChips
+            chips={statusChips}
+            value={filters.status ?? null}
+            onChange={(v) => setStatus(v as typeof filters.status)}
+          />
+          <div className="h-4 w-px bg-border-default" />
+          <SavedFilters moduleId="obras" currentFilters={filters} onApply={setFilters} />
+        </div>
+
+        <button
+          type="button"
+          onClick={openColumnManager}
+          className="flex items-center gap-1.5 rounded-md border border-border-default px-2.5 py-1.5 text-xs font-medium text-text-muted hover:bg-surface-soft hover:text-text-body transition-all"
+        >
+          <SlidersHorizontal size={14} />
+          Colunas
+        </button>
       </div>
 
       {/* Advanced filters */}
@@ -201,11 +256,17 @@ export function ObrasListPage() {
                       className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
                     />
                   </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Nome</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Status</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Progresso</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Valor</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Prazo</th>
+                  {visibleColumns.map((col) => (
+                    <th
+                      key={col.id}
+                      className={cn(
+                        'px-4 py-2 text-xs font-medium text-text-muted',
+                        col.id === 'valor' ? 'text-right' : 'text-left'
+                      )}
+                    >
+                      {col.label}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100/60">
@@ -225,34 +286,78 @@ export function ObrasListPage() {
                         className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
                       />
                     </td>
-                    <td className="px-4 py-1.5">
-                      <Link to={`/obras/${obra.id}`}>
-                        <TableCellStack
-                          primary={obra.nome}
-                          secondary={`${obra.cidade}/${obra.uf} · ${obra.responsavelNome}`}
-                        />
-                      </Link>
-                    </td>
-                    <td className="px-4 py-1.5">
-                      <ObraStatusBadge status={obra.status} />
-                    </td>
-                    <td className="px-4 py-1.5">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-16 overflow-hidden rounded-full bg-surface-soft">
-                          <div
-                            className="h-full rounded-full bg-jogab-700"
-                            style={{ width: `${obra.percentualConcluido}%` }}
-                          />
-                        </div>
-                        <span className="text-xs text-text-muted">{obra.percentualConcluido}%</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-1.5 text-right text-sm text-text-body">
-                      {formatCurrency(obra.orcamentoPrevisto)}
-                    </td>
-                    <td className="px-4 py-1.5 text-xs text-text-muted">
-                      {new Date(obra.dataPrevisaoFim).toLocaleDateString('pt-BR')}
-                    </td>
+                    {visibleColumns.map((col) => {
+                      if (col.id === 'nome') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5">
+                            <Link to={`/obras/${obra.id}`}>
+                              <TableCellStack
+                                primary={obra.nome}
+                                secondary={`${obra.cidade}/${obra.uf} · ${obra.responsavelNome}`}
+                              />
+                            </Link>
+                          </td>
+                        );
+                      }
+                      if (col.id === 'status') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5">
+                            <ObraStatusBadge status={obra.status} />
+                          </td>
+                        );
+                      }
+                      if (col.id === 'progresso') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5">
+                            <div className="flex items-center gap-2">
+                              <div className="h-1.5 w-16 overflow-hidden rounded-full bg-surface-soft">
+                                <div
+                                  className="h-full rounded-full bg-jogab-700"
+                                  style={{ width: `${obra.percentualConcluido}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-text-muted">{obra.percentualConcluido}%</span>
+                            </div>
+                          </td>
+                        );
+                      }
+                      if (col.id === 'valor') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-right text-sm text-text-body">
+                            {formatCurrency(obra.orcamentoPrevisto)}
+                          </td>
+                        );
+                      }
+                      if (col.id === 'prazo') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-xs text-text-muted">
+                            {new Date(obra.dataPrevisaoFim).toLocaleDateString('pt-BR')}
+                          </td>
+                        );
+                      }
+                      if (col.id === 'responsavel') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-body">
+                            {obra.responsavelNome}
+                          </td>
+                        );
+                      }
+                      if (col.id === 'cidade') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-muted">
+                            {obra.cidade}/{obra.uf}
+                          </td>
+                        );
+                      }
+                      if (col.id === 'tipo') {
+                        return (
+                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-muted capitalize">
+                            {obra.tipo}
+                          </td>
+                        );
+                      }
+                      return <td key={col.id} className="px-4 py-1.5" />;
+                    })}
                   </tr>
                 ))}
               </tbody>
@@ -268,9 +373,15 @@ export function ObrasListPage() {
           {
             label: 'Concluir',
             icon: <CheckCircle2 size={16} />,
-            onClick: () => {
-              console.log('Concluindo obras:', selectedIds);
-              clearSelection();
+            onClick: async () => {
+              try {
+                const { message } = await bulkUpdateObraStatus(selectedIds, 'concluida');
+                await queryClient.invalidateQueries({ queryKey: ['obras'] });
+                toast.success(message);
+                clearSelection();
+              } catch (error: any) {
+                toast.error(error.message || 'Erro ao concluir obras');
+              }
             },
             variant: 'success',
           },
@@ -278,17 +389,41 @@ export function ObrasListPage() {
             label: 'Exportar',
             icon: <Download size={16} />,
             onClick: () => {
-              console.log('Exportando obras:', selectedIds);
+              toast.info('Funcionalidade de exportação em desenvolvimento');
               clearSelection();
             },
           },
           {
             label: 'Excluir',
             icon: <Trash2 size={16} />,
-            onClick: () => {
-              if (confirm(`Deseja excluir ${selectedCount} obra(s) selecionada(s)?`)) {
-                console.log('Excluindo obras:', selectedIds);
+            onClick: async () => {
+              const idsToDelete = [...selectedIds];
+              const itemsToDelete = obras.filter((o) => idsToDelete.includes(o.id));
+
+              try {
+                const { message } = await deleteObras(idsToDelete);
+                await queryClient.invalidateQueries({ queryKey: ['obras'] });
                 clearSelection();
+
+                toast.success(message, {
+                  action: {
+                    label: 'Desfazer',
+                    onClick: async () => {
+                      try {
+                        for (const item of itemsToDelete) {
+                          // Note: In a real app we'd use a bulk restore endpoint
+                          await restoreObra(item as any);
+                        }
+                        await queryClient.invalidateQueries({ queryKey: ['obras'] });
+                        toast.success('Exclusão desfeita com sucesso.');
+                      } catch (err: any) {
+                        toast.error('Erro ao desfazer exclusão.');
+                      }
+                    },
+                  },
+                });
+              } catch (error: any) {
+                toast.error(error.message || 'Erro ao excluir obras');
               }
             },
             variant: 'danger',

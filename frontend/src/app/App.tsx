@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import { QueryProvider } from '@/app/providers/QueryProvider';
 import { router } from '@/app/router';
 import { fetchContextBootstrap, mergeContextWithBootstrap } from '@/shared/lib/context.service';
@@ -36,6 +37,7 @@ export function App() {
   return (
     <QueryProvider>
       <AppBootstrap />
+      <Toaster position="top-right" expand richColors closeButton />
     </QueryProvider>
   );
 }
