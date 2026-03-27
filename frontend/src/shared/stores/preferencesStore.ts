@@ -21,7 +21,7 @@ export interface ColumnPreference {
 export interface SavedFilter {
   id: string;
   name: string;
-  filters: Record<string, unknown>; // O formato depende do módulo
+  filters: unknown; // O formato depende do módulo
 }
 
 interface PreferencesState {
@@ -103,6 +103,6 @@ export const usePreferencesStore = create<PreferencesState>()(
     {
       name: 'jogab-preferences',
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 );

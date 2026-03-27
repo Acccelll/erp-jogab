@@ -31,6 +31,7 @@ import { formatCurrency, cn } from '@/shared/lib/utils';
 import { type ApiError } from '@/shared/lib/api';
 import { Link } from 'react-router-dom';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
+import type { Obra } from '../types';
 
 const DEFAULT_OBRA_COLUMNS: ColumnPreference[] = [
   { id: 'nome', label: 'Nome', visible: true },
@@ -42,6 +43,24 @@ const DEFAULT_OBRA_COLUMNS: ColumnPreference[] = [
   { id: 'cidade', label: 'Cidade/UF', visible: false },
   { id: 'tipo', label: 'Tipo', visible: false },
 ];
+
+function escapeCsvValue(value: string | number | null | undefined) {
+  const normalized = value == null ? '' : String(value);
+  const escaped = normalized.replaceAll('"', '""');
+  return `"${escaped}"`;
+}
+
+function downloadCsv(filename: string, content: string) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 export function ObrasListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
@@ -244,7 +263,7 @@ export function ObrasListPage() {
                       key={col.id}
                       className={cn(
                         'px-4 py-2 text-xs font-medium text-text-muted',
-                        col.id === 'valor' ? 'text-right' : 'text-left'
+                        col.id === 'valor' ? 'text-right' : 'text-left',
                       )}
                     >
                       {col.label}
@@ -258,7 +277,7 @@ export function ObrasListPage() {
                     key={obra.id}
                     className={cn(
                       'hover:bg-surface-soft/50 transition-colors',
-                      isSelected(obra.id) && 'bg-brand-primary/[0.02]'
+                      isSelected(obra.id) && 'bg-brand-primary/[0.02]',
                     )}
                   >
                     <td className="px-4 py-1.5">
@@ -362,8 +381,8 @@ export function ObrasListPage() {
                 await queryClient.invalidateQueries({ queryKey: ['obras'] });
                 toast.success(message);
                 clearSelection();
-              } catch (error: any) {
-                toast.error(error.message || 'Erro ao concluir obras');
+              } catch (error: unknown) {
+                toast.error(error instanceof Error ? error.message : 'Erro ao concluir obras');
               }
             },
             variant: 'success',
@@ -372,7 +391,45 @@ export function ObrasListPage() {
             label: 'Exportar',
             icon: <Download size={16} />,
             onClick: () => {
-              toast.info('Funcionalidade de exportação em desenvolvimento');
+              const obrasToExport = obras.filter((obra) => selectedIds.includes(obra.id));
+              if (obrasToExport.length === 0) {
+                toast.warning('Selecione ao menos uma obra para exportar.');
+                return;
+              }
+
+              const headers = [
+                'codigo',
+                'nome',
+                'status',
+                'tipo',
+                'cidade',
+                'uf',
+                'percentualConcluido',
+                'orcamentoPrevisto',
+                'custoRealizado',
+                'responsavelNome',
+              ];
+
+              const lines = obrasToExport.map((obra) =>
+                [
+                  obra.codigo,
+                  obra.nome,
+                  obra.status,
+                  obra.tipo,
+                  obra.cidade,
+                  obra.uf,
+                  obra.percentualConcluido,
+                  obra.orcamentoPrevisto,
+                  obra.custoRealizado,
+                  obra.responsavelNome,
+                ]
+                  .map(escapeCsvValue)
+                  .join(';'),
+              );
+
+              const csv = [headers.join(';'), ...lines].join('\n');
+              downloadCsv(`obras-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+              toast.success(`${obrasToExport.length} obra(s) exportada(s) com sucesso.`);
               clearSelection();
             },
           },
@@ -395,18 +452,18 @@ export function ObrasListPage() {
                       try {
                         for (const item of itemsToDelete) {
                           // Note: In a real app we'd use a bulk restore endpoint
-                          await restoreObra(item as any);
+                          await restoreObra(item as Obra);
                         }
                         await queryClient.invalidateQueries({ queryKey: ['obras'] });
                         toast.success('Exclusão desfeita com sucesso.');
-                      } catch (err: any) {
+                      } catch {
                         toast.error('Erro ao desfazer exclusão.');
                       }
                     },
                   },
                 });
-              } catch (error: any) {
-                toast.error(error.message || 'Erro ao excluir obras');
+              } catch (error: unknown) {
+                toast.error(error instanceof Error ? error.message : 'Erro ao excluir obras');
               }
             },
             variant: 'danger',

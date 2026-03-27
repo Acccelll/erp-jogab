@@ -3,13 +3,17 @@ import { Save, ChevronDown, Trash2, Check, Bookmark } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { usePreferencesStore, type ModuleId, type SavedFilter } from '@/shared/stores/preferencesStore';
 
-interface SavedFiltersProps {
+interface SavedFiltersProps<TFilters extends Record<string, unknown>> {
   moduleId: ModuleId;
-  currentFilters: any;
-  onApply: (filters: any) => void;
+  currentFilters: TFilters;
+  onApply: (filters: TFilters) => void;
 }
 
-export function SavedFilters({ moduleId, currentFilters, onApply }: SavedFiltersProps) {
+export function SavedFilters<TFilters extends Record<string, unknown>>({
+  moduleId,
+  currentFilters,
+  onApply,
+}: SavedFiltersProps<TFilters>) {
   const { savedFilters, saveFilter, deleteFilter } = usePreferencesStore();
   const moduleSavedFilters = savedFilters[moduleId] || [];
 
@@ -40,7 +44,11 @@ export function SavedFilters({ moduleId, currentFilters, onApply }: SavedFilters
   };
 
   const handleSelect = (filter: SavedFilter) => {
-    onApply(filter.filters);
+    if (typeof filter.filters === 'object' && filter.filters !== null) {
+      onApply(filter.filters as TFilters);
+    } else {
+      onApply(currentFilters);
+    }
     setIsOpen(false);
   };
 
@@ -56,7 +64,9 @@ export function SavedFilters({ moduleId, currentFilters, onApply }: SavedFilters
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           'flex items-center gap-2 rounded-md border border-border-default bg-white px-2.5 py-1.5 text-sm font-medium transition-all hover:bg-surface-soft',
-          isOpen ? 'border-brand-primary text-brand-primary ring-2 ring-brand-primary/10' : 'text-text-muted hover:text-text-body'
+          isOpen
+            ? 'border-brand-primary text-brand-primary ring-2 ring-brand-primary/10'
+            : 'text-text-muted hover:text-text-body',
         )}
       >
         <Bookmark size={16} />
