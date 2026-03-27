@@ -13,6 +13,7 @@ import { getMockRelatorioCategoria, getMockRelatoriosDashboard } from '../data/r
 export const RELATORIOS_API_ENDPOINTS = {
   dashboard: '/relatorios/dashboard',
   categoria: (categoria: string) => `/relatorios/categorias/${categoria}`,
+  gerar: '/relatorios/gerar',
 } as const;
 
 const NETWORK_DELAY_MS = 180;
@@ -119,7 +120,7 @@ export interface RelatorioGeradoResult {
 export async function gerarRelatorio(payload: GerarRelatorioPayload): Promise<RelatorioGeradoResult> {
   return withApiFallback(
     async () => {
-      const response = await api.post(`${RELATORIOS_API_ENDPOINTS.dashboard}/gerar`, payload);
+      const response = await api.post(RELATORIOS_API_ENDPOINTS.gerar, payload);
       return unwrapApiResponse<RelatorioGeradoResult>(response.data);
     },
     () =>
