@@ -131,20 +131,24 @@ export function SavedFilters<TFilters extends Record<string, unknown>>({
               <ul className="space-y-0.5">
                 {moduleSavedFilters.map((sf) => (
                   <li key={sf.id}>
-                    <button
-                      type="button"
-                      onClick={() => handleSelect(sf)}
-                      className="group flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-xs text-text-body transition-colors hover:bg-surface-soft"
-                    >
-                      <span className="truncate pr-2 font-medium">{sf.name}</span>
-                      <div
+                    <div className="group flex w-full items-center justify-between rounded-md px-2 py-2 text-xs text-text-body transition-colors hover:bg-surface-soft">
+                      <button
+                        type="button"
+                        onClick={() => handleSelect(sf)}
+                        className="flex-1 truncate pr-2 text-left font-medium"
+                      >
+                        {sf.name}
+                      </button>
+                      <button
+                        type="button"
                         onClick={(e) => handleDelete(e, sf.id)}
                         className="hidden rounded p-1 text-text-subtle hover:bg-danger-soft hover:text-danger group-hover:block"
                         title="Excluir filtro"
+                        aria-label={`Excluir filtro ${sf.name}`}
                       >
                         <Trash2 size={12} />
-                      </div>
-                    </button>
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
