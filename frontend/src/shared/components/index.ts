@@ -20,3 +20,4 @@ export { TableSkeleton } from './TableSkeleton';
 export { CardSkeleton } from './CardSkeleton';
 export { ErrorBoundary } from './ErrorBoundary';
 export { ErrorStateView, getErrorFeedback } from './ErrorStateView';
+export { VirtualizedTable } from './tables/VirtualizedTable';

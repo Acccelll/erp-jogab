@@ -157,50 +157,66 @@
 - `npm run test`: 63 arquivos de teste, 880 testes passando
 - `npm audit`: 0 vulnerabilidades
 
-## Fase 14 — Estabilização (✅ Concluída)
+## Próximos passos (Fase 14)
 
-**Objetivo:** Estabilização técnica, code-splitting e atualização de documentação.
+- Setup E2E básico (Playwright) com fluxos: login → dashboard → obras → detalhes
+- Cobertura de hooks de sub-features: `useContasPagar`, `useFluxoCaixa`, `useFiscalEntradas`, etc.
+- Início do backend real (Node/Express) com endpoints prioritários
+- Code-splitting com React.lazy (bundle atual ~1MB, warning de >500 kB)
 
-**O que foi feito:**
-- Code-splitting com `React.lazy` para todos os pages de módulo (`router/index.tsx`)
-- `PageLoader.tsx` com `Suspense` boundary e spinner de carregamento
-- `.env.example` atualizado com orientações de produção
-- `docs/19-estabilizacao-fase14.md` criado com guia completo de uso da API
-- Tabela de readiness de módulos atualizada: todos os 15 módulos ✅ Integrado
+
 
 **Resultado dos comandos de validação:**
 - `npm run build`: 0 erros TypeScript, build completo com sucesso
 - `npm run lint`: 0 erros
-- `npm run test`: 63 arquivos de teste, 880 testes passando
+- `npm run test`: 52 arquivos de teste, 715 testes passando
 - `npm audit`: 0 vulnerabilidades
 
-**Todos os 87 endpoints integrados (Fases 5–14 + complementares de workspace/alocações):**
+**Endpoints efetivamente integrados (Fases 5–10):**
+- `POST /auth/login` — login real com fallback mock
+- `GET /auth/me` — restauração de sessão com fallback mock
+- `POST /auth/logout` — logout com fallback mock
+- `GET /context/bootstrap` — bootstrap de contexto com fallback mock
+- `GET /context/options` — opções de contexto com fallback mock
+- `GET /dashboard/summary` — resumo executivo com fallback mock
+- `GET /obras` — listagem de obras com fallback mock
+- `GET /obras/:id` — detalhe da obra com fallback mock
+- `POST /obras` — criação de obra com fallback mock
+- `PUT /obras/:id` — atualização de obra com fallback mock
+- `GET /rh/funcionarios` — listagem de funcionários com fallback mock
+- `GET /rh/funcionarios/:id` — detalhe do funcionário com fallback mock
+- `POST /rh/funcionarios` — criação de funcionário com fallback mock
+- `PUT /rh/funcionarios/:id` — atualização de funcionário com fallback mock
+- `GET /horas-extras` — listagem de horas extras com fallback mock
+- `GET /horas-extras/:id` — detalhe da hora extra com fallback mock
+- `GET /horas-extras/dashboard` — dashboard de horas extras com fallback mock
+- `POST /horas-extras/:id/aprovar` — aprovação de hora extra com fallback mock
+- `POST /horas-extras/fechamento` — fechamento de competência com fallback mock
+- `GET /horas-extras/aprovacao` — dados de aprovação com fallback mock
+- `GET /fopag/competencias` — listagem de competências FOPAG com fallback mock
+- `GET /fopag/competencias/:id` — detalhe da competência FOPAG com fallback mock
+- `GET /financeiro/dashboard` — dashboard financeiro principal com fallback mock
+- `GET /financeiro/fluxo-caixa` — fluxo de caixa com fallback mock
+- `GET /financeiro/pessoal` — custos de pessoal (integrado FOPAG) com fallback mock
+- `GET /financeiro/contas-pagar` — contas a pagar com fallback mock
+- `GET /financeiro/contas-receber` — contas a receber com fallback mock
+- `GET /financeiro/titulos/:id` — detalhe de título financeiro com fallback mock
+- `GET /compras/solicitacoes` — listagem de solicitações com fallback mock
+- `GET /compras/cotacoes` — listagem de cotações com fallback mock
+- `GET /compras/pedidos` — listagem de pedidos com fallback mock
+- `GET /compras/pedidos/:id` — detalhe do pedido com fallback mock
+- `GET /compras/dashboard` — dashboard consolidado de compras com fallback mock
+- `GET /fiscal/dashboard` — dashboard fiscal com fallback mock
+- `GET /fiscal/entradas` — documentos de entrada com fallback mock
+- `GET /fiscal/saidas` — documentos de saída com fallback mock
+- `GET /fiscal/documentos/:id` — detalhe de documento fiscal com fallback mock
+- `GET /relatorios/dashboard` — dashboard de relatórios com fallback mock
+- `GET /relatorios/categorias/:categoria` — relatórios por categoria com fallback mock
 
-| Módulo | Endpoints integrados |
-|--------|---------------------|
-| Auth | POST /auth/login, GET /auth/me, POST /auth/logout |
-| Context | GET /context/bootstrap, GET /context/options |
-| Dashboard | GET /dashboard/summary |
-| Obras | GET /obras, GET /obras/:id, POST /obras, PUT /obras/:id |
-| RH | GET /rh/funcionarios, GET /rh/funcionarios/:id, POST /rh/funcionarios, PUT /rh/funcionarios/:id |
-| Horas Extras | GET /horas-extras, GET /horas-extras/:id, GET /horas-extras/dashboard, GET /horas-extras/aprovacao, POST /horas-extras/:id/aprovar, POST /horas-extras/fechamento |
-| FOPAG | GET /fopag/competencias, GET /fopag/competencias/:id |
-| Financeiro | GET /financeiro/dashboard, GET /financeiro/fluxo-caixa, GET /financeiro/pessoal, GET /financeiro/contas-pagar, GET /financeiro/contas-receber, GET /financeiro/titulos/:id |
-| Compras | GET /compras/solicitacoes, GET /compras/cotacoes, GET /compras/pedidos, GET /compras/pedidos/:id, GET /compras/dashboard, POST/PUT solicitação, cotação, pedido |
-| Fiscal | GET /fiscal/dashboard, GET /fiscal/entradas, GET /fiscal/saidas, GET /fiscal/documentos/:id, POST /fiscal/documentos, PUT /fiscal/documentos/:id |
-| Relatórios | GET /relatorios/dashboard, GET /relatorios/categorias/:categoria, POST /relatorios/gerar |
-| Estoque | GET /estoque/dashboard, GET /estoque/movimentacoes, GET /estoque/itens/:id, POST /estoque/movimentacoes, PUT /estoque/itens/:id |
-| Medições | GET /medicoes/dashboard, GET /medicoes, GET /medicoes/:id, POST /medicoes, PUT /medicoes/:id, POST /medicoes/:id/aprovar |
-| Documentos | GET /documentos/dashboard, GET /documentos/:id, POST /documentos/upload, PUT /documentos/:id |
-| Admin | GET /admin/dashboard, GET /admin/usuarios, GET /admin/perfis, GET /admin/permissoes, GET /admin/parametros, GET /admin/logs, GET /admin/integracoes, POST/PUT usuário, perfil, permissão |
+**Módulos que continuam apenas preparados (partial):**
+- Estoque, Medições, Documentos, Admin (parcialmente prontos — candidatos à Fase 11)
 
-Todos os módulos usam `withApiFallback` — fallback gracioso para mock local quando API não está disponível.
-
-> Observação: a tabela acima resume os **61 endpoints-base** por módulo. Somam-se a eles **26 endpoints complementares** (workspaces de Obras/RH e ciclo de alocações), totalizando **87 endpoints integrados**.
-
-## Próximos passos (pós-Fase 14)
-
-- **Backend real** — implementar Node/Express com os 87 endpoints mapeados (incluindo complementares de workspace/alocações)
-- **Testes E2E** — Playwright com fluxos: login → dashboard → obras → detalhe
-- **Autenticação real** — JWT com refresh token
-- **Permissões** — guard por perfil usando dados de `/admin/permissoes`
+**Rotas implementadas:**
+- `/horas-extras/lancamentos` — lista de lançamentos
+- `/horas-extras/:lancamentoId` — detalhe do lançamento
+- Todas as demais rotas documentadas em `docs/06-arquitetura-de-telas.md` estão presentes

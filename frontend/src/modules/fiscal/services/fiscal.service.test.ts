@@ -310,13 +310,13 @@ describe('FiscalService', () => {
       valorDocumento: 25000,
     };
 
-    it('should call POST /fiscal/documentos with payload', async () => {
+    it('should call POST /fiscal/entradas with payload', async () => {
       const created = { ...fiscalDocumentos[0], numero: payload.numero };
       mockApiPost.mockResolvedValueOnce({ data: { data: created } });
 
       const result = await createDocumentoFiscal(payload);
 
-      expect(mockApiPost).toHaveBeenCalledWith(FISCAL_API_ENDPOINTS.documentos, payload);
+      expect(mockApiPost).toHaveBeenCalledWith(FISCAL_API_ENDPOINTS.entradas, payload);
       expect(result.id).toBeDefined();
     });
 

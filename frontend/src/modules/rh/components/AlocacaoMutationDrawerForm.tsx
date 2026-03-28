@@ -63,7 +63,6 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
   // Read primitive values individually to avoid re-render on unrelated store changes
   const contextObraId = useContextStore((s) => s.obraId);
   const contextCentroCustoId = useContextStore((s) => s.centroCustoId);
-  const contextObras = useContextStore((s) => s.options?.obras ?? []);
   const createMutation = useCreateAlocacao();
   const updateMutation = useUpdateAlocacao();
   const endMutation = useEncerrarAlocacao();
@@ -100,12 +99,10 @@ export function AlocacaoMutationDrawerForm({ funcionarioId, alocacaoId }: Alocac
   const obraId = useWatch({ control, name: 'obraId' });
   const status = useWatch({ control, name: 'status' });
   const centrosCusto = useMemo(() => (obraId ? getCentrosCustoByObraId(obraId) : []), [obraId]);
-  const obraOptions = useMemo(() => {
-    if (contextObras.length > 0) {
-      return contextObras.map((obra) => ({ value: obra.value, label: obra.label }));
-    }
-    return mockObras.map((obra) => ({ value: obra.id, label: `${obra.codigo} — ${obra.nome}` }));
-  }, [contextObras]);
+  const obraOptions = useMemo(
+    () => mockObras.map((obra) => ({ value: obra.id, label: `${obra.codigo} — ${obra.nome}` })),
+    [],
+  );
 
   useEffect(() => {
     if (!isEdit) {

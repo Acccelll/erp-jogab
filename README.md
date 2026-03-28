@@ -33,7 +33,7 @@ Garantir que a IA implemente o ERP JOGAB com máxima fidelidade à arquitetura d
 
 ## Estado atual do frontend
 
-Todas as 8 fases do roadmap original estão completas, além de 14 fases de alinhamento/integração/qualidade. Os 15 módulos possuem pages, services, hooks, types e mock data implementados e todos estão integrados à API real com `withApiFallback`. A Fase 11 fechou os últimos módulos parciais. A Fase 12 adicionou mutations (POST/PUT) a Compras, Fiscal, Estoque, Medições e Relatórios. A Fase 13 corrigiu os contratos de mutation, expandiu a cobertura de testes para hooks de todos os módulos secundários e corrigiu a arquitetura de contexto global. A Fase 14 aplicou code-splitting com `React.lazy` em todas as páginas de módulo, adicionou `Suspense` boundary e atualizou a documentação completa da API (63 arquivos, 880 testes). Detalhes em `docs/08-roadmap.md`, `docs/18-qualidade-fase13.md` e `docs/19-estabilizacao-fase14.md`.
+Todas as 8 fases do roadmap original estão completas, além de 13 fases de alinhamento/integração/qualidade. Os 15 módulos possuem pages, services, hooks, types e mock data implementados e todos estão integrados à API real com `withApiFallback`. A Fase 11 fechou os últimos módulos parciais. A Fase 12 adicionou mutations (POST/PUT) a Compras, Fiscal, Estoque, Medições e Relatórios. A Fase 13 corrigiu os contratos de mutation, expandiu a cobertura de testes para hooks de todos os módulos secundários e corrigiu a arquitetura de contexto global: `ContextBar` é agora renderizado no `AppLayout`, e a `Topbar` ficou focada em breadcrumbs, ações e menu do usuário (63 arquivos, 880 testes). Detalhes em `docs/08-roadmap.md` e `docs/18-qualidade-fase13.md`.
 
 ### Módulos implementados
 
@@ -91,11 +91,11 @@ npm run build         # TypeScript + Vite build
 npm run lint          # ESLint
 ```
 
-### Gaps de cobertura restantes (pós-Fase 14)
+### Gaps de cobertura restantes (pós-Fase 13)
 
 - **Backend real:** Repositório sem diretório backend — testes de integração E2E dependem de backend funcional
 - **Componentes específicos de módulo:** Filtros, tabelas e cards internos de cada módulo sem testes dedicados
-- **Testes end-to-end:** Ainda sem testes E2E (Playwright/Cypress) — prioritário para próxima fase
+- **Testes end-to-end:** Ainda sem testes E2E (Playwright/Cypress) — previsto para Fase 14
 
 ---
 
@@ -122,11 +122,11 @@ Para desabilitar fallback e forçar API real: `VITE_API_FALLBACK=false`.
 
 ---
 
-## Integração real incremental (Fases 5–14)
+## Integração real incremental (Fase 5)
 
-A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`. As fases seguintes completaram todos os 15 módulos. Detalhes completos em `docs/09-integracao-backend.md` e `docs/19-estabilizacao-fase14.md`.
+A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`. Detalhes completos em `docs/11-integracao-fase5.md`.
 
-### Endpoints efetivamente integrados (Fases 5–14)
+### Endpoints efetivamente integrados (Fases 5 + 6 + 7)
 
 | Módulo | Endpoint | Método | Descrição |
 |--------|----------|--------|-----------|
@@ -150,52 +150,6 @@ A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`
 | Horas Extras | `/horas-extras/:id/aprovar` | POST | Aprovar hora extra |
 | Horas Extras | `/horas-extras/fechamento` | POST | Fechar competência |
 | Horas Extras | `/horas-extras/aprovacao` | GET | Dados de aprovação |
-| FOPAG | `/fopag/competencias` | GET | Listagem de competências |
-| FOPAG | `/fopag/competencias/:id` | GET | Detalhe da competência |
-| Financeiro | `/financeiro/dashboard` | GET | Dashboard financeiro |
-| Financeiro | `/financeiro/fluxo-caixa` | GET | Fluxo de caixa |
-| Financeiro | `/financeiro/pessoal` | GET | Custos de pessoal |
-| Financeiro | `/financeiro/contas-pagar` | GET | Contas a pagar |
-| Financeiro | `/financeiro/contas-receber` | GET | Contas a receber |
-| Financeiro | `/financeiro/titulos/:id` | GET | Detalhe de título |
-| Compras | `/compras/solicitacoes` | GET | Listagem de solicitações |
-| Compras | `/compras/cotacoes` | GET | Listagem de cotações |
-| Compras | `/compras/pedidos` | GET | Listagem de pedidos |
-| Compras | `/compras/pedidos/:id` | GET | Detalhe do pedido |
-| Compras | `/compras/dashboard` | GET | Dashboard de compras |
-| Compras | `/compras/solicitacoes` | POST/PUT | Criar/atualizar solicitação |
-| Compras | `/compras/cotacoes` | POST/PUT | Criar/atualizar cotação |
-| Compras | `/compras/pedidos` | POST/PUT | Criar/atualizar pedido |
-| Fiscal | `/fiscal/dashboard` | GET | Dashboard fiscal |
-| Fiscal | `/fiscal/entradas` | GET | Documentos de entrada |
-| Fiscal | `/fiscal/saidas` | GET | Documentos de saída |
-| Fiscal | `/fiscal/documentos/:id` | GET | Detalhe do documento |
-| Fiscal | `/fiscal/documentos` | POST/PUT | Criar/atualizar documento |
-| Relatórios | `/relatorios/dashboard` | GET | Dashboard de relatórios |
-| Relatórios | `/relatorios/categorias/:categoria` | GET | Relatórios por categoria |
-| Relatórios | `/relatorios/gerar` | POST | Gerar relatório |
-| Estoque | `/estoque/dashboard` | GET | Dashboard de estoque |
-| Estoque | `/estoque/movimentacoes` | GET | Listagem de movimentações |
-| Estoque | `/estoque/itens/:id` | GET | Detalhe de item |
-| Estoque | `/estoque/movimentacoes` | POST | Registrar movimentação |
-| Estoque | `/estoque/itens/:id` | PUT | Atualizar item |
-| Medições | `/medicoes/dashboard` | GET | Dashboard de medições |
-| Medições | `/medicoes` | GET | Listagem de medições |
-| Medições | `/medicoes/:id` | GET | Detalhe de medição |
-| Medições | `/medicoes` | POST | Criar medição |
-| Medições | `/medicoes/:id` | PUT | Atualizar medição |
-| Medições | `/medicoes/:id/aprovar` | POST | Aprovar medição |
-| Documentos | `/documentos/dashboard` | GET | Dashboard de documentos |
-| Documentos | `/documentos/:id` | GET | Detalhe do documento |
-| Documentos | `/documentos/upload` | POST | Upload de documento |
-| Documentos | `/documentos/:id` | PUT | Atualizar documento |
-| Admin | `/admin/dashboard` | GET | Dashboard administrativo |
-| Admin | `/admin/usuarios` | GET/POST/PUT | Usuários |
-| Admin | `/admin/perfis` | GET/POST/PUT | Perfis |
-| Admin | `/admin/permissoes` | GET/PUT | Permissões |
-| Admin | `/admin/parametros` | GET | Parâmetros |
-| Admin | `/admin/logs` | GET | Logs de auditoria |
-| Admin | `/admin/integracoes` | GET | Integrações |
 
 ### Status dos módulos
 
@@ -203,9 +157,11 @@ A Fase 5 conectou os três primeiros domínios à API real via `withApiFallback`
 |--------|---------|-----|
 | ✅ Integrado | Auth, Contexto, Dashboard, Obras, RH, Horas Extras, FOPAG, Financeiro, Compras, Fiscal, Relatórios, Estoque, Medições, Documentos, Admin | 15 |
 
-- **Integrado:** conectado à API real com `withApiFallback`, normalizers e testes.
+- **Integrado:** conectado à API real com `withApiFallback`, normalizers e testes de integração.
+- **Ready:** contrato estável, normalizer completo, `withApiFallback` implementado — pronto para API real.
+- **Partial:** service com `withApiFallback`, mas contrato de detalhe ou mutação parcial.
 
-**Total:** 87 endpoints integrados de 87 mapeados (incluindo endpoints complementares de workspace/alocações). Todos os módulos estão integrados. Detalhes em `docs/10-readiness-modulos.md`.
+**Total:** 61 endpoints integrados de 61 mapeados. Todos os módulos estão integrados. Detalhes em `docs/10-readiness-modulos.md`.
 
 ---
 
