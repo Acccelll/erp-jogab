@@ -83,27 +83,6 @@ Este documento mapeia o estado de readiness de cada módulo do frontend para int
 
 ---
 
-### Endpoints complementares de workspace (Obras + RH)
-
-Além dos endpoints CRUD listados acima, os workspaces operacionais também usam endpoints reais com `withApiFallback`:
-
-| Domínio | Endpoint | Método | Status | Descrição |
-|---------|----------|--------|--------|-----------|
-| Obras | `/obras/:id/cronograma` | GET | ✅ Integrado | Aba de cronograma da obra |
-| Obras | `/obras/:id/equipe` | GET | ✅ Integrado | Aba de equipe da obra |
-| Obras | `/obras/:id/contratos` | GET | ✅ Integrado | Aba de contratos da obra |
-| Obras | `/obras/:id/rh` | GET | ✅ Integrado | Aba de RH da obra |
-| Obras | `/obras/:id/alocacoes` | GET | ✅ Integrado | Alocações vinculadas à obra |
-| RH | `/rh/funcionarios/:id/contrato` | GET | ✅ Integrado | Aba de contrato do funcionário |
-| RH | `/rh/funcionarios/:id/alocacoes` | GET | ✅ Integrado | Aba de alocações do funcionário |
-| RH | `/rh/funcionarios/:id/horas-extras` | GET | ✅ Integrado | Aba de horas extras do funcionário |
-| RH | `/rh/funcionarios/:id/fopag` | GET | ✅ Integrado | Aba de FOPAG do funcionário |
-| RH | `/rh/alocacoes` | POST | ✅ Integrado | Criar alocação |
-| RH | `/rh/alocacoes/:id` | PUT | ✅ Integrado | Atualizar alocação |
-| RH | `/rh/alocacoes/:id/encerrar` | PATCH | ✅ Integrado | Encerrar alocação |
-
----
-
 ## Módulos prontos para integração imediata (Ready)
 
 ### 6. Horas Extras (Fase 7)
@@ -178,7 +157,7 @@ Além dos endpoints CRUD listados acima, os workspaces operacionais também usam
 |----------|--------|--------|-----------|
 | `/fiscal/dashboard` | GET | ✅ | Dashboard fiscal |
 | `/fiscal/entradas` | GET | ✅ | Documentos de entrada (NF-e recebidas) |
-| `/fiscal/documentos` | POST | ✅ | Criar documento fiscal (Fase 12) |
+| `/fiscal/entradas` | POST | ✅ | Criar documento fiscal de entrada (Fase 12) |
 | `/fiscal/saidas` | GET | ✅ | Documentos de saída (NF-e emitidas) |
 | `/fiscal/documentos/:id` | GET | ✅ | Detalhe de documento fiscal |
 | `/fiscal/documentos/:id` | PUT | ✅ | Atualizar documento fiscal (Fase 12) |
@@ -235,9 +214,9 @@ Além dos endpoints CRUD listados acima, os workspaces operacionais também usam
 | Endpoint | Método | Status | Descrição |
 |----------|--------|--------|-----------|
 | `/documentos/dashboard` | GET | ✅ | Dashboard de documentos |
-| `/documentos/:id` | GET | ✅ | Detalhe do documento |
+| `/documentos/:id` | GET | 🟡 | Detalhe do documento — contrato parcial |
 
-**Notas:** Integrado na Fase 11 (GET). Fase 12: upload e atualização (POST upload, PUT atualizar) com `withApiFallback`. Contrato completo.
+**Pendência:** Upload e gestão de documentos ainda não preparados.
 
 ---
 
@@ -253,7 +232,7 @@ Além dos endpoints CRUD listados acima, os workspaces operacionais também usam
 | `/admin/logs` | GET | ✅ | Logs de auditoria |
 | `/admin/integracoes` | GET | ✅ | Integrações |
 
-**Notas:** Integrado na Fase 11 (7 GETs). Fase 12: mutations POST/PUT usuário, perfil, permissão com `withApiFallback`. CRUD completo.
+**Pendência:** CRUD de usuários/perfis/permissões (mutações) não preparado.
 
 ---
 
@@ -264,20 +243,20 @@ Além dos endpoints CRUD listados acima, os workspaces operacionais também usam
 | Auth | ✅ Integrado | 3 | 3 | 3 |
 | Context | ✅ Integrado | 2 | 2 | 2 |
 | Dashboard | ✅ Integrado | 1 | 1 | 1 |
-| Obras | ✅ Integrado | 9 | 9 | 9 |
-| RH | ✅ Integrado | 11 | 11 | 11 |
+| Obras | ✅ Integrado | 4 | 4 | 4 |
+| RH | ✅ Integrado | 4 | 4 | 4 |
 | Horas Extras | ✅ Integrado | 6 | 6 | 6 |
 | FOPAG | ✅ Integrado | 2 | 2 | 2 |
 | Financeiro | ✅ Integrado | 6 | 6 | 6 |
-| Compras | ✅ Integrado (Fase 9) | 11 | 11 | 11 |
-| Fiscal | ✅ Integrado (Fase 10) | 6 | 6 | 6 |
-| Relatórios | ✅ Integrado (Fase 10) | 3 | 3 | 3 |
-| Estoque | ✅ Integrado (Fase 11+12) | 5 | 5 | 5 |
-| Medições | ✅ Integrado (Fase 11+12) | 6 | 6 | 6 |
-| Documentos | ✅ Integrado (Fase 11+12) | 4 | 4 | 4 |
-| Admin | ✅ Integrado (Fase 11+12) | 12 | 12 | 12 |
+| Compras | ✅ Integrado (Fase 9) | 5 | 5 | 5 |
+| Fiscal | ✅ Integrado (Fase 10) | 4 | 4 | 4 |
+| Relatórios | ✅ Integrado (Fase 10) | 2 | 2 | 2 |
+| Estoque | 🟡 Partial | 0 | 2 | 3 |
+| Medições | 🟡 Partial | 0 | 2 | 3 |
+| Documentos | 🟡 Partial | 0 | 1 | 2 |
+| Admin | 🟡 Partial | 0 | 7 | 7 |
 
-**Total:** 87 endpoints integrados de 87 mapeados. Todos os 15 módulos ✅ integrados com `withApiFallback`.
+**Total:** 39 endpoints integrados, 51 endpoints ready de 54 mapeados.
 
 ---
 
@@ -294,9 +273,9 @@ Além dos endpoints CRUD listados acima, os workspaces operacionais também usam
 9. ~~**Compras**~~ — ✅ Integrado (Fase 9)
 10. ~~**Fiscal**~~ — ✅ Integrado (Fase 10)
 11. ~~**Relatórios**~~ — ✅ Integrado (Fase 10)
-12. ~~**Estoque, Medições**~~ — ✅ Integrado (Fase 11+12)
-13. ~~**Admin, Documentos**~~ — ✅ Integrado (Fase 11+12)
-14. ~~**Fase 14**~~ — ✅ Code-splitting, Suspense, documentação atualizada
+12. **Estoque, Medições** — Mutations integradas na Fase 12 ✅
+13. **Admin** — Mutations de CRUD integradas na Fase 11 ✅
+14. **Fase 14** — Testes E2E (Playwright), hooks de sub-features, início do backend real
 
 ---
 

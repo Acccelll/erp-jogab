@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { lazy, type ReactElement } from 'react';
 import type { RouteObject } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
@@ -37,18 +36,28 @@ import { Lazy } from './PageLoader';
 const AdminPage = lazy(() => import('@/modules/admin').then((m) => ({ default: m.AdminPage })));
 const AdminUsuariosPage = lazy(() => import('@/modules/admin').then((m) => ({ default: m.AdminUsuariosPage })));
 const AdminPerfisPage = lazy(() => import('@/modules/admin').then((m) => ({ default: m.AdminPerfisPage })));
-const AdminPermissoesPage = lazy(() => import('@/modules/admin').then((m) => ({ default: m.AdminPermissoesPage })));
-const AdminParametrosPage = lazy(() => import('@/modules/admin').then((m) => ({ default: m.AdminParametrosPage })));
+const AdminPermissoesPage = lazy(() =>
+  import('@/modules/admin').then((m) => ({ default: m.AdminPermissoesPage })),
+);
+const AdminParametrosPage = lazy(() =>
+  import('@/modules/admin').then((m) => ({ default: m.AdminParametrosPage })),
+);
 const AdminLogsPage = lazy(() => import('@/modules/admin').then((m) => ({ default: m.AdminLogsPage })));
-const AdminIntegracoesPage = lazy(() => import('@/modules/admin').then((m) => ({ default: m.AdminIntegracoesPage })));
+const AdminIntegracoesPage = lazy(() =>
+  import('@/modules/admin').then((m) => ({ default: m.AdminIntegracoesPage })),
+);
 
 // Compras
 const ComprasListPage = lazy(() => import('@/modules/compras').then((m) => ({ default: m.ComprasListPage })));
 const ComprasSolicitacoesPage = lazy(() =>
   import('@/modules/compras').then((m) => ({ default: m.ComprasSolicitacoesPage })),
 );
-const ComprasCotacoesPage = lazy(() => import('@/modules/compras').then((m) => ({ default: m.ComprasCotacoesPage })));
-const ComprasPedidosPage = lazy(() => import('@/modules/compras').then((m) => ({ default: m.ComprasPedidosPage })));
+const ComprasCotacoesPage = lazy(() =>
+  import('@/modules/compras').then((m) => ({ default: m.ComprasCotacoesPage })),
+);
+const ComprasPedidosPage = lazy(() =>
+  import('@/modules/compras').then((m) => ({ default: m.ComprasPedidosPage })),
+);
 const PedidoCompraDetailPage = lazy(() =>
   import('@/modules/compras').then((m) => ({ default: m.PedidoCompraDetailPage })),
 );
@@ -57,7 +66,9 @@ const PedidoCompraDetailPage = lazy(() =>
 const DashboardPage = lazy(() => import('@/modules/dashboard').then((m) => ({ default: m.DashboardPage })));
 
 // Documentos
-const DocumentosListPage = lazy(() => import('@/modules/documentos').then((m) => ({ default: m.DocumentosListPage })));
+const DocumentosListPage = lazy(() =>
+  import('@/modules/documentos').then((m) => ({ default: m.DocumentosListPage })),
+);
 const DocumentoDetailPage = lazy(() =>
   import('@/modules/documentos').then((m) => ({ default: m.DocumentoDetailPage })),
 );
@@ -72,17 +83,25 @@ const EstoqueItemDetailPage = lazy(() =>
 );
 
 // Financeiro
-const FinanceiroListPage = lazy(() => import('@/modules/financeiro').then((m) => ({ default: m.FinanceiroListPage })));
+const FinanceiroListPage = lazy(() =>
+  import('@/modules/financeiro').then((m) => ({ default: m.FinanceiroListPage })),
+);
 const FluxoCaixaPage = lazy(() => import('@/modules/financeiro').then((m) => ({ default: m.FluxoCaixaPage })));
-const ContasPagarPage = lazy(() => import('@/modules/financeiro').then((m) => ({ default: m.ContasPagarPage })));
-const ContasReceberPage = lazy(() => import('@/modules/financeiro').then((m) => ({ default: m.ContasReceberPage })));
+const ContasPagarPage = lazy(() =>
+  import('@/modules/financeiro').then((m) => ({ default: m.ContasPagarPage })),
+);
+const ContasReceberPage = lazy(() =>
+  import('@/modules/financeiro').then((m) => ({ default: m.ContasReceberPage })),
+);
 const TituloFinanceiroDetailPage = lazy(() =>
   import('@/modules/financeiro').then((m) => ({ default: m.TituloFinanceiroDetailPage })),
 );
 
 // Fiscal
 const FiscalListPage = lazy(() => import('@/modules/fiscal').then((m) => ({ default: m.FiscalListPage })));
-const FiscalEntradasPage = lazy(() => import('@/modules/fiscal').then((m) => ({ default: m.FiscalEntradasPage })));
+const FiscalEntradasPage = lazy(() =>
+  import('@/modules/fiscal').then((m) => ({ default: m.FiscalEntradasPage })),
+);
 const FiscalSaidasPage = lazy(() => import('@/modules/fiscal').then((m) => ({ default: m.FiscalSaidasPage })));
 const DocumentoFiscalDetailPage = lazy(() =>
   import('@/modules/fiscal').then((m) => ({ default: m.DocumentoFiscalDetailPage })),
@@ -133,35 +152,57 @@ const HorasExtrasDetailPage = lazy(() =>
 );
 
 // Medições
-const MedicoesListPage = lazy(() => import('@/modules/medicoes').then((m) => ({ default: m.MedicoesListPage })));
-const MedicaoDetailPage = lazy(() => import('@/modules/medicoes').then((m) => ({ default: m.MedicaoDetailPage })));
+const MedicoesListPage = lazy(() =>
+  import('@/modules/medicoes').then((m) => ({ default: m.MedicoesListPage })),
+);
+const MedicaoDetailPage = lazy(() =>
+  import('@/modules/medicoes').then((m) => ({ default: m.MedicaoDetailPage })),
+);
 
 // Obras
 const ObrasListPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObrasListPage })));
-const ObraVisaoGeralPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraVisaoGeralPage })));
-const ObraCronogramaPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraCronogramaPage })));
+const ObraVisaoGeralPage = lazy(() =>
+  import('@/modules/obras').then((m) => ({ default: m.ObraVisaoGeralPage })),
+);
+const ObraCronogramaPage = lazy(() =>
+  import('@/modules/obras').then((m) => ({ default: m.ObraCronogramaPage })),
+);
 const ObraEquipePage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraEquipePage })));
 const ObraComprasPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraComprasPage })));
-const ObraFinanceiroPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraFinanceiroPage })));
-const ObraDocumentosPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraDocumentosPage })));
-const ObraContratosPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraContratosPage })));
+const ObraFinanceiroPage = lazy(() =>
+  import('@/modules/obras').then((m) => ({ default: m.ObraFinanceiroPage })),
+);
+const ObraDocumentosPage = lazy(() =>
+  import('@/modules/obras').then((m) => ({ default: m.ObraDocumentosPage })),
+);
+const ObraContratosPage = lazy(() =>
+  import('@/modules/obras').then((m) => ({ default: m.ObraContratosPage })),
+);
 const ObraRhPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraRhPage })));
 const ObraEstoquePage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraEstoquePage })));
-const ObraMedicoesPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraMedicoesPage })));
+const ObraMedicoesPage = lazy(() =>
+  import('@/modules/obras').then((m) => ({ default: m.ObraMedicoesPage })),
+);
 const ObraRiscosPage = lazy(() => import('@/modules/obras').then((m) => ({ default: m.ObraRiscosPage })));
 
 // Perfil
 const PerfilPage = lazy(() => import('@/modules/perfil').then((m) => ({ default: m.PerfilPage })));
 
 // Relatórios
-const RelatoriosListPage = lazy(() => import('@/modules/relatorios').then((m) => ({ default: m.RelatoriosListPage })));
+const RelatoriosListPage = lazy(() =>
+  import('@/modules/relatorios').then((m) => ({ default: m.RelatoriosListPage })),
+);
 const RelatorioCategoriaPage = lazy(() =>
   import('@/modules/relatorios').then((m) => ({ default: m.RelatorioCategoriaPage })),
 );
 
 // RH
-const FuncionariosListPage = lazy(() => import('@/modules/rh').then((m) => ({ default: m.FuncionariosListPage })));
-const FuncionarioDetailPage = lazy(() => import('@/modules/rh').then((m) => ({ default: m.FuncionarioDetailPage })));
+const FuncionariosListPage = lazy(() =>
+  import('@/modules/rh').then((m) => ({ default: m.FuncionariosListPage })),
+);
+const FuncionarioDetailPage = lazy(() =>
+  import('@/modules/rh').then((m) => ({ default: m.FuncionarioDetailPage })),
+);
 const FuncionarioVisaoGeralPage = lazy(() =>
   import('@/modules/rh').then((m) => ({ default: m.FuncionarioVisaoGeralPage })),
 );
@@ -177,7 +218,9 @@ const FuncionarioDocumentosPage = lazy(() =>
 const FuncionarioAlocacoesPage = lazy(() =>
   import('@/modules/rh').then((m) => ({ default: m.FuncionarioAlocacoesPage })),
 );
-const FuncionarioFeriasPage = lazy(() => import('@/modules/rh').then((m) => ({ default: m.FuncionarioFeriasPage })));
+const FuncionarioFeriasPage = lazy(() =>
+  import('@/modules/rh').then((m) => ({ default: m.FuncionarioFeriasPage })),
+);
 const FuncionarioDecimoTerceiroPage = lazy(() =>
   import('@/modules/rh').then((m) => ({ default: m.FuncionarioDecimoTerceiroPage })),
 );
@@ -187,7 +230,9 @@ const FuncionarioProvisoesPage = lazy(() =>
 const FuncionarioHorasExtrasPage = lazy(() =>
   import('@/modules/rh').then((m) => ({ default: m.FuncionarioHorasExtrasPage })),
 );
-const FuncionarioFopagPage = lazy(() => import('@/modules/rh').then((m) => ({ default: m.FuncionarioFopagPage })));
+const FuncionarioFopagPage = lazy(() =>
+  import('@/modules/rh').then((m) => ({ default: m.FuncionarioFopagPage })),
+);
 
 // ── Placeholder tab configuration ────────────────────────────────────────
 interface PlaceholderTabConfig {
@@ -374,121 +419,28 @@ const appRoutes: RouteObject[] = [
   {
     path: '/dashboard',
     element: <ModuleLayout />,
-    children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <DashboardPage />
-          </Lazy>
-        ),
-      },
-    ],
+    children: [{ index: true, element: <Lazy><DashboardPage /></Lazy> }],
   },
   {
     path: '/obras',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <ObrasListPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><ObrasListPage /></Lazy> },
       {
         path: ':obraId',
         element: <ObraWorkspaceLayout />,
         children: [
-          {
-            index: true,
-            element: (
-              <Lazy>
-                <ObraVisaoGeralPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'cronograma',
-            element: (
-              <Lazy>
-                <ObraCronogramaPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'equipe',
-            element: (
-              <Lazy>
-                <ObraEquipePage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'compras',
-            element: (
-              <Lazy>
-                <ObraComprasPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'financeiro',
-            element: (
-              <Lazy>
-                <ObraFinanceiroPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'documentos',
-            element: (
-              <Lazy>
-                <ObraDocumentosPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'contratos',
-            element: (
-              <Lazy>
-                <ObraContratosPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'rh',
-            element: (
-              <Lazy>
-                <ObraRhPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'estoque',
-            element: (
-              <Lazy>
-                <ObraEstoquePage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'medicoes',
-            element: (
-              <Lazy>
-                <ObraMedicoesPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'riscos',
-            element: (
-              <Lazy>
-                <ObraRiscosPage />
-              </Lazy>
-            ),
-          },
+          { index: true, element: <Lazy><ObraVisaoGeralPage /></Lazy> },
+          { path: 'cronograma', element: <Lazy><ObraCronogramaPage /></Lazy> },
+          { path: 'equipe', element: <Lazy><ObraEquipePage /></Lazy> },
+          { path: 'compras', element: <Lazy><ObraComprasPage /></Lazy> },
+          { path: 'financeiro', element: <Lazy><ObraFinanceiroPage /></Lazy> },
+          { path: 'documentos', element: <Lazy><ObraDocumentosPage /></Lazy> },
+          { path: 'contratos', element: <Lazy><ObraContratosPage /></Lazy> },
+          { path: 'rh', element: <Lazy><ObraRhPage /></Lazy> },
+          { path: 'estoque', element: <Lazy><ObraEstoquePage /></Lazy> },
+          { path: 'medicoes', element: <Lazy><ObraMedicoesPage /></Lazy> },
+          { path: 'riscos', element: <Lazy><ObraRiscosPage /></Lazy> },
           ...obraPlaceholderRoutes,
         ],
       },
@@ -499,102 +451,27 @@ const appRoutes: RouteObject[] = [
     element: <ModuleLayout />,
     children: [
       { index: true, element: <Navigate to="/rh/funcionarios" replace /> },
-      {
-        path: 'funcionarios',
-        element: (
-          <Lazy>
-            <FuncionariosListPage />
-          </Lazy>
-        ),
-      },
+      { path: 'funcionarios', element: <Lazy><FuncionariosListPage /></Lazy> },
       {
         path: 'funcionarios/:funcId',
-        element: (
-          <Lazy>
-            <FuncionarioDetailPage />
-          </Lazy>
-        ),
+        element: <Lazy><FuncionarioDetailPage /></Lazy>,
         children: [
-          {
-            index: true,
-            element: (
-              <Lazy>
-                <FuncionarioVisaoGeralPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'contrato',
-            element: (
-              <Lazy>
-                <FuncionarioContratoPage />
-              </Lazy>
-            ),
-          },
+          { index: true, element: <Lazy><FuncionarioVisaoGeralPage /></Lazy> },
+          { path: 'contrato', element: <Lazy><FuncionarioContratoPage /></Lazy> },
           {
             path: 'historico-salarial',
-            element: (
-              <Lazy>
-                <FuncionarioHistoricoSalarialPage />
-              </Lazy>
-            ),
+            element: <Lazy><FuncionarioHistoricoSalarialPage /></Lazy>,
           },
-          {
-            path: 'documentos',
-            element: (
-              <Lazy>
-                <FuncionarioDocumentosPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'alocacoes',
-            element: (
-              <Lazy>
-                <FuncionarioAlocacoesPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'ferias',
-            element: (
-              <Lazy>
-                <FuncionarioFeriasPage />
-              </Lazy>
-            ),
-          },
+          { path: 'documentos', element: <Lazy><FuncionarioDocumentosPage /></Lazy> },
+          { path: 'alocacoes', element: <Lazy><FuncionarioAlocacoesPage /></Lazy> },
+          { path: 'ferias', element: <Lazy><FuncionarioFeriasPage /></Lazy> },
           {
             path: 'decimo-terceiro',
-            element: (
-              <Lazy>
-                <FuncionarioDecimoTerceiroPage />
-              </Lazy>
-            ),
+            element: <Lazy><FuncionarioDecimoTerceiroPage /></Lazy>,
           },
-          {
-            path: 'provisoes',
-            element: (
-              <Lazy>
-                <FuncionarioProvisoesPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'horas-extras',
-            element: (
-              <Lazy>
-                <FuncionarioHorasExtrasPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'fopag',
-            element: (
-              <Lazy>
-                <FuncionarioFopagPage />
-              </Lazy>
-            ),
-          },
+          { path: 'provisoes', element: <Lazy><FuncionarioProvisoesPage /></Lazy> },
+          { path: 'horas-extras', element: <Lazy><FuncionarioHorasExtrasPage /></Lazy> },
+          { path: 'fopag', element: <Lazy><FuncionarioFopagPage /></Lazy> },
           ...funcionarioPlaceholderRoutes,
         ],
       },
@@ -604,123 +481,31 @@ const appRoutes: RouteObject[] = [
     path: '/horas-extras',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <HorasExtrasDashboardPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'lancamentos',
-        element: (
-          <Lazy>
-            <HorasExtrasLancamentosPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'fechamento',
-        element: (
-          <Lazy>
-            <HorasExtrasFechamentoPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'aprovacao',
-        element: (
-          <Lazy>
-            <HorasExtrasAprovacaoPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: ':lancamentoId',
-        element: (
-          <Lazy>
-            <HorasExtrasDetailPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><HorasExtrasDashboardPage /></Lazy> },
+      { path: 'lancamentos', element: <Lazy><HorasExtrasLancamentosPage /></Lazy> },
+      { path: 'fechamento', element: <Lazy><HorasExtrasFechamentoPage /></Lazy> },
+      { path: 'aprovacao', element: <Lazy><HorasExtrasAprovacaoPage /></Lazy> },
+      { path: ':lancamentoId', element: <Lazy><HorasExtrasDetailPage /></Lazy> },
     ],
   },
   {
     path: '/fopag',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <FopagListPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><FopagListPage /></Lazy> },
       {
         path: ':competenciaId',
-        element: (
-          <Lazy>
-            <FopagCompetenciaDetailPage />
-          </Lazy>
-        ),
+        element: <Lazy><FopagCompetenciaDetailPage /></Lazy>,
         children: [
-          {
-            index: true,
-            element: (
-              <Lazy>
-                <FopagCompetenciaOverviewPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'funcionarios',
-            element: (
-              <Lazy>
-                <FopagCompetenciaFuncionariosPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'obras',
-            element: (
-              <Lazy>
-                <FopagCompetenciaObrasPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'eventos',
-            element: (
-              <Lazy>
-                <FopagCompetenciaEventosPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'rateio',
-            element: (
-              <Lazy>
-                <FopagCompetenciaRateioPage />
-              </Lazy>
-            ),
-          },
-          {
-            path: 'financeiro',
-            element: (
-              <Lazy>
-                <FopagCompetenciaFinanceiroPage />
-              </Lazy>
-            ),
-          },
+          { index: true, element: <Lazy><FopagCompetenciaOverviewPage /></Lazy> },
+          { path: 'funcionarios', element: <Lazy><FopagCompetenciaFuncionariosPage /></Lazy> },
+          { path: 'obras', element: <Lazy><FopagCompetenciaObrasPage /></Lazy> },
+          { path: 'eventos', element: <Lazy><FopagCompetenciaEventosPage /></Lazy> },
+          { path: 'rateio', element: <Lazy><FopagCompetenciaRateioPage /></Lazy> },
+          { path: 'financeiro', element: <Lazy><FopagCompetenciaFinanceiroPage /></Lazy> },
           {
             path: 'previsto-realizado',
-            element: (
-              <Lazy>
-                <FopagCompetenciaPrevistoRealizadoPage />
-              </Lazy>
-            ),
+            element: <Lazy><FopagCompetenciaPrevistoRealizadoPage /></Lazy>,
           },
         ],
       },
@@ -730,303 +515,84 @@ const appRoutes: RouteObject[] = [
     path: '/compras',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <ComprasListPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'solicitacoes',
-        element: (
-          <Lazy>
-            <ComprasSolicitacoesPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'cotacoes',
-        element: (
-          <Lazy>
-            <ComprasCotacoesPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'pedidos',
-        element: (
-          <Lazy>
-            <ComprasPedidosPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'pedidos/:pedidoId',
-        element: (
-          <Lazy>
-            <PedidoCompraDetailPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><ComprasListPage /></Lazy> },
+      { path: 'solicitacoes', element: <Lazy><ComprasSolicitacoesPage /></Lazy> },
+      { path: 'cotacoes', element: <Lazy><ComprasCotacoesPage /></Lazy> },
+      { path: 'pedidos', element: <Lazy><ComprasPedidosPage /></Lazy> },
+      { path: 'pedidos/:pedidoId', element: <Lazy><PedidoCompraDetailPage /></Lazy> },
     ],
   },
   {
     path: '/fiscal',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <FiscalListPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'entradas',
-        element: (
-          <Lazy>
-            <FiscalEntradasPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'saidas',
-        element: (
-          <Lazy>
-            <FiscalSaidasPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'documentos/:documentoId',
-        element: (
-          <Lazy>
-            <DocumentoFiscalDetailPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><FiscalListPage /></Lazy> },
+      { path: 'entradas', element: <Lazy><FiscalEntradasPage /></Lazy> },
+      { path: 'saidas', element: <Lazy><FiscalSaidasPage /></Lazy> },
+      { path: 'documentos/:documentoId', element: <Lazy><DocumentoFiscalDetailPage /></Lazy> },
     ],
   },
   {
     path: '/financeiro',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <FinanceiroListPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'fluxo',
-        element: (
-          <Lazy>
-            <FluxoCaixaPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'contas-pagar',
-        element: (
-          <Lazy>
-            <ContasPagarPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'contas-receber',
-        element: (
-          <Lazy>
-            <ContasReceberPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'titulos/:tituloId',
-        element: (
-          <Lazy>
-            <TituloFinanceiroDetailPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><FinanceiroListPage /></Lazy> },
+      { path: 'fluxo', element: <Lazy><FluxoCaixaPage /></Lazy> },
+      { path: 'contas-pagar', element: <Lazy><ContasPagarPage /></Lazy> },
+      { path: 'contas-receber', element: <Lazy><ContasReceberPage /></Lazy> },
+      { path: 'titulos/:tituloId', element: <Lazy><TituloFinanceiroDetailPage /></Lazy> },
     ],
   },
   {
     path: '/estoque',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <EstoqueListPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'movimentacoes',
-        element: (
-          <Lazy>
-            <EstoqueMovimentacoesPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'itens/:itemId',
-        element: (
-          <Lazy>
-            <EstoqueItemDetailPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><EstoqueListPage /></Lazy> },
+      { path: 'movimentacoes', element: <Lazy><EstoqueMovimentacoesPage /></Lazy> },
+      { path: 'itens/:itemId', element: <Lazy><EstoqueItemDetailPage /></Lazy> },
     ],
   },
   {
     path: '/medicoes',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <MedicoesListPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: ':medicaoId',
-        element: (
-          <Lazy>
-            <MedicaoDetailPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><MedicoesListPage /></Lazy> },
+      { path: ':medicaoId', element: <Lazy><MedicaoDetailPage /></Lazy> },
     ],
   },
   {
     path: '/documentos',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <DocumentosListPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: ':documentoId',
-        element: (
-          <Lazy>
-            <DocumentoDetailPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><DocumentosListPage /></Lazy> },
+      { path: ':documentoId', element: <Lazy><DocumentoDetailPage /></Lazy> },
     ],
   },
   {
     path: '/relatorios',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <RelatoriosListPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: ':categoria',
-        element: (
-          <Lazy>
-            <RelatorioCategoriaPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><RelatoriosListPage /></Lazy> },
+      { path: ':categoria', element: <Lazy><RelatorioCategoriaPage /></Lazy> },
     ],
   },
   {
     path: '/admin',
     element: <ModuleLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <AdminPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'usuarios',
-        element: (
-          <Lazy>
-            <AdminUsuariosPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'perfis',
-        element: (
-          <Lazy>
-            <AdminPerfisPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'permissoes',
-        element: (
-          <Lazy>
-            <AdminPermissoesPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'parametros',
-        element: (
-          <Lazy>
-            <AdminParametrosPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'logs',
-        element: (
-          <Lazy>
-            <AdminLogsPage />
-          </Lazy>
-        ),
-      },
-      {
-        path: 'integracoes',
-        element: (
-          <Lazy>
-            <AdminIntegracoesPage />
-          </Lazy>
-        ),
-      },
+      { index: true, element: <Lazy><AdminPage /></Lazy> },
+      { path: 'usuarios', element: <Lazy><AdminUsuariosPage /></Lazy> },
+      { path: 'perfis', element: <Lazy><AdminPerfisPage /></Lazy> },
+      { path: 'permissoes', element: <Lazy><AdminPermissoesPage /></Lazy> },
+      { path: 'parametros', element: <Lazy><AdminParametrosPage /></Lazy> },
+      { path: 'logs', element: <Lazy><AdminLogsPage /></Lazy> },
+      { path: 'integracoes', element: <Lazy><AdminIntegracoesPage /></Lazy> },
     ],
   },
   {
     path: '/perfil',
     element: <ModuleLayout />,
-    children: [
-      {
-        index: true,
-        element: (
-          <Lazy>
-            <PerfilPage />
-          </Lazy>
-        ),
-      },
-    ],
+    children: [{ index: true, element: <Lazy><PerfilPage /></Lazy> }],
   },
   {
     path: '*',

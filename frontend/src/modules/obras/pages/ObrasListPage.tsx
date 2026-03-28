@@ -18,6 +18,7 @@ import {
   SavedFilters,
   TableSkeleton,
   ErrorStateView,
+  VirtualizedTable,
 } from '@/shared/components';
 import { useDrawerStore, usePreferencesStore } from '@/shared/stores';
 import type { ColumnPreference } from '@/shared/stores/preferencesStore';
@@ -31,7 +32,6 @@ import { formatCurrency, cn } from '@/shared/lib/utils';
 import { type ApiError } from '@/shared/lib/api';
 import { Link } from 'react-router-dom';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
-import type { Obra } from '../types';
 
 const DEFAULT_OBRA_COLUMNS: ColumnPreference[] = [
   { id: 'nome', label: 'Nome', visible: true },
@@ -43,24 +43,6 @@ const DEFAULT_OBRA_COLUMNS: ColumnPreference[] = [
   { id: 'cidade', label: 'Cidade/UF', visible: false },
   { id: 'tipo', label: 'Tipo', visible: false },
 ];
-
-function escapeCsvValue(value: string | number | null | undefined) {
-  const normalized = value == null ? '' : String(value);
-  const escaped = normalized.replaceAll('"', '""');
-  return `"${escaped}"`;
-}
-
-function downloadCsv(filename: string, content: string) {
-  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', filename);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
 
 export function ObrasListPage() {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
@@ -243,127 +225,59 @@ export function ObrasListPage() {
         )}
 
         {!isLoading && !isError && obras.length > 0 && (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead>
-                <tr className="border-b border-border-default/60">
-                  <th className="w-10 px-4 py-2">
-                    <input
-                      type="checkbox"
-                      checked={allSelected}
-                      ref={(el) => {
-                        if (el) el.indeterminate = someSelected;
-                      }}
-                      onChange={toggleAll}
-                      className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
-                    />
-                  </th>
-                  {visibleColumns.map((col) => (
-                    <th
-                      key={col.id}
-                      className={cn(
-                        'px-4 py-2 text-xs font-medium text-text-muted',
-                        col.id === 'valor' ? 'text-right' : 'text-left',
-                      )}
-                    >
-                      {col.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100/60">
-                {obras.map((obra) => (
-                  <tr
-                    key={obra.id}
-                    className={cn(
-                      'hover:bg-surface-soft/50 transition-colors',
-                      isSelected(obra.id) && 'bg-brand-primary/[0.02]',
-                    )}
-                  >
-                    <td className="px-4 py-1.5">
-                      <input
-                        type="checkbox"
-                        checked={isSelected(obra.id)}
-                        onChange={() => toggleSelection(obra.id)}
-                        className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
-                      />
-                    </td>
-                    {visibleColumns.map((col) => {
-                      if (col.id === 'nome') {
-                        return (
-                          <td key={col.id} className="px-4 py-1.5">
-                            <Link to={`/obras/${obra.id}`}>
-                              <TableCellStack
-                                primary={obra.nome}
-                                secondary={`${obra.cidade}/${obra.uf} · ${obra.responsavelNome}`}
-                              />
-                            </Link>
-                          </td>
-                        );
-                      }
-                      if (col.id === 'status') {
-                        return (
-                          <td key={col.id} className="px-4 py-1.5">
-                            <ObraStatusBadge status={obra.status} />
-                          </td>
-                        );
-                      }
-                      if (col.id === 'progresso') {
-                        return (
-                          <td key={col.id} className="px-4 py-1.5">
-                            <div className="flex items-center gap-2">
-                              <div className="h-1.5 w-16 overflow-hidden rounded-full bg-surface-soft">
-                                <div
-                                  className="h-full rounded-full bg-jogab-700"
-                                  style={{ width: `${obra.percentualConcluido}%` }}
-                                />
-                              </div>
-                              <span className="text-xs text-text-muted">{obra.percentualConcluido}%</span>
-                            </div>
-                          </td>
-                        );
-                      }
-                      if (col.id === 'valor') {
-                        return (
-                          <td key={col.id} className="px-4 py-1.5 text-right text-sm text-text-body">
-                            {formatCurrency(obra.orcamentoPrevisto)}
-                          </td>
-                        );
-                      }
-                      if (col.id === 'prazo') {
-                        return (
-                          <td key={col.id} className="px-4 py-1.5 text-xs text-text-muted">
-                            {new Date(obra.dataPrevisaoFim).toLocaleDateString('pt-BR')}
-                          </td>
-                        );
-                      }
-                      if (col.id === 'responsavel') {
-                        return (
-                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-body">
-                            {obra.responsavelNome}
-                          </td>
-                        );
-                      }
-                      if (col.id === 'cidade') {
-                        return (
-                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-muted">
-                            {obra.cidade}/{obra.uf}
-                          </td>
-                        );
-                      }
-                      if (col.id === 'tipo') {
-                        return (
-                          <td key={col.id} className="px-4 py-1.5 text-sm text-text-muted capitalize">
-                            {obra.tipo}
-                          </td>
-                        );
-                      }
-                      return <td key={col.id} className="px-4 py-1.5" />;
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="h-[600px]">
+            <VirtualizedTable
+              data={obras}
+              selectedIds={selectedIds}
+              onSelectRow={toggleSelection}
+              onSelectAll={toggleAll}
+              allSelected={allSelected}
+              someSelected={someSelected}
+              columns={visibleColumns.map((col) => ({
+                key: col.id,
+                header: col.label,
+                width: col.id === 'nome' ? '30%' : '15%',
+                render: (val, obra) => {
+                  if (col.id === 'nome') {
+                    return (
+                      <Link to={`/obras/${obra.id}`}>
+                        <TableCellStack
+                          primary={obra.nome}
+                          secondary={`${obra.cidade}/${obra.uf} · ${obra.responsavelNome}`}
+                        />
+                      </Link>
+                    );
+                  }
+                  if (col.id === 'status') {
+                    return <ObraStatusBadge status={obra.status} />;
+                  }
+                  if (col.id === 'progresso') {
+                    return (
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-16 overflow-hidden rounded-full bg-surface-soft">
+                          <div
+                            className="h-full rounded-full bg-jogab-700"
+                            style={{ width: `${obra.percentualConcluido}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-text-muted">{obra.percentualConcluido}%</span>
+                      </div>
+                    );
+                  }
+                  if (col.id === 'valor') {
+                    return (
+                      <div className="text-right tabular-nums">
+                        {formatCurrency(obra.orcamentoPrevisto)}
+                      </div>
+                    );
+                  }
+                  if (col.id === 'prazo') {
+                    return new Date(obra.dataPrevisaoFim).toLocaleDateString('pt-BR');
+                  }
+                  return val;
+                },
+              }))}
+            />
           </div>
         )}
       </MainContent>
@@ -381,8 +295,8 @@ export function ObrasListPage() {
                 await queryClient.invalidateQueries({ queryKey: ['obras'] });
                 toast.success(message);
                 clearSelection();
-              } catch (error: unknown) {
-                toast.error(error instanceof Error ? error.message : 'Erro ao concluir obras');
+              } catch (error: any) {
+                toast.error(error.message || 'Erro ao concluir obras');
               }
             },
             variant: 'success',
@@ -391,45 +305,7 @@ export function ObrasListPage() {
             label: 'Exportar',
             icon: <Download size={16} />,
             onClick: () => {
-              const obrasToExport = obras.filter((obra) => selectedIds.includes(obra.id));
-              if (obrasToExport.length === 0) {
-                toast.warning('Selecione ao menos uma obra para exportar.');
-                return;
-              }
-
-              const headers = [
-                'codigo',
-                'nome',
-                'status',
-                'tipo',
-                'cidade',
-                'uf',
-                'percentualConcluido',
-                'orcamentoPrevisto',
-                'custoRealizado',
-                'responsavelNome',
-              ];
-
-              const lines = obrasToExport.map((obra) =>
-                [
-                  obra.codigo,
-                  obra.nome,
-                  obra.status,
-                  obra.tipo,
-                  obra.cidade,
-                  obra.uf,
-                  obra.percentualConcluido,
-                  obra.orcamentoPrevisto,
-                  obra.custoRealizado,
-                  obra.responsavelNome,
-                ]
-                  .map(escapeCsvValue)
-                  .join(';'),
-              );
-
-              const csv = [headers.join(';'), ...lines].join('\n');
-              downloadCsv(`obras-${new Date().toISOString().slice(0, 10)}.csv`, csv);
-              toast.success(`${obrasToExport.length} obra(s) exportada(s) com sucesso.`);
+              toast.info('Funcionalidade de exportação em desenvolvimento');
               clearSelection();
             },
           },
@@ -452,18 +328,18 @@ export function ObrasListPage() {
                       try {
                         for (const item of itemsToDelete) {
                           // Note: In a real app we'd use a bulk restore endpoint
-                          await restoreObra(item as Obra);
+                          await restoreObra(item as any);
                         }
                         await queryClient.invalidateQueries({ queryKey: ['obras'] });
                         toast.success('Exclusão desfeita com sucesso.');
-                      } catch {
+                      } catch (err: any) {
                         toast.error('Erro ao desfazer exclusão.');
                       }
                     },
                   },
                 });
-              } catch (error: unknown) {
-                toast.error(error instanceof Error ? error.message : 'Erro ao excluir obras');
+              } catch (error: any) {
+                toast.error(error.message || 'Erro ao excluir obras');
               }
             },
             variant: 'danger',
