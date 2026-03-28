@@ -1,0 +1,109 @@
+
+> frontend@0.0.0 test
+> vitest run --run
+
+
+[1m[46m RUN [49m[22m [36mv4.1.1 [39m[90m/app/frontend[39m
+
+ [32m✓[39m src/modules/obras/services/obras.service.test.ts [2m([22m[2m27 tests[22m[2m)[22m[33m 4706[2mms[22m[39m
+     [33m[2m✓[22m[39m returns a valid ObrasListResponse without filters [33m 360[2mms[22m[39m
+     [33m[2m✓[22m[39m filters by search term [33m 621[2mms[22m[39m
+     [33m[2m✓[22m[39m filters by status [33m 307[2mms[22m[39m
+     [33m[2m✓[22m[39m returns empty data for non-matching filter [33m 307[2mms[22m[39m
+     [33m[2m✓[22m[39m returns an obra for a valid ID [33m 511[2mms[22m[39m
+     [33m[2m✓[22m[39m returns obra, kpis, and resumoBlocos for a valid ID [33m 536[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects duplicate codigo [33m 562[2mms[22m[39m
+     [33m[2m✓[22m[39m updates an existing obra [33m 560[2mms[22m[39m
+ [32m✓[39m src/modules/compras/services/compras.service.test.ts [2m([22m[2m50 tests[22m[2m)[22m[33m 5054[2mms[22m[39m
+ [32m✓[39m src/modules/rh/services/funcionarios.service.test.ts [2m([22m[2m23 tests[22m[2m)[22m[33m 5384[2mms[22m[39m
+     [33m[2m✓[22m[39m returns a valid FuncionariosListResponse without filters [33m 359[2mms[22m[39m
+     [33m[2m✓[22m[39m filters by status [33m 311[2mms[22m[39m
+     [33m[2m✓[22m[39m returns empty data for non-matching search [33m 308[2mms[22m[39m
+     [33m[2m✓[22m[39m returns a funcionario for a valid ID [33m 513[2mms[22m[39m
+     [33m[2m✓[22m[39m returns funcionario and resumoBlocos for a valid ID [33m 541[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects duplicate CPF [33m 563[2mms[22m[39m
+     [33m[2m✓[22m[39m updates an existing funcionario and returns success response [33m 561[2mms[22m[39m
+     [33m[2m✓[22m[39m reflects update in subsequent fetch [33m 1029[2mms[22m[39m
+ [32m✓[39m src/modules/fopag/services/fopag.service.test.ts [2m([22m[2m20 tests[22m[2m)[22m[33m 2468[2mms[22m[39m
+ [32m✓[39m src/modules/horas-extras/services/horasExtras.service.test.ts [2m([22m[2m23 tests[22m[2m)[22m[33m 2825[2mms[22m[39m
+     [33m[2m✓[22m[39m returns a valid response without filters [33m 329[2mms[22m[39m
+     [33m[2m✓[22m[39m returns a hora extra for a valid ID [33m 443[2mms[22m[39m
+     [33m[2m✓[22m[39m approves a pendente hora extra and returns success [33m 442[2mms[22m[39m
+ [32m✓[39m src/modules/admin/services/admin.service.test.ts [2m([22m[2m43 tests[22m[2m)[22m[33m 3483[2mms[22m[39m
+ [32m✓[39m src/modules/fiscal/services/fiscal.service.test.ts [2m([22m[2m29 tests[22m[2m)[22m[33m 2064[2mms[22m[39m
+ [32m✓[39m src/modules/obras/services/obra-workspace.service.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 2264[2mms[22m[39m
+ [32m✓[39m src/modules/financeiro/services/financeiro.service.test.ts [2m([22m[2m23 tests[22m[2m)[22m[33m 2046[2mms[22m[39m
+ [32m✓[39m src/shared/lib/auth.service.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 1798[2mms[22m[39m
+     [33m[2m✓[22m[39m returns a valid session for admin credentials [33m 354[2mms[22m[39m
+     [33m[2m✓[22m[39m returns a valid session for gestor credentials [33m 351[2mms[22m[39m
+     [33m[2m✓[22m[39m restores session from valid mock token [33m 503[2mms[22m[39m
+ [32m✓[39m src/modules/relatorios/services/relatorios.service.test.ts [2m([22m[2m30 tests[22m[2m)[22m[33m 1676[2mms[22m[39m
+ [32m✓[39m src/modules/documentos/services/documentos.service.test.ts [2m([22m[2m23 tests[22m[2m)[22m[33m 2018[2mms[22m[39m
+ [32m✓[39m src/shared/lib/context.service.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 901[2mms[22m[39m
+ [32m✓[39m src/modules/medicoes/services/medicoes.service.test.ts [2m([22m[2m27 tests[22m[2m)[22m[33m 1506[2mms[22m[39m
+ [32m✓[39m src/modules/estoque/services/estoque.service.test.ts [2m([22m[2m23 tests[22m[2m)[22m[33m 1504[2mms[22m[39m
+ [32m✓[39m src/modules/horas-extras/pages/HorasExtrasDashboardPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 937[2mms[22m[39m
+     [33m[2m✓[22m[39m renders error state with retry button [33m 552[2mms[22m[39m
+ [32m✓[39m src/modules/estoque/pages/EstoqueListPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 765[2mms[22m[39m
+     [33m[2m✓[22m[39m renders error state with retry button [33m 483[2mms[22m[39m
+ [32m✓[39m src/modules/dashboard/pages/DashboardPage.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 1046[2mms[22m[39m
+     [33m[2m✓[22m[39m renders error state with retry button [33m 516[2mms[22m[39m
+ [32m✓[39m src/modules/horas-extras/services/horasExtrasAprovacao.service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 480[2mms[22m[39m
+ [32m✓[39m src/modules/financeiro/pages/FinanceiroListPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 436[2mms[22m[39m
+ [32m✓[39m src/modules/compras/pages/ComprasListPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 427[2mms[22m[39m
+ [32m✓[39m src/modules/admin/pages/AdminLogsPage.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 426[2mms[22m[39m
+     [33m[2m✓[22m[39m renders error state with retry [33m 306[2mms[22m[39m
+ [32m✓[39m src/shared/components/tables/VirtualizedTable.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 381[2mms[22m[39m
+ [32m✓[39m src/modules/medicoes/pages/MedicoesListPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 436[2mms[22m[39m
+ [32m✓[39m src/modules/fopag/pages/FopagListPage.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 401[2mms[22m[39m
+ [32m✓[39m src/modules/fiscal/pages/FiscalListPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 471[2mms[22m[39m
+ [32m✓[39m src/modules/documentos/pages/DocumentosListPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 386[2mms[22m[39m
+ [32m✓[39m src/modules/relatorios/pages/RelatoriosListPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 408[2mms[22m[39m
+     [33m[2m✓[22m[39m renders error state with retry [33m 316[2mms[22m[39m
+ [32m✓[39m src/shared/components/PageHeader.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 315[2mms[22m[39m
+ [32m✓[39m src/shared/components/EmptyState.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 266[2mms[22m[39m
+ [32m✓[39m src/modules/obras/hooks/useObraMutations.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 267[2mms[22m[39m
+ [32m✓[39m src/shared/components/FilterBar.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 268[2mms[22m[39m
+ [32m✓[39m src/modules/obras/pages/ObrasListPage.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 248[2mms[22m[39m
+ [32m✓[39m src/modules/documentos/hooks/useDocumentos.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 213[2mms[22m[39m
+ [32m✓[39m src/modules/admin/hooks/useAdmin.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 208[2mms[22m[39m
+ [32m✓[39m src/modules/fopag/hooks/useFopagCompetencias.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 205[2mms[22m[39m
+ [32m✓[39m src/modules/obras/hooks/useObraDetails.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 208[2mms[22m[39m
+ [32m✓[39m src/modules/relatorios/hooks/useRelatorios.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 204[2mms[22m[39m
+ [32m✓[39m src/modules/financeiro/hooks/useFinanceiro.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 209[2mms[22m[39m
+ [32m✓[39m src/modules/medicoes/hooks/useMedicoes.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 205[2mms[22m[39m
+ [32m✓[39m src/modules/compras/hooks/useCompras.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 210[2mms[22m[39m
+ [32m✓[39m src/modules/fiscal/hooks/useFiscal.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 211[2mms[22m[39m
+ [32m✓[39m src/modules/obras/hooks/useObras.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 220[2mms[22m[39m
+ [32m✓[39m src/modules/horas-extras/hooks/useHorasExtras.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 208[2mms[22m[39m
+ [32m✓[39m src/modules/rh/hooks/useFuncionarios.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 212[2mms[22m[39m
+ [32m✓[39m src/modules/estoque/hooks/useEstoque.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 208[2mms[22m[39m
+ [32m✓[39m src/modules/rh/pages/FuncionariosListPage.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 189[2mms[22m[39m
+ [32m✓[39m src/shared/components/ColumnManager.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 161[2mms[22m[39m
+ [32m✓[39m src/modules/dashboard/hooks/useDashboardSummary.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 149[2mms[22m[39m
+ [32m✓[39m src/shared/components/SavedFilters.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 86[2mms[22m[39m
+ [32m✓[39m src/shared/components/StatusBadge.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 94[2mms[22m[39m
+ [32m✓[39m src/shared/components/ErrorBoundary.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 97[2mms[22m[39m
+ [32m✓[39m src/shared/components/KPISection.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[32m 91[2mms[22m[39m
+ [32m✓[39m src/shared/components/Skeleton.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 83[2mms[22m[39m
+ [32m✓[39m src/shared/lib/integration.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m src/shared/lib/utils.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m src/modules/dashboard/services/normalization.test.ts [2m([22m[2m80 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m src/shared/lib/api.test.ts [2m([22m[2m50 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/shared/hooks/useFormDirty.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m src/shared/stores/notificationStore.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m src/shared/lib/workforceCost.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/modules/rh/types/funcionario.schema.test.ts [2m([22m[2m25 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/modules/obras/types/obra.schema.test.ts [2m([22m[2m29 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m src/modules/compras/types/compra.schema.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m src/modules/fopag/types/fopag.schema.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/shared/stores/uiStore.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/shared/stores/preferencesStore.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/shared/stores/contextStore.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/shared/stores/filtersStore.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/shared/stores/drawerStore.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m70 passed[39m[22m[90m (70)[39m
+[2m      Tests [22m [1m[32m899 passed[39m[22m[90m (899)[39m
+[2m   Start at [22m 21:50:50
+[2m   Duration [22m 60.32s[2m (transform 4.27s, setup 14.94s, import 16.26s, tests 52.06s, environment 80.75s)[22m
