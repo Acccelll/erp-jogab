@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 // @ts-ignore
 import { List as ReactWindowList } from 'react-window';
 // @ts-ignore
-import AutoSizer from 'react-virtualized-auto-sizer';
+import { AutoSizer as ReactVirtualizedAutoSizer } from 'react-virtualized-auto-sizer';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
 export interface Column<T> {
@@ -110,7 +110,7 @@ export function VirtualizedTable<T extends Record<string, any>>({
   }), [data, columnWidths, onRowClick, onSelectRow, selectedIds, idKey, columns]);
 
   const TableList = (ReactWindowList as any)?.List || ReactWindowList;
-  const ActualAutoSizer = (AutoSizer as any)?.AutoSizer || (AutoSizer as any)?.default || AutoSizer;
+  const ActualAutoSizer = (ReactVirtualizedAutoSizer as any)?.AutoSizer || (ReactVirtualizedAutoSizer as any)?.default || ReactVirtualizedAutoSizer;
 
   return (
     <div className={`flex h-full flex-col overflow-hidden rounded-xl border border-border-default bg-surface shadow-sm ${className ?? ''}`}>
