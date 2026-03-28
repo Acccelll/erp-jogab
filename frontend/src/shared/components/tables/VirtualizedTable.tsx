@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
-import { FixedSizeList as List } from 'react-window';
+// @ts-ignore
+import { List as ReactWindowList } from 'react-window';
+// @ts-ignore
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { ChevronUp, ChevronDown } from 'lucide-react';
-import { cn } from '@/shared/lib/utils';
 
 export interface Column<T> {
   key: keyof T | string;
@@ -51,22 +52,22 @@ export function VirtualizedTable<T extends Record<string, any>>({
     return columns.map((col) => col.width);
   }, [columns]);
 
-  const Row = ({ index, style, data: rowData }: { index: number; style: React.CSSProperties, data: any }) => {
-    const item = rowData.items[index];
-    const id = String(item[idKey]);
-    const isSelected = selectedIds.includes(id);
+  const Row = ({ index, style, data: itemDataProp }: any) => {
+    const item = itemDataProp.items[index];
+    if (!item) return null;
+
+    const id = String(item[itemDataProp.idKey]);
+    const isSelected = itemDataProp.selectedIds.includes(id);
 
     return (
       <div
         style={style}
-        className={cn(
-          'flex items-center border-b border-border-default/50 transition-colors hover:bg-surface-soft',
-          isSelected && 'bg-accent-50/30',
-          onRowClick && 'cursor-pointer',
-        )}
-        onClick={() => onRowClick?.(item)}
+        className={`flex items-center border-b border-border-default/50 transition-colors hover:bg-surface-soft ${
+          isSelected ? 'bg-accent-50/30' : ''
+        } ${itemDataProp.onRowClick ? 'cursor-pointer' : ''}`}
+        onClick={() => itemDataProp.onRowClick?.(item)}
       >
-        {onSelectRow && (
+        {itemDataProp.onSelectRow && (
           <div
             className="flex w-12 shrink-0 items-center justify-center"
             onClick={(e) => e.stopPropagation()}
@@ -74,17 +75,17 @@ export function VirtualizedTable<T extends Record<string, any>>({
             <input
               type="checkbox"
               checked={isSelected}
-              onChange={() => onSelectRow(id)}
+              onChange={() => itemDataProp.onSelectRow(id)}
               className="h-4 w-4 rounded border-border-default text-brand-primary focus:ring-brand-primary/20"
             />
           </div>
         )}
-        {columns.map((col, colIndex) => (
+        {itemDataProp.columns.map((col: any, colIndex: number) => (
           <div
             key={String(col.key)}
             className="flex items-center px-4 text-sm text-text-body"
             style={{
-              width: rowData.columnWidths[colIndex],
+              width: itemDataProp.columnWidths[colIndex],
               flex: typeof col.width === 'string' && col.width.includes('%') ? `0 0 ${col.width}` : '1 1 auto',
               maxWidth: typeof col.width === 'number' ? `${col.width}px` : col.width
             }}
@@ -108,8 +109,11 @@ export function VirtualizedTable<T extends Record<string, any>>({
     columns
   }), [data, columnWidths, onRowClick, onSelectRow, selectedIds, idKey, columns]);
 
+  const TableList = (ReactWindowList as any)?.List || ReactWindowList;
+  const ActualAutoSizer = (AutoSizer as any)?.AutoSizer || (AutoSizer as any)?.default || AutoSizer;
+
   return (
-    <div className={cn('flex h-full flex-col overflow-hidden rounded-xl border border-border-default bg-surface shadow-sm', className)}>
+    <div className={`flex h-full flex-col overflow-hidden rounded-xl border border-border-default bg-surface shadow-sm ${className ?? ''}`}>
       {/* Header */}
       <div
         className="flex border-b border-border-default bg-surface-soft font-semibold text-text-strong"
@@ -147,10 +151,9 @@ export function VirtualizedTable<T extends Record<string, any>>({
         {columns.map((col, index) => (
           <div
             key={String(col.key)}
-            className={cn(
-              'flex items-center px-4 text-xs uppercase tracking-wider text-text-muted/70',
-              col.sortable && 'cursor-pointer select-none hover:text-text-strong',
-            )}
+            className={`flex items-center px-4 text-xs uppercase tracking-wider text-text-muted/70 ${
+              col.sortable ? 'cursor-pointer select-none hover:text-text-strong' : ''
+            }`}
             style={{
               width: columnWidths[index],
               flex: typeof col.width === 'string' && col.width.includes('%') ? `0 0 ${col.width}` : '1 1 auto',
@@ -172,20 +175,23 @@ export function VirtualizedTable<T extends Record<string, any>>({
 
       {/* Body */}
       <div className="flex-1">
-        <AutoSizer>
-          {({ height, width }) => (
-            <List
-              height={height}
-              itemCount={data.length}
-              itemSize={rowHeight}
-              width={width}
-              itemData={itemData}
-              className="scrollbar-hide"
-            >
-              {Row}
-            </List>
-          )}
-        </AutoSizer>
+        {ActualAutoSizer && (
+          <ActualAutoSizer>
+            {({ height, width }: { height: number; width: number }) => (
+              <TableList
+                {...({
+                  height,
+                  rowCount: data.length,
+                  rowHeight,
+                  width,
+                  itemData: itemData,
+                  children: Row,
+                  className: "scrollbar-hide"
+                } as any)}
+              />
+            )}
+          </ActualAutoSizer>
+        )}
       </div>
     </div>
   );

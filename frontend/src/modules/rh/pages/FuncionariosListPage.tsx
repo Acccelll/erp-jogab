@@ -33,7 +33,6 @@ import {
   restoreFuncionario,
 } from '../services/funcionarios.service';
 import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
-import { cn } from '@/shared/lib/utils';
 import { type ApiError } from '@/shared/lib/api';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
 
@@ -62,7 +61,6 @@ export function FuncionariosListPage() {
   const {
     selectedIds,
     selectedCount,
-    isSelected,
     toggleSelection,
     toggleAll,
     clearSelection,

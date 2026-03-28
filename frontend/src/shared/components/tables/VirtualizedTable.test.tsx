@@ -2,22 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { VirtualizedTable } from './VirtualizedTable';
 
-// Mock react-virtualized-auto-sizer
-vi.mock('react-virtualized-auto-sizer', () => ({
-  default: ({ children }: any) => children({ height: 500, width: 1000 }),
-}));
-
-// Mock react-window
-vi.mock('react-window', () => ({
-  FixedSizeList: ({ children, itemCount, itemData }: any) => {
-    const items = [];
-    for (let i = 0; i < itemCount; i++) {
-      items.push(children({ index: i, style: { top: i * 50 }, data: itemData }));
-    }
-    return <div data-testid="virtual-list">{items}</div>;
-  },
-}));
-
 describe('VirtualizedTable Interactions', () => {
   const columns = [
     { key: 'id', header: 'ID', width: 100, sortable: true },
