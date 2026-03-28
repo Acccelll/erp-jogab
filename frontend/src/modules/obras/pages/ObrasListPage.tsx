@@ -28,7 +28,7 @@ import { useObras } from '../hooks/useObras';
 import { useObraFilters } from '../hooks/useObraFilters';
 import { deleteObras, bulkUpdateObraStatus, restoreObra } from '../services/obras.service';
 import { useBulkSelection } from '@/shared/hooks/useBulkSelection';
-import { formatCurrency, cn } from '@/shared/lib/utils';
+import { formatCurrency } from '@/shared/lib/utils';
 import { type ApiError } from '@/shared/lib/api';
 import { Link } from 'react-router-dom';
 import type { QuickFilterChip } from '@/shared/components/QuickFilterChips';
@@ -57,7 +57,6 @@ export function ObrasListPage() {
   const {
     selectedIds,
     selectedCount,
-    isSelected,
     toggleSelection,
     toggleAll,
     clearSelection,
