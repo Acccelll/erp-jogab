@@ -11,6 +11,7 @@ import {
   Ruler,
   FolderOpen,
   BarChart2,
+  Share2,
   Settings,
   type LucideIcon,
 } from 'lucide-react';
@@ -76,6 +77,14 @@ export const menuConfig: (MenuItem | MenuGroup)[] = [
     label: 'Relatórios',
     path: '/relatorios',
     icon: BarChart2,
+    tier: 'utility',
+  },
+
+  {
+    id: 'social',
+    label: 'Redes Sociais',
+    path: '/social',
+    icon: Share2,
     tier: 'utility',
   },
   {

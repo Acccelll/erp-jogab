@@ -196,6 +196,14 @@ const RelatorioCategoriaPage = lazy(() =>
   import('@/modules/relatorios').then((m) => ({ default: m.RelatorioCategoriaPage })),
 );
 
+// Social
+const SocialDashboardPage = lazy(() => import('@/modules/social').then((m) => ({ default: m.SocialDashboardPage })));
+const SocialContasPage = lazy(() => import('@/modules/social').then((m) => ({ default: m.SocialContasPage })));
+const SocialMetricasPage = lazy(() => import('@/modules/social').then((m) => ({ default: m.SocialMetricasPage })));
+const SocialPostsPage = lazy(() => import('@/modules/social').then((m) => ({ default: m.SocialPostsPage })));
+const SocialRelatoriosPage = lazy(() => import('@/modules/social').then((m) => ({ default: m.SocialRelatoriosPage })));
+const SocialAlertasPage = lazy(() => import('@/modules/social').then((m) => ({ default: m.SocialAlertasPage })));
+
 // RH
 const FuncionariosListPage = lazy(() =>
   import('@/modules/rh').then((m) => ({ default: m.FuncionariosListPage })),
@@ -574,6 +582,19 @@ const appRoutes: RouteObject[] = [
     children: [
       { index: true, element: <Lazy><RelatoriosListPage /></Lazy> },
       { path: ':categoria', element: <Lazy><RelatorioCategoriaPage /></Lazy> },
+    ],
+  },
+
+  {
+    path: '/social',
+    element: <ModuleLayout />,
+    children: [
+      { index: true, element: <Lazy><SocialDashboardPage /></Lazy> },
+      { path: 'contas', element: <Lazy><SocialContasPage /></Lazy> },
+      { path: 'metricas', element: <Lazy><SocialMetricasPage /></Lazy> },
+      { path: 'posts', element: <Lazy><SocialPostsPage /></Lazy> },
+      { path: 'relatorios', element: <Lazy><SocialRelatoriosPage /></Lazy> },
+      { path: 'alertas', element: <Lazy><SocialAlertasPage /></Lazy> },
     ],
   },
   {

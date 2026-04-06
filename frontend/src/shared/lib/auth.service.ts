@@ -22,6 +22,7 @@ const rolePermissions: Record<PapelUsuario, Permissao[]> = {
     'documentos:read', 'documentos:write',
     'relatorios:read',
     'admin:read', 'admin:write',
+    'social.visualizar', 'social.configurar', 'social.sincronizar', 'social.exportar_relatorios', 'social.gerenciar_alertas',
   ],
   gestor: [
     'dashboard:read',
@@ -36,6 +37,7 @@ const rolePermissions: Record<PapelUsuario, Permissao[]> = {
     'medicoes:read', 'medicoes:approve',
     'documentos:read',
     'relatorios:read',
+    'social.visualizar', 'social.sincronizar', 'social.exportar_relatorios', 'social.gerenciar_alertas',
   ],
   operador: [
     'dashboard:read',
@@ -50,6 +52,7 @@ const rolePermissions: Record<PapelUsuario, Permissao[]> = {
     'medicoes:read', 'medicoes:write',
     'documentos:read', 'documentos:write',
     'relatorios:read',
+    'social.visualizar',
   ],
   visualizador: [
     'dashboard:read',
@@ -64,6 +67,7 @@ const rolePermissions: Record<PapelUsuario, Permissao[]> = {
     'medicoes:read',
     'documentos:read',
     'relatorios:read',
+    'social.visualizar',
   ],
 };
 

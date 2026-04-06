@@ -157,7 +157,12 @@ export type Permissao =
   | 'documentos:write'
   | 'relatorios:read'
   | 'admin:read'
-  | 'admin:write';
+  | 'admin:write'
+  | 'social.visualizar'
+  | 'social.configurar'
+  | 'social.sincronizar'
+  | 'social.exportar_relatorios'
+  | 'social.gerenciar_alertas';
 
 /** Papel do usuário no sistema */
 export type PapelUsuario = 'admin' | 'gestor' | 'operador' | 'visualizador';

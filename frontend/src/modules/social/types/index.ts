@@ -1,0 +1,16 @@
+export type {
+  SocialAlerta,
+  SocialCampanha,
+  SocialConta,
+  SocialContaPayload,
+  SocialDashboardData,
+  SocialMetricaSnapshot,
+  SocialPlataforma,
+  SocialPost,
+  SocialPostsFilters,
+  SocialRelatorioExportacaoPayload,
+  SocialRelatorioExportacaoResult,
+  SocialSeveridade,
+  SocialSnapshotFilters,
+  SocialStatusConexao,
+} from './social.types';

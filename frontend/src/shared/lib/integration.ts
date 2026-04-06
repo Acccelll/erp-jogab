@@ -659,6 +659,24 @@ export const MODULE_READINESS: ModuleReadiness[] = [
     ],
     notes: 'Integrado na Fase 11. Leituras e CRUD de usuários/perfis/permissões com withApiFallback.',
   },
+  {
+    module: 'social',
+    status: 'ready',
+    integrationStatus: 'ready',
+    endpoints: [
+      { path: '/social/contas', method: 'GET', readiness: 'ready', integrated: true, description: 'Listagem de contas conectadas' },
+      { path: '/social/contas', method: 'POST', readiness: 'ready', integrated: true, description: 'Criar conta conectada' },
+      { path: '/social/contas/:id', method: 'PUT', readiness: 'ready', integrated: true, description: 'Atualizar conta conectada' },
+      { path: '/social/contas/:id', method: 'DELETE', readiness: 'ready', integrated: true, description: 'Excluir conta conectada' },
+      { path: '/social/contas/:id/sincronizar', method: 'POST', readiness: 'ready', integrated: true, description: 'Sincronização manual de conta' },
+      { path: '/social/dashboard', method: 'GET', readiness: 'ready', integrated: true, description: 'Dashboard social consolidado' },
+      { path: '/social/snapshots', method: 'GET', readiness: 'ready', integrated: true, description: 'Snapshots históricos por período' },
+      { path: '/social/posts', method: 'GET', readiness: 'ready', integrated: true, description: 'Posts com filtros operacionais' },
+      { path: '/social/alertas', method: 'GET', readiness: 'ready', integrated: true, description: 'Alertas operacionais sociais' },
+      { path: '/social/relatorios/exportar', method: 'POST', readiness: 'ready', integrated: true, description: 'Exportação de relatórios sociais' },
+    ],
+    notes: 'MVP do módulo Social com provider mock e service layer pronta para integração com APIs externas.',
+  },
 ];
 
 /** Retorna readiness de um módulo específico */
